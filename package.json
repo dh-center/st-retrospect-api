@@ -1,0 +1,29 @@
+{
+  "name": "st-retrospect-api",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "repository": "https://github.com/dh-center/st-retrospect-api.git",
+  "author": "DH Center <dh@itmo.ru>",
+  "scripts": {
+    "start:dev": "ts-node-dev --no-notify src/index.ts",
+    "lint": "eslint . --ext .ts --fix",
+    "build": "tsc"
+  },
+  "license": "Unlicense",
+  "dependencies": {
+    "@types/lodash.merge": "^4.6.6",
+    "@types/node": "^12.7.12",
+    "apollo-server-express": "^2.9.5",
+    "express": "^4.17.1",
+    "graphql": "^14.5.8",
+    "lodash.merge": "^4.6.2",
+    "typescript": "^3.6.4"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.3.3",
+    "@typescript-eslint/parser": "^2.3.3",
+    "eslint": "^6.5.1",
+    "eslint-config-codex": "github:codex-team/eslint-config",
+    "ts-node-dev": "^1.0.0-pre.43"
+  }
+}
