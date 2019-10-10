@@ -1,5 +1,7 @@
 import merge from 'lodash.merge';
 
+import persons from './persons';
+
 /**
  * See all types and fields here {@link '../typeDefs/schema.graphql'}
  */
@@ -13,4 +15,4 @@ const indexResolver = {
   }
 };
 
-export default merge(indexResolver);
+export default merge(indexResolver, persons);
