@@ -21,6 +21,9 @@ const multilingualPersonFields = [
   'description'
 ];
 
+/**
+ * Object storing strings in different languages
+ */
 interface MultilingualString {
   [key: string]: string;
 }
