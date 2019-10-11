@@ -3,11 +3,22 @@ import { gql, concatenateTypeDefs } from 'apollo-server-express';
 import persons from './persons';
 
 const rootSchema = gql`
+  """
+  Type for representing JSON object
+  """
+  scalar JSON
+  
+  """
+  Supported languages for data
+  """
   enum Languages {
-    en
-    ru
+    EN
+    RU
   }
   
+  """
+  API queries
+  """
   type Query {
     health: String!
   }
