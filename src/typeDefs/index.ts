@@ -1,7 +1,32 @@
-import { gql } from 'apollo-server-express';
+import { gql, concatenateTypeDefs } from 'apollo-server-express';
 
-export default gql`
+import persons from './persons';
+
+const rootSchema = gql`
+  """
+  Type for representing JSON object
+  """
+  scalar JSON
+  
+  """
+  Supported languages for data
+  """
+  enum Languages {
+    EN
+    RU
+  }
+  
+  """
+  API queries
+  """
   type Query {
     health: String!
   }
 `;
+
+export default concatenateTypeDefs(
+  [
+    rootSchema,
+    persons
+  ]
+);
