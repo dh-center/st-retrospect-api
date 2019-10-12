@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build Docker image
-      run: docker image build -t st-retrospect-api -f /docker/Dockerfile.prod .
+      run: docker image build -t st-retrospect-api -f ./docker/Dockerfile.prod .
     - name: Push to Docker hub
       if: github.ref == 'refs/heads/stage'
       run: |
