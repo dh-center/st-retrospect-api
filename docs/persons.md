@@ -1,34 +1,58 @@
 # Person queries
-## person(id: string, languages: [enum])
+## person(id: ID!, languages: [Languages!]!)
 Get person's info by ID:
 
 Query:
-```
+```graphql
 {
-  person(id: "5d83443c0cb433003f223ae7", languages: [RU, EN]){
-    firstName
+  persons(languages: [RU, EN]) {
     id
+    firstName
+    lastName
+    birthDate
   }
 }
 ```
+
 Response:
-```
+```json
 {
   "data": {
-    "person": {
-      "firstName": {
-        "ru": "Давид"
+    "persons": [
+      {
+        "id": "5d83444a2dcafc004ef8fd12",
+        "firstName": {
+          "ru": "Иван",
+          "en": null
+        },
+        "lastName": {
+          "ru": "Кутайсов",
+          "en": null
+        },
+        "birthDate": "1759 год"
       },
-      "id": "5d83443c0cb433003f223ae7"
-    }
+      {
+        "id": "5d8a8d651e1e568faf13f334",
+        "firstName": {
+          "ru": "Павел",
+          "en": "Pavel"
+        },
+        "lastName": {
+          "ru": "Филонов",
+          "en": "Filonov"
+        },
+        "birthDate": "8.01.1883"
+      }
+    ]
   }
 }
 ```
-## persons(languages: [enum])
+
+## persons(languages: [Languages!]!)
 Get all persons
 
 Query:
-```
+```graphql
 {
   persons(languages: [RU]){
     lastName,
@@ -36,8 +60,9 @@ Query:
   }
 }
 ```
+
 Response:
-```
+```json
 {
   "data": {
     "persons": [
