@@ -36,3 +36,18 @@ export type ResolverFunction<ParentType, ResolverContext> = (
   info: GraphQLResolveInfo
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ) => any;
+
+/**
+ * Object storing strings in different languages
+ */
+export interface MultilingualString {
+  [key: string]: string;
+}
+
+/**
+ * Supported languages for data
+ */
+export enum Languages {
+  RU = 'RU',
+  EN = 'EN'
+}
