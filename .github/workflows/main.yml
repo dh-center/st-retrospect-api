@@ -1,0 +1,20 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build_api:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build Docker image
+      run: docker image build -t st-retrospect-api -f /docker/Dockerfile.prod .
+    - name: Push to Docker hub
+      if: github.ref == 'refs/heads/stage'
+      run: |
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker tag st-retrospect-api dhcenter/st-retrospect-api:stage
+        docker push dhcenter/st-retrospect-api:stage
+        docker logout
