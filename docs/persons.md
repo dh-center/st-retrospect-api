@@ -11,7 +11,7 @@ Query:
   }
 }
 ```
-Answer:
+Response:
 ```
 {
   "data": {
@@ -36,7 +36,7 @@ Query:
   }
 }
 ```
-Answer:
+Response:
 ```
 {
   "data": {
