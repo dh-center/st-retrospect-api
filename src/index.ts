@@ -28,7 +28,7 @@ import { ResolverContextBase } from './types/graphql';
 
   apolloServer.applyMiddleware({ app });
 
-  app.listen({ port: 4000 }, () =>
-    console.log(`🚀 Server ready at http://localhost:4000${apolloServer.graphqlPath}`)
+  app.listen({ port: process.env.PORT }, () =>
+    console.log(`🚀 Server ready at http://localhost:${process.env.PORT}${apolloServer.graphqlPath}`)
   );
 })();
