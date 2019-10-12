@@ -54,5 +54,13 @@ export default gql`
       "language in which to return data"
       languages: [Languages!]!
     ): Person
+
+    """
+    Get all persons
+    """
+    persons(
+      "language in which to return data"
+      languages: [Languages!]!
+    ): [Person!]
   }
 `;
