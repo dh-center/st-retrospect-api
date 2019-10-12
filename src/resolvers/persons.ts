@@ -41,13 +41,13 @@ function filterEntityFields(
   multilingualFields: string[]
 ): void {
   multilingualFields.forEach((field: string) => {
-    const fieldValue = (entity[field] as MultilingualString) || null;
+    const fieldValue = (entity[field] as MultilingualString) || {};
 
     entity[field] = {};
     languages.forEach((lang: string) => {
       const langLowerCase = lang.toLowerCase();
 
-      entity[field][langLowerCase] = fieldValue ? fieldValue[langLowerCase] : null;
+      entity[field][langLowerCase] = fieldValue[langLowerCase] || null;
     });
   });
 }
