@@ -7,9 +7,7 @@ import { filterEntityFields } from '../utils';
  */
 const multilingualPersonFields = [
   'name',
-  'description',
-  'constructionDate',
-  'demolitionDate'
+  'description'
 ];
 
 const Query: BaseTypeResolver = {
