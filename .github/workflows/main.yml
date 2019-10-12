@@ -27,5 +27,5 @@ jobs:
           command: cd st-retrospect-api-stage/ && ./deploy.sh
           host: ${{ secrets.SERVER_HOST }}
           username: root
-          privateKey: ${{ secrets.PRIVATE_KEY}}
+          privateKey: ${{ secrets.PRIVATE_KEY }}
 
