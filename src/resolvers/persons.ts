@@ -41,13 +41,13 @@ function filterEntityFields(
   multilingualFields: string[]
 ): void {
   multilingualFields.forEach((field: string) => {
-    const fieldValue = entity[field] as MultilingualString;
+    const fieldValue = (entity[field] as MultilingualString) || null;
 
     entity[field] = {};
     languages.forEach((lang: string) => {
       const langLowerCase = lang.toLowerCase();
 
-      entity[field][langLowerCase] = fieldValue[langLowerCase] || null;
+      entity[field][langLowerCase] = fieldValue ? fieldValue[langLowerCase] : null;
     });
   });
 }
@@ -67,6 +67,16 @@ const Query: BaseTypeResolver = {
     // @todo move to directive
     person.id = person._id;
     return person;
+  },
+  async persons(parent, { languages }: {languages: Languages[]}, { db }) {
+    const persons = await db.collection('persons').find({}).toArray();
+
+    persons.map((person) => {
+      filterEntityFields(person, languages, multilingualPersonFields);
+      person.id = person._id;
+      return person;
+    });
+    return persons;
   }
 };
 

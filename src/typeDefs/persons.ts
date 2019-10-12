@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server-express';
 
-export default gql`
+export default gql`    
   type Person {
     """
     Person's id
@@ -41,9 +41,9 @@ export default gql`
     Person's death date
     """
     deathDate: String
-  }
+    }
 
-  extend type Query {
+    extend type Query {
     """
     Get specific person
     """
@@ -54,5 +54,13 @@ export default gql`
       "language in which to return data"
       languages: [Languages!]!
     ): Person
-  }
+
+    """
+    Get all persons
+    """
+    persons(
+      "language in which to return data"
+      languages: [Languages!]!
+    ): [Person]
+    }
 `;
