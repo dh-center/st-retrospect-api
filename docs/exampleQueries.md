@@ -1,6 +1,5 @@
-# Person queries
-## person(id: ID!, languages: [Languages!]!)
-Get person's info by ID:
+# Query examples
+## Get person by ID
 
 Query:
 ```graphql
@@ -48,8 +47,7 @@ Response:
 }
 ```
 
-## persons(languages: [Languages!]!)
-Get all persons
+## Get all persons
 
 Query:
 ```graphql
@@ -90,6 +88,43 @@ Response:
           "ru": "Давид"
         }
       }
+    ]
+  }
+}
+```
+
+## Get all locations
+
+Query:
+```graphql
+{
+  locations(languages: RU) {
+    id
+    name
+    demolitionDate
+  }
+}
+```
+
+Response:
+```json
+{
+  "data": {
+    "locations": [
+     {
+       "id": "5d9b99d2cc7c891a3556624d",
+       "name": {
+         "ru": "Дом М. И. Кутузова"
+       },
+       "demolitionDate": ""
+     },
+     {
+       "id": "5d9b9a9bcc7c89b36456624f",
+       "name": {
+         "ru": "Императорский Санкт-Петербургский университет"
+       },
+       "demolitionDate": "1917"
+     }
     ]
   }
 }

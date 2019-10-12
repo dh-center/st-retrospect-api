@@ -61,6 +61,6 @@ export default gql`
     persons(
       "language in which to return data"
       languages: [Languages!]!
-    ): [Person!]
+    ): [Person!]!
   }
 `;

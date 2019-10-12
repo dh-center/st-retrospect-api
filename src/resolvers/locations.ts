@@ -3,40 +3,36 @@ import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
 
 /**
- * Multilingual person fields
+ * Multilingual location fields
  */
 const multilingualPersonFields = [
-  'firstName',
-  'lastName',
-  'patronymic',
-  'pseudonym',
-  'profession',
+  'name',
   'description'
 ];
 
 const Query: BaseTypeResolver = {
   /**
-   * Returns specific person
+   * Returns specific location
    * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param id - person id
+   * @param id - location id
    * @param languages - languages in which return data
    * @param db - MongoDB connection to make queries
    * @return {object}
    */
-  async person(parent, { id, languages }: { id: string; languages: Languages[] }, { db }) {
-    const person = await db.collection('persons').findOne({
+  async location(parent, { id, languages }: { id: string; languages: Languages[] }, { db }) {
+    const location = await db.collection('locations').findOne({
       _id: new ObjectId(id)
     });
 
-    if (!person) {
+    if (!location) {
       return null;
     }
 
-    filterEntityFields(person, languages, multilingualPersonFields);
+    filterEntityFields(location, languages, multilingualPersonFields);
 
     // @todo move to directive
-    person.id = person._id;
-    return person;
+    location.id = location._id;
+    return location;
   },
 
   /**
@@ -46,15 +42,15 @@ const Query: BaseTypeResolver = {
    * @param db - MongoDB connection to make queries
    * @return {object[]}
    */
-  async persons(parent, { languages }: {languages: Languages[]}, { db }) {
-    const persons = await db.collection('persons').find({}).toArray();
+  async locations(parent, { languages }: {languages: Languages[]}, { db }) {
+    const locations = await db.collection('locations').find({}).toArray();
 
-    persons.map((person) => {
-      filterEntityFields(person, languages, multilingualPersonFields);
-      person.id = person._id;
-      return person;
+    locations.map((location) => {
+      filterEntityFields(location, languages, multilingualPersonFields);
+      location.id = location._id;
+      return location;
     });
-    return persons;
+    return locations;
   }
 };
 
