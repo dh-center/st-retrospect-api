@@ -59,18 +59,12 @@ export default gql`
     """
     location(
       "Location id"
-      id: ID!,
-
-      "language in which to return data"
-      languages: [Languages!]!
+      id: ID!
     ): Location
 
     """
     Get all locations
     """
-    locations(
-      "language in which to return data"
-      languages: [Languages!]!
-    ): [Location!]!
+    locations: [Location!]!
   }
 `;

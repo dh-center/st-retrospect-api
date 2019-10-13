@@ -5,7 +5,8 @@ import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
 import getDbConnection from './db';
-import { ResolverContextBase } from './types/graphql';
+import { Languages, ResolverContextBase } from './types/graphql';
+import languageParser from 'accept-language-parser';
 
 (async (): Promise<void> => {
   dotenv.config({
@@ -19,9 +20,20 @@ import { ResolverContextBase } from './types/graphql';
     typeDefs,
     resolvers,
     playground: true,
-    context(): ResolverContextBase {
+    context({ req }): ResolverContextBase {
+      let languages: Languages[];
+
+      if (req.headers['accept-language']) {
+        languages = languageParser.parse(req.headers['accept-language'] ? req.headers['accept-language'].toString() : '').map((language) => {
+          return language.code.toUpperCase() as Languages;
+        });
+      } else {
+        languages = [ Languages.RU ];
+      }
+
       return {
-        db: dbConnection
+        db: dbConnection,
+        languages
       };
     }
   });

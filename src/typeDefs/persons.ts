@@ -41,6 +41,11 @@ export default gql`
     Person's death date
     """
     deathDate: String
+      
+    """
+    Person relations
+    """
+    relations: [Relation!]!
   }
 
   extend type Query {
@@ -49,18 +54,12 @@ export default gql`
     """
     person(
       "Project id"
-      id: ID!,
-
-      "language in which to return data"
-      languages: [Languages!]!
+      id: ID!
     ): Person
 
     """
     Get all persons
     """
-    persons(
-      "language in which to return data"
-      languages: [Languages!]!
-    ): [Person!]!
+    persons: [Person!]!
   }
 `;

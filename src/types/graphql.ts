@@ -9,6 +9,10 @@ export interface ResolverContextBase {
    * MongoDB connection to make queries
    */
   readonly db: Db;
+  /**
+   * Accept languages
+   */
+  readonly languages: Languages[];
 }
 
 /**
