@@ -1,6 +1,7 @@
-import { BaseTypeResolver, Languages } from '../types/graphql';
+import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
+import { multilingualLocationFields } from './locations';
 
 /**
  * Multilingual person fields
@@ -27,7 +28,7 @@ const Query: BaseTypeResolver = {
    * @param db - MongoDB connection to make queries
    * @return {object}
    */
-  async person(parent, { id, languages }: { id: string; languages: Languages[] }, { db }) {
+  async person(parent, { id }: { id: string }, { db, languages }) {
     const person = await db.collection('persons').findOne({
       _id: new ObjectId(id)
     });
@@ -50,7 +51,7 @@ const Query: BaseTypeResolver = {
    * @param db - MongoDB connection to make queries
    * @return {object[]}
    */
-  async persons(parent, { languages }: {languages: Languages[]}, { db }) {
+  async persons(parent, data, { db, languages }) {
     const persons = await db.collection('persons').find({}).toArray();
 
     persons.map((person) => {
@@ -69,7 +70,7 @@ const Person: BaseTypeResolver<Person> = {
    * @param languages - languages in which return data
    * @param db - MongoDB connection to make queries
    */
-  async relations({ id }, data, { db }) {
+  async relations({ id }, data, { db, languages }) {
     const relations = await db.collection('relations').aggregate([
       {
         $match: {
@@ -111,12 +112,11 @@ const Person: BaseTypeResolver<Person> = {
       }
     ]).toArray();
 
-    /*
-     * relations.map((relation) => {
-     *   filterEntityFields(relation.person, languages, multilingualPersonFields);
-     *   return relation;
-     * });
-     */
+    relations.map((relation) => {
+      filterEntityFields(relation.person, languages, multilingualPersonFields);
+      filterEntityFields(relation.location, languages, multilingualLocationFields);
+      return relation;
+    });
 
     return relations;
   }

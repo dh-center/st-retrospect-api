@@ -1,11 +1,11 @@
-import { BaseTypeResolver, Languages } from '../types/graphql';
+import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
 
 /**
  * Multilingual location fields
  */
-const multilingualPersonFields = [
+export const multilingualLocationFields = [
   'name',
   'description'
 ];
@@ -19,7 +19,7 @@ const Query: BaseTypeResolver = {
    * @param db - MongoDB connection to make queries
    * @return {object}
    */
-  async location(parent, { id, languages }: { id: string; languages: Languages[] }, { db }) {
+  async location(parent, { id }: { id: string }, { db, languages }) {
     const location = await db.collection('locations').findOne({
       _id: new ObjectId(id)
     });
@@ -28,7 +28,7 @@ const Query: BaseTypeResolver = {
       return null;
     }
 
-    filterEntityFields(location, languages, multilingualPersonFields);
+    filterEntityFields(location, languages, multilingualLocationFields);
 
     // @todo move to directive
     location.id = location._id;
@@ -42,11 +42,11 @@ const Query: BaseTypeResolver = {
    * @param db - MongoDB connection to make queries
    * @return {object[]}
    */
-  async locations(parent, { languages }: {languages: Languages[]}, { db }) {
+  async locations(parent, data, { db, languages }) {
     const locations = await db.collection('locations').find({}).toArray();
 
     locations.map((location) => {
-      filterEntityFields(location, languages, multilingualPersonFields);
+      filterEntityFields(location, languages, multilingualLocationFields);
       location.id = location._id;
       return location;
     });
