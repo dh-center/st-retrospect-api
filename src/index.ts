@@ -21,9 +21,15 @@ import languageParser from 'accept-language-parser';
     resolvers,
     playground: true,
     context({ req }): ResolverContextBase {
-      const languages = languageParser.parse(req.headers['accept-language'] ? req.headers['accept-language'].toString() : '').map((language) => {
-        return language.code.toUpperCase() as Languages;
-      });
+      let languages: Languages[];
+
+      if (req.headers['accept-language']) {
+        languages = languageParser.parse(req.headers['accept-language'] ? req.headers['accept-language'].toString() : '').map((language) => {
+          return language.code.toUpperCase() as Languages;
+        });
+      } else {
+        languages = [ Languages.RU ];
+      }
 
       return {
         db: dbConnection,
