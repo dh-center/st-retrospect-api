@@ -1,14 +1,27 @@
 # Query examples
+## Select data language
+
+Send necessary languages in header `accept-language`:
+```json
+{
+  "accept-language": "ru"
+}
+```
 ## Get person by ID
 
 Query:
 ```graphql
 {
-  persons(languages: [RU, EN]) {
-    id
-    firstName
-    lastName
-    birthDate
+  person(id: "5d83443d0cb433003f223b62") {
+    id,
+    firstName,
+    relations	{
+      quote,
+      location{
+        id,
+        name
+      }
+    }
   }
 }
 ```
@@ -17,32 +30,36 @@ Response:
 ```json
 {
   "data": {
-    "persons": [
-      {
-        "id": "5d83444a2dcafc004ef8fd12",
-        "firstName": {
-          "ru": "Иван",
-          "en": null
-        },
-        "lastName": {
-          "ru": "Кутайсов",
-          "en": null
-        },
-        "birthDate": "1759 год"
+    "person": {
+      "id": "5d83443d0cb433003f223b62",
+      "firstName": {
+        "ru": "Петр"
       },
-      {
-        "id": "5d8a8d651e1e568faf13f334",
-        "firstName": {
-          "ru": "Павел",
-          "en": "Pavel"
+      "relations": [
+        {
+          "quote": {
+            "ru": "Этому дому и суждено было стать первым жильем Петра Чайковского в Петербурге."
+          },
+          "location": {
+            "id": "5d83443e0cb433003f223be6",
+            "name": {
+              "ru": "Доходный дом купцов Елисеевых"
+            }
+          }
         },
-        "lastName": {
-          "ru": "Филонов",
-          "en": "Filonov"
-        },
-        "birthDate": "8.01.1883"
-      }
-    ]
+        {
+          "quote": {
+            "ru": "Вместе с братом Николаем его отдали в частный пансион Шмеллинга"
+          },
+          "location": {
+            "id": "5d83443e0cb433003f223be7",
+            "name": {
+              "ru": "Доходный дом Н. Я. и Ф. Я. Колобовых, частный пансион Шмеллинга"
+            }
+          }
+        }
+      ]
+    }
   }
 }
 ```
@@ -52,7 +69,7 @@ Response:
 Query:
 ```graphql
 {
-  persons(languages: [RU]){
+  persons {
     lastName,
     firstName
   }
@@ -98,7 +115,7 @@ Response:
 Query:
 ```graphql
 {
-  locations(languages: RU) {
+  locations {
     id
     name
     demolitionDate
