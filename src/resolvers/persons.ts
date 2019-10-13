@@ -25,8 +25,8 @@ const Query: BaseTypeResolver = {
    * Returns specific person
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - person id
-   * @param languages - languages in which return data
    * @param db - MongoDB connection to make queries
+   * @param languages - languages in which return data
    * @return {object}
    */
   async person(parent, { id }: { id: string }, { db, languages }) {
@@ -48,8 +48,9 @@ const Query: BaseTypeResolver = {
   /**
    * Returns all locations
    * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param languages - languages in which return data
+   * @param data - empty arg
    * @param db - MongoDB connection to make queries
+   * @param languages - languages in which return data
    * @return {object[]}
    */
   async persons(parent, data, { db, languages }) {
@@ -68,8 +69,10 @@ const Person: BaseTypeResolver<Person> = {
   /**
    * Return all person relations
    * @param id - person's id that returned from the resolver on the parent field
-   * @param languages - languages in which return data
+   * @param data - empty arg
    * @param db - MongoDB connection to make queries
+   * @param languages - languages in which return data
+   * @return {object[]}
    */
   async relations({ id }, data, { db, languages }) {
     const relations = await db.collection('relations').aggregate([

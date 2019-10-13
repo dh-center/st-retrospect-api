@@ -15,8 +15,8 @@ const Query: BaseTypeResolver = {
    * Returns specific location
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - location id
-   * @param languages - languages in which return data
    * @param db - MongoDB connection to make queries
+   * @param languages - languages in which return data
    * @return {object}
    */
   async location(parent, { id }: { id: string }, { db, languages }) {
@@ -38,8 +38,9 @@ const Query: BaseTypeResolver = {
   /**
    * Returns all locations
    * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param languages - languages in which return data
+   * @param data - empty arg
    * @param db - MongoDB connection to make queries
+   * @param languages - languages in which return data
    * @return {object[]}
    */
   async locations(parent, data, { db, languages }) {
