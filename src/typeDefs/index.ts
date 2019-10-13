@@ -2,6 +2,7 @@ import { gql, concatenateTypeDefs } from 'apollo-server-express';
 
 import persons from './persons';
 import locations from './locations';
+import relations from './relations';
 
 const rootSchema = gql`
   """
@@ -29,6 +30,7 @@ export default concatenateTypeDefs(
   [
     rootSchema,
     persons,
-    locations
+    locations,
+    relations
   ]
 );

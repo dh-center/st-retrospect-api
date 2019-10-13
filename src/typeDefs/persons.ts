@@ -41,6 +41,11 @@ export default gql`
     Person's death date
     """
     deathDate: String
+      
+    """
+    Person relations
+    """
+    relations: [Relation]!  
   }
 
   extend type Query {
