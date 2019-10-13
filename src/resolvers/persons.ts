@@ -2,6 +2,7 @@ import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
 import { multilingualLocationFields } from './locations';
+import { multilingualRelationFields } from './relations';
 
 /**
  * Multilingual person fields
@@ -113,6 +114,7 @@ const Person: BaseTypeResolver<Person> = {
     ]).toArray();
 
     relations.map((relation) => {
+      filterEntityFields(relation, languages, multilingualRelationFields);
       filterEntityFields(relation.person, languages, multilingualPersonFields);
       filterEntityFields(relation.location, languages, multilingualLocationFields);
       return relation;
