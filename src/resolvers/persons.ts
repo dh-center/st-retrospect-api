@@ -15,7 +15,7 @@ const multilingualPersonFields = [
 ];
 
 interface Person {
-  [id: string]: string;
+  id: string;
 }
 
 const Query: BaseTypeResolver = {
@@ -88,19 +88,35 @@ const Person: BaseTypeResolver<Person> = {
         $unwind: '$person'
       },
       {
+        $lookup: {
+          from: 'locations',
+          localField: 'locationId',
+          foreignField: '_id',
+          as: 'location'
+        }
+      },
+      {
+        $unwind: '$location'
+      },
+      {
         $addFields: {
           person: {
             id: '$person._id'
+          },
+          location: {
+            id: '$location._id'
           },
           id: '$_id'
         }
       }
     ]).toArray();
 
-    // relations.map((relation) => {
-    //   filterEntityFields(relation.person, languages, multilingualPersonFields);
-    //   return relation;
-    // });
+    /*
+     * relations.map((relation) => {
+     *   filterEntityFields(relation.person, languages, multilingualPersonFields);
+     *   return relation;
+     * });
+     */
 
     return relations;
   }

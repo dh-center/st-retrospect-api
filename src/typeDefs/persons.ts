@@ -45,7 +45,12 @@ export default gql`
     """
     Person relations
     """
-    relations: [Relation]!  
+    relations: [Relation!]!  
+    
+    """
+    Person locations
+    """
+    locations: [Location!]!  
   }
 
   extend type Query {
