@@ -10,6 +10,12 @@ export const multilingualLocationFields = [
   'description'
 ];
 
+// @todo improve tipization
+export interface Locations {
+  id: string;
+  _id: string;
+}
+
 const Query: BaseTypeResolver = {
   /**
    * Returns specific location
