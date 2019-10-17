@@ -19,9 +19,9 @@ https://api.st-retrospect.dh-center.ru/sign-up
 
 Response:
 
-Status: 200 OK
+Status: 201 Created
 ```
-OK
+Created
 ```
 
 ## Login
