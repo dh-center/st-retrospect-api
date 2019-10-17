@@ -4,7 +4,7 @@ import getConnection from '../../db';
 import argon2 from 'argon2';
 const router = express.Router();
 
-router.post('/sign-up', async (req, res) => {
+router.post('/sign-up', async (req, res, next) => {
   try {
     const db = await getConnection();
     const hashedPassword = await argon2.hash(req.body.password);
@@ -15,9 +15,9 @@ router.post('/sign-up', async (req, res) => {
   } catch (error) {
     // Catch MongoDB duplication error
     if (error.name === 'MongoError' && error.code === 11000) {
-      throw new UsernameDuplicationError();
+      return next(new UsernameDuplicationError());
     }
-    throw error;
+    return next(error);
   }
 });
 

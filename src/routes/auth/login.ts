@@ -8,11 +8,11 @@ import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 const router = express.Router();
 
-router.get('/login', async (req, res) => {
+router.get('/login', async (req, res, next) => {
   const db = await getConnection();
   const user = await db.collection('users').findOne({ username: req.query.username });
 
-  if (!user) throw new NoUserWithSuchUsernameError();
+  if (!user) return next(new NoUserWithSuchUsernameError());
 
   const compareResult = await argon2.verify(user.hashedPassword, req.query.password);
 
@@ -24,7 +24,7 @@ router.get('/login', async (req, res) => {
 
     res.json({ payload: { accessToken } });
   } else {
-    throw new WrongUserPasswordError();
+    return next(new WrongUserPasswordError());
   }
 });
 

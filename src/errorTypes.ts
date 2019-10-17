@@ -1,11 +1,12 @@
 /**
  * Base class for API errors
  */
-class ApiError extends Error {
+export class ApiError extends Error {
   /**
    * Http code to send to user
    */
   private httpCode: number;
+
   /**
    * Text error code
    */
@@ -17,6 +18,14 @@ class ApiError extends Error {
   constructor(httpCode: number) {
     super();
     this.httpCode = httpCode;
+    Object.setPrototypeOf(this, ApiError.prototype);
+  }
+
+  /**
+   * Getter for httpCode
+   */
+  getHttpCode() {
+    return this.httpCode;
   }
 }
 

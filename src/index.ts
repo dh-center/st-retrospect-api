@@ -9,6 +9,7 @@ import { Languages, ResolverContextBase } from './types/graphql';
 import languageParser from 'accept-language-parser';
 import bodyParser from 'body-parser';
 import router from './router';
+import errorHandler from './middlewares/errorHandler';
 
 (async (): Promise<void> => {
   dotenv.config({
@@ -63,6 +64,11 @@ import router from './router';
   });
 
   apolloServer.applyMiddleware({ app });
+
+  /**
+   * Setup error handler
+   */
+  app.use(errorHandler);
 
   app.listen({ port: process.env.PORT }, () =>
     console.log(`🚀 Server ready at http://localhost:${process.env.PORT}${apolloServer.graphqlPath}`)
