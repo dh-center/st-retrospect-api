@@ -45,3 +45,7 @@ Status: 200 OK
     }
 }
 ```
+
+## How to provide access token to request
+
+Add token to request header `Authorization: Bearer <access_token>`
