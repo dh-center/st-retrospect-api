@@ -5,7 +5,7 @@ export class ApiError extends Error {
   /**
    * Http code to send to user
    */
-  private httpCode: number;
+  public httpCode: number;
 
   /**
    * Text error code
@@ -19,13 +19,6 @@ export class ApiError extends Error {
     super();
     this.httpCode = httpCode;
     Object.setPrototypeOf(this, ApiError.prototype);
-  }
-
-  /**
-   * Getter for httpCode
-   */
-  getHttpCode() {
-    return this.httpCode;
   }
 }
 
