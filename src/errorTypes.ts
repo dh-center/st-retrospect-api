@@ -10,7 +10,7 @@ export class ApiError extends Error {
   /**
    * Text error code
    */
-  protected code = '';
+  public code = '';
   /**
    * Creates error instance
    * @param {Number} httpCode - http code to send to user

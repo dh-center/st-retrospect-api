@@ -10,11 +10,28 @@ import { Request, Response, NextFunction } from 'express';
  */
 export default function (error: Error, req: Request, res: Response, next: NextFunction) {
   if (error instanceof ApiError) {
-    return res.status(error.httpCode).json({ errors: [ error ] });
+    return res.status(error.httpCode).json(
+      {
+        errors: [
+          {
+            extensions: {
+              code: error.code
+            }
+          }
+        ]
+      });
   } else {
     // console.log('Unexpected server error: ', error);
-    return res.status(500).json({
-      errors: [ { error: 'Unexpected server error: ' + error.toString() } ]
-    });
+    return res.status(500).json(
+      {
+        errors: [
+          {
+            message: 'Unexpected server error: ' + error.toString(),
+            extensions: {
+              code: 'INTERNAL_SERVER_ERROR'
+            }
+          }
+        ]
+      });
   }
 };
