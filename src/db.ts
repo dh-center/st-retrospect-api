@@ -8,10 +8,15 @@ const connectionConfig: MongoClientOptions = {
   useUnifiedTopology: true
 };
 
+let connection: Db;
+
 /**
  * Setups connections to the database
  * @return {Promise<Db>}
  */
 export default async function getConnection(): Promise<Db> {
-  return (await MongoClient.connect(process.env.MONGODB_URL as string, connectionConfig)).db();
+  if (!connection) {
+    connection = (await MongoClient.connect(process.env.MONGODB_URL as string, connectionConfig)).db();
+  }
+  return connection;
 };
