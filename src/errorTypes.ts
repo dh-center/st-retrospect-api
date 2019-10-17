@@ -6,7 +6,10 @@ class ApiError extends Error {
    * Http code to send to user
    */
   private httpCode: number;
-  protected code: string;
+  /**
+   * Text error code
+   */
+  protected code = '';
   /**
    * Creates error instance
    * @param {Number} httpCode - http code to send to user
@@ -14,7 +17,6 @@ class ApiError extends Error {
   constructor(httpCode: number) {
     super();
     this.httpCode = httpCode;
-    this.code = '';
   }
 }
 
