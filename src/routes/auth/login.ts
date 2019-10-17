@@ -22,7 +22,7 @@ router.get('/login', async (req, res, next) => {
       isAdmin: user.isAdmin
     }, process.env.JWT_SECRET_STRING || 'secret_string');
 
-    res.json({ payload: { accessToken } });
+    res.json({ data: { accessToken } });
   } else {
     return next(new WrongUserPasswordError());
   }

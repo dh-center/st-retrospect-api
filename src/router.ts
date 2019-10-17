@@ -3,7 +3,7 @@ import express from 'express';
 /**
  * Auth routes
  */
-import signUpRoute from './routes/auth/sign-up';
+import signUpRoute from './routes/auth/signUp';
 import loginRoute from './routes/auth/login';
 
 const router = express.Router();

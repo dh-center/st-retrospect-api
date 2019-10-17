@@ -11,7 +11,7 @@ router.post('/sign-up', async (req, res, next) => {
 
     await db.collection('users').insertOne({ username: req.body.username, hashedPassword });
 
-    res.sendStatus(200);
+    res.sendStatus(201);
   } catch (error) {
     // Catch MongoDB duplication error
     if (error.name === 'MongoError' && error.code === 11000) {

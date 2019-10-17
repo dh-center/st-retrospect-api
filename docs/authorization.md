@@ -32,7 +32,7 @@ Variables are send in params
 
 Request:
 ```http request
-api.st-retrospect.dh-center.ru/login?username=ilya88&password=qwerty123
+https://api.st-retrospect.dh-center.ru/login?username=ilya88&password=qwerty123
 ```
 
 Response:
@@ -40,7 +40,7 @@ Response:
 Status: 200 OK
 ```json
 {
-    "payload": {
+    "data": {
         "accessToken": "eyJhbGciOiJIUzI1NiIsInr6cCI6IkpXVCJ9"
     }
 }
