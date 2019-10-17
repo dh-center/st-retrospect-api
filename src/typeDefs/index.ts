@@ -3,6 +3,7 @@ import { gql, concatenateTypeDefs } from 'apollo-server-express';
 import persons from './persons';
 import locations from './locations';
 import relations from './relations';
+import routes from './routes';
 
 const rootSchema = gql`
   """
@@ -22,6 +23,9 @@ const rootSchema = gql`
   API queries
   """
   type Query {
+    """
+    Healthcheck endpoint
+    """
     health: String!
   }
 `;
@@ -31,6 +35,7 @@ export default concatenateTypeDefs(
     rootSchema,
     persons,
     locations,
-    relations
+    relations,
+    routes
   ]
 );

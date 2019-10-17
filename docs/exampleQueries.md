@@ -146,3 +146,117 @@ Response:
   }
 }
 ```
+
+## Get all routes
+Query:
+```graphql
+{
+  routes {
+    id
+    name
+  	description
+    photoLink
+    locations {
+      id
+      name
+      constructionDate
+    }
+  }
+}
+```
+Response:
+
+```json
+{
+  "data": {
+    "routes": [
+      {
+        "id": "5da784a82d5f674b9b9834d4",
+        "name": {
+          "en": null,
+          "ru": "Вот мой тест"
+        },
+        "description": {
+          "en": null,
+          "ru": "Вот мой тест, Никита"
+        },
+        "photoLink": null,
+        "locations": [
+          {
+            "id": "5d83443e0cb433003f223be6",
+            "name": {
+              "en": null,
+              "ru": "Доходный дом купцов Елисеевых"
+            },
+            "constructionDate": "1842"
+          },
+          {
+            "id": "5d83443e0cb433003f223c09",
+            "name": {
+              "en": null,
+              "ru": "Тихвинское кладбище (Некрополь мастеров искусств)"
+            },
+            "constructionDate": "1823"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+# Get specific route
+Query:
+```graphql
+{
+  route(id:"5da784a82d5f674b9b9834d4"){
+    id
+    name
+  	description
+    photoLink
+    locations {
+      id
+      name
+      constructionDate
+    }
+  }
+}
+```
+Response:
+
+```json
+{
+  "data": {
+    "route": {
+      "id": "5da784a82d5f674b9b9834d4",
+      "name": {
+        "en": null,
+        "ru": "Вот мой тест"
+      },
+      "description": {
+        "en": null,
+        "ru": "Вот мой тест, Никита"
+      },
+      "photoLink": null,
+      "locations": [
+        {
+          "id": "5d83443e0cb433003f223be6",
+          "name": {
+            "en": null,
+            "ru": "Доходный дом купцов Елисеевых"
+          },
+          "constructionDate": "1842"
+        },
+        {
+          "id": "5d83443e0cb433003f223c09",
+          "name": {
+            "en": null,
+            "ru": "Тихвинское кладбище (Некрополь мастеров искусств)"
+          },
+          "constructionDate": "1823"
+        }
+      ]
+    }
+  }
+}
+```
