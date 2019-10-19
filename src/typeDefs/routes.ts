@@ -8,7 +8,7 @@ export default gql`
     """
     Route id
     """
-    id: ID!
+    id: ID! @renameField(name: "_id")
 
     """
     Route name

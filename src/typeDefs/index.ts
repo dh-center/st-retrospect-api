@@ -7,6 +7,11 @@ import routes from './routes';
 
 const rootSchema = gql`
   """
+  Directive for field renaming
+  """
+  directive @renameField(name: String!) on FIELD_DEFINITION
+  
+  """
   Type for representing JSON object
   """
   scalar JSON

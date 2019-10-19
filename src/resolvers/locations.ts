@@ -35,9 +35,6 @@ const Query: BaseTypeResolver = {
     }
 
     filterEntityFields(location, languages, multilingualLocationFields);
-
-    // @todo move to directive
-    location.id = location._id;
     return location;
   },
 
@@ -54,7 +51,6 @@ const Query: BaseTypeResolver = {
 
     locations.map((location) => {
       filterEntityFields(location, languages, multilingualLocationFields);
-      location.id = location._id;
       return location;
     });
     return locations;

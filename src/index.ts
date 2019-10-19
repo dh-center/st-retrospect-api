@@ -10,6 +10,7 @@ import languageParser from 'accept-language-parser';
 import bodyParser from 'body-parser';
 import router from './router';
 import errorHandler from './middlewares/errorHandler';
+import renameFieldDirective from './directives/renameField';
 
 (async (): Promise<void> => {
   dotenv.config({
@@ -45,6 +46,9 @@ import errorHandler from './middlewares/errorHandler';
     typeDefs,
     resolvers,
     playground: true,
+    schemaDirectives: {
+      renameField: renameFieldDirective
+    },
     context({ req }): ResolverContextBase {
       let languages: Languages[];
 
