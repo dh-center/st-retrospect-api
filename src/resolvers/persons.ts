@@ -40,8 +40,6 @@ const Query: BaseTypeResolver = {
 
     filterEntityFields(person, languages, multilingualPersonFields);
 
-    // @todo move to directive
-    person.id = person._id;
     return person;
   },
 
@@ -58,7 +56,6 @@ const Query: BaseTypeResolver = {
 
     persons.map((person) => {
       filterEntityFields(person, languages, multilingualPersonFields);
-      person.id = person._id;
       return person;
     });
     return persons;

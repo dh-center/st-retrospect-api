@@ -5,7 +5,7 @@ export default gql`
     """
     Person's id
     """
-    id: ID!
+    id: ID! @renameField(name: "_id")
 
     """
     Person's first name

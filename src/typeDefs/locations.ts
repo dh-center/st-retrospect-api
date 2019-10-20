@@ -5,7 +5,7 @@ export default gql`
     """
     Location's ID
     """
-    id: ID!
+    id: ID! @renameField(name: "_id")
 
     """
     Location's name

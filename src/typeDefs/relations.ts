@@ -5,7 +5,7 @@ export default gql`
     """
     Relation's id
     """  
-    id: ID!
+    id: ID! @renameField(name: "_id")
       
     """
     Person in relation

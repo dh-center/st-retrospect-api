@@ -48,12 +48,8 @@ const Query: BaseTypeResolver = {
     filterEntityFields(route, languages, multilingualRouteFields);
 
     route.locations.map((location) => {
-      location.id = location._id;
-
       filterEntityFields(location, languages, multilingualLocationFields);
     });
-
-    route.id = route._id;
 
     return route;
   },
@@ -82,11 +78,9 @@ const Query: BaseTypeResolver = {
       filterEntityFields(route, languages, multilingualRouteFields);
 
       route.locations.map((location) => {
-        location.id = location._id;
         filterEntityFields(location, languages, multilingualLocationFields);
       });
 
-      route.id = route._id;
       return route;
     });
     return routes;
