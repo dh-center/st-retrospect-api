@@ -11,6 +11,7 @@ import bodyParser from 'body-parser';
 import router from './router';
 import { ApiError } from './errorTypes';
 import errorHandler from './middlewares/errorHandler';
+import renameFieldDirective from './directives/renameField';
 import * as Sentry from '@sentry/node';
 
 Sentry.init({ dsn: process.env.SENTRY_DSN });
@@ -50,6 +51,9 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
     typeDefs,
     resolvers,
     playground: true,
+    schemaDirectives: {
+      renameField: renameFieldDirective
+    },
     context({ req }): ResolverContextBase {
       let languages: Languages[];
 

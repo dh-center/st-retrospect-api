@@ -10,6 +10,12 @@ export const multilingualLocationFields = [
   'description'
 ];
 
+// @todo improve tipization
+export interface Locations {
+  id: string;
+  _id: string;
+}
+
 const Query: BaseTypeResolver = {
   /**
    * Returns specific location
@@ -29,9 +35,6 @@ const Query: BaseTypeResolver = {
     }
 
     filterEntityFields(location, languages, multilingualLocationFields);
-
-    // @todo move to directive
-    location.id = location._id;
     return location;
   },
 
@@ -48,7 +51,6 @@ const Query: BaseTypeResolver = {
 
     locations.map((location) => {
       filterEntityFields(location, languages, multilingualLocationFields);
-      location.id = location._id;
       return location;
     });
     return locations;
