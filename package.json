@@ -13,6 +13,7 @@
   },
   "license": "Unlicense",
   "dependencies": {
+    "@sentry/node": "5.7.1",
     "@types/accept-language-parser": "^1.5.1",
     "@types/dotenv": "^6.1.1",
     "@types/graphql-type-json": "^0.3.2",

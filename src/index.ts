@@ -9,7 +9,11 @@ import { Languages, ResolverContextBase } from './types/graphql';
 import languageParser from 'accept-language-parser';
 import bodyParser from 'body-parser';
 import router from './router';
+import { ApiError } from './errorTypes';
 import errorHandler from './middlewares/errorHandler';
+import * as Sentry from '@sentry/node';
+
+Sentry.init({ dsn: process.env.SENTRY_DSN });
 
 (async (): Promise<void> => {
   dotenv.config({
@@ -23,6 +27,7 @@ import errorHandler from './middlewares/errorHandler';
   /**
    * Setup necessary middlewares
    */
+  app.use(Sentry.Handlers.requestHandler());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -64,6 +69,15 @@ import errorHandler from './middlewares/errorHandler';
   });
 
   apolloServer.applyMiddleware({ app });
+
+  /**
+   * Setup sentry error handler
+   */
+  app.use(Sentry.Handlers.errorHandler({
+    shouldHandleError(error) {
+      return !(error instanceof ApiError);
+    }
+  }));
 
   /**
    * Setup error handler
