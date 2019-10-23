@@ -13,6 +13,7 @@ import { ApiError } from './errorTypes';
 import errorHandler from './middlewares/errorHandler';
 import renameFieldDirective from './directives/renameField';
 import * as Sentry from '@sentry/node';
+import { GraphQLError } from 'graphql';
 
 Sentry.init({ dsn: process.env.SENTRY_DSN });
 
@@ -50,6 +51,10 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
   const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,
+    formatError: (error: GraphQLError): GraphQLError => {
+      Sentry.captureException(error);
+      return error;
+    },
     playground: true,
     schemaDirectives: {
       renameField: renameFieldDirective
