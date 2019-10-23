@@ -9,8 +9,13 @@ import { Languages, ResolverContextBase } from './types/graphql';
 import languageParser from 'accept-language-parser';
 import bodyParser from 'body-parser';
 import router from './router';
+import { ApiError } from './errorTypes';
 import errorHandler from './middlewares/errorHandler';
 import renameFieldDirective from './directives/renameField';
+import * as Sentry from '@sentry/node';
+import { GraphQLError } from 'graphql';
+
+Sentry.init({ dsn: process.env.SENTRY_DSN });
 
 (async (): Promise<void> => {
   dotenv.config({
@@ -24,6 +29,7 @@ import renameFieldDirective from './directives/renameField';
   /**
    * Setup necessary middlewares
    */
+  app.use(Sentry.Handlers.requestHandler());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -45,6 +51,10 @@ import renameFieldDirective from './directives/renameField';
   const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,
+    formatError: (error: GraphQLError): GraphQLError => {
+      Sentry.captureException(error);
+      return error;
+    },
     playground: true,
     schemaDirectives: {
       renameField: renameFieldDirective
@@ -68,6 +78,15 @@ import renameFieldDirective from './directives/renameField';
   });
 
   apolloServer.applyMiddleware({ app });
+
+  /**
+   * Setup sentry error handler
+   */
+  app.use(Sentry.Handlers.errorHandler({
+    shouldHandleError(error) {
+      return !(error instanceof ApiError);
+    }
+  }));
 
   /**
    * Setup error handler
