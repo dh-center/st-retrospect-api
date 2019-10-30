@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 const mysql = require('mysql');
 const asyncForEach = require('./asyncForEach');
-
+const saveImage = require('./saveImage');
 const connectionConfig = {
   useNewUrlParser: true,
   reconnectTries: +(process.env.MONGO_RECONNECT_TRIES || 60),
@@ -164,7 +164,7 @@ async function importPersons() {
 
   await asyncForEach(persons, async person => {
     i++;
-    console.log('person', person._id, i);
+    // console.log('person', person._id, i);
 
     let uri;
 
@@ -207,6 +207,39 @@ async function importPersons() {
       };
 
       await insertToSql('persons_translations', dataEn);
+    }
+
+    if (person.mainPhotoLink) {
+      try {
+        const filename = await saveImage(`./uploads/person-${result.insertId}-main`, person.mainPhotoLink);
+        const imageData = {
+          model_type: 'App\\Models\\Person',
+          model_id: result.insertId,
+          main: 1,
+          link: filename.substring(1)
+        };
+
+        await insertToSql('photos', imageData);
+      } catch (e) {
+      }
+    }
+
+    if (person.photoLinks) {
+      await Promise.all(person.photoLinks.split('\n').map(async (link, index) => {
+        console.log('link', link);
+        try {
+          const filename = await saveImage(`./uploads/person-${result.insertId}-${index}`, link);
+          const imageData = {
+            model_type: 'App\\Models\\Person',
+            model_id: result.insertId,
+            main: 0,
+            link: filename.substring(1)
+          };
+
+          await insertToSql('photos', imageData);
+        } catch (e) {
+        }
+      }));
     }
   });
 }
@@ -256,7 +289,7 @@ async function importLocations() {
     }
     if (location.addressesId) {
       await Promise.all(location.addressesId.map(async address => {
-        const addressId = addressesMap.get(address&&address.toString());
+        const addressId = addressesMap.get(address && address.toString());
         const data = {
           location_id: result.insertId,
           address_id: addressId
@@ -267,14 +300,47 @@ async function importLocations() {
         }
       }));
     }
+    if (location.mainPhotoLink) {
+      try {
+        const filename = await saveImage(`./uploads/location-${result.insertId}-main`, location.mainPhotoLink);
+        const imageData = {
+          model_type: 'App\\Models\\Location',
+          model_id: result.insertId,
+          main: 1,
+          link: filename.substring(1)
+        };
+
+        await insertToSql('photos', imageData);
+      } catch (e) {
+      }
+    }
+
+    if (location.photoLinks) {
+      await Promise.all(location.photoLinks.split('\n').map(async (link, index) => {
+        console.log('link', link);
+        try {
+          const filename = await saveImage(`./uploads/location-${result.insertId}-${index}`, link);
+          const imageData = {
+            model_type: 'App\\Models\\Location',
+            model_id: result.insertId,
+            main: 0,
+            link: filename.substring(1)
+          };
+
+          await insertToSql('photos', imageData);
+        } catch (e) {
+        }
+      }));
+    }
   });
 }
 
 async function importRelations() {
+  console.log('import relations');
   const relations = await mongoConnection.collection('relations').find({}).toArray();
 
   await asyncForEach(relations, async relation => {
-    console.log('relation', relation._id);
+    // console.log('relation', relation._id);
     const location = locationsMap.get(relation.locationId.toString());
     const relationType = relationTypesMap.get(relation.relationId.toString());
     const person = personsMap.get(relation.personId.toString());
