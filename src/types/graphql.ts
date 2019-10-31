@@ -55,3 +55,11 @@ export enum Languages {
   RU = 'RU',
   EN = 'EN'
 }
+
+/**
+ * Point coordinates
+ */
+export interface Coordinates {
+  longitude: number;
+  latitude: number;
+}

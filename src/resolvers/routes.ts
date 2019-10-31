@@ -2,6 +2,7 @@ import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
 import { multilingualLocationFields, Locations } from './locations';
+import distance from '../utils/distance';
 
 /**
  * Multilingual route fields
@@ -82,6 +83,48 @@ const Query: BaseTypeResolver = {
       });
 
       return route;
+    });
+    return routes;
+  },
+
+  /**
+   * Returns nearest routes
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param center - center coordinates
+   * @param radius - search radius
+   * @param db - MongoDB connection to make queries
+   * @param languages - languages in which return data
+   */
+  async nearestRoutes(parent, { center, radius }: {center: Coordinates; radius: number}, { db, languages }) {
+    let routes = await db.collection<Route>('routes').aggregate([
+      {
+        $lookup: {
+          from: 'locations',
+          localField: 'locationIds',
+          foreignField: '_id',
+          as: 'locations'
+        }
+      }
+    ]).toArray();
+
+    routes = routes.filter((route) => {
+      let isValid = false;
+
+      route.locations.map((location) => {
+        if (location.coordinateY && location.coordinateX) {
+          const metresInKilometres = 1000;
+
+          if (metresInKilometres * distance(location.coordinateX, location.coordinateY, center.latitude, center.longitude) <= radius) {
+            isValid = true;
+          }
+        }
+        filterEntityFields(location, languages, multilingualLocationFields);
+      });
+
+      if (isValid) {
+        filterEntityFields(route, languages, multilingualRouteFields);
+      }
+      return isValid;
     });
     return routes;
   }
