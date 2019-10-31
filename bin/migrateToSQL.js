@@ -280,7 +280,7 @@ async function importLocations() {
       const dataEn = {
         name: (location.name && location.name.en) || '',
         location_id: result.insertId,
-        description: location.description && location.description.ru,
+        description: location.description && location.description.en,
         wikilink: uri,
         locale: 'en'
       };
