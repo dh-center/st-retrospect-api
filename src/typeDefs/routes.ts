@@ -48,7 +48,7 @@ export default gql`
       "Center coordinates"
       center: Coordinates!
       
-      "Search radius"
+      "Search radius (in metres)"
       radius: Float = 4000
     ): [Route!]!
     

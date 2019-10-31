@@ -260,3 +260,41 @@ Response:
   }
 }
 ```
+
+# Get nearest routes
+Query:
+```graphql
+{
+  nearestRoutes(
+    center: { latitude: 59.972401, longitude: 30.302212 }
+    radius: 4000
+  ) {
+    id
+    name
+  }
+}
+```
+
+Response: 
+```json
+{
+  "data": {
+    "nearestRoutes": [
+      {
+        "id": "5da752522d5f6789e09834d2",
+        "name": {
+          "en": null,
+          "ru": "Очень интересный маршрут"
+        }
+      },
+      {
+        "id": "5da784a82d5f674b9b9834d4",
+        "name": {
+          "en": null,
+          "ru": "Второй интересный маршрут"
+        }
+      }
+    ]
+  }
+}
+```
