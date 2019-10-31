@@ -59,7 +59,7 @@ export enum Languages {
 /**
  * Point coordinates
  */
-export interface Coordinates {
+export interface PointCoordinates {
   longitude: number;
   latitude: number;
 }

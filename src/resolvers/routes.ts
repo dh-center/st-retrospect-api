@@ -1,4 +1,4 @@
-import { BaseTypeResolver } from '../types/graphql';
+import { BaseTypeResolver, PointCoordinates } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
 import { multilingualLocationFields, Locations } from './locations';
@@ -95,7 +95,7 @@ const Query: BaseTypeResolver = {
    * @param db - MongoDB connection to make queries
    * @param languages - languages in which return data
    */
-  async nearestRoutes(parent, { center, radius }: {center: Coordinates; radius: number}, { db, languages }) {
+  async nearestRoutes(parent, { center, radius }: {center: PointCoordinates; radius: number}, { db, languages }) {
     let routes = await db.collection<Route>('routes').aggregate([
       {
         $lookup: {
