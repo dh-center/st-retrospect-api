@@ -110,7 +110,11 @@ const Query: BaseTypeResolver = {
     routes = routes.filter((route) => {
       let isValid = false;
 
-      route.locations.map((location) => {
+      route.locations.forEach((location) => {
+        if (isValid) {
+          return;
+        }
+
         if (location.coordinateY && location.coordinateX) {
           const metresInKilometres = 1000;
 
