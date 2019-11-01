@@ -11,10 +11,13 @@ const multilingualRouteFields = [
   'description'
 ];
 
+interface RoutesFilter {
+  contains: string;
+}
+
 // @todo improve tipization
 interface Route {
-  id: string;
-  _id: string;
+  _id: ObjectId;
   locations: Locations[];
   locationIds: string[];
 }
@@ -57,13 +60,13 @@ const Query: BaseTypeResolver = {
   /**
    * Returns all routes
    * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param data - empty arg
+   * @param filter - search filter
    * @param db - MongoDB connection to make queries
    * @param languages - languages in which return data
    * @return {object[]}
    */
-  async routes(parent, data, { db, languages }) {
-    const routes = await db.collection<Route>('routes').aggregate([
+  async routes(parent, { filter }: { filter?: RoutesFilter }, { db, languages }) {
+    const aggregationPipeline: object[] = [
       {
         $lookup: {
           from: 'locations',
@@ -72,7 +75,23 @@ const Query: BaseTypeResolver = {
           as: 'locations'
         }
       }
-    ]).toArray();
+    ];
+
+    if (filter) {
+      const searchRegExp = new RegExp(filter.contains, 'i');
+      const matchStage = {
+        $match: {
+          $or: [
+            { 'name.ru': searchRegExp },
+            { 'name.en': searchRegExp }
+          ]
+        }
+      };
+
+      aggregationPipeline.unshift(matchStage);
+    }
+
+    const routes = await db.collection<Route>('routes').aggregate(aggregationPipeline).toArray();
 
     routes.map((route) => {
       filterEntityFields(route, languages, multilingualRouteFields);
