@@ -22,6 +22,10 @@ interface RoutesFilter {
   contains: string;
 }
 
+/**
+ * Returns match stage for MongoDB aggregation form Routes filter
+ * @param filter - search filter
+ */
 function getMatchStageFromFilter(filter: RoutesFilter): object {
   const searchRegExp = new RegExp(filter.contains, 'i');
 
@@ -42,6 +46,9 @@ interface Route {
   locationIds: string[];
 }
 
+/**
+ * Stage for getting all locations of route
+ */
 const lookupLocationsStage = {
   $lookup: {
     from: 'locations',
@@ -144,6 +151,9 @@ const Query: BaseTypeResolver = {
           return;
         }
 
+        /**
+         * Check distance to location
+         */
         if (location.coordinateY && location.coordinateX) {
           const metresInKilometres = 1000;
 
