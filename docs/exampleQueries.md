@@ -298,3 +298,93 @@ Response:
   }
 }
 ```
+
+## Get all routes with filter
+Query:
+```graphql
+{
+  routes(filter: { contains: "The route to the" }) {
+    id
+    name
+    description
+    photoLink
+    locations {
+      id
+      name
+      constructionDate
+    }
+  }
+}
+```
+Response:
+
+```json
+{
+  "data": {
+    "routes": [
+      {
+        "id": "5db32b6977c44a187bef2c8f",
+        "name": {
+          "en": "The route to the booklet \"Lost Petersburg",
+          "ru": "Маршрут на буклет \"Утраченный Петербург"
+        },
+        "description": {
+          "en": null,
+          "ru": "Этот маршрут познакомит Вас с утраченными храмами Петербурга \nПротяженность: 5, 3 км\nДлительность 1 час 20 минут"
+        },
+        "photoLink": "",
+        "locations": [
+          {
+            "id": "5d83443f0cb433003f223c2b",
+            "name": {
+              "en": null,
+              "ru": "Государственный музей истории религии"
+            },
+            "constructionDate": "1932"
+          },
+          {
+            "id": "5d83443f0cb433003f223c37",
+            "name": {
+              "en": null,
+              "ru": "Церковь Благовещения Пресвятой Богородицы лейб-гвардии конного полка"
+            },
+            "constructionDate": "1929"
+          },
+          {
+            "id": "5d8b92611e1e56514a13f463",
+            "name": {
+              "en": null,
+              "ru": "Немецкая реформатская церковь"
+            },
+            "constructionDate": "1862-1865"
+          },
+          {
+            "id": "5d8fc7f6cc7c891c70565173",
+            "name": {
+              "en": " Church of the Protection of the Holy Virgin",
+              "ru": "Церковь Покрова Пресвятой Богородицы"
+            },
+            "constructionDate": "1798 – 1803"
+          },
+          {
+            "id": "5d8fe55ecc7c89c5815651ec",
+            "name": {
+              "en": "Church of the Savior on Sennaya Square",
+              "ru": "Церковь во имя Успения Пресвятой Богородицы, Церковь Спаса на Сенной"
+            },
+            "constructionDate": "1765"
+          },
+          {
+            "id": "5d98c520cc7c8919e1565b61",
+            "name": {
+              "en": null,
+              "ru": "Церковь Воскресения Христова и Михаила Архангела в Малой Коломне"
+            },
+            "constructionDate": "1847-1859"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
