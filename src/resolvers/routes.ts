@@ -11,7 +11,13 @@ const multilingualRouteFields = [
   'description'
 ];
 
+/**
+ * Input type to search routes
+ */
 interface RoutesFilter {
+  /**
+   * String for searching in all languages
+   */
   contains: string;
 }
 
