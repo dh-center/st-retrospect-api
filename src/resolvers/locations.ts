@@ -12,8 +12,20 @@ export const multilingualLocationFields = [
 
 // @todo improve tipization
 export interface Locations {
-  id: string;
-  _id: string;
+  /**
+   * Id of location
+   */
+  _id: ObjectId;
+
+  /**
+   * Latitude of the location
+   */
+  coordinateX: number;
+
+  /**
+   * Longitude of the location
+   */
+  coordinateY: number;
 }
 
 const Query: BaseTypeResolver = {

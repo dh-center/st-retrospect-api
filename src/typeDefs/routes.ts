@@ -41,6 +41,11 @@ export default gql`
     photoLink: String
   }
   
+  input Coordinates {
+    longitude: Float!
+    latitude: Float!
+  }
+  
   extend type Query {
     """
     Get all routes
@@ -48,6 +53,17 @@ export default gql`
     routes(
       "Search filter"
       filter: RoutesFilter
+    ): [Route!]!
+    
+    """
+    Get nearest routes
+    """
+    nearestRoutes(
+      "Center coordinates"
+      center: Coordinates!
+      
+      "Search radius (in metres)"
+      radius: Float = 4000
     ): [Route!]!
     
     """
