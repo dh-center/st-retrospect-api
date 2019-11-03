@@ -64,6 +64,9 @@ export default gql`
       
       "Search radius (in metres)"
       radius: Float = 4000
+
+      "Search filter"
+      filter: RoutesFilter
     ): [Route!]!
     
     """

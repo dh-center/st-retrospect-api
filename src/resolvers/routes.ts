@@ -22,12 +22,34 @@ interface RoutesFilter {
   contains: string;
 }
 
+function getMatchStageFromFilter(filter: RoutesFilter): object {
+  const searchRegExp = new RegExp(filter.contains, 'i');
+
+  return {
+    $match: {
+      $or: [
+        { 'name.ru': searchRegExp },
+        { 'name.en': searchRegExp }
+      ]
+    }
+  };
+}
+
 // @todo improve tipization
 interface Route {
   _id: ObjectId;
   locations: Locations[];
   locationIds: string[];
 }
+
+const lookupLocationsStage = {
+  $lookup: {
+    from: 'locations',
+    localField: 'locationIds',
+    foreignField: '_id',
+    as: 'locations'
+  }
+};
 
 const Query: BaseTypeResolver = {
   /**
@@ -41,14 +63,7 @@ const Query: BaseTypeResolver = {
   async route(parent, { id }: { id: string }, { db, languages }) {
     const route = (await db.collection<Route>('routes').aggregate([
       { $match: { _id: new ObjectId(id) } },
-      {
-        $lookup: {
-          from: 'locations',
-          localField: 'locationIds',
-          foreignField: '_id',
-          as: 'locations'
-        }
-      }
+      lookupLocationsStage
     ]).toArray()).shift();
 
     if (!route) {
@@ -74,28 +89,11 @@ const Query: BaseTypeResolver = {
    */
   async routes(parent, { filter }: { filter?: RoutesFilter }, { db, languages }) {
     const aggregationPipeline: object[] = [
-      {
-        $lookup: {
-          from: 'locations',
-          localField: 'locationIds',
-          foreignField: '_id',
-          as: 'locations'
-        }
-      }
+      lookupLocationsStage
     ];
 
     if (filter) {
-      const searchRegExp = new RegExp(filter.contains, 'i');
-      const matchStage = {
-        $match: {
-          $or: [
-            { 'name.ru': searchRegExp },
-            { 'name.en': searchRegExp }
-          ]
-        }
-      };
-
-      aggregationPipeline.unshift(matchStage);
+      aggregationPipeline.unshift(getMatchStageFromFilter(filter));
     }
 
     const routes = await db.collection<Route>('routes').aggregate(aggregationPipeline).toArray();
@@ -117,20 +115,26 @@ const Query: BaseTypeResolver = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param center - center coordinates
    * @param radius - search radius
+   * @param filter - search filter
    * @param db - MongoDB connection to make queries
    * @param languages - languages in which return data
    */
-  async nearestRoutes(parent, { center, radius }: {center: PointCoordinates; radius: number}, { db, languages }) {
-    let routes = await db.collection<Route>('routes').aggregate([
-      {
-        $lookup: {
-          from: 'locations',
-          localField: 'locationIds',
-          foreignField: '_id',
-          as: 'locations'
-        }
-      }
-    ]).toArray();
+  async nearestRoutes(
+    parent,
+    { center, radius, filter }: { center: PointCoordinates; radius: number; filter?: RoutesFilter },
+    { db, languages }
+  ) {
+    const aggregationPipeline: object[] = [
+      lookupLocationsStage
+    ];
+
+    if (filter) {
+      aggregationPipeline.unshift(getMatchStageFromFilter(filter));
+    }
+
+    let routes = await db.collection<Route>('routes')
+      .aggregate(aggregationPipeline)
+      .toArray();
 
     routes = routes.filter((route) => {
       let isValid = false;
