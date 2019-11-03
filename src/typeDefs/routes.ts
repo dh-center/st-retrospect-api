@@ -1,6 +1,17 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
+  
+  """
+  Input to search routes
+  """
+  input RoutesFilter {
+    """
+    String for searching in all languages
+    """
+    contains: String!
+  }
+  
   """
   Route between locations
   """
@@ -39,7 +50,10 @@ export default gql`
     """
     Get all routes
     """
-    routes: [Route!]!
+    routes(
+      "Search filter"
+      filter: RoutesFilter
+    ): [Route!]!
     
     """
     Get nearest routes
@@ -50,6 +64,9 @@ export default gql`
       
       "Search radius (in metres)"
       radius: Float = 4000
+
+      "Search filter"
+      filter: RoutesFilter
     ): [Route!]!
     
     """

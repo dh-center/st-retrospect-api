@@ -12,13 +12,51 @@ const multilingualRouteFields = [
   'description'
 ];
 
+/**
+ * Input type to search routes
+ */
+interface RoutesFilter {
+  /**
+   * String for searching in all languages
+   */
+  contains: string;
+}
+
+/**
+ * Returns match stage for MongoDB aggregation form Routes filter
+ * @param filter - search filter
+ */
+function getMatchStageFromFilter(filter: RoutesFilter): object {
+  const searchRegExp = new RegExp(filter.contains, 'i');
+
+  return {
+    $match: {
+      $or: [
+        { 'name.ru': searchRegExp },
+        { 'name.en': searchRegExp }
+      ]
+    }
+  };
+}
+
 // @todo improve tipization
 interface Route {
-  id: string;
-  _id: string;
+  _id: ObjectId;
   locations: Locations[];
   locationIds: string[];
 }
+
+/**
+ * Stage for getting all locations of route
+ */
+const lookupLocationsStage = {
+  $lookup: {
+    from: 'locations',
+    localField: 'locationIds',
+    foreignField: '_id',
+    as: 'locations'
+  }
+};
 
 const Query: BaseTypeResolver = {
   /**
@@ -32,14 +70,7 @@ const Query: BaseTypeResolver = {
   async route(parent, { id }: { id: string }, { db, languages }) {
     const route = (await db.collection<Route>('routes').aggregate([
       { $match: { _id: new ObjectId(id) } },
-      {
-        $lookup: {
-          from: 'locations',
-          localField: 'locationIds',
-          foreignField: '_id',
-          as: 'locations'
-        }
-      }
+      lookupLocationsStage
     ]).toArray()).shift();
 
     if (!route) {
@@ -58,22 +89,21 @@ const Query: BaseTypeResolver = {
   /**
    * Returns all routes
    * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param data - empty arg
+   * @param filter - search filter
    * @param db - MongoDB connection to make queries
    * @param languages - languages in which return data
    * @return {object[]}
    */
-  async routes(parent, data, { db, languages }) {
-    const routes = await db.collection<Route>('routes').aggregate([
-      {
-        $lookup: {
-          from: 'locations',
-          localField: 'locationIds',
-          foreignField: '_id',
-          as: 'locations'
-        }
-      }
-    ]).toArray();
+  async routes(parent, { filter }: { filter?: RoutesFilter }, { db, languages }) {
+    const aggregationPipeline: object[] = [
+      lookupLocationsStage
+    ];
+
+    if (filter) {
+      aggregationPipeline.unshift(getMatchStageFromFilter(filter));
+    }
+
+    const routes = await db.collection<Route>('routes').aggregate(aggregationPipeline).toArray();
 
     routes.map((route) => {
       filterEntityFields(route, languages, multilingualRouteFields);
@@ -92,20 +122,26 @@ const Query: BaseTypeResolver = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param center - center coordinates
    * @param radius - search radius
+   * @param filter - search filter
    * @param db - MongoDB connection to make queries
    * @param languages - languages in which return data
    */
-  async nearestRoutes(parent, { center, radius }: {center: PointCoordinates; radius: number}, { db, languages }) {
-    let routes = await db.collection<Route>('routes').aggregate([
-      {
-        $lookup: {
-          from: 'locations',
-          localField: 'locationIds',
-          foreignField: '_id',
-          as: 'locations'
-        }
-      }
-    ]).toArray();
+  async nearestRoutes(
+    parent,
+    { center, radius, filter }: { center: PointCoordinates; radius: number; filter?: RoutesFilter },
+    { db, languages }
+  ) {
+    const aggregationPipeline: object[] = [
+      lookupLocationsStage
+    ];
+
+    if (filter) {
+      aggregationPipeline.unshift(getMatchStageFromFilter(filter));
+    }
+
+    let routes = await db.collection<Route>('routes')
+      .aggregate(aggregationPipeline)
+      .toArray();
 
     routes = routes.filter((route) => {
       let isValid = false;
@@ -115,6 +151,9 @@ const Query: BaseTypeResolver = {
           return;
         }
 
+        /**
+         * Check distance to location
+         */
         if (location.coordinateY && location.coordinateX) {
           const metresInKilometres = 1000;
 
