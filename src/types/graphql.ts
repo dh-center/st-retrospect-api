@@ -13,6 +13,10 @@ export interface ResolverContextBase {
    * Accept languages
    */
   readonly languages: Languages[];
+  /**
+   * User's access token
+   */
+  readonly accessToken: string;
 }
 
 /**

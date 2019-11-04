@@ -70,9 +70,19 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
         languages = [ Languages.RU ];
       }
 
+      let accessToken = '';
+
+      if (req.headers.authorization) {
+        accessToken = req.headers.authorization;
+        if (/^Bearer [a-z0-9-_+/=]+\.[a-z0-9-_+/=]+\.[a-z0-9-_+/=]+$/i.test(accessToken)) {
+          accessToken = accessToken.slice(7);
+        }
+      }
+
       return {
         db: dbConnection,
-        languages
+        languages,
+        accessToken
       };
     }
   });
