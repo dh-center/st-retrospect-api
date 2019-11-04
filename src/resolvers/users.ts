@@ -17,18 +17,9 @@ const lookupRoutesStage = {
 };
 
 /**
- * Stage for getting all locations of route
+ * Interface for saved and liked routes
  */
-const lookupLocationsStage = {
-  $lookup: {
-    from: 'locations',
-    localField: 'routes.locationIds',
-    foreignField: '_id',
-    as: 'locations'
-  }
-};
-
-interface SavedRoutes {
+interface FeaturedRoutes {
   _id: ObjectId;
   userId: ObjectId;
   routes: Route[];
@@ -71,14 +62,13 @@ const User: BaseTypeResolver<User> = {
    * @return {object}
    */
   async savedRoutes({ _id }, data, { db, languages }) {
-    const savedRoutes = (await db.collection<SavedRoutes>('savedroutes').aggregate([
+    const savedRoutes = (await db.collection<FeaturedRoutes>('savedroutes').aggregate([
       { $match: { userId: new ObjectId(_id) } },
-      lookupRoutesStage,
-      lookupLocationsStage
+      lookupRoutesStage
     ]).toArray()).shift();
 
     if (!savedRoutes) {
-      return null;
+      return [];
     }
 
     savedRoutes.routes.map((route) => {
@@ -87,6 +77,31 @@ const User: BaseTypeResolver<User> = {
     });
 
     return savedRoutes.routes;
+  },
+  /**
+   * Returns liked routes
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param _id - user id
+   * @param db - MongoDB connection to make queries
+   * @param languages - languages in which return data
+   * @return {object}
+   */
+  async likedRoutes({ _id }, data, { db, languages }) {
+    const likedRoutes = (await db.collection<FeaturedRoutes>('likedroutes').aggregate([
+      { $match: { userId: new ObjectId(_id) } },
+      lookupRoutesStage
+    ]).toArray()).shift();
+
+    if (!likedRoutes) {
+      return [];
+    }
+
+    likedRoutes.routes.map((route) => {
+      filterEntityFields(route, languages, multilingualRouteFields);
+      return route;
+    });
+
+    return likedRoutes.routes;
   }
 };
 

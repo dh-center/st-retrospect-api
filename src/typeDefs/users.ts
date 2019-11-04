@@ -10,12 +10,17 @@ export default gql`
         """
         Username
         """
-        username: String
+        username: String!
         
         """
         User saved routes
         """
-        savedRoutes: [Route]
+        savedRoutes: [Route]!
+        
+        """
+        User liked routes
+        """
+        likedRoutes: [Route]!
     }
 
     extend type Query {
