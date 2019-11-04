@@ -65,7 +65,7 @@ const Query: BaseTypeResolver = {
 const Person: BaseTypeResolver<Person> = {
   /**
    * Return all person relations
-   * @param id - person's id that returned from the resolver on the parent field
+   * @param _id - person's id that returned from the resolver on the parent field
    * @param data - empty arg
    * @param db - MongoDB connection to make queries
    * @param languages - languages in which return data
