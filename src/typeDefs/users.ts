@@ -27,7 +27,7 @@ export default gql`
     """
     Get info about user
     """
-    me: User
+    me: User!
   }
   
   extend type Mutation {
