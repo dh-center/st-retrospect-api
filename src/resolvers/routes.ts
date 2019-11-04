@@ -7,7 +7,7 @@ import distance from '../utils/distance';
 /**
  * Multilingual route fields
  */
-const multilingualRouteFields = [
+export const multilingualRouteFields = [
   'name',
   'description'
 ];
@@ -40,7 +40,7 @@ function getMatchStageFromFilter(filter: RoutesFilter): object {
 }
 
 // @todo improve tipization
-interface Route {
+export interface Route {
   _id: ObjectId;
   locations: Locations[];
   locationIds: string[];
