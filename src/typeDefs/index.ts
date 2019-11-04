@@ -34,6 +34,16 @@ const rootSchema = gql`
     """
     health: String!
   }
+
+  """
+  API mutations
+  """
+  type Mutation {
+    """
+    Unused field to let extend this type
+    """
+    _: Boolean
+  }
 `;
 
 export default concatenateTypeDefs(
