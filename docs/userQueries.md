@@ -97,7 +97,12 @@ Mutation:
 ```graphql
 mutation {
   saveRoute(routeId: "5db32b6977c44a187bef2c8f"){
-    id
+    id,
+    username,
+  	savedRoutes{
+      id,
+      name
+    }
   }
 }
 ```
@@ -106,11 +111,18 @@ Response:
 ```json
 {
   "data": {
-    "saveRoute": [
-      {
-        "id": "5db32b6977c44a187bef2c8f"
-      }
-    ]
+    "saveRoute": {
+      "id": "5d8359f79d284050dab39d85",
+      "username": "ilyamore88",
+      "savedRoutes": [
+        {
+          "id": "5db32b6977c44a187bef2c8f",
+          "name": {
+            "ru": "Маршрут на буклет \"Утраченный Петербург\""
+          }
+        }
+      ]
+    }
   }
 }
 ```
@@ -122,7 +134,12 @@ Mutation:
 ```graphql
 mutation {
   likeRoute(routeId: "5db32b6977c44a187bef2c8f"){
-    id
+    id,
+    username,
+  	likedRoutes{
+      id,
+      name
+    }
   }
 }
 ```
@@ -131,11 +148,18 @@ Response:
 ```json
 {
   "data": {
-    "likeRoute": [
-      {
-        "id": "5db32b6977c44a187bef2c8f"
-      }
-    ]
+    "likeRoute": {
+      "id": "5d8359f79d284050dab39d85",
+      "username": "ilyamore88",
+      "likedRoutes": [
+        {
+          "id": "5db32b6977c44a187bef2c8f",
+          "name": {
+            "ru": "Маршрут на буклет \"Утраченный Петербург\""
+          }
+        }
+      ]
+    }
   }
 }
 ```
