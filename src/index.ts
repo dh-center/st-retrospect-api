@@ -5,7 +5,7 @@ import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
 import getDbConnection from './db';
-import { Languages, ResolverContextBase } from './types/graphql';
+import { AccessToken, Languages, ResolverContextBase } from './types/graphql';
 import languageParser from 'accept-language-parser';
 import bodyParser from 'body-parser';
 import router from './router';
@@ -14,6 +14,7 @@ import errorHandler from './middlewares/errorHandler';
 import renameFieldDirective from './directives/renameField';
 import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
+import jwt from 'jsonwebtoken';
 
 Sentry.init({ dsn: process.env.SENTRY_DSN });
 
@@ -59,7 +60,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
     schemaDirectives: {
       renameField: renameFieldDirective
     },
-    context({ req }): ResolverContextBase {
+    async context({ req }): Promise<ResolverContextBase> {
       let languages: Languages[];
 
       if (req.headers['accept-language']) {
@@ -70,12 +71,17 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
         languages = [ Languages.RU ];
       }
 
-      let accessToken = '';
+      let jsonToken = '';
+      let accessToken: AccessToken = {
+        id: '',
+        isAdmin: false
+      };
 
       if (req.headers.authorization) {
-        accessToken = req.headers.authorization;
-        if (/^Bearer [a-z0-9-_+/=]+\.[a-z0-9-_+/=]+\.[a-z0-9-_+/=]+$/i.test(accessToken)) {
-          accessToken = accessToken.slice(7);
+        jsonToken = req.headers.authorization;
+        if (/^Bearer [a-z0-9-_+/=]+\.[a-z0-9-_+/=]+\.[a-z0-9-_+/=]+$/i.test(jsonToken)) {
+          jsonToken = jsonToken.slice(7);
+          accessToken = await jwt.verify(jsonToken, process.env.JWT_SECRET_STRING || 'secret_string') as AccessToken;
         }
       }
 

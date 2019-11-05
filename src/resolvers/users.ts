@@ -2,7 +2,6 @@ import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
 import { multilingualRouteFields, Route } from './routes';
-import jwt from 'jsonwebtoken';
 
 /**
  * Stage for getting all routes
@@ -46,8 +45,7 @@ const Query: BaseTypeResolver = {
    * @return {object}
    */
   async me(parent, data, { db, languages, accessToken }) {
-    const jsonToken = await jwt.verify(accessToken, process.env.JWT_SECRET_STRING || 'secret_string') as AccessToken;
-    const user = await db.collection('users').findOne({ _id: new ObjectId(jsonToken.id) });
+    const user = await db.collection('users').findOne({ _id: new ObjectId(accessToken.id) });
 
     return user;
   }
@@ -64,8 +62,7 @@ const Mutation: BaseTypeResolver = {
    * @return {object}
    */
   async saveRoute(parent, { routeId }: {routeId: string}, { db, languages, accessToken }) {
-    const jsonToken = await jwt.verify(accessToken, process.env.JWT_SECRET_STRING || 'secret_string') as AccessToken;
-    const user = await db.collection('users').findOne({ _id: new ObjectId(jsonToken.id) });
+    const user = await db.collection('users').findOne({ _id: new ObjectId(accessToken.id) });
 
     await db.collection('saved-routes').updateOne({ userId: new ObjectId(user._id) },
       {
@@ -92,8 +89,7 @@ const Mutation: BaseTypeResolver = {
    * @return {object}
    */
   async likeRoute(parent, { routeId }: {routeId: string}, { db, languages, accessToken }) {
-    const jsonToken = await jwt.verify(accessToken, process.env.JWT_SECRET_STRING || 'secret_string') as AccessToken;
-    const user = await db.collection('users').findOne({ _id: new ObjectId(jsonToken.id) });
+    const user = await db.collection('users').findOne({ _id: new ObjectId(accessToken.id) });
 
     await db.collection('liked-routes').updateOne({ userId: new ObjectId(user._id) },
       {

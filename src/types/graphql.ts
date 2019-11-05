@@ -16,7 +16,7 @@ export interface ResolverContextBase {
   /**
    * User's access token
    */
-  readonly accessToken: string;
+  readonly accessToken: AccessToken;
 }
 
 /**
@@ -66,4 +66,12 @@ export enum Languages {
 export interface PointCoordinates {
   longitude: number;
   latitude: number;
+}
+
+/**
+ * User access token
+ */
+export interface AccessToken {
+  id: string;
+  isAdmin: boolean;
 }
