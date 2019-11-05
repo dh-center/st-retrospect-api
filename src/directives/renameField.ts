@@ -20,7 +20,6 @@ export default class RenameFieldDirective extends SchemaDirectiveVisitor {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     field.resolve = async (object, args, context, info): Promise<any> => {
       object[field.name] = object[name];
-      delete object[name];
       return resolve.call(this, object, args, context, info);
     };
   }
