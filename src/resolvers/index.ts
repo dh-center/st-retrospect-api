@@ -4,7 +4,7 @@ import { GraphQLJSON } from 'graphql-type-json';
 import persons from './persons';
 import locations from './locations';
 import routes from './routes';
-import users from "./users";
+import users from './users';
 
 /**
  * See all types and fields here {@link '../typeDefs/schema.graphql'}

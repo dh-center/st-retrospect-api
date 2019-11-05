@@ -166,6 +166,7 @@ const User: BaseTypeResolver<User> = {
 
     return savedRoutes.routes;
   },
+
   /**
    * Returns liked routes
    * @param parent - the object that contains the result returned from the resolver on the parent field
