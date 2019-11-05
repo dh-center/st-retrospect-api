@@ -67,13 +67,20 @@ const Mutation: BaseTypeResolver<User> = {
     const jsonToken = await jwt.verify(accessToken, process.env.JWT_SECRET_STRING || 'secret_string') as AccessToken;
     const user = await db.collection('users').findOne({ _id: new ObjectId(jsonToken.id) });
 
+    await db.collection('saved-routes').updateOne({ userId: new ObjectId(user._id) },
+      {
+        $set: {
+          userId: new ObjectId(user._id)
+        },
+        $push: { routeIds: new ObjectId(routeId) }
+      },
+      {
+        upsert: true
+      }
+    );
+
     const savedRoutes = (await db.collection<FeaturedRoutes>('saved-routes').aggregate([
       { $match: { userId: new ObjectId(user._id) } },
-      {
-        $addFields: {
-          routeIds: { $concatArrays: ['$routeIds', [ new ObjectId(routeId) ] ] }
-        }
-      },
       lookupRoutesStage
     ]).toArray()).shift();
 
@@ -87,6 +94,48 @@ const Mutation: BaseTypeResolver<User> = {
     });
 
     return savedRoutes.routes;
+  },
+
+  /**
+   * Add route to liked
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param routeId - route id
+   * @param db - MongoDB connection to make queries
+   * @param languages - languages in which return data
+   * @param accessToken - user access token
+   * @return {object}
+   */
+  async likeRoute(parent, { routeId }: {routeId: string}, { db, languages, accessToken }) {
+    const jsonToken = await jwt.verify(accessToken, process.env.JWT_SECRET_STRING || 'secret_string') as AccessToken;
+    const user = await db.collection('users').findOne({ _id: new ObjectId(jsonToken.id) });
+
+    await db.collection('liked-routes').updateOne({ userId: new ObjectId(user._id) },
+      {
+        $set: {
+          userId: new ObjectId(user._id)
+        },
+        $push: { routeIds: new ObjectId(routeId) }
+      },
+      {
+        upsert: true
+      }
+    );
+
+    const likedRoutes = (await db.collection<FeaturedRoutes>('liked-routes').aggregate([
+      { $match: { userId: new ObjectId(user._id) } },
+      lookupRoutesStage
+    ]).toArray()).shift();
+
+    if (!likedRoutes) {
+      return [];
+    }
+
+    likedRoutes.routes.map((route) => {
+      filterEntityFields(route, languages, multilingualRouteFields);
+      return route;
+    });
+
+    return likedRoutes.routes;
   }
 };
 
