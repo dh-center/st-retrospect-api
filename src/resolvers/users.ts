@@ -53,7 +53,7 @@ const Query: BaseTypeResolver = {
   }
 };
 
-const Mutation: BaseTypeResolver<User> = {
+const Mutation: BaseTypeResolver = {
   /**
    * Add route to saved
    * @param parent - the object that contains the result returned from the resolver on the parent field
@@ -79,21 +79,7 @@ const Mutation: BaseTypeResolver<User> = {
       }
     );
 
-    const savedRoutes = (await db.collection<FeaturedRoutes>('saved-routes').aggregate([
-      { $match: { userId: new ObjectId(user._id) } },
-      lookupRoutesStage
-    ]).toArray()).shift();
-
-    if (!savedRoutes) {
-      return [];
-    }
-
-    savedRoutes.routes.map((route) => {
-      filterEntityFields(route, languages, multilingualRouteFields);
-      return route;
-    });
-
-    return savedRoutes.routes;
+    return user;
   },
 
   /**
@@ -121,21 +107,7 @@ const Mutation: BaseTypeResolver<User> = {
       }
     );
 
-    const likedRoutes = (await db.collection<FeaturedRoutes>('liked-routes').aggregate([
-      { $match: { userId: new ObjectId(user._id) } },
-      lookupRoutesStage
-    ]).toArray()).shift();
-
-    if (!likedRoutes) {
-      return [];
-    }
-
-    likedRoutes.routes.map((route) => {
-      filterEntityFields(route, languages, multilingualRouteFields);
-      return route;
-    });
-
-    return likedRoutes.routes;
+    return user;
   }
 };
 

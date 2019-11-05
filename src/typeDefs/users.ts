@@ -15,12 +15,12 @@ export default gql`
     """
     User saved routes
     """
-    savedRoutes: [Route]!
+    savedRoutes: [Route!]!
         
     """
     User liked routes
     """
-    likedRoutes: [Route]!
+    likedRoutes: [Route!]!
   }
 
   extend type Query {
@@ -34,11 +34,11 @@ export default gql`
     """
     Save route to user
     """  
-    saveRoute(routeId: String!): [Route]!
+    saveRoute(routeId: String!): User!
       
     """
     Add route to user liked routes
     """
-    likeRoute(routeId: String!): [Route]!  
+    likeRoute(routeId: String!): User!
   }
 `;
