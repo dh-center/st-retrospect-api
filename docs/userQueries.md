@@ -55,7 +55,7 @@ Response:
   }
 }
 ```
-**Writing locations data is unsupported**
+**Query for location data is unsupported**
 
 ### Get liked routes
 
@@ -88,7 +88,7 @@ Response:
   }
 }
 ```
-**Writing locations data is unsupported**
+**Query for location data is unsupported**
 
 ## Mutations
 ### Save route
@@ -126,7 +126,7 @@ Response:
   }
 }
 ```
-**Writing locations data is unsupported**
+**Query for location data is unsupported**
 
 ### Like route
 
@@ -163,4 +163,4 @@ Response:
   }
 }
 ```
-**Writing locations data is unsupported**
+**Query for location data is unsupported**
