@@ -5,7 +5,7 @@ import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
 import getDbConnection from './db';
-import { AccessToken, Languages, ResolverContextBase } from './types/graphql';
+import { AccessTokenData, Languages, ResolverContextBase } from './types/graphql';
 import languageParser from 'accept-language-parser';
 import bodyParser from 'body-parser';
 import router from './router';
@@ -72,7 +72,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
       }
 
       let jsonToken = '';
-      let accessToken: AccessToken = {
+      let user: AccessTokenData = {
         id: '',
         isAdmin: false
       };
@@ -81,14 +81,14 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
         jsonToken = req.headers.authorization;
         if (/^Bearer [a-z0-9-_+/=]+\.[a-z0-9-_+/=]+\.[a-z0-9-_+/=]+$/i.test(jsonToken)) {
           jsonToken = jsonToken.slice(7);
-          accessToken = await jwt.verify(jsonToken, process.env.JWT_SECRET_STRING || 'secret_string') as AccessToken;
+          user = await jwt.verify(jsonToken, process.env.JWT_SECRET_STRING || 'secret_string') as AccessTokenData;
         }
       }
 
       return {
         db: dbConnection,
         languages,
-        accessToken
+        user
       };
     }
   });

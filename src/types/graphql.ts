@@ -16,7 +16,7 @@ export interface ResolverContextBase {
   /**
    * User's access token
    */
-  readonly accessToken: AccessToken;
+  readonly user: AccessTokenData;
 }
 
 /**
@@ -71,7 +71,7 @@ export interface PointCoordinates {
 /**
  * User access token
  */
-export interface AccessToken {
+export interface AccessTokenData {
   id: string;
   isAdmin: boolean;
 }

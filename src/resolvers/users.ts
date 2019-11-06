@@ -29,11 +29,6 @@ interface User {
   _id: string;
 }
 
-interface AccessToken {
-  id: string;
-  isAdmin: boolean;
-}
-
 const Query: BaseTypeResolver = {
   /**
    * Returns saved routes
@@ -41,13 +36,13 @@ const Query: BaseTypeResolver = {
    * @param data - empty arg
    * @param db - MongoDB connection to make queries
    * @param languages - languages in which return data
-   * @param accessToken - user access token
+   * @param user - user access token
    * @return {object}
    */
-  async me(parent, data, { db, languages, accessToken }) {
-    const user = await db.collection('users').findOne({ _id: new ObjectId(accessToken.id) });
+  async me(parent, data, { db, languages, user }) {
+    const userData = await db.collection('users').findOne({ _id: new ObjectId(user.id) });
 
-    return user;
+    return userData;
   }
 };
 
@@ -61,13 +56,13 @@ const Mutation: BaseTypeResolver = {
    * @param accessToken - user access token
    * @return {object}
    */
-  async saveRoute(parent, { routeId }: {routeId: string}, { db, languages, accessToken }) {
-    const user = await db.collection('users').findOne({ _id: new ObjectId(accessToken.id) });
+  async saveRoute(parent, { routeId }: {routeId: string}, { db, languages, user }) {
+    const userData = await db.collection('users').findOne({ _id: new ObjectId(user.id) });
 
-    await db.collection('saved-routes').updateOne({ userId: new ObjectId(user._id) },
+    await db.collection('saved-routes').updateOne({ userId: new ObjectId(userData._id) },
       {
         $set: {
-          userId: new ObjectId(user._id)
+          userId: new ObjectId(userData._id)
         },
         $push: { routeIds: new ObjectId(routeId) }
       },
@@ -76,7 +71,7 @@ const Mutation: BaseTypeResolver = {
       }
     );
 
-    return user;
+    return userData;
   },
 
   /**
@@ -88,13 +83,13 @@ const Mutation: BaseTypeResolver = {
    * @param accessToken - user access token
    * @return {object}
    */
-  async likeRoute(parent, { routeId }: {routeId: string}, { db, languages, accessToken }) {
-    const user = await db.collection('users').findOne({ _id: new ObjectId(accessToken.id) });
+  async likeRoute(parent, { routeId }: {routeId: string}, { db, languages, user }) {
+    const userData = await db.collection('users').findOne({ _id: new ObjectId(user.id) });
 
-    await db.collection('liked-routes').updateOne({ userId: new ObjectId(user._id) },
+    await db.collection('liked-routes').updateOne({ userId: new ObjectId(userData._id) },
       {
         $set: {
-          userId: new ObjectId(user._id)
+          userId: new ObjectId(userData._id)
         },
         $push: { routeIds: new ObjectId(routeId) }
       },
@@ -103,7 +98,7 @@ const Mutation: BaseTypeResolver = {
       }
     );
 
-    return user;
+    return userData;
   }
 };
 
