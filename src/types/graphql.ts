@@ -13,6 +13,10 @@ export interface ResolverContextBase {
    * Accept languages
    */
   readonly languages: Languages[];
+  /**
+   * User's access token
+   */
+  readonly user: AccessTokenData;
 }
 
 /**
@@ -62,4 +66,12 @@ export enum Languages {
 export interface PointCoordinates {
   longitude: number;
   latitude: number;
+}
+
+/**
+ * User access token
+ */
+export interface AccessTokenData {
+  id: string;
+  isAdmin: boolean;
 }

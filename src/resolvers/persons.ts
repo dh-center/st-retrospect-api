@@ -17,7 +17,7 @@ const multilingualPersonFields = [
 ];
 
 interface Person {
-  id: string;
+  _id: string;
 }
 
 const Query: BaseTypeResolver = {
@@ -65,17 +65,17 @@ const Query: BaseTypeResolver = {
 const Person: BaseTypeResolver<Person> = {
   /**
    * Return all person relations
-   * @param id - person's id that returned from the resolver on the parent field
+   * @param _id - person's id that returned from the resolver on the parent field
    * @param data - empty arg
    * @param db - MongoDB connection to make queries
    * @param languages - languages in which return data
    * @return {object[]}
    */
-  async relations({ id }, data, { db, languages }) {
+  async relations({ _id }, data, { db, languages }) {
     const relations = await db.collection('relations').aggregate([
       {
         $match: {
-          personId: new ObjectId(id)
+          personId: new ObjectId(_id)
         }
       },
       {

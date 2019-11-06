@@ -4,6 +4,7 @@ import { GraphQLJSON } from 'graphql-type-json';
 import persons from './persons';
 import locations from './locations';
 import routes from './routes';
+import users from './users';
 
 /**
  * See all types and fields here {@link '../typeDefs/schema.graphql'}
@@ -23,4 +24,4 @@ const indexResolver = {
   JSON: GraphQLJSON
 };
 
-export default merge(indexResolver, persons, locations, routes);
+export default merge(indexResolver, persons, locations, routes, users);

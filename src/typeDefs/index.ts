@@ -4,6 +4,7 @@ import persons from './persons';
 import locations from './locations';
 import relations from './relations';
 import routes from './routes';
+import users from './users';
 
 const rootSchema = gql`
   """
@@ -33,6 +34,16 @@ const rootSchema = gql`
     """
     health: String!
   }
+
+  """
+  API mutations
+  """
+  type Mutation {
+    """
+    Unused field to let extend this type
+    """
+    _: Boolean
+  }
 `;
 
 export default concatenateTypeDefs(
@@ -41,6 +52,7 @@ export default concatenateTypeDefs(
     persons,
     locations,
     relations,
-    routes
+    routes,
+    users
   ]
 );
