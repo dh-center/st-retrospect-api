@@ -128,6 +128,36 @@ Response:
 ```
 **Query for location data is unsupported yet**
 
+### Unsave route
+
+Mutation:
+```graphql
+mutation {
+  unsaveRoute(routeId: "5db32b6977c44a187bef2c8f"){
+    username,
+    id,
+  	savedRoutes{
+      id,
+      name
+    }
+  }
+}
+```
+
+Response:
+```json
+{
+  "data": {
+    "unsaveRoute": {
+      "username": "ilyamore88",
+      "id": "5d8359f79d284050dab39d85",
+      "savedRoutes": []
+    }
+  }
+}
+```
+**Query for location data is unsupported yet**
+
 ### Like route
 
 Mutation:
@@ -159,6 +189,36 @@ Response:
           }
         }
       ]
+    }
+  }
+}
+```
+**Query for location data is unsupported yet**
+
+### Dislike route
+
+Mutation:
+```graphql
+mutation {
+  dislikeRoute(routeId: "5db32b6977c44a187bef2c8f"){
+    username,
+    id,
+  	likedRoutes{
+      id,
+      name
+    }
+  }
+}
+```
+
+Response:
+```json
+{
+  "data": {
+    "dislikeRoute": {
+      "username": "ilyamore88",
+      "id": "5d8359f79d284050dab39d85",
+      "likedRoutes": []
     }
   }
 }
