@@ -2,6 +2,7 @@ import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
 import { multilingualRouteFields, Route } from './routes';
+import { multilingualLocationFields } from './locations';
 
 interface User {
   _id: string;
@@ -129,8 +130,20 @@ const User: BaseTypeResolver<User> = {
       {
         $lookup: {
           from: 'routes',
-          localField: 'savedRouteIds',
-          foreignField: '_id',
+          let: { savedRouteIds: '$savedRouteIds' },
+          pipeline: [
+            { $match: { $expr: { $in: ['$_id', '$$savedRouteIds'] } } },
+            {
+              $lookup: {
+                from: 'locations',
+                let: { locationIds: '$locationIds' },
+                pipeline: [
+                  { $match: { $expr: { $in: ['$_id', '$$locationIds'] } } }
+                ],
+                as: 'locations'
+              }
+            }
+          ],
           as: 'savedRoutes'
         }
       }
@@ -143,6 +156,10 @@ const User: BaseTypeResolver<User> = {
 
       userData.savedRoutes.map((route) => {
         filterEntityFields(route, languages, multilingualRouteFields);
+        route.locations.map((location) => {
+          filterEntityFields(location, languages, multilingualLocationFields);
+          return location;
+        });
         return route;
       });
 
@@ -165,8 +182,20 @@ const User: BaseTypeResolver<User> = {
       {
         $lookup: {
           from: 'routes',
-          localField: 'likedRouteIds',
-          foreignField: '_id',
+          let: { likedRouteIds: '$likedRouteIds' },
+          pipeline: [
+            { $match: { $expr: { $in: ['$_id', '$$likedRouteIds'] } } },
+            {
+              $lookup: {
+                from: 'locations',
+                let: { locationIds: '$locationIds' },
+                pipeline: [
+                  { $match: { $expr: { $in: ['$_id', '$$locationIds'] } } }
+                ],
+                as: 'locations'
+              }
+            }
+          ],
           as: 'likedRoutes'
         }
       }
@@ -179,6 +208,10 @@ const User: BaseTypeResolver<User> = {
 
       userData.likedRoutes.map((route) => {
         filterEntityFields(route, languages, multilingualRouteFields);
+        route.locations.map((location) => {
+          filterEntityFields(location, languages, multilingualLocationFields);
+          return location;
+        });
         return route;
       });
 
