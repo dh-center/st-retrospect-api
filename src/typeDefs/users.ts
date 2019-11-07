@@ -35,10 +35,20 @@ export default gql`
     Save route to user
     """  
     saveRoute(routeId: String!): User!
+
+    """
+    Unsave route from user
+    """
+    unsaveRoute(routeId: String!): User!
       
     """
     Add route to user liked routes
     """
     likeRoute(routeId: String!): User!
+
+    """
+    Dislike route
+    """
+    dislikeRoute(routeId: String!): User!
   }
 `;
