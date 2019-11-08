@@ -117,6 +117,14 @@ const User: BaseTypeResolver<User> = {
   async savedRoutes({ _id }, data, { db, languages }) {
     const userData = (await db.collection<User>('users').aggregate([
       { $match: { _id: new ObjectId(_id) } },
+      /**
+       * If the savedRouteIds field is null, add empty array to this field
+       */
+      {
+        $project: {
+          savedRouteIds: { $ifNull: ['$savedRouteIds', [] ] }
+        }
+      },
       {
         /**
          * Aggregate saved routes
@@ -193,6 +201,14 @@ const User: BaseTypeResolver<User> = {
   async likedRoutes({ _id }, data, { db, languages }) {
     const userData = (await db.collection<User>('users').aggregate([
       { $match: { _id: new ObjectId(_id) } },
+      /**
+       * If the likedRouteIds field is null, add empty array to this field
+       */
+      {
+        $project: {
+          likedRouteIds: { $ifNull: ['$likedRouteIds', [] ] }
+        }
+      },
       {
         /**
          * Aggregate liked routes
