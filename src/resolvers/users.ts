@@ -22,10 +22,8 @@ const Query: BaseTypeResolver = {
    * @param user - user access token
    * @return {object}
    */
-  async me(parent, data, { db, languages, user }) {
-    const userData = await db.collection('users').findOne({ _id: new ObjectId(user.id) });
-
-    return userData;
+  async me(parent, data, { db, user }) {
+    return db.collection('users').findOne({ _id: new ObjectId(user.id) });
   }
 };
 
@@ -39,15 +37,13 @@ const Mutation: BaseTypeResolver = {
    * @param accessToken - user access token
    * @return {object}
    */
-  async saveRoute(parent, { routeId }: {routeId: string}, { db, languages, user }) {
-    const userData = (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) }, {
+  async saveRoute(parent, { routeId }: {routeId: string}, { db, user }) {
+    return (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) }, {
       $push: { savedRouteIds: new ObjectId(routeId) }
     },
     {
       returnOriginal: false
     })).value;
-
-    return userData;
   },
 
   /**
@@ -59,16 +55,14 @@ const Mutation: BaseTypeResolver = {
    * @param accessToken - user access token
    * @return {object}
    */
-  async deleteRouteFromSaved(parent, { routeId }: {routeId: string}, { db, languages, user }) {
-    const userData = (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) },
+  async deleteRouteFromSaved(parent, { routeId }: {routeId: string}, { db, user }) {
+    return (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) },
       {
         $pull: { savedRouteIds: new ObjectId(routeId) }
       },
       {
         returnOriginal: false
       })).value;
-
-    return userData;
   },
 
   /**
@@ -80,16 +74,14 @@ const Mutation: BaseTypeResolver = {
    * @param accessToken - user access token
    * @return {object}
    */
-  async likeRoute(parent, { routeId }: {routeId: string}, { db, languages, user }) {
-    const userData = (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) },
+  async likeRoute(parent, { routeId }: {routeId: string}, { db, user }) {
+    return (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) },
       {
         $push: { likedRouteIds: new ObjectId(routeId) }
       },
       {
         returnOriginal: false
       })).value;
-
-    return userData;
   },
 
   /**
@@ -101,16 +93,14 @@ const Mutation: BaseTypeResolver = {
    * @param accessToken - user access token
    * @return {object}
    */
-  async dislikeRoute(parent, { routeId }: {routeId: string}, { db, languages, user }) {
-    const userData = (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) },
+  async dislikeRoute(parent, { routeId }: {routeId: string}, { db, user }) {
+    return (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) },
       {
         $pull: { likedRouteIds: new ObjectId(routeId) }
       },
       {
         returnOriginal: false
       })).value;
-
-    return userData;
   }
 };
 
