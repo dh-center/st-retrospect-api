@@ -130,7 +130,7 @@ Response:
 Mutation:
 ```graphql
 mutation {
-  unsaveRoute(routeId: "5db32b6977c44a187bef2c8f"){
+  deleteRouteFromSaved(routeId: "5db32b6977c44a187bef2c8f"){
     username,
     id,
   	savedRoutes{
@@ -145,7 +145,7 @@ Response:
 ```json
 {
   "data": {
-    "unsaveRoute": {
+    "deleteRouteFromSaved": {
       "username": "ilyamore88",
       "id": "5d8359f79d284050dab39d85",
       "savedRoutes": []

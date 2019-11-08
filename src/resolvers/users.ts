@@ -51,7 +51,7 @@ const Mutation: BaseTypeResolver = {
   },
 
   /**
-   * Unsave route
+   * Delete route from saved
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param routeId - route id
    * @param db - MongoDB connection to make queries
@@ -59,7 +59,7 @@ const Mutation: BaseTypeResolver = {
    * @param accessToken - user access token
    * @return {object}
    */
-  async unsaveRoute(parent, { routeId }: {routeId: string}, { db, languages, user }) {
+  async deleteRouteFromSaved(parent, { routeId }: {routeId: string}, { db, languages, user }) {
     const userData = (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) },
       {
         $pull: { savedRouteIds: new ObjectId(routeId) }
@@ -128,22 +128,46 @@ const User: BaseTypeResolver<User> = {
     const userData = (await db.collection<User>('users').aggregate([
       { $match: { _id: new ObjectId(_id) } },
       {
+        /**
+         * Aggregate saved routes
+         */
         $lookup: {
           from: 'routes',
+          /**
+           * Specified variable to use in pipeline
+           */
           let: { savedRouteIds: '$savedRouteIds' },
           pipeline: [
+            /**
+             * Find routes by ID
+             */
             { $match: { $expr: { $in: ['$_id', '$$savedRouteIds'] } } },
             {
+              /**
+               * Aggregate locations in routes
+               */
               $lookup: {
                 from: 'locations',
+                /**
+                 * Specified variable to use in pipeline
+                 */
                 let: { locationIds: '$locationIds' },
                 pipeline: [
+                  /**
+                   * Find locations by ID
+                   */
                   { $match: { $expr: { $in: ['$_id', '$$locationIds'] } } }
                 ],
+                /**
+                 * Save aggregated locations to the locations field
+                 */
                 as: 'locations'
               }
             }
           ],
+          /**
+           * Save aggregated routes to the savedRoutes field
+           */
           as: 'savedRoutes'
         }
       }
@@ -180,22 +204,46 @@ const User: BaseTypeResolver<User> = {
     const userData = (await db.collection<User>('users').aggregate([
       { $match: { _id: new ObjectId(_id) } },
       {
+        /**
+         * Aggregate liked routes
+         */
         $lookup: {
           from: 'routes',
+          /**
+           * Specified variable to use in pipeline
+           */
           let: { likedRouteIds: '$likedRouteIds' },
           pipeline: [
+            /**
+             * Find routes by ID
+             */
             { $match: { $expr: { $in: ['$_id', '$$likedRouteIds'] } } },
             {
+              /**
+               * Aggregate locations in routes
+               */
               $lookup: {
                 from: 'locations',
+                /**
+                 * Specified variable to use in pipeline
+                 */
                 let: { locationIds: '$locationIds' },
                 pipeline: [
+                  /**
+                   * Find locations by ID
+                   */
                   { $match: { $expr: { $in: ['$_id', '$$locationIds'] } } }
                 ],
+                /**
+                 * Save aggregated locations to the locations field
+                 */
                 as: 'locations'
               }
             }
           ],
+          /**
+           * Save aggregated routes to the likedRoutes field
+           */
           as: 'likedRoutes'
         }
       }

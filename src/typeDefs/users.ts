@@ -39,7 +39,7 @@ export default gql`
     """
     Unsave route from user
     """
-    unsaveRoute(routeId: String!): User!
+    deleteRouteFromSaved(routeId: String!): User!
       
     """
     Add route to user liked routes
