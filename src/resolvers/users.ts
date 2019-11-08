@@ -2,31 +2,14 @@ import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
 import { multilingualRouteFields, Route } from './routes';
-
-/**
- * Stage for getting all routes
- */
-const lookupRoutesStage = {
-  $lookup: {
-    from: 'routes',
-    localField: 'routeIds',
-    foreignField: '_id',
-    as: 'routes'
-  }
-};
-
-/**
- * Interface for saved and liked routes
- */
-interface FeaturedRoutes {
-  _id: ObjectId;
-  userId: ObjectId;
-  routes: Route[];
-  routeIds: string[];
-}
+import { multilingualLocationFields } from './locations';
 
 interface User {
   _id: string;
+  savedRoutes: Route[];
+  savedRouteIds: ObjectId[];
+  likedRoutes: Route[];
+  likedRouteIds: ObjectId[];
 }
 
 const Query: BaseTypeResolver = {
@@ -39,10 +22,8 @@ const Query: BaseTypeResolver = {
    * @param user - user access token
    * @return {object}
    */
-  async me(parent, data, { db, languages, user }) {
-    const userData = await db.collection('users').findOne({ _id: new ObjectId(user.id) });
-
-    return userData;
+  async me(parent, data, { db, user }) {
+    return db.collection('users').findOne({ _id: new ObjectId(user.id) });
   }
 };
 
@@ -56,22 +37,32 @@ const Mutation: BaseTypeResolver = {
    * @param accessToken - user access token
    * @return {object}
    */
-  async saveRoute(parent, { routeId }: {routeId: string}, { db, languages, user }) {
-    const userData = await db.collection('users').findOne({ _id: new ObjectId(user.id) });
+  async saveRoute(parent, { routeId }: {routeId: string}, { db, user }) {
+    return (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) }, {
+      $push: { savedRouteIds: new ObjectId(routeId) }
+    },
+    {
+      returnOriginal: false
+    })).value;
+  },
 
-    await db.collection('saved-routes').updateOne({ userId: new ObjectId(userData._id) },
+  /**
+   * Delete route from saved
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param routeId - route id
+   * @param db - MongoDB connection to make queries
+   * @param languages - languages in which return data
+   * @param accessToken - user access token
+   * @return {object}
+   */
+  async deleteRouteFromSaved(parent, { routeId }: {routeId: string}, { db, user }) {
+    return (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) },
       {
-        $set: {
-          userId: new ObjectId(userData._id)
-        },
-        $push: { routeIds: new ObjectId(routeId) }
+        $pull: { savedRouteIds: new ObjectId(routeId) }
       },
       {
-        upsert: true
-      }
-    );
-
-    return userData;
+        returnOriginal: false
+      })).value;
   },
 
   /**
@@ -83,22 +74,33 @@ const Mutation: BaseTypeResolver = {
    * @param accessToken - user access token
    * @return {object}
    */
-  async likeRoute(parent, { routeId }: {routeId: string}, { db, languages, user }) {
-    const userData = await db.collection('users').findOne({ _id: new ObjectId(user.id) });
-
-    await db.collection('liked-routes').updateOne({ userId: new ObjectId(userData._id) },
+  async likeRoute(parent, { routeId }: {routeId: string}, { db, user }) {
+    return (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) },
       {
-        $set: {
-          userId: new ObjectId(userData._id)
-        },
-        $push: { routeIds: new ObjectId(routeId) }
+        $push: { likedRouteIds: new ObjectId(routeId) }
       },
       {
-        upsert: true
-      }
-    );
+        returnOriginal: false
+      })).value;
+  },
 
-    return userData;
+  /**
+   * Dislike route
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param routeId - route id
+   * @param db - MongoDB connection to make queries
+   * @param languages - languages in which return data
+   * @param accessToken - user access token
+   * @return {object}
+   */
+  async dislikeRoute(parent, { routeId }: {routeId: string}, { db, user }) {
+    return (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) },
+      {
+        $pull: { likedRouteIds: new ObjectId(routeId) }
+      },
+      {
+        returnOriginal: false
+      })).value;
   }
 };
 
@@ -113,21 +115,78 @@ const User: BaseTypeResolver<User> = {
    * @return {object}
    */
   async savedRoutes({ _id }, data, { db, languages }) {
-    const savedRoutes = (await db.collection<FeaturedRoutes>('saved-routes').aggregate([
-      { $match: { userId: new ObjectId(_id) } },
-      lookupRoutesStage
+    const userData = (await db.collection<User>('users').aggregate([
+      { $match: { _id: new ObjectId(_id) } },
+      /**
+       * If the savedRouteIds field is null, add empty array to this field
+       */
+      {
+        $project: {
+          savedRouteIds: { $ifNull: ['$savedRouteIds', [] ] }
+        }
+      },
+      {
+        /**
+         * Aggregate saved routes
+         */
+        $lookup: {
+          from: 'routes',
+          /**
+           * Specified variable to use in pipeline
+           */
+          let: { savedRouteIds: '$savedRouteIds' },
+          pipeline: [
+            /**
+             * Find routes by ID
+             */
+            { $match: { $expr: { $in: ['$_id', '$$savedRouteIds'] } } },
+            {
+              /**
+               * Aggregate locations in routes
+               */
+              $lookup: {
+                from: 'locations',
+                /**
+                 * Specified variable to use in pipeline
+                 */
+                let: { locationIds: '$locationIds' },
+                pipeline: [
+                  /**
+                   * Find locations by ID
+                   */
+                  { $match: { $expr: { $in: ['$_id', '$$locationIds'] } } }
+                ],
+                /**
+                 * Save aggregated locations to the locations field
+                 */
+                as: 'locations'
+              }
+            }
+          ],
+          /**
+           * Save aggregated routes to the savedRoutes field
+           */
+          as: 'savedRoutes'
+        }
+      }
     ]).toArray()).shift();
 
-    if (!savedRoutes) {
-      return [];
+    if (userData) {
+      if (!userData.savedRoutes) {
+        return [];
+      }
+
+      userData.savedRoutes.map((route) => {
+        filterEntityFields(route, languages, multilingualRouteFields);
+        route.locations.map((location) => {
+          filterEntityFields(location, languages, multilingualLocationFields);
+          return location;
+        });
+        return route;
+      });
+
+      return userData.savedRoutes;
     }
-
-    savedRoutes.routes.map((route) => {
-      filterEntityFields(route, languages, multilingualRouteFields);
-      return route;
-    });
-
-    return savedRoutes.routes;
   },
 
   /**
@@ -140,21 +199,78 @@ const User: BaseTypeResolver<User> = {
    * @return {object}
    */
   async likedRoutes({ _id }, data, { db, languages }) {
-    const likedRoutes = (await db.collection<FeaturedRoutes>('liked-routes').aggregate([
-      { $match: { userId: new ObjectId(_id) } },
-      lookupRoutesStage
+    const userData = (await db.collection<User>('users').aggregate([
+      { $match: { _id: new ObjectId(_id) } },
+      /**
+       * If the likedRouteIds field is null, add empty array to this field
+       */
+      {
+        $project: {
+          likedRouteIds: { $ifNull: ['$likedRouteIds', [] ] }
+        }
+      },
+      {
+        /**
+         * Aggregate liked routes
+         */
+        $lookup: {
+          from: 'routes',
+          /**
+           * Specified variable to use in pipeline
+           */
+          let: { likedRouteIds: '$likedRouteIds' },
+          pipeline: [
+            /**
+             * Find routes by ID
+             */
+            { $match: { $expr: { $in: ['$_id', '$$likedRouteIds'] } } },
+            {
+              /**
+               * Aggregate locations in routes
+               */
+              $lookup: {
+                from: 'locations',
+                /**
+                 * Specified variable to use in pipeline
+                 */
+                let: { locationIds: '$locationIds' },
+                pipeline: [
+                  /**
+                   * Find locations by ID
+                   */
+                  { $match: { $expr: { $in: ['$_id', '$$locationIds'] } } }
+                ],
+                /**
+                 * Save aggregated locations to the locations field
+                 */
+                as: 'locations'
+              }
+            }
+          ],
+          /**
+           * Save aggregated routes to the likedRoutes field
+           */
+          as: 'likedRoutes'
+        }
+      }
     ]).toArray()).shift();
 
-    if (!likedRoutes) {
-      return [];
+    if (userData) {
+      if (!userData.likedRoutes) {
+        return [];
+      }
+
+      userData.likedRoutes.map((route) => {
+        filterEntityFields(route, languages, multilingualRouteFields);
+        route.locations.map((location) => {
+          filterEntityFields(location, languages, multilingualLocationFields);
+          return location;
+        });
+        return route;
+      });
+
+      return userData.likedRoutes;
     }
-
-    likedRoutes.routes.map((route) => {
-      filterEntityFields(route, languages, multilingualRouteFields);
-      return route;
-    });
-
-    return likedRoutes.routes;
   }
 };
 

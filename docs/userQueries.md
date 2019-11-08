@@ -55,7 +55,6 @@ Response:
   }
 }
 ```
-**Query for location data is unsupported yet**
 
 ### Get liked routes
 
@@ -88,7 +87,6 @@ Response:
   }
 }
 ```
-**Query for location data is unsupported yet**
 
 ## Mutations
 ### Save route
@@ -126,7 +124,35 @@ Response:
   }
 }
 ```
-**Query for location data is unsupported yet**
+
+### Unsave route
+
+Mutation:
+```graphql
+mutation {
+  deleteRouteFromSaved(routeId: "5db32b6977c44a187bef2c8f"){
+    username,
+    id,
+  	savedRoutes{
+      id,
+      name
+    }
+  }
+}
+```
+
+Response:
+```json
+{
+  "data": {
+    "deleteRouteFromSaved": {
+      "username": "ilyamore88",
+      "id": "5d8359f79d284050dab39d85",
+      "savedRoutes": []
+    }
+  }
+}
+```
 
 ### Like route
 
@@ -163,4 +189,32 @@ Response:
   }
 }
 ```
-**Query for location data is unsupported yet**
+
+### Dislike route
+
+Mutation:
+```graphql
+mutation {
+  dislikeRoute(routeId: "5db32b6977c44a187bef2c8f"){
+    username,
+    id,
+  	likedRoutes{
+      id,
+      name
+    }
+  }
+}
+```
+
+Response:
+```json
+{
+  "data": {
+    "dislikeRoute": {
+      "username": "ilyamore88",
+      "id": "5d8359f79d284050dab39d85",
+      "likedRoutes": []
+    }
+  }
+}
+```
