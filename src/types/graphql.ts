@@ -1,5 +1,6 @@
 import { Db } from 'mongodb';
 import { GraphQLResolveInfo } from 'graphql';
+import { DataLoaders } from '../dataloaders';
 
 /**
  * Resolver's Context argument
@@ -17,6 +18,8 @@ export interface ResolverContextBase {
    * User's access token
    */
   readonly user: AccessTokenData;
+
+  readonly dataLoaders: DataLoaders;
 }
 
 /**
