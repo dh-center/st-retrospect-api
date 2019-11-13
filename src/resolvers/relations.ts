@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { MultilingualString } from '../types/graphql';
-import { Location } from './location';
+import { Location } from './locations';
 import { Person } from './persons';
 
 /**

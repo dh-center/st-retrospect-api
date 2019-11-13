@@ -1,7 +1,7 @@
 import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
-import { multilingualLocationFields } from './location';
+import { multilingualLocationFields } from './locations';
 import {multilingualRelationFields, RelationDbScheme, RelationGraphQLScheme} from './relations';
 
 /**

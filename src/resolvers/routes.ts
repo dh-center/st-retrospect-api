@@ -1,7 +1,7 @@
 import { BaseTypeResolver, PointCoordinates } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
-import { multilingualLocationFields, Location } from './location';
+import { multilingualLocationFields, Location } from './locations';
 import distance from '../utils/distance';
 
 /**
