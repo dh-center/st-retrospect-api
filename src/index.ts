@@ -15,7 +15,7 @@ import renameFieldDirective from './directives/renameField';
 import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
-import getDataLoaders from './dataloaders';
+import getDataLoaders from './dataLoaders';
 
 Sentry.init({ dsn: process.env.SENTRY_DSN });
 

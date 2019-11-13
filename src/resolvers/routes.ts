@@ -1,7 +1,7 @@
 import { BaseTypeResolver, PointCoordinates } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
-import { multilingualLocationFields, Locations } from './locations';
+import { multilingualLocationFields, Location } from './location';
 import distance from '../utils/distance';
 
 /**
@@ -42,7 +42,7 @@ function getMatchStageFromFilter(filter: RoutesFilter): object {
 // @todo improve tipization
 export interface Route {
   _id: ObjectId;
-  locations: Locations[];
+  locations: Location[];
   locationIds: string[];
 }
 

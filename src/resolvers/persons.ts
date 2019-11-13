@@ -1,8 +1,8 @@
 import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
-import { multilingualLocationFields } from './locations';
-import { multilingualRelationFields } from './relations';
+import { multilingualLocationFields } from './location';
+import {multilingualRelationFields, RelationDbScheme, RelationGraphQLScheme} from './relations';
 
 /**
  * Multilingual person fields
@@ -16,8 +16,8 @@ const multilingualPersonFields = [
   'description'
 ];
 
-interface Person {
-  _id: string;
+export interface Person {
+  _id: ObjectId;
 }
 
 const Query: BaseTypeResolver = {
@@ -67,60 +67,21 @@ const Person: BaseTypeResolver<Person> = {
    * Return all person relations
    * @param _id - person's id that returned from the resolver on the parent field
    * @param data - empty arg
-   * @param db - MongoDB connection to make queries
    * @param languages - languages in which return data
+   * @param dataLoaders - DataLoaders for fetching data
    * @return {object[]}
    */
-  async relations({ _id }, data, { db, languages, dataLoaders }) {
-    // const relations = await db.collection('relations').aggregate([
-    //   {
-    //     $match: {
-    //       personId: new ObjectId(_id)
-    //     }
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: 'persons',
-    //       localField: 'personId',
-    //       foreignField: '_id',
-    //       as: 'person'
-    //     }
-    //   },
-    //   {
-    //     $unwind: '$person'
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: 'locations',
-    //       localField: 'locationId',
-    //       foreignField: '_id',
-    //       as: 'location'
-    //     }
-    //   },
-    //   {
-    //     $unwind: '$location'
-    //   },
-    //   {
-    //     $addFields: {
-    //       person: {
-    //         id: '$person._id'
-    //       },
-    //       location: {
-    //         id: '$location._id'
-    //       },
-    //       id: '$_id'
-    //     }
-    //   }
-    // ]).toArray();
-    //
-    // relations.map((relation) => {
-    //   filterEntityFields(relation, languages, multilingualRelationFields);
-    //   filterEntityFields(relation.person, languages, multilingualPersonFields);
-    //   filterEntityFields(relation.location, languages, multilingualLocationFields);
-    //   return relation;
-    // });
+  async relations({ _id }, data, { languages, dataLoaders }) {
+    const relations = await dataLoaders.relationByPersonId.load(_id.toString());
 
-    return dataLoaders.relationByPersonId.load(_id);
+    relations.map((relation) => {
+      filterEntityFields(relation, languages, multilingualRelationFields);
+      filterEntityFields(relation.person, languages, multilingualPersonFields);
+      filterEntityFields(relation.location, languages, multilingualLocationFields);
+      return relation;
+    });
+
+    return relations;
   }
 };
 

@@ -2,7 +2,7 @@ import merge from 'lodash.merge';
 import { GraphQLJSON } from 'graphql-type-json';
 
 import persons from './persons';
-import locations from './locations';
+import locations from './location';
 import routes from './routes';
 import users from './users';
 

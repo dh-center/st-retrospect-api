@@ -2,7 +2,7 @@ import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
 import { multilingualRouteFields, Route } from './routes';
-import { multilingualLocationFields } from './locations';
+import { multilingualLocationFields } from './location';
 
 interface User {
   _id: string;
