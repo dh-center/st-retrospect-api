@@ -63,7 +63,8 @@ export interface DataLoaders {
  */
 export default function (db: Db): DataLoaders {
   const relationByPersonId = new DataLoader(
-    (personIds: string[]) => batchRelationsByPersonId(db, personIds)
+    (personIds: string[]) => batchRelationsByPersonId(db, personIds),
+    { cache: false }
   );
 
   return {
