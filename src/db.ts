@@ -18,11 +18,14 @@ let logCount = 0;
  */
 export default async function getConnection(): Promise<Db> {
   if (!connection) {
-    Logger.setCurrentLogger((msg) => {
-      console.log(`MONGO DB REQUEST ${++logCount}: ${msg}`);
-    });
-    Logger.setLevel('debug');
-    Logger.filter('class', [ 'Cursor' ]);
+    if (process.env.MONGODB_ENABLE_LOGGING) {
+      Logger.setCurrentLogger((msg) => {
+        console.log(`MONGO DB REQUEST ${++logCount}: ${msg}`);
+      });
+      Logger.setLevel('debug');
+      Logger.filter('class', [ 'Cursor' ]);
+    }
+
     connection = (await MongoClient.connect(process.env.MONGODB_URL as string, connectionConfig)).db();
   }
 
