@@ -11,7 +11,7 @@ export const multilingualLocationFields = [
 ];
 
 // @todo improve tipization
-export interface Locations {
+export interface Location {
   /**
    * Id of location
    */

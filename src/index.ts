@@ -15,6 +15,7 @@ import renameFieldDirective from './directives/renameField';
 import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
+import getDataLoaders from './dataLoaders';
 
 Sentry.init({ dsn: process.env.SENTRY_DSN });
 
@@ -24,6 +25,8 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
   });
 
   const dbConnection = await getDbConnection();
+
+  const dataLoaders = getDataLoaders(dbConnection);
 
   const app = express();
 
@@ -88,7 +91,8 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
       return {
         db: dbConnection,
         languages,
-        user
+        user,
+        dataLoaders
       };
     }
   });

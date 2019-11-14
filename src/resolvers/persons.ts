@@ -16,8 +16,8 @@ const multilingualPersonFields = [
   'description'
 ];
 
-interface Person {
-  _id: string;
+export interface Person {
+  _id: ObjectId;
 }
 
 const Query: BaseTypeResolver = {
@@ -67,51 +67,12 @@ const Person: BaseTypeResolver<Person> = {
    * Return all person relations
    * @param _id - person's id that returned from the resolver on the parent field
    * @param data - empty arg
-   * @param db - MongoDB connection to make queries
    * @param languages - languages in which return data
+   * @param dataLoaders - DataLoaders for fetching data
    * @return {object[]}
    */
-  async relations({ _id }, data, { db, languages }) {
-    const relations = await db.collection('relations').aggregate([
-      {
-        $match: {
-          personId: new ObjectId(_id)
-        }
-      },
-      {
-        $lookup: {
-          from: 'persons',
-          localField: 'personId',
-          foreignField: '_id',
-          as: 'person'
-        }
-      },
-      {
-        $unwind: '$person'
-      },
-      {
-        $lookup: {
-          from: 'locations',
-          localField: 'locationId',
-          foreignField: '_id',
-          as: 'location'
-        }
-      },
-      {
-        $unwind: '$location'
-      },
-      {
-        $addFields: {
-          person: {
-            id: '$person._id'
-          },
-          location: {
-            id: '$location._id'
-          },
-          id: '$_id'
-        }
-      }
-    ]).toArray();
+  async relations({ _id }, data, { languages, dataLoaders }) {
+    const relations = await dataLoaders.relationByPersonId.load(_id.toString());
 
     relations.map((relation) => {
       filterEntityFields(relation, languages, multilingualRelationFields);
