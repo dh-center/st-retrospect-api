@@ -15,7 +15,7 @@ export default class DataLoaders {
 
   /**
    * Creates DataLoaders instance
-   * @param dbConnection
+   * @param dbConnection - MongoDB connection to make queries
    */
   constructor(dbConnection: Db) {
     this.dbConnection = dbConnection;
