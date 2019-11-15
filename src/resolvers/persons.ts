@@ -7,7 +7,7 @@ import { multilingualRelationFields } from './relations';
 /**
  * Multilingual person fields
  */
-const multilingualPersonFields = [
+export const multilingualPersonFields = [
   'firstName',
   'lastName',
   'patronymic',
@@ -17,6 +17,10 @@ const multilingualPersonFields = [
 ];
 
 export interface Person {
+  _id: ObjectId;
+}
+
+export interface PersonDBScheme {
   _id: ObjectId;
 }
 
@@ -76,7 +80,6 @@ const Person: BaseTypeResolver<Person> = {
 
     relations.map((relation) => {
       filterEntityFields(relation, languages, multilingualRelationFields);
-      filterEntityFields(relation.person, languages, multilingualPersonFields);
       filterEntityFields(relation.location, languages, multilingualLocationFields);
       return relation;
     });
