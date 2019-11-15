@@ -5,7 +5,7 @@ import { PersonDBScheme } from './resolvers/persons';
 import { ObjectMap } from './types/utils';
 
 /**
- *
+ * Class for setting up data loaders
  */
 export default class DataLoaders {
   /**
@@ -21,11 +21,17 @@ export default class DataLoaders {
     this.dbConnection = dbConnection;
   }
 
+  /**
+   * Loader for fetching relations by persons ids
+   */
   public relationByPersonId = new DataLoader(
     (personIds: string[]) => this.batchRelationsByPersonIds(personIds),
     { cache: false }
   );
 
+  /**
+   * Loader for fetching persons by their ids
+   */
   public personsByIds = new DataLoader(
     (personIds: string[]) => this.batchPersonsByIds(personIds),
     { cache: false }

@@ -65,12 +65,23 @@ export type MixedRelation = RelationGraphQLScheme & RelationDbScheme;
 
 export default {
   Relation: {
+    /**
+     * Resolver for relation's person
+     * @param relation - the object that contains the result returned from the resolver on the parent field
+     * @param _args - empty args list
+     * @param dataLoaders - DataLoaders for fetching data
+     * @param languages - languages in which return data
+     */
     async person(
       relation: RelationDbScheme,
       _args: {},
       { dataLoaders, languages }: ResolverContextBase
-    ): Promise<Person> {
+    ): Promise<Person | null> {
       const person = await dataLoaders.personsByIds.load(relation.personId.toString());
+
+      if (!person) {
+        return null;
+      }
 
       filterEntityFields(person, languages, multilingualPersonFields);
 
