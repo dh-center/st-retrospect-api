@@ -1,6 +1,6 @@
 import { Db } from 'mongodb';
 import { GraphQLResolveInfo } from 'graphql';
-import { DataLoaders } from '../dataLoaders';
+import DataLoaders from '../dataLoaders';
 
 /**
  * Resolver's Context argument
