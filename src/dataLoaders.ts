@@ -43,17 +43,6 @@ export default class DataLoaders {
         },
         {
           $lookup: {
-            from: 'persons',
-            localField: 'personId',
-            foreignField: '_id',
-            as: 'person'
-          }
-        },
-        {
-          $unwind: '$person'
-        },
-        {
-          $lookup: {
             from: 'locations',
             localField: 'locationId',
             foreignField: '_id',
@@ -66,7 +55,7 @@ export default class DataLoaders {
       ])
       .toArray();
 
-    const relationsMap: { [key: string]: MixedRelation[] } = {};
+    const relationsMap: ObjectMap<MixedRelation[]> = {};
 
     queryResult.forEach((relation) => {
       if (!relationsMap[relation.personId.toString()]) {
@@ -84,7 +73,7 @@ export default class DataLoaders {
    */
   private async batchPersonsByIds(personIds: string[]): Promise<PersonDBScheme[]> {
     const queryResult = await this.dbConnection.collection<PersonDBScheme>('persons')
-      .find({ personId: { $in: personIds.map(id => new ObjectId(id)) } })
+      .find({ _id: { $in: personIds.map(id => new ObjectId(id)) } })
       .toArray();
 
     const personsMap: ObjectMap<PersonDBScheme> = {};

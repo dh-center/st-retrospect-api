@@ -1,7 +1,8 @@
 import { ObjectId } from 'mongodb';
-import { MultilingualString } from '../types/graphql';
+import { MultilingualString, ResolverContextBase } from '../types/graphql';
 import { Location } from './locations';
-import { Person } from './persons';
+import { multilingualPersonFields, Person } from './persons';
+import { filterEntityFields } from '../utils';
 
 /**
  * Multilingual relation fields
@@ -61,3 +62,19 @@ export interface RelationGraphQLScheme {
  * Type with fields from both GraphQL and database schemas
  */
 export type MixedRelation = RelationGraphQLScheme & RelationDbScheme;
+
+export default {
+  Relation: {
+    async person(
+      relation: RelationDbScheme,
+      _args: {},
+      { dataLoaders, languages }: ResolverContextBase
+    ): Promise<Person> {
+      const person = await dataLoaders.personsByIds.load(relation.personId.toString());
+
+      filterEntityFields(person, languages, multilingualPersonFields);
+
+      return person;
+    }
+  }
+};
