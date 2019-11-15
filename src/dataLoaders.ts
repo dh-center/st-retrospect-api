@@ -3,6 +3,7 @@ import { Db, ObjectId } from 'mongodb';
 import { MixedRelation } from './resolvers/relations';
 import { PersonDBScheme } from './resolvers/persons';
 import { ObjectMap } from './types/utils';
+import { LocationDBScheme } from './resolvers/locations';
 
 /**
  * Class for setting up data loaders
@@ -32,8 +33,16 @@ export default class DataLoaders {
   /**
    * Loader for fetching persons by their ids
    */
-  public personsByIds = new DataLoader(
+  public personById = new DataLoader(
     (personIds: string[]) => this.batchPersonsByIds(personIds),
+    { cache: false }
+  );
+
+  /**
+   * Loader for fetching locations by their ids
+   */
+  public locationById = new DataLoader(
+    (locationIds: string[]) => this.batchLocationsByIds(locationIds),
     { cache: false }
   );
 
@@ -43,22 +52,7 @@ export default class DataLoaders {
    */
   private async batchRelationsByPersonIds(personIds: string[]): Promise<MixedRelation[][]> {
     const queryResult = await this.dbConnection.collection<MixedRelation>('relations')
-      .aggregate([
-        {
-          $match: { personId: { $in: personIds.map(id => new ObjectId(id)) } }
-        },
-        {
-          $lookup: {
-            from: 'locations',
-            localField: 'locationId',
-            foreignField: '_id',
-            as: 'location'
-          }
-        },
-        {
-          $unwind: '$location'
-        }
-      ])
+      .find({ personId: { $in: personIds.map(id => new ObjectId(id)) } })
       .toArray();
 
     const relationsMap: ObjectMap<MixedRelation[]> = {};
@@ -68,7 +62,7 @@ export default class DataLoaders {
         relationsMap[relation.personId.toString()] = [];
       }
       relationsMap[relation.personId.toString()].push(relation);
-    }, {});
+    });
 
     return personIds.map((personId) => relationsMap[personId] || []);
   }
@@ -89,5 +83,23 @@ export default class DataLoaders {
     }, {});
 
     return personIds.map((personId) => personsMap[personId] || null);
+  }
+
+  /**
+   * Batching function for resolving locations from their ids
+   * @param locationIds - locations ids for resolving
+   */
+  private async batchLocationsByIds(locationIds: string[]): Promise<LocationDBScheme[]> {
+    const queryResult = await this.dbConnection.collection<PersonDBScheme>('locations')
+      .find({ _id: { $in: locationIds.map(id => new ObjectId(id)) } })
+      .toArray();
+
+    const locationsMap: ObjectMap<LocationDBScheme> = {};
+
+    queryResult.forEach((location) => {
+      locationsMap[location._id.toString()] = location;
+    });
+
+    return locationIds.map((locationId) => locationsMap[locationId] || null);
   }
 }

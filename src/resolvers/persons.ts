@@ -80,7 +80,6 @@ const Person: BaseTypeResolver<Person> = {
 
     relations.map((relation) => {
       filterEntityFields(relation, languages, multilingualRelationFields);
-      filterEntityFields(relation.location, languages, multilingualLocationFields);
       return relation;
     });
 

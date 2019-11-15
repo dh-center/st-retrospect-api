@@ -28,6 +28,10 @@ export interface Location {
   coordinateY: number;
 }
 
+export interface LocationDBScheme {
+  _id: ObjectId;
+}
+
 const Query: BaseTypeResolver = {
   /**
    * Returns specific location

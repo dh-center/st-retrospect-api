@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { MultilingualString, ResolverContextBase } from '../types/graphql';
-import { Location } from './locations';
+import {Location, LocationDBScheme, multilingualLocationFields} from './locations';
 import { multilingualPersonFields, Person } from './persons';
 import { filterEntityFields } from '../utils';
 
@@ -77,7 +77,7 @@ export default {
       _args: {},
       { dataLoaders, languages }: ResolverContextBase
     ): Promise<Person | null> {
-      const person = await dataLoaders.personsByIds.load(relation.personId.toString());
+      const person = await dataLoaders.personById.load(relation.personId.toString());
 
       if (!person) {
         return null;
@@ -86,6 +86,29 @@ export default {
       filterEntityFields(person, languages, multilingualPersonFields);
 
       return person;
+    },
+
+    /**
+     * Resolver for relation's person
+     * @param relation - the object that contains the result returned from the resolver on the parent field
+     * @param _args - empty args list
+     * @param dataLoaders - DataLoaders for fetching data
+     * @param languages - languages in which return data
+     */
+    async location(
+      relation: RelationDbScheme,
+      _args: {},
+      { dataLoaders, languages }: ResolverContextBase
+    ): Promise<LocationDBScheme | null> {
+      const location = await dataLoaders.locationById.load(relation.locationId.toString());
+
+      if (!location) {
+        return null;
+      }
+
+      filterEntityFields(location, languages, multilingualLocationFields);
+
+      return location;
     }
   }
 };
