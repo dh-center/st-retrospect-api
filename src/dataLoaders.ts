@@ -14,7 +14,7 @@ export default class DataLoaders {
   private dbConnection: Db;
 
   /**
-   *
+   * Creates DataLoaders instance
    * @param dbConnection
    */
   constructor(dbConnection: Db) {
