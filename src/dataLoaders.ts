@@ -1,6 +1,6 @@
 import DataLoader from 'dataloader';
 import { Db, ObjectId } from 'mongodb';
-import { MixedRelation } from './resolvers/relations';
+import { RelationDbScheme, RelationTypeDBScheme } from './resolvers/relations';
 import { PersonDBScheme } from './resolvers/persons';
 import { ObjectMap } from './types/utils';
 import { LocationDBScheme } from './resolvers/locations';
@@ -39,6 +39,13 @@ export default class DataLoaders {
   );
 
   /**
+   * Loader for fetching relation types by their ids
+   */
+  public relationTypeById = new DataLoader(
+    (relationTypesIds: string[]) => this.batchRelationTypesByIds(relationTypesIds)
+  );
+
+  /**
    * Loader for fetching locations by their ids
    */
   public locationById = new DataLoader(
@@ -50,12 +57,12 @@ export default class DataLoaders {
    * Batching function for resolving relations from persons ids
    * @param personIds - persons ids for resolving
    */
-  private async batchRelationsByPersonIds(personIds: string[]): Promise<MixedRelation[][]> {
-    const queryResult = await this.dbConnection.collection<MixedRelation>('relations')
+  private async batchRelationsByPersonIds(personIds: string[]): Promise<RelationDbScheme[][]> {
+    const queryResult = await this.dbConnection.collection<RelationDbScheme>('relations')
       .find({ personId: { $in: personIds.map(id => new ObjectId(id)) } })
       .toArray();
 
-    const relationsMap: ObjectMap<MixedRelation[]> = {};
+    const relationsMap: ObjectMap<RelationDbScheme[]> = {};
 
     queryResult.forEach((relation) => {
       if (!relationsMap[relation.personId.toString()]) {
@@ -101,5 +108,23 @@ export default class DataLoaders {
     });
 
     return locationIds.map((locationId) => locationsMap[locationId] || null);
+  }
+
+  /**
+   * Batching function for resolving relation types from their ids
+   * @param relationTypesIds - relation types ids for resolving
+   */
+  private async batchRelationTypesByIds(relationTypesIds: string[]): Promise<RelationTypeDBScheme[]> {
+    const queryResult = await this.dbConnection.collection<RelationTypeDBScheme>('relationtypes')
+      .find({ _id: { $in: relationTypesIds.map(id => new ObjectId(id)) } })
+      .toArray();
+
+    const relationTypesMap: ObjectMap<RelationTypeDBScheme> = {};
+
+    queryResult.forEach((relationType) => {
+      relationTypesMap[relationType._id.toString()] = relationType;
+    });
+
+    return relationTypesIds.map((relationTypeId) => relationTypesMap[relationTypeId] || null);
   }
 }

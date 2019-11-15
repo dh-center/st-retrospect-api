@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { MultilingualString, ResolverContextBase } from '../types/graphql';
-import {Location, LocationDBScheme, multilingualLocationFields} from './locations';
+import { LocationDBScheme, multilingualLocationFields } from './locations';
 import { multilingualPersonFields, Person } from './persons';
 import { filterEntityFields } from '../utils';
 
@@ -9,6 +9,13 @@ import { filterEntityFields } from '../utils';
  */
 export const multilingualRelationFields = [
   'quote'
+];
+
+/**
+ * Multilingual relation type fields
+ */
+export const multilingualRelationTypeFields = [
+  'name'
 ];
 
 /**
@@ -31,26 +38,9 @@ export interface RelationDbScheme {
   personId: ObjectId;
 
   /**
-   * Relation quote
+   * Relation type id
    */
-  quote: MultilingualString;
-}
-
-export interface RelationGraphQLScheme {
-  /**
-   * Relation id
-   */
-  id: ObjectId | string;
-
-  /**
-   * Linked location
-   */
-  location: Location;
-
-  /**
-   * Linked person
-   */
-  person: Person;
+  relationId: ObjectId;
 
   /**
    * Relation quote
@@ -58,10 +48,15 @@ export interface RelationGraphQLScheme {
   quote: MultilingualString;
 }
 
-/**
- * Type with fields from both GraphQL and database schemas
- */
-export type MixedRelation = RelationGraphQLScheme & RelationDbScheme;
+export interface RelationTypeDBScheme {
+  _id: ObjectId;
+  name: MultilingualString;
+  synonyms: [RelationSynonymDBScheme];
+}
+
+export interface RelationSynonymDBScheme {
+  name: MultilingualString;
+}
 
 export default {
   Relation: {
@@ -109,6 +104,29 @@ export default {
       filterEntityFields(location, languages, multilingualLocationFields);
 
       return location;
+    },
+
+    /**
+     * Resolver for relation's type
+     * @param relation - the object that contains the result returned from the resolver on the parent field
+     * @param _args - empty args list
+     * @param dataLoaders - DataLoaders for fetching data
+     * @param languages - languages in which return data
+     */
+    async relationType(
+      relation: RelationDbScheme,
+      _args: {},
+      { dataLoaders, languages }: ResolverContextBase
+    ): Promise<RelationTypeDBScheme | null> {
+      const relationType = await dataLoaders.relationTypeById.load(relation.relationId.toString());
+
+      if (!relationType) {
+        return null;
+      }
+
+      filterEntityFields(relationType, languages, multilingualRelationTypeFields);
+
+      return relationType;
     }
   }
 };

@@ -1,6 +1,9 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
+  """
+  Represents relation between person and location
+  """
   type Relation {
     """
     Relation's id
@@ -20,11 +23,31 @@ export default gql`
     """
     Relation type
     """  
-    relationType: String
+    relationType: RelationType
       
     """
     Relation's quote
     """  
     quote: JSON
+  }
+  
+  """
+  Represents one of the relations types
+  """
+  type RelationType {
+    """
+    Relation type id
+    """
+    id: ID! @renameField(name: "_id")
+    
+    """
+    Relation type name
+    """
+    name: JSON
+    
+    """
+    Relation type synonyms
+    """
+    synonyms: [JSON]
   }
 `;
