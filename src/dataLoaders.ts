@@ -34,7 +34,7 @@ export default class DataLoaders {
    * Loader for fetching persons by their ids
    */
   public personById = new DataLoader(
-    (personIds: string[]) => this.batchPersonsByIds(personIds),
+    (personIds: string[]) => this.batchByIds<PersonDBScheme>('persons', personIds),
     { cache: false }
   );
 
@@ -42,7 +42,7 @@ export default class DataLoaders {
    * Loader for fetching relation types by their ids
    */
   public relationTypeById = new DataLoader(
-    (relationTypesIds: string[]) => this.batchRelationTypesByIds(relationTypesIds),
+    (relationTypesIds: string[]) => this.batchByIds<RelationTypeDBScheme>('relationtypes', relationTypesIds),
     { cache: false }
   );
 
@@ -50,7 +50,7 @@ export default class DataLoaders {
    * Loader for fetching locations by their ids
    */
   public locationById = new DataLoader(
-    (locationIds: string[]) => this.batchLocationsByIds(locationIds),
+    (locationIds: string[]) => this.batchByIds<LocationDBScheme>('locations', locationIds),
     { cache: false }
   );
 
@@ -76,56 +76,23 @@ export default class DataLoaders {
   }
 
   /**
-   * Batching function for resolving persons from their ids
-   * @param personIds - persons ids for resolving
+   * Batching function for resolving entities from their ids
+   * @param collectionName
+   * @param ids - ids for resolving
    */
-  private async batchPersonsByIds(personIds: string[]): Promise<PersonDBScheme[]> {
-    const queryResult = await this.dbConnection.collection<PersonDBScheme>('persons')
-      .find({ _id: { $in: personIds.map(id => new ObjectId(id)) } })
+  private async batchByIds<T extends {_id: ObjectId}>(collectionName: string, ids: string[]): Promise<(T| null)[]> {
+    const queryResult = await this.dbConnection.collection(collectionName)
+      .find({
+        _id: { $in: ids.map(id => new ObjectId(id)) }
+      })
       .toArray();
 
-    const personsMap: ObjectMap<PersonDBScheme> = {};
+    const personsMap: ObjectMap<T> = {};
 
-    queryResult.forEach((person) => {
-      personsMap[person._id.toString()] = person;
+    queryResult.forEach((entity: T) => {
+      personsMap[entity._id.toString()] = entity;
     }, {});
 
-    return personIds.map((personId) => personsMap[personId] || null);
-  }
-
-  /**
-   * Batching function for resolving locations from their ids
-   * @param locationIds - locations ids for resolving
-   */
-  private async batchLocationsByIds(locationIds: string[]): Promise<LocationDBScheme[]> {
-    const queryResult = await this.dbConnection.collection<PersonDBScheme>('locations')
-      .find({ _id: { $in: locationIds.map(id => new ObjectId(id)) } })
-      .toArray();
-
-    const locationsMap: ObjectMap<LocationDBScheme> = {};
-
-    queryResult.forEach((location) => {
-      locationsMap[location._id.toString()] = location;
-    });
-
-    return locationIds.map((locationId) => locationsMap[locationId] || null);
-  }
-
-  /**
-   * Batching function for resolving relation types from their ids
-   * @param relationTypesIds - relation types ids for resolving
-   */
-  private async batchRelationTypesByIds(relationTypesIds: string[]): Promise<RelationTypeDBScheme[]> {
-    const queryResult = await this.dbConnection.collection<RelationTypeDBScheme>('relationtypes')
-      .find({ _id: { $in: relationTypesIds.map(id => new ObjectId(id)) } })
-      .toArray();
-
-    const relationTypesMap: ObjectMap<RelationTypeDBScheme> = {};
-
-    queryResult.forEach((relationType) => {
-      relationTypesMap[relationType._id.toString()] = relationType;
-    });
-
-    return relationTypesIds.map((relationTypeId) => relationTypesMap[relationTypeId] || null);
+    return ids.map((entityId) => personsMap[entityId] as T || null);
   }
 }
