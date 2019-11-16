@@ -1,7 +1,6 @@
 import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
-import { multilingualLocationFields } from './locations';
 import { multilingualRelationFields } from './relations';
 
 /**
@@ -80,7 +79,6 @@ const Person: BaseTypeResolver<Person> = {
 
     relations.map((relation) => {
       filterEntityFields(relation, languages, multilingualRelationFields);
-      filterEntityFields(relation.location, languages, multilingualLocationFields);
       return relation;
     });
 

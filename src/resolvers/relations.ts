@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { MultilingualString, ResolverContextBase } from '../types/graphql';
-import { Location } from './locations';
+import { LocationDBScheme, multilingualLocationFields } from './locations';
 import { multilingualPersonFields, Person } from './persons';
 import { filterEntityFields } from '../utils';
 
@@ -9,6 +9,13 @@ import { filterEntityFields } from '../utils';
  */
 export const multilingualRelationFields = [
   'quote'
+];
+
+/**
+ * Multilingual relation type fields
+ */
+export const multilingualRelationTypeFields = [
+  'name'
 ];
 
 /**
@@ -31,26 +38,9 @@ export interface RelationDbScheme {
   personId: ObjectId;
 
   /**
-   * Relation quote
+   * Relation type id
    */
-  quote: MultilingualString;
-}
-
-export interface RelationGraphQLScheme {
-  /**
-   * Relation id
-   */
-  id: ObjectId | string;
-
-  /**
-   * Linked location
-   */
-  location: Location;
-
-  /**
-   * Linked person
-   */
-  person: Person;
+  relationId: ObjectId;
 
   /**
    * Relation quote
@@ -59,9 +49,34 @@ export interface RelationGraphQLScheme {
 }
 
 /**
- * Type with fields from both GraphQL and database schemas
+ * Relation type DB representation
  */
-export type MixedRelation = RelationGraphQLScheme & RelationDbScheme;
+export interface RelationTypeDBScheme {
+  /**
+   * Relation type id
+   */
+  _id: ObjectId;
+
+  /**
+   * Relation type name
+   */
+  name: MultilingualString;
+
+  /**
+   * Relation type synonym
+   */
+  synonyms: [RelationSynonymDBScheme];
+}
+
+/**
+ * Relation type synonym representation
+ */
+export interface RelationSynonymDBScheme {
+  /**
+   * Synonym name
+   */
+  name: MultilingualString;
+}
 
 export default {
   Relation: {
@@ -77,7 +92,7 @@ export default {
       _args: {},
       { dataLoaders, languages }: ResolverContextBase
     ): Promise<Person | null> {
-      const person = await dataLoaders.personsByIds.load(relation.personId.toString());
+      const person = await dataLoaders.personById.load(relation.personId.toString());
 
       if (!person) {
         return null;
@@ -86,6 +101,79 @@ export default {
       filterEntityFields(person, languages, multilingualPersonFields);
 
       return person;
+    },
+
+    /**
+     * Resolver for relation's person
+     * @param relation - the object that contains the result returned from the resolver on the parent field
+     * @param _args - empty args list
+     * @param dataLoaders - DataLoaders for fetching data
+     * @param languages - languages in which return data
+     */
+    async location(
+      relation: RelationDbScheme,
+      _args: {},
+      { dataLoaders, languages }: ResolverContextBase
+    ): Promise<LocationDBScheme | null> {
+      const location = await dataLoaders.locationById.load(relation.locationId.toString());
+
+      if (!location) {
+        return null;
+      }
+
+      filterEntityFields(location, languages, multilingualLocationFields);
+
+      return location;
+    },
+
+    /**
+     * Resolver for relation's type
+     * @param relation - the object that contains the result returned from the resolver on the parent field
+     * @param _args - empty args list
+     * @param dataLoaders - DataLoaders for fetching data
+     * @param languages - languages in which return data
+     */
+    async relationType(
+      relation: RelationDbScheme,
+      _args: {},
+      { dataLoaders, languages }: ResolverContextBase
+    ): Promise<RelationTypeDBScheme | null> {
+      if (!relation.relationId) {
+        return null;
+      }
+
+      const relationType = await dataLoaders.relationTypeById.load(relation.relationId.toString());
+
+      if (!relationType) {
+        return null;
+      }
+
+      filterEntityFields(relationType, languages, multilingualRelationTypeFields);
+
+      return relationType;
+    }
+  },
+  RelationType: {
+    /**
+     * Resolver for relation type synonyms
+     * @param relation - the object that contains the result returned from the resolver on the parent field
+     * @param _args - empty args list
+     * @param dataLoaders - DataLoaders for fetching data
+     * @param languages - languages in which return data
+     */
+    synonyms(
+      relation: RelationTypeDBScheme,
+      _args: {},
+      { languages }: ResolverContextBase
+    ): (MultilingualString | null)[] {
+      return relation.synonyms.map((synonym) => {
+        if (!synonym) {
+          return null;
+        }
+
+        filterEntityFields(synonym, languages, multilingualRelationTypeFields);
+        return synonym.name;
+      });
     }
   }
 };
