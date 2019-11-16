@@ -42,7 +42,8 @@ export default class DataLoaders {
    * Loader for fetching relation types by their ids
    */
   public relationTypeById = new DataLoader(
-    (relationTypesIds: string[]) => this.batchRelationTypesByIds(relationTypesIds)
+    (relationTypesIds: string[]) => this.batchRelationTypesByIds(relationTypesIds),
+    { cache: false }
   );
 
   /**

@@ -48,13 +48,33 @@ export interface RelationDbScheme {
   quote: MultilingualString;
 }
 
+/**
+ * Relation type DB representation
+ */
 export interface RelationTypeDBScheme {
+  /**
+   * Relation type id
+   */
   _id: ObjectId;
+
+  /**
+   * Relation type name
+   */
   name: MultilingualString;
+
+  /**
+   * Relation type synonym
+   */
   synonyms: [RelationSynonymDBScheme];
 }
 
+/**
+ * Relation type synonym representation
+ */
 export interface RelationSynonymDBScheme {
+  /**
+   * Synonym name
+   */
   name: MultilingualString;
 }
 
@@ -127,6 +147,25 @@ export default {
       filterEntityFields(relationType, languages, multilingualRelationTypeFields);
 
       return relationType;
+    }
+  },
+  RelationType: {
+    /**
+     * Resolver for relation type synonyms
+     * @param relation - the object that contains the result returned from the resolver on the parent field
+     * @param _args - empty args list
+     * @param dataLoaders - DataLoaders for fetching data
+     * @param languages - languages in which return data
+     */
+    synonyms(
+      relation: RelationTypeDBScheme,
+      _args: {},
+      { languages }: ResolverContextBase
+    ): MultilingualString[] {
+      return relation.synonyms.map((synonym) => {
+        filterEntityFields(synonym, languages, multilingualRelationTypeFields);
+        return synonym.name;
+      });
     }
   }
 };
