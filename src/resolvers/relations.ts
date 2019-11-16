@@ -161,8 +161,12 @@ export default {
       relation: RelationTypeDBScheme,
       _args: {},
       { languages }: ResolverContextBase
-    ): MultilingualString[] {
+    ): (MultilingualString | null)[] {
       return relation.synonyms.map((synonym) => {
+        if (!synonym) {
+          return null;
+        }
+
         filterEntityFields(synonym, languages, multilingualRelationTypeFields);
         return synonym.name;
       });
