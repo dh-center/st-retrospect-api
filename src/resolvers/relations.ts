@@ -138,6 +138,10 @@ export default {
       _args: {},
       { dataLoaders, languages }: ResolverContextBase
     ): Promise<RelationTypeDBScheme | null> {
+      if (!relation.relationId) {
+        return null;
+      }
+
       const relationType = await dataLoaders.relationTypeById.load(relation.relationId.toString());
 
       if (!relationType) {
