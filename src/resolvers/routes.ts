@@ -12,6 +12,10 @@ export const multilingualRouteFields = [
   'description'
 ];
 
+export interface RouteDBScheme {
+  _id: ObjectId;
+}
+
 /**
  * Input type to search routes
  */
