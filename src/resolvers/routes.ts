@@ -13,6 +13,9 @@ export const multilingualRouteFields = [
 ];
 
 export interface RouteDBScheme {
+  /**
+   * Route id
+   */
   _id: ObjectId;
 }
 

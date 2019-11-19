@@ -4,7 +4,7 @@ import { RelationDbScheme, RelationTypeDBScheme } from './resolvers/relations';
 import { PersonDBScheme } from './resolvers/persons';
 import { ObjectMap } from './types/utils';
 import { LocationDBScheme } from './resolvers/locations';
-import {RouteDBScheme} from './resolvers/routes';
+import { RouteDBScheme } from './resolvers/routes';
 
 /**
  * Class for setting up data loaders
@@ -40,7 +40,7 @@ export default class DataLoaders {
   );
 
   /**
-   * Loader for fetching persons by their ids
+   * Loader for fetching routes by their ids
    */
   public routesById = new DataLoader(
     (routeIds: string[]) => this.batchByIds<RouteDBScheme>('routes', routeIds),

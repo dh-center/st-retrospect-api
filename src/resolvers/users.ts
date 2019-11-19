@@ -4,8 +4,19 @@ import { filterEntityFields } from '../utils';
 import { multilingualRouteFields } from './routes';
 
 interface User {
+  /**
+   * User id
+   */
   _id: ObjectId;
+
+  /**
+   * Saved routes ids array
+   */
   savedRouteIds: ObjectId[];
+
+  /**
+   * Liked routes ids array
+   */
   likedRouteIds: ObjectId[];
 }
 
