@@ -114,7 +114,7 @@ const Mutation: BaseTypeResolver = {
 const User: BaseTypeResolver<User> = {
   /**
    * Returns saved routes
-   * @param user - the object that contains the result returned from the resolver on the user field
+   * @param user - user for resolving
    * @param _id - user id
    * @param data - empty arg
    * @param dataLoaders - DataLoaders for fetching data
@@ -135,7 +135,7 @@ const User: BaseTypeResolver<User> = {
 
   /**
    * Returns liked routes
-   * @param user - the object that contains the result returned from the resolver on the user field
+   * @param user - user for resolving
    * @param _id - user id
    * @param data - empty arg
    * @param dataLoaders - DataLoaders for fetching data
