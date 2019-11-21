@@ -12,12 +12,12 @@ interface User {
   /**
    * Saved routes ids array
    */
-  savedRouteIds: ObjectId[];
+  savedRouteIds: ObjectId[] | null;
 
   /**
    * Liked routes ids array
    */
-  likedRouteIds: ObjectId[];
+  likedRouteIds: ObjectId[] | null;
 }
 
 const Query: BaseTypeResolver = {
@@ -121,6 +121,10 @@ const User: BaseTypeResolver<User> = {
    * @param languages - languages in which return data
    */
   async savedRoutes(user, data, { dataLoaders, languages }) {
+    if (!user.savedRouteIds) {
+      return [];
+    }
+
     const savedRoutes = await dataLoaders.routesById.loadMany(user.savedRouteIds.map(id => id.toString()));
 
     return savedRoutes.filter((route) => {
@@ -143,6 +147,10 @@ const User: BaseTypeResolver<User> = {
    * @param languages - languages in which return data
    */
   async likedRoutes(user, data, { languages, dataLoaders }) {
+    if (!user.likedRouteIds) {
+      return [];
+    }
+
     const likedRoutes = await dataLoaders.routesById.loadMany(user.likedRouteIds.map(id => id.toString()));
 
     return likedRoutes.filter((route) => {
