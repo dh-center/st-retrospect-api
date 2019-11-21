@@ -123,14 +123,15 @@ const User: BaseTypeResolver<User> = {
   async savedRoutes(user, data, { dataLoaders, languages }) {
     const savedRoutes = await dataLoaders.routesById.loadMany(user.savedRouteIds.map(id => id.toString()));
 
-    savedRoutes.forEach((route) => {
+    return savedRoutes.filter((route) => {
       if (!route) {
-        return;
+        return false;
       }
-      filterEntityFields(route, languages, multilingualRouteFields);
-    });
 
-    return savedRoutes;
+      filterEntityFields(route, languages, multilingualRouteFields);
+
+      return true;
+    });
   },
 
   /**
@@ -144,14 +145,14 @@ const User: BaseTypeResolver<User> = {
   async likedRoutes(user, data, { languages, dataLoaders }) {
     const likedRoutes = await dataLoaders.routesById.loadMany(user.likedRouteIds.map(id => id.toString()));
 
-    likedRoutes.forEach((route) => {
+    return likedRoutes.filter((route) => {
       if (!route) {
-        return;
+        return false;
       }
       filterEntityFields(route, languages, multilingualRouteFields);
-    });
 
-    return likedRoutes;
+      return true;
+    });
   }
 };
 
