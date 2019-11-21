@@ -1,7 +1,7 @@
-import { BaseTypeResolver, PointCoordinates } from '../types/graphql';
+import { BaseTypeResolver, PointCoordinates, ResolverContextBase } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
-import { multilingualLocationFields, Location } from './locations';
+import { multilingualLocationFields, Location, LocationDBScheme } from './locations';
 import distance from '../utils/distance';
 
 /**
@@ -11,6 +11,18 @@ export const multilingualRouteFields = [
   'name',
   'description'
 ];
+
+export interface RouteDBScheme {
+  /**
+   * Route id
+   */
+  _id: ObjectId;
+
+  /**
+   * Locations making up the route
+   */
+  locationIds: ObjectId[];
+}
 
 /**
  * Input type to search routes
@@ -174,5 +186,27 @@ const Query: BaseTypeResolver = {
 };
 
 export default {
-  Query
+  Query,
+  Route: {
+    /**
+     * Resolver for routes locations
+     * @param route - route to resolve
+     * @param args - empty list of args
+     * @param dataLoaders - DataLoaders for fetching data
+     * @param languages - languages in which return data
+     */
+    async locations(route: RouteDBScheme, args: {}, { dataLoaders, languages }: ResolverContextBase): Promise<LocationDBScheme[]> {
+      const locations = await dataLoaders.locationById.loadMany(route.locationIds.map(id => id.toString()));
+
+      return locations.filter((location) => {
+        if (!location) {
+          return false;
+        }
+
+        filterEntityFields(location, languages, multilingualLocationFields);
+
+        return true;
+      }) as LocationDBScheme[];
+    }
+  }
 };
