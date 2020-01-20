@@ -66,5 +66,13 @@ export default gql`
     Get all locations
     """
     locations: [Location!]!
+
+    """
+    Get locations on user request
+    """
+    search(
+      "The string on the basis of which the request will be made"
+      searchString: String!
+    ): [Location!]!
   }
 `;

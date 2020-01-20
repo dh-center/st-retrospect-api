@@ -1,6 +1,7 @@
 import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
+import { PersonDBScheme } from './persons';
 
 /**
  * Multilingual location fields
@@ -70,6 +71,42 @@ const Query: BaseTypeResolver = {
       return location;
     });
     return locations;
+  },
+
+  /**
+   * Get locations on user request
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param searchString - the string on the basis of which the request will be made
+   * @param db - MongoDB connection to make queries
+   * @param languages - languages in which return data
+   * @param dataLoaders - DataLoaders for fetching data
+   */
+  async search(parent, { searchString }: {searchString: string}, { db, languages, dataLoaders }) {
+    const searchRegExp = new RegExp(searchString, 'i');
+    const persons = await db.collection<PersonDBScheme>('persons').find({
+      $or: [
+        { 'lastName.ru': searchRegExp },
+        { 'lastName.en': searchRegExp }
+      ]
+    }).toArray();
+    const personsIds = persons.map(person => person._id.toString());
+
+    const relations = await dataLoaders.relationByPersonId.loadMany(personsIds);
+    const locationsIds = relations
+      .flat()
+      .map(relation => relation.locationId.toString());
+
+    const locations = await dataLoaders.locationById.loadMany(locationsIds);
+
+    return locations.filter((location) => {
+      if (!location) {
+        return false;
+      }
+
+      filterEntityFields(location, languages, multilingualLocationFields);
+
+      return true;
+    }) as LocationDBScheme[];
   }
 };
 
