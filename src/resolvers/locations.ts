@@ -74,12 +74,12 @@ const Query: BaseTypeResolver = {
   },
 
   /**
-   * Returns all locations
+   * Get locations on user request
    * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param data - empty arg
+   * @param searchString - the string on the basis of which the request will be made
    * @param db - MongoDB connection to make queries
    * @param languages - languages in which return data
-   * @return {object[]}
+   * @param dataLoaders - DataLoaders for fetching data
    */
   async search(parent, { searchString }: {searchString: string}, { db, languages, dataLoaders }) {
     const searchRegExp = new RegExp(searchString, 'i');

@@ -68,10 +68,10 @@ export default gql`
     locations: [Location!]!
 
     """
-    Get all locations
+    Get locations on user request
     """
     search(
-      "Search filter"
+      "The string on the basis of which the request will be made"
       searchString: String!
     ): [Location!]!
   }
