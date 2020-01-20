@@ -66,5 +66,13 @@ export default gql`
     Get all locations
     """
     locations: [Location!]!
+
+    """
+    Get all locations
+    """
+    search(
+      "Search filter"
+      searchString: String!
+    ): [Location!]!
   }
 `;
