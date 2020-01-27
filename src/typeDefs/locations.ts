@@ -1,6 +1,24 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
+  """
+  Location type to add it to Location
+  """
+  type LocationType {
+    """
+    LocationType's ID
+    """
+    id: ID! @renameField(name: "_id")
+
+    """
+    LocationTypes's name
+    """
+    name: JSON
+  }
+
+  """
+  Location for displaying on map and making relations with persons
+  """
   type Location {
     """
     Location's ID
@@ -51,6 +69,11 @@ export default gql`
     Link with main photo
     """
     mainPhotoLink: String
+
+    """
+    Array of location's types
+    """
+    locationTypes: [LocationType!]!
   }
 
   extend type Query {
