@@ -1,4 +1,4 @@
-import { BaseTypeResolver } from '../types/graphql';
+import { BaseTypeResolver, MultilingualString, ResolverContextBase } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { filterEntityFields } from '../utils';
 import { PersonDBScheme } from './persons';
@@ -11,7 +11,9 @@ export const multilingualLocationFields = [
   'description'
 ];
 
-// @todo improve tipization
+/**
+ * Location representation in DataBase
+ */
 export interface Location {
   /**
    * Id of location
@@ -27,10 +29,35 @@ export interface Location {
    * Longitude of the location
    */
   coordinateY: number;
+
+  /**
+   * Array of location's types
+   */
+  locationTypesId: ObjectId[];
 }
 
 export interface LocationDBScheme {
   _id: ObjectId;
+
+  /**
+   * Array of location's types
+   */
+  locationTypesId?: (ObjectId | null)[];
+}
+
+/**
+ * LocationType representation in DataBase
+ */
+export interface LocationTypeDBScheme {
+  /**
+   * Id of locationType
+   */
+  _id: ObjectId;
+
+  /**
+   * Name of locationType
+   */
+  name: MultilingualString;
 }
 
 const Query: BaseTypeResolver = {
@@ -81,7 +108,7 @@ const Query: BaseTypeResolver = {
    * @param languages - languages in which return data
    * @param dataLoaders - DataLoaders for fetching data
    */
-  async search(parent, { searchString }: {searchString: string}, { db, languages, dataLoaders }) {
+  async search(parent, { searchString }: { searchString: string }, { db, languages, dataLoaders }) {
     const searchRegExp = new RegExp(searchString, 'i');
     const persons = await db.collection<PersonDBScheme>('persons').find({
       $or: [
@@ -110,6 +137,28 @@ const Query: BaseTypeResolver = {
   }
 };
 
+const Location = {
+  /**
+   *
+   * @param parent
+   * @param _args
+   * @param dataLoaders
+   */
+  async locationTypes(parent: LocationDBScheme, _args: undefined, { dataLoaders }: ResolverContextBase): Promise<LocationTypeDBScheme[]> {
+    if (!parent.locationTypesId) {
+      return [];
+    }
+
+    const locationTypes = await dataLoaders.locationTypeById.loadMany(
+      (parent.locationTypesId.filter(id => id) as ObjectId[])
+        .map(id => id.toString())
+    );
+
+    return locationTypes.filter(type => type) as LocationTypeDBScheme[];
+  }
+};
+
 export default {
-  Query
+  Query,
+  Location
 };
