@@ -9,6 +9,7 @@ export default gql`
     LocationType's ID
     """
     id: ID! @renameField(name: "_id")
+
     """
     LocationTypes's name
     """
@@ -68,6 +69,7 @@ export default gql`
     Link with main photo
     """
     mainPhotoLink: String
+
     """
     Array of location's types
     """

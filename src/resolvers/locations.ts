@@ -139,10 +139,10 @@ const Query: BaseTypeResolver = {
 
 const Location = {
   /**
-   *
-   * @param parent
-   * @param _args
-   * @param dataLoaders
+   * Returns type of location
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param _args - empty list of args
+   * @param dataLoaders - DataLoaders for fetching data
    */
   async locationTypes(parent: LocationDBScheme, _args: undefined, { dataLoaders }: ResolverContextBase): Promise<LocationTypeDBScheme[]> {
     if (!parent.locationTypesId) {
