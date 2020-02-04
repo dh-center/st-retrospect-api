@@ -203,6 +203,12 @@ const Location = {
     return locationTypes.filter(type => type) as LocationTypeDBScheme[];
   },
 
+  /**
+   * Returns address of location
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param _args - empty list of args
+   * @param dataLoaders - DataLoaders for fetching data
+   */
   async addresses(parent: LocationDBScheme, _args: undefined, { dataLoaders }: ResolverContextBase): Promise<AddressesDBScheme[]> {
     if (!parent.addressesId) {
       return [];
