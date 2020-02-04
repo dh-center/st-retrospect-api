@@ -17,6 +17,41 @@ export default gql`
   }
 
   """
+  Location address representation
+  """
+  type Address {
+    """
+    Address's ID
+    """
+    id: ID! @renameField(name: "_id")
+
+    """
+    Street on which the location is located
+    """
+    street: JSON
+
+    """
+    Build name
+    """
+    build: JSON
+
+    """
+    House number on the street
+    """
+    homeNumber: String
+
+    """
+    Corps of home
+    """
+    housing: String
+
+    """
+    Link for location info
+    """
+    link: String
+  }
+
+  """
   Location for displaying on map and making relations with persons
   """
   type Location {
@@ -74,6 +109,11 @@ export default gql`
     Array of location's types
     """
     locationTypes: [LocationType!]!
+
+    """
+    Array of addresses ids
+    """
+    addresses: [Address!]!
   }
 
   extend type Query {
