@@ -110,6 +110,9 @@ export default gql`
     """
     locationTypes: [LocationType!]!
 
+    """
+    Array of addresses ids
+    """
     addresses: [Address!]!
   }
 
