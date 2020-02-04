@@ -17,7 +17,7 @@ export default gql`
   }
 
   """
-  Location address to add it to Location
+  Location address representation
   """
   type Address {
     """

@@ -51,7 +51,7 @@ export interface LocationDBScheme {
   locationTypesId?: (ObjectId | null)[];
 
   /**
-   * Array of addresses
+   * Array of addresses ids
    */
   addressesId?: (ObjectId | null)[];
 }
