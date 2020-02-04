@@ -204,7 +204,7 @@ const Location = {
   },
 
   /**
-   * Returns address of location
+   * Returns addresses of location
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param _args - empty list of args
    * @param dataLoaders - DataLoaders for fetching data
