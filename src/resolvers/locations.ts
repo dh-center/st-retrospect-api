@@ -1,5 +1,6 @@
 import { BaseTypeResolver, MultilingualString, ResolverContextBase } from '../types/graphql';
 import { ObjectId } from 'mongodb';
+import { UserInputError } from 'apollo-server-express';
 import { filterEntityFields } from '../utils';
 import { PersonDBScheme } from './persons';
 
@@ -147,14 +148,18 @@ const Query: BaseTypeResolver = {
   },
 
   /**
-   * Get locations on user request
+   * Get relations on user request
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param searchString - the string on the basis of which the request will be made
    * @param db - MongoDB connection to make queries
-   * @param languages - languages in which return data
    * @param dataLoaders - DataLoaders for fetching data
    */
-  async search(parent, { searchString }: { searchString: string }, { db, languages, dataLoaders }) {
+  async search(parent, { searchString }: { searchString: string }, { db, dataLoaders }) {
+    searchString = searchString.trim();
+    if (searchString.length <= 2) {
+      throw new UserInputError('Search string must contain at least 3 characters');
+    }
+
     const searchRegExp = new RegExp(searchString, 'i');
     const persons = await db.collection<PersonDBScheme>('persons').find({
       $or: [
@@ -164,22 +169,7 @@ const Query: BaseTypeResolver = {
     }).toArray();
     const personsIds = persons.map(person => person._id.toString());
 
-    const relations = await dataLoaders.relationByPersonId.loadMany(personsIds);
-    const locationsIds = relations
-      .flat()
-      .map(relation => relation.locationId.toString());
-
-    const locations = await dataLoaders.locationById.loadMany(locationsIds);
-
-    return locations.filter((location) => {
-      if (!location) {
-        return false;
-      }
-
-      filterEntityFields(location, languages, multilingualLocationFields);
-
-      return true;
-    }) as LocationDBScheme[];
+    return (await dataLoaders.relationByPersonId.loadMany(personsIds)).flat();
   }
 };
 
