@@ -3,7 +3,7 @@ import { Db, ObjectId } from 'mongodb';
 import { RelationDbScheme, RelationTypeDBScheme } from './resolvers/relations';
 import { PersonDBScheme } from './resolvers/persons';
 import { ObjectMap } from './types/utils';
-import { LocationDBScheme, LocationTypeDBScheme } from './resolvers/locations';
+import { AddressesDBScheme, LocationDBScheme, LocationTypeDBScheme } from './resolvers/locations';
 import { RouteDBScheme } from './resolvers/routes';
 
 /**
@@ -44,6 +44,14 @@ export default class DataLoaders {
    */
   public routesById = new DataLoader(
     (routeIds: string[]) => this.batchByIds<RouteDBScheme>('routes', routeIds),
+    { cache: false }
+  );
+
+  /**
+   * Loader for fetching addresses by their ids
+   */
+  public addressesById = new DataLoader(
+    (addressIds: string[]) => this.batchByIds<AddressesDBScheme>('addresses', addressIds),
     { cache: false }
   );
 

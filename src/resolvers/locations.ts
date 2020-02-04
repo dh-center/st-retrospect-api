@@ -12,7 +12,7 @@ export const multilingualLocationFields = [
 ];
 
 /**
- * Location representation in DataBase
+ * @deprecated
  */
 export interface Location {
   /**
@@ -36,13 +36,59 @@ export interface Location {
   locationTypesId: ObjectId[];
 }
 
+/**
+ * Location representation in DataBase
+ */
 export interface LocationDBScheme {
+  /**
+   * Id of location
+   */
   _id: ObjectId;
 
   /**
    * Array of location's types
    */
   locationTypesId?: (ObjectId | null)[];
+
+  /**
+   * Array of addresses
+   */
+  addressesId?: (ObjectId | null)[];
+}
+
+/**
+ * Address representation in DataBase
+ */
+export interface AddressesDBScheme {
+  /**
+   * Id of address
+   */
+  _id: ObjectId;
+
+  /**
+   * Street on which the location is located
+   */
+  street: MultilingualString;
+
+  /**
+   * Build name
+   */
+  build: MultilingualString;
+
+  /**
+   * House number on the street
+   */
+  homeNumber: string;
+
+  /**
+   * Corps of home
+   */
+  housing: string;
+
+  /**
+   * Link for location info
+   */
+  link: string;
 }
 
 /**
@@ -155,6 +201,19 @@ const Location = {
     );
 
     return locationTypes.filter(type => type) as LocationTypeDBScheme[];
+  },
+
+  async addresses(parent: LocationDBScheme, _args: undefined, { dataLoaders }: ResolverContextBase): Promise<AddressesDBScheme[]> {
+    if (!parent.addressesId) {
+      return [];
+    }
+
+    const addresses = await dataLoaders.addressesById.loadMany(
+      (parent.addressesId.filter(id => id) as ObjectId[])
+        .map(id => id.toString())
+    );
+
+    return addresses.filter(type => type) as AddressesDBScheme[];
   }
 };
 
