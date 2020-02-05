@@ -1,4 +1,4 @@
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, ValidationError } from 'apollo-server-express';
 import typeDefs from './typeDefs';
 import resolvers from './resolvers';
 import express from 'express';
@@ -56,7 +56,9 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
     typeDefs,
     resolvers,
     formatError: (error: GraphQLError): GraphQLError => {
-      Sentry.captureException(error);
+      if (!(error instanceof ValidationError)) {
+        Sentry.captureException(error);
+      }
       return error;
     },
     playground: true,
