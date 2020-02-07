@@ -18,6 +18,11 @@ export default gql`
     lastName: JSON
 
     """
+    Person's patronymic
+    """
+    patronymic: JSON
+
+    """
     Person's pseudonym
     """
     pseudonym: JSON
@@ -41,7 +46,7 @@ export default gql`
     Person's death date
     """
     deathDate: String
-      
+
     """
     Person relations
     """
