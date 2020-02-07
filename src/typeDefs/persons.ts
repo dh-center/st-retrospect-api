@@ -18,7 +18,7 @@ export default gql`
     lastName: JSON
 
     """
-    Person's second name
+    Person's patronymic
     """
     patronymic: JSON
 
