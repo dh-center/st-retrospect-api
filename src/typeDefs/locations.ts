@@ -114,6 +114,11 @@ export default gql`
     Array of addresses ids
     """
     addresses: [Address!]!
+
+    """
+    Location relations
+    """
+    relations: [Relation!]!
   }
 
   extend type Query {

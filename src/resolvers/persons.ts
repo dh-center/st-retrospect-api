@@ -72,7 +72,6 @@ const Person: BaseTypeResolver<Person> = {
    * @param data - empty arg
    * @param languages - languages in which return data
    * @param dataLoaders - DataLoaders for fetching data
-   * @return {object[]}
    */
   async relations({ _id }, data, { languages, dataLoaders }) {
     const relations = await dataLoaders.relationByPersonId.load(_id.toString());

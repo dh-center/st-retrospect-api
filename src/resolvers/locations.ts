@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
 import { filterEntityFields } from '../utils';
 import { PersonDBScheme } from './persons';
+import { multilingualRelationFields, RelationDbScheme } from './relations';
 
 /**
  * Multilingual location fields
@@ -210,6 +211,24 @@ const Location = {
     );
 
     return addresses.filter(type => type) as AddressesDBScheme[];
+  },
+
+  /**
+   * Return all location relations
+   * @param _id - location id that returned from the resolver on the parent field
+   * @param _args - empty list of args
+   * @param languages - languages in which return data
+   * @param dataLoaders - DataLoaders for fetching data
+   */
+  async relations({ _id }: LocationDBScheme, _args: undefined, { languages, dataLoaders }: ResolverContextBase): Promise<RelationDbScheme[]> {
+    const relations = await dataLoaders.relationByLocationId.load(_id.toString());
+
+    relations.map((relation) => {
+      filterEntityFields(relation, languages, multilingualRelationFields);
+      return relation;
+    });
+
+    return relations;
   }
 };
 
