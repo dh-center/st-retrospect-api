@@ -115,6 +115,7 @@ const Query: BaseTypeResolver = {
    * @param id - location id
    * @param db - MongoDB connection to make queries
    * @param languages - languages in which return data
+   * @return {object}
    */
   async location(parent, { id }: { id: string }, { db, languages }) {
     const location = await db.collection('locations').findOne({
@@ -135,6 +136,7 @@ const Query: BaseTypeResolver = {
    * @param data - empty arg
    * @param db - MongoDB connection to make queries
    * @param languages - languages in which return data
+   * @return {object[]}
    */
   async locations(parent, data, { db, languages }) {
     const locations = await db.collection('locations').find({}).toArray();
