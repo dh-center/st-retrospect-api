@@ -32,6 +32,14 @@ export default class DataLoaders {
   );
 
   /**
+   * Loader for fetching relations by locations ids
+   */
+  public relationByLocationId = new DataLoader(
+    (locationIds: string[]) => this.batchRelationsByLocationIds(locationIds),
+    { cache: false }
+  );
+
+  /**
    * Loader for fetching persons by their ids
    */
   public personById = new DataLoader(
@@ -98,6 +106,27 @@ export default class DataLoaders {
     });
 
     return personIds.map((personId) => relationsMap[personId] || []);
+  }
+
+  /**
+   * Batching function for resolving relations from location ids
+   * @param locationIds - location ids for resolving
+   */
+  private async batchRelationsByLocationIds(locationIds: string[]): Promise<RelationDbScheme[][]> {
+    const queryResult = await this.dbConnection.collection<RelationDbScheme>('relations')
+      .find({ locationId: { $in: locationIds.map(id => new ObjectId(id)) } })
+      .toArray();
+
+    const relationsMap: ObjectMap<RelationDbScheme[]> = {};
+
+    queryResult.forEach((relation) => {
+      if (!relationsMap[relation.locationId.toString()]) {
+        relationsMap[relation.locationId.toString()] = [];
+      }
+      relationsMap[relation.locationId.toString()].push(relation);
+    });
+
+    return locationIds.map((personId) => relationsMap[personId] || []);
   }
 
   /**
