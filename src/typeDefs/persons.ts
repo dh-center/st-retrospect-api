@@ -51,6 +51,11 @@ export default gql`
     Person relations
     """
     relations: [Relation!]!
+
+    """
+    Person main photo
+    """
+    mainPhotoLink: String
   }
 
   extend type Query {
