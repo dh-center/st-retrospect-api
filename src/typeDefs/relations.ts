@@ -48,6 +48,6 @@ export default gql`
     """
     Relation type synonyms
     """
-    synonyms: [JSON] @multilingual
+    synonyms: [String] @multilingual
   }
 `;

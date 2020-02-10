@@ -4,7 +4,7 @@ import { type } from 'os';
 import { ResolverContextBase } from '../types/graphql';
 
 /**
- * Directive to filter the language
+ * Directive for picking only necessary language from multilingual fields
  */
 export default class Multilingual extends SchemaDirectiveVisitor {
   /**
