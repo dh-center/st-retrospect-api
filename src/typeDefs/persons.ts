@@ -10,32 +10,32 @@ export default gql`
     """
     Person's first name
     """
-    firstName: JSON
+    firstName: String @multilingual
 
     """
     Person's last name
     """
-    lastName: JSON
+    lastName: String @multilingual
 
     """
     Person's patronymic
     """
-    patronymic: JSON
+    patronymic: String @multilingual
 
     """
     Person's pseudonym
     """
-    pseudonym: JSON
+    pseudonym: String @multilingual
 
     """
     Person's profession
     """
-    profession: JSON
+    profession: String @multilingual
 
     """
     Person's description
     """
-    description: JSON
+    description: String @multilingual
 
     """
     Person's birth date

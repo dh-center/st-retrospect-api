@@ -57,10 +57,10 @@ const Query: BaseTypeResolver = {
   async persons(parent, data, { db, languages }) {
     const persons = await db.collection('persons').find({}).toArray();
 
-    persons.map((person) => {
-      filterEntityFields(person, languages, multilingualPersonFields);
-      return person;
-    });
+    // persons.map((person) => {
+    //   filterEntityFields(person, languages, multilingualPersonFields);
+    //   return person;
+    // });
     return persons;
   }
 };
