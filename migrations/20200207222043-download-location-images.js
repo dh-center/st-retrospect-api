@@ -1,28 +1,11 @@
 const axios = require('axios');
-const path = require('path');
 const mime = require('mime-types');
-const fs = require('fs');
-const fsExtra = require('fs-extra');
 const AWS = require('aws-sdk');
-
 
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_KEY
 });
-
-const uploadsDirPath = path.join(__dirname, '/uploads');
-
-function writeFile(filename, fileContent) {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(uploadsDirPath + '/' + filename, fileContent, (err) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve();
-    });
-  });
-}
 
 let requestsCount = 0;
 async function saveImage(filename, url) {
@@ -37,7 +20,7 @@ async function saveImage(filename, url) {
   });
   requestsCount++;
 
-  console.log(requestsCount, response.status);
+  // console.log(requestsCount, response.status);
 
   const extension = mime.extension(response.headers['content-type']);
 
@@ -84,10 +67,7 @@ function generateImageLink(key) {
 }
 
 module.exports = {
-  async up(db, client) {
-    // await fsExtra.mkdirp(uploadsDirPath);
-    // await fsExtra.emptyDir(uploadsDirPath);
-
+  async up(db) {
     let i = 0;
 
     const locations = await db.collection('locations').find({}).toArray();
@@ -109,6 +89,7 @@ module.exports = {
             }
           )
         } catch (e) {
+          console.log('main', location._id, location.mainPhotoLink)
           // console.log('SAVE ERROR for location with id ', location._id);
           // console.log(location.mainPhotoLink);
           // console.log(e);
@@ -128,6 +109,7 @@ module.exports = {
               const filename = await saveImage(`location-${i}-${index}`, link);
               newLinks.push(generateImageLink(filename));
             } catch (e) {
+              console.log(location._id, location.photoLinks[index])
               // console.log('SAVE ERROR for location with id ', location._id);
               // console.log(link);
             }

@@ -12,7 +12,6 @@
   "dependencies": {
     "aws-sdk": "^2.614.0",
     "axios": "^0.19.2",
-    "fs-extra": "^8.1.0",
     "mime-types": "^2.1.26"
   }
 }
