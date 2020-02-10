@@ -17,7 +17,7 @@ WORKDIR /usr/src/app
 
 COPY --from=builder /usr/src/app/build ./build
 COPY migrations ./migrations
-COPY migrate-mongo-config.js ./
+COPY migrate-mongo-config.js migrate-mongo-setup.sh ./
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 
 CMD ["node", "build/index.js"]
