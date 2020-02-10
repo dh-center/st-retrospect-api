@@ -56,6 +56,11 @@ export default gql`
     Person main photo
     """
     mainPhotoLink: String
+
+    """
+    Person's photos links
+    """
+    photoLinks: [String]
   }
 
   extend type Query {
