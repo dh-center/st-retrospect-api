@@ -53,6 +53,11 @@ export default gql`
     relations: [Relation!]!
 
     """
+    Person main photo
+    """
+    mainPhotoLink: String
+
+    """
     Person's photos links
     """
     photoLinks: [String]
