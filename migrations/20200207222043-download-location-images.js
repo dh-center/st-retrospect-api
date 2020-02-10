@@ -109,7 +109,7 @@ module.exports = {
               const filename = await saveImage(`location-${i}-${index}`, link);
               newLinks.push(generateImageLink(filename));
             } catch (e) {
-              console.log(location._id, location.photoLinks[index])
+              console.log(location._id, link)
               // console.log('SAVE ERROR for location with id ', location._id);
               // console.log(link);
             }
