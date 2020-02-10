@@ -8,6 +8,9 @@ const s3 = new AWS.S3({
 });
 
 let requestsCount = 0;
+let uploadedImagesCount = 0;
+let failedImagesCount = 0;
+
 async function saveImage(filename, url) {
   if (!url || /.html$/.test(url)) {
     return;
@@ -78,7 +81,7 @@ module.exports = {
 
       if (location.mainPhotoLink && !location.mainPhotoLink.startsWith(process.env.IMAGE_HOSTING_ENDPOINT)) {
         try {
-          const filename = await saveImage(`location-${i}-main`, location.mainPhotoLink);
+          const filename = await saveImage(`location-${i}-main${(new Date()).getTime().toString()}`, location.mainPhotoLink);
 
           await db.collection('locations').updateOne(
             {_id: location._id},
@@ -88,11 +91,13 @@ module.exports = {
               }
             }
           )
+          uploadedImagesCount++;
         } catch (e) {
           console.log('main', location._id, location.mainPhotoLink)
           // console.log('SAVE ERROR for location with id ', location._id);
           // console.log(location.mainPhotoLink);
           // console.log(e);
+          failedImagesCount++;
         }
       }
 
@@ -106,12 +111,14 @@ module.exports = {
         await Promise.all(location.photoLinks.split('\n').map(async (link, index) => {
           if (!link.startsWith(process.env.IMAGE_HOSTING_ENDPOINT)) {
             try {
-              const filename = await saveImage(`location-${i}-${index}`, link);
+              const filename = await saveImage(`location-${i}-${index}${(new Date()).getTime().toString()}`, link);
               newLinks.push(generateImageLink(filename));
+              uploadedImagesCount++;
             } catch (e) {
-              console.log(location._id, link)
+              console.log('non-main', location._id, link);
               // console.log('SAVE ERROR for location with id ', location._id);
               // console.log(link);
+              failedImagesCount++;
             }
           } else {
             newLinks.push(link);
@@ -130,6 +137,8 @@ module.exports = {
       }
       // console.log(`Finish processing ${i} location with id ${location._id}`);
     });
+
+    console.log(`Finish processing. ${uploadedImagesCount} images uploaded and ${failedImagesCount} failed`)
   },
 
   async down(db) {
