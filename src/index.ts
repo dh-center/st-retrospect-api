@@ -17,7 +17,6 @@ import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
 import DataLoaders from './dataLoaders';
-import multilingual from "./directives/multilingual";
 
 Sentry.init({ dsn: process.env.SENTRY_DSN });
 
