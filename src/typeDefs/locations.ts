@@ -13,7 +13,7 @@ export default gql`
     """
     LocationTypes's name
     """
-    name: JSON
+    name: String @multilingual
   }
 
   """
@@ -28,12 +28,12 @@ export default gql`
     """
     Street on which the location is located
     """
-    street: JSON
+    street: String @multilingual
 
     """
     Build name
     """
-    build: JSON
+    build: String @multilingual
 
     """
     House number on the street
@@ -63,12 +63,12 @@ export default gql`
     """
     Location's name
     """
-    name: JSON
+    name: String @multilingual
 
     """
     Location's description
     """
-    description: JSON
+    description: String @multilingual
 
     """
     Location's construction date

@@ -7,30 +7,30 @@ export default gql`
   type Relation {
     """
     Relation's id
-    """  
+    """
     id: ID! @renameField(name: "_id")
-      
+
     """
     Person in relation
-    """  
+    """
     person: Person
-      
+
     """
     Location in relation
     """
     location: Location
-      
+
     """
     Relation type
-    """  
+    """
     relationType: RelationType
-      
+
     """
     Relation's quote
-    """  
-    quote: JSON
+    """
+    quote: String @multilingual
   }
-  
+
   """
   Represents one of the relations types
   """
@@ -39,15 +39,15 @@ export default gql`
     Relation type id
     """
     id: ID! @renameField(name: "_id")
-    
+
     """
     Relation type name
     """
-    name: JSON
-    
+    name: String @multilingual
+
     """
     Relation type synonyms
     """
-    synonyms: [JSON]
+    synonyms: [String] @multilingual
   }
 `;

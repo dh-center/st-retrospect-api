@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
-  
+
   """
   Input to search routes
   """
@@ -11,7 +11,7 @@ export default gql`
     """
     contains: String!
   }
-  
+
   """
   Route between locations
   """
@@ -24,28 +24,28 @@ export default gql`
     """
     Route name
     """
-    name: JSON!
+    name: String @multilingual
     """
     Route locations
     """
-    locations: [Location!]!
-    
+    locations: [Location]!
+
     """
     Route description
     """
-    description: JSON!
-    
+    description: String @multilingual
+
     """
     Route photo
     """
     photoLink: String
   }
-  
+
   input Coordinates {
     longitude: Float!
     latitude: Float!
   }
-  
+
   extend type Query {
     """
     Get all routes
@@ -54,21 +54,21 @@ export default gql`
       "Search filter"
       filter: RoutesFilter
     ): [Route!]!
-    
+
     """
     Get nearest routes
     """
     nearestRoutes(
       "Center coordinates"
       center: Coordinates!
-      
+
       "Search radius (in metres)"
       radius: Float = 4000
 
       "Search filter"
       filter: RoutesFilter
     ): [Route!]!
-    
+
     """
     Get specific route by id
     """

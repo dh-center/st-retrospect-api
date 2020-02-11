@@ -12,6 +12,7 @@ import router from './router';
 import { ApiError } from './errorTypes';
 import errorHandler from './middlewares/errorHandler';
 import renameFieldDirective from './directives/renameField';
+import Multilingual from './directives/multilingual';
 import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
@@ -63,7 +64,8 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
     },
     playground: true,
     schemaDirectives: {
-      renameField: renameFieldDirective
+      renameField: renameFieldDirective,
+      multilingual: Multilingual
     },
     async context({ req }): Promise<ResolverContextBase> {
       let languages: Languages[];
