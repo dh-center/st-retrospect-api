@@ -2,7 +2,7 @@ import { BaseTypeResolver, MultilingualString, ResolverContextBase } from '../ty
 import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
 import { filterEntityFields } from '../utils';
-import { PersonDBScheme } from './persons';
+import { Person, PersonDBScheme } from './persons';
 import { multilingualRelationFields, RelationDbScheme } from './relations';
 
 /**
@@ -229,6 +229,22 @@ const Location = {
     });
 
     return relations;
+  },
+
+  /**
+   * Return all architects
+   * @param _id - location id that returned from the resolver on the parent field
+   * @param _args - empty list of args
+   * @param dataLoaders - DataLoaders for fetching data
+   */
+  async architects({ _id }: LocationDBScheme, _args: undefined, { dataLoaders }: ResolverContextBase): Promise<PersonDBScheme[]> {
+    const relations = await dataLoaders.relationByLocationId.load(_id.toString());
+    const personsId = relations
+      .filter(relation => relation.relationId && relation.relationId.toString() === '5d84ee80ff41d8a1ef3b3317')
+      .map(relation => relation.personId && relation.personId.toString())
+      .filter(Boolean) as string[];
+
+    return (await dataLoaders.personById.loadMany(personsId)).filter(Boolean) as PersonDBScheme[];
   }
 };
 
