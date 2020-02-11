@@ -24,16 +24,16 @@ export default gql`
     """
     Route name
     """
-    name: String! @multilingual
+    name: String @multilingual
     """
     Route locations
     """
-    locations: [Location!]!
+    locations: [Location]!
 
     """
     Route description
     """
-    description: String! @multilingual
+    description: String @multilingual
 
     """
     Route photo

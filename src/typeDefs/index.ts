@@ -11,10 +11,12 @@ const rootSchema = gql`
   Directive for field renaming
   """
   directive @renameField(name: String!) on FIELD_DEFINITION
+
   """
   Directive for picking only necessary language from multilingual fields
   """
   directive @multilingual on FIELD_DEFINITION
+
   """
   Type for representing JSON object
   """

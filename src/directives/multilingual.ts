@@ -1,6 +1,5 @@
 import { SchemaDirectiveVisitor } from 'graphql-tools';
 import { defaultFieldResolver, GraphQLField } from 'graphql';
-import { type } from 'os';
 import { ResolverContextBase } from '../types/graphql';
 
 /**
