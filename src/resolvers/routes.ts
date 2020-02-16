@@ -1,16 +1,7 @@
 import { BaseTypeResolver, PointCoordinates, ResolverContextBase } from '../types/graphql';
 import { ObjectId } from 'mongodb';
-import { filterEntityFields } from '../utils';
-import { multilingualLocationFields, Location, LocationDBScheme } from './locations';
+import { LocationDBScheme } from './locations';
 import distance from '../utils/distance';
-
-/**
- * Multilingual route fields
- */
-export const multilingualRouteFields = [
-  'name',
-  'description'
-];
 
 export interface RouteDBScheme {
   /**
@@ -54,7 +45,7 @@ function getMatchStageFromFilter(filter: RoutesFilter): object {
 // @todo improve tipization
 export interface Route {
   _id: ObjectId;
-  locations: Location[];
+  locations: LocationDBScheme[];
   locationIds: string[];
 }
 
@@ -76,10 +67,9 @@ const Query: BaseTypeResolver = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - route id
    * @param db - MongoDB connection to make queries
-   * @param languages - languages in which return data
    * @return {object}
    */
-  async route(parent, { id }: { id: string }, { db, languages }) {
+  async route(parent, { id }: { id: string }, { db }) {
     const route = (await db.collection<Route>('routes').aggregate([
       { $match: { _id: new ObjectId(id) } },
       lookupLocationsStage
@@ -89,12 +79,6 @@ const Query: BaseTypeResolver = {
       return null;
     }
 
-    filterEntityFields(route, languages, multilingualRouteFields);
-
-    route.locations.map((location) => {
-      filterEntityFields(location, languages, multilingualLocationFields);
-    });
-
     return route;
   },
 
@@ -103,10 +87,9 @@ const Query: BaseTypeResolver = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param filter - search filter
    * @param db - MongoDB connection to make queries
-   * @param languages - languages in which return data
    * @return {object[]}
    */
-  async routes(parent, { filter }: { filter?: RoutesFilter }, { db, languages }) {
+  async routes(parent, { filter }: { filter?: RoutesFilter }, { db }) {
     const aggregationPipeline: object[] = [
       lookupLocationsStage
     ];
@@ -115,18 +98,7 @@ const Query: BaseTypeResolver = {
       aggregationPipeline.unshift(getMatchStageFromFilter(filter));
     }
 
-    const routes = await db.collection<Route>('routes').aggregate(aggregationPipeline).toArray();
-
-    routes.map((route) => {
-      filterEntityFields(route, languages, multilingualRouteFields);
-
-      route.locations.map((location) => {
-        filterEntityFields(location, languages, multilingualLocationFields);
-      });
-
-      return route;
-    });
-    return routes;
+    return db.collection<Route>('routes').aggregate(aggregationPipeline).toArray();
   },
 
   /**
@@ -136,12 +108,11 @@ const Query: BaseTypeResolver = {
    * @param radius - search radius
    * @param filter - search filter
    * @param db - MongoDB connection to make queries
-   * @param languages - languages in which return data
    */
   async nearestRoutes(
     parent,
     { center, radius, filter }: { center: PointCoordinates; radius: number; filter?: RoutesFilter },
-    { db, languages }
+    { db }
   ) {
     const aggregationPipeline: object[] = [
       lookupLocationsStage
@@ -173,12 +144,8 @@ const Query: BaseTypeResolver = {
             isValid = true;
           }
         }
-        filterEntityFields(location, languages, multilingualLocationFields);
       });
 
-      if (isValid) {
-        filterEntityFields(route, languages, multilingualRouteFields);
-      }
       return isValid;
     });
     return routes;
@@ -193,20 +160,11 @@ export default {
      * @param route - route to resolve
      * @param args - empty list of args
      * @param dataLoaders - DataLoaders for fetching data
-     * @param languages - languages in which return data
      */
-    async locations(route: RouteDBScheme, args: {}, { dataLoaders, languages }: ResolverContextBase): Promise<LocationDBScheme[]> {
+    async locations(route: RouteDBScheme, args: {}, { dataLoaders }: ResolverContextBase): Promise<LocationDBScheme[]> {
       const locations = await dataLoaders.locationById.loadMany(route.locationIds.map(id => id.toString()));
 
-      return locations.filter((location) => {
-        if (!location) {
-          return false;
-        }
-
-        filterEntityFields(location, languages, multilingualLocationFields);
-
-        return true;
-      }) as LocationDBScheme[];
+      return locations.filter(Boolean) as LocationDBScheme[];
     }
   }
 };

@@ -1,7 +1,5 @@
 import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
-import { filterEntityFields } from '../utils';
-import { multilingualRouteFields } from './routes';
 
 interface User {
   /**
@@ -26,7 +24,6 @@ const Query: BaseTypeResolver = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param data - empty arg
    * @param db - MongoDB connection to make queries
-   * @param languages - languages in which return data
    * @param user - user access token
    */
   async me(parent, data, { db, user }) {
@@ -40,7 +37,7 @@ const Mutation: BaseTypeResolver = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param routeId - route id
    * @param db - MongoDB connection to make queries
-   * @param languages - languages in which return data
+   * @param user - user access token
    * @param accessToken - user access token
    * @return {object}
    */
@@ -58,7 +55,7 @@ const Mutation: BaseTypeResolver = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param routeId - route id
    * @param db - MongoDB connection to make queries
-   * @param languages - languages in which return data
+   * @param user - user access token
    * @param accessToken - user access token
    * @return {object}
    */
@@ -77,7 +74,7 @@ const Mutation: BaseTypeResolver = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param routeId - route id
    * @param db - MongoDB connection to make queries
-   * @param languages - languages in which return data
+   * @param user - user access token
    * @param accessToken - user access token
    * @return {object}
    */
@@ -96,7 +93,7 @@ const Mutation: BaseTypeResolver = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param routeId - route id
    * @param db - MongoDB connection to make queries
-   * @param languages - languages in which return data
+   * @param user - user access token
    * @param accessToken - user access token
    * @return {object}
    */
@@ -118,24 +115,15 @@ const User: BaseTypeResolver<User> = {
    * @param _id - user id
    * @param data - empty arg
    * @param dataLoaders - DataLoaders for fetching data
-   * @param languages - languages in which return data
    */
-  async savedRoutes(user, data, { dataLoaders, languages }) {
+  async savedRoutes(user, data, { dataLoaders }) {
     if (!user.savedRouteIds) {
       return [];
     }
 
     const savedRoutes = await dataLoaders.routesById.loadMany(user.savedRouteIds.map(id => id.toString()));
 
-    return savedRoutes.filter((route) => {
-      if (!route) {
-        return false;
-      }
-
-      filterEntityFields(route, languages, multilingualRouteFields);
-
-      return true;
-    });
+    return savedRoutes.filter(Boolean);
   },
 
   /**
@@ -144,23 +132,15 @@ const User: BaseTypeResolver<User> = {
    * @param _id - user id
    * @param data - empty arg
    * @param dataLoaders - DataLoaders for fetching data
-   * @param languages - languages in which return data
    */
-  async likedRoutes(user, data, { languages, dataLoaders }) {
+  async likedRoutes(user, data, { dataLoaders }) {
     if (!user.likedRouteIds) {
       return [];
     }
 
     const likedRoutes = await dataLoaders.routesById.loadMany(user.likedRouteIds.map(id => id.toString()));
 
-    return likedRoutes.filter((route) => {
-      if (!route) {
-        return false;
-      }
-      filterEntityFields(route, languages, multilingualRouteFields);
-
-      return true;
-    });
+    return likedRoutes.filter(Boolean);
   }
 };
 
