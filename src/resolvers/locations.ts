@@ -2,8 +2,13 @@ import { BaseTypeResolver, MultilingualString, ResolverContextBase } from '../ty
 import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
 import { filterEntityFields } from '../utils';
-import { Person, PersonDBScheme } from './persons';
+import { PersonDBScheme } from './persons';
 import { multilingualRelationFields, RelationDbScheme } from './relations';
+
+/**
+ * ID of relation type for architects
+ */
+const ARCHITECT_RELATION_ID = '5d84ee80ff41d8a1ef3b3317';
 
 /**
  * Multilingual location fields
@@ -239,12 +244,18 @@ const Location = {
    */
   async architects({ _id }: LocationDBScheme, _args: undefined, { dataLoaders }: ResolverContextBase): Promise<PersonDBScheme[]> {
     const relations = await dataLoaders.relationByLocationId.load(_id.toString());
-    const personsId = relations
-      .filter(relation => relation.relationId && relation.relationId.toString() === '5d84ee80ff41d8a1ef3b3317')
-      .map(relation => relation.personId && relation.personId.toString())
-      .filter(Boolean) as string[];
+    const personIds: string[] = [];
 
-    return (await dataLoaders.personById.loadMany(personsId)).filter(Boolean) as PersonDBScheme[];
+    relations.forEach((relation) => {
+      if (!relation.relationId || !relation.personId) {
+        return;
+      }
+      if (relation.relationId.toString() === ARCHITECT_RELATION_ID) {
+        personIds.push(relation.personId.toString());
+      }
+    });
+
+    return (await dataLoaders.personById.loadMany(personIds)).filter(Boolean) as PersonDBScheme[];
   }
 };
 
