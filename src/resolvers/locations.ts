@@ -6,6 +6,11 @@ import { PersonDBScheme } from './persons';
 import { multilingualRelationFields, RelationDbScheme } from './relations';
 
 /**
+ * ID of relation type for architects
+ */
+const ARCHITECT_RELATION_ID = '5d84ee80ff41d8a1ef3b3317';
+
+/**
  * Multilingual location fields
  */
 export const multilingualLocationFields = [
@@ -229,6 +234,28 @@ const Location = {
     });
 
     return relations;
+  },
+
+  /**
+   * Return all architects
+   * @param _id - location id that returned from the resolver on the parent field
+   * @param _args - empty list of args
+   * @param dataLoaders - DataLoaders for fetching data
+   */
+  async architects({ _id }: LocationDBScheme, _args: undefined, { dataLoaders }: ResolverContextBase): Promise<PersonDBScheme[]> {
+    const relations = await dataLoaders.relationByLocationId.load(_id.toString());
+    const personIds: string[] = [];
+
+    relations.forEach((relation) => {
+      if (!relation.relationId || !relation.personId) {
+        return;
+      }
+      if (relation.relationId.toString() === ARCHITECT_RELATION_ID) {
+        personIds.push(relation.personId.toString());
+      }
+    });
+
+    return (await dataLoaders.personById.loadMany(personIds)).filter(Boolean) as PersonDBScheme[];
   }
 };
 

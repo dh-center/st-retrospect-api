@@ -30,17 +30,17 @@ export interface RelationDbScheme {
   /**
    * Location id
    */
-  locationId: ObjectId;
+  locationId: ObjectId | null;
 
   /**
    * Person id
    */
-  personId: ObjectId;
+  personId: ObjectId | null;
 
   /**
    * Relation type id
    */
-  relationId: ObjectId;
+  relationId: ObjectId | null;
 
   /**
    * Relation quote
@@ -92,6 +92,10 @@ export default {
       _args: {},
       { dataLoaders, languages }: ResolverContextBase
     ): Promise<Person | null> {
+      if (!relation.personId) {
+        return null;
+      }
+
       const person = await dataLoaders.personById.load(relation.personId.toString());
 
       if (!person) {
@@ -115,6 +119,10 @@ export default {
       _args: {},
       { dataLoaders, languages }: ResolverContextBase
     ): Promise<LocationDBScheme | null> {
+      if (!relation.locationId) {
+        return null;
+      }
+
       const location = await dataLoaders.locationById.load(relation.locationId.toString());
 
       if (!location) {

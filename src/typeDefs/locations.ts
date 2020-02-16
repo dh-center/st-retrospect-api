@@ -119,6 +119,11 @@ export default gql`
     Location relations
     """
     relations: [Relation!]!
+
+    """
+    Array of architects
+    """
+    architects: [Person]
   }
 
   extend type Query {

@@ -99,6 +99,9 @@ export default class DataLoaders {
     const relationsMap: ObjectMap<RelationDbScheme[]> = {};
 
     queryResult.forEach((relation) => {
+      if (!relation.personId) {
+        return;
+      }
       if (!relationsMap[relation.personId.toString()]) {
         relationsMap[relation.personId.toString()] = [];
       }
@@ -120,6 +123,9 @@ export default class DataLoaders {
     const relationsMap: ObjectMap<RelationDbScheme[]> = {};
 
     queryResult.forEach((relation) => {
+      if (!relation.locationId) {
+        return;
+      }
       if (!relationsMap[relation.locationId.toString()]) {
         relationsMap[relation.locationId.toString()] = [];
       }
