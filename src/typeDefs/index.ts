@@ -29,7 +29,8 @@ const rootSchema = gql`
     """
     Name of field with data for DataLoader
     """
-    fieldName: String!) on FIELD_DEFINITION
+    fieldName: String!
+  ) on FIELD_DEFINITION
 
   """
   Type for representing JSON object
