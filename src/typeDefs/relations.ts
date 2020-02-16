@@ -13,17 +13,17 @@ export default gql`
     """
     Person in relation
     """
-    person: Person
+    person: Person @dataLoader(dataLoaderName: "personById", fieldName: "personId")
 
     """
     Location in relation
     """
-    location: Location
+    location: Location @dataLoader(dataLoaderName: "locationById", fieldName: "locationId")
 
     """
     Relation type
     """
-    relationType: RelationType
+    relationType: RelationType @dataLoader(dataLoaderName: "relationTypeById", fieldName: "relationId")
 
     """
     Relation's quote
