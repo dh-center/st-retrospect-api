@@ -24,7 +24,7 @@ export default class Multilingual extends SchemaDirectiveVisitor {
         return null;
       }
       if (value instanceof Array) {
-        return value.map(arrayValue => arrayValue[context.languages[0].toLowerCase()]);
+        return value.map(arrayValue => arrayValue && arrayValue[context.languages[0].toLowerCase()]);
       }
       return value[context.languages[0].toLowerCase()];
     };

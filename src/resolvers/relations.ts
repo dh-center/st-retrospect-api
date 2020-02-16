@@ -1,22 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { MultilingualString, ResolverContextBase } from '../types/graphql';
-import { LocationDBScheme, multilingualLocationFields } from './locations';
-import { multilingualPersonFields, Person } from './persons';
-import { filterEntityFields } from '../utils';
-
-/**
- * Multilingual relation fields
- */
-export const multilingualRelationFields = [
-  'quote'
-];
-
-/**
- * Multilingual relation type fields
- */
-export const multilingualRelationTypeFields = [
-  'name'
-];
+import { LocationDBScheme } from './locations';
+import { PersonDBScheme } from './persons';
 
 /**
  * Relation's database scheme
@@ -85,13 +70,12 @@ export default {
      * @param relation - the object that contains the result returned from the resolver on the parent field
      * @param _args - empty args list
      * @param dataLoaders - DataLoaders for fetching data
-     * @param languages - languages in which return data
      */
     async person(
       relation: RelationDbScheme,
       _args: {},
-      { dataLoaders, languages }: ResolverContextBase
-    ): Promise<Person | null> {
+      { dataLoaders }: ResolverContextBase
+    ): Promise<PersonDBScheme | null> {
       if (!relation.personId) {
         return null;
       }
@@ -102,8 +86,6 @@ export default {
         return null;
       }
 
-      filterEntityFields(person, languages, multilingualPersonFields);
-
       return person;
     },
 
@@ -112,12 +94,11 @@ export default {
      * @param relation - the object that contains the result returned from the resolver on the parent field
      * @param _args - empty args list
      * @param dataLoaders - DataLoaders for fetching data
-     * @param languages - languages in which return data
      */
     async location(
       relation: RelationDbScheme,
       _args: {},
-      { dataLoaders, languages }: ResolverContextBase
+      { dataLoaders }: ResolverContextBase
     ): Promise<LocationDBScheme | null> {
       if (!relation.locationId) {
         return null;
@@ -129,8 +110,6 @@ export default {
         return null;
       }
 
-      filterEntityFields(location, languages, multilingualLocationFields);
-
       return location;
     },
 
@@ -139,12 +118,11 @@ export default {
      * @param relation - the object that contains the result returned from the resolver on the parent field
      * @param _args - empty args list
      * @param dataLoaders - DataLoaders for fetching data
-     * @param languages - languages in which return data
      */
     async relationType(
       relation: RelationDbScheme,
       _args: {},
-      { dataLoaders, languages }: ResolverContextBase
+      { dataLoaders }: ResolverContextBase
     ): Promise<RelationTypeDBScheme | null> {
       if (!relation.relationId) {
         return null;
@@ -156,8 +134,6 @@ export default {
         return null;
       }
 
-      filterEntityFields(relationType, languages, multilingualRelationTypeFields);
-
       return relationType;
     }
   },
@@ -165,21 +141,15 @@ export default {
     /**
      * Resolver for relation type synonyms
      * @param relation - the object that contains the result returned from the resolver on the parent field
-     * @param _args - empty args list
-     * @param dataLoaders - DataLoaders for fetching data
-     * @param languages - languages in which return data
      */
     synonyms(
-      relation: RelationTypeDBScheme,
-      _args: {},
-      { languages }: ResolverContextBase
+      relation: RelationTypeDBScheme
     ): (MultilingualString | null)[] {
       return relation.synonyms.map((synonym) => {
         if (!synonym) {
           return null;
         }
 
-        filterEntityFields(synonym, languages, multilingualRelationTypeFields);
         return synonym.name;
       });
     }
