@@ -18,6 +18,11 @@ const rootSchema = gql`
   directive @multilingual on FIELD_DEFINITION
 
   """
+  Directive for data loaders
+  """
+  directive @dataLoader(dataLoaderName: String!, fieldName: String!) on FIELD_DEFINITION
+
+  """
   Type for representing JSON object
   """
   scalar JSON
