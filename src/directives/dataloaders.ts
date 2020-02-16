@@ -4,6 +4,21 @@ import { ResolverContextBase } from '../types/graphql';
 import { FieldsWithDataLoader } from '../dataLoaders';
 
 /**
+ * Arguments for DataLoaderDirective
+ */
+interface DataLoaderDirectiveArgs {
+  /**
+   * Name of needed DataLoader
+   */
+  dataLoaderName: FieldsWithDataLoader;
+
+  /**
+   * Name of field with data for DataLoader
+   */
+  fieldName: string;
+}
+
+/**
  * Directive for data loaders
  */
 export default class DataLoaderDirective extends SchemaDirectiveVisitor {
@@ -15,7 +30,7 @@ export default class DataLoaderDirective extends SchemaDirectiveVisitor {
     field: GraphQLField<any, any>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): GraphQLField<any, any> | void | null {
-    const { dataLoaderName, fieldName } = this.args as { dataLoaderName: FieldsWithDataLoader; fieldName: string };
+    const { dataLoaderName, fieldName } = this.args as DataLoaderDirectiveArgs;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     field.resolve = async (parent, args, context: ResolverContextBase): Promise<any> => {

@@ -20,7 +20,16 @@ const rootSchema = gql`
   """
   Directive for data loaders
   """
-  directive @dataLoader(dataLoaderName: String!, fieldName: String!) on FIELD_DEFINITION
+  directive @dataLoader(
+    """
+    Name of needed DataLoader
+    """
+    dataLoaderName: String!,
+
+    """
+    Name of field with data for DataLoader
+    """
+    fieldName: String!) on FIELD_DEFINITION
 
   """
   Type for representing JSON object
