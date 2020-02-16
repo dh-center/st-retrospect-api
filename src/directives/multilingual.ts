@@ -20,6 +20,9 @@ export default class Multilingual extends SchemaDirectiveVisitor {
     field.resolve = async (object, args, context: ResolverContextBase, info): Promise<any> => {
       const value = resolve.call(this, object, args, context, info);
 
+      if (!value) {
+        return null;
+      }
       if (value instanceof Array) {
         return value.map(arrayValue => arrayValue[context.languages[0].toLowerCase()]);
       }
