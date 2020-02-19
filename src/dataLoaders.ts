@@ -99,6 +99,9 @@ export default class DataLoaders {
     const relationsMap: ObjectMap<RelationDbScheme[]> = {};
 
     queryResult.forEach((relation) => {
+      if (!relation.personId) {
+        return;
+      }
       if (!relationsMap[relation.personId.toString()]) {
         relationsMap[relation.personId.toString()] = [];
       }
@@ -120,6 +123,9 @@ export default class DataLoaders {
     const relationsMap: ObjectMap<RelationDbScheme[]> = {};
 
     queryResult.forEach((relation) => {
+      if (!relation.locationId) {
+        return;
+      }
       if (!relationsMap[relation.locationId.toString()]) {
         relationsMap[relation.locationId.toString()] = [];
       }
@@ -150,3 +156,11 @@ export default class DataLoaders {
     return ids.map((entityId) => personsMap[entityId] as T || null);
   }
 }
+
+/**
+ * All field names contained dataLoader instances
+ */
+export type FieldsWithDataLoader = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [Key in keyof DataLoaders]: DataLoader<any, any> extends DataLoaders[Key] ? Key : never;
+}[keyof DataLoaders]

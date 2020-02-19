@@ -1,42 +1,13 @@
 import { BaseTypeResolver, MultilingualString, ResolverContextBase } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
-import { filterEntityFields } from '../utils';
 import { PersonDBScheme } from './persons';
-import { multilingualRelationFields, RelationDbScheme } from './relations';
+import { RelationDbScheme } from './relations';
 
 /**
- * Multilingual location fields
+ * ID of relation type for architects
  */
-export const multilingualLocationFields = [
-  'name',
-  'description'
-];
-
-/**
- * @deprecated
- */
-export interface Location {
-  /**
-   * Id of location
-   */
-  _id: ObjectId;
-
-  /**
-   * Latitude of the location
-   */
-  coordinateX: number;
-
-  /**
-   * Longitude of the location
-   */
-  coordinateY: number;
-
-  /**
-   * Array of location's types
-   */
-  locationTypesId: ObjectId[];
-}
+const ARCHITECT_RELATION_ID = '5d84ee80ff41d8a1ef3b3317';
 
 /**
  * Location representation in DataBase
@@ -46,6 +17,16 @@ export interface LocationDBScheme {
    * Id of location
    */
   _id: ObjectId;
+
+  /**
+   * Location coordinate by Y
+   */
+  coordinateY: number;
+
+  /**
+   * Location coordinate by X
+   */
+  coordinateX: number;
 
   /**
    * Array of location's types
@@ -114,10 +95,9 @@ const Query: BaseTypeResolver = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - location id
    * @param db - MongoDB connection to make queries
-   * @param languages - languages in which return data
    * @return {object}
    */
-  async location(parent, { id }: { id: string }, { db, languages }) {
+  async location(parent, { id }: { id: string }, { db }) {
     const location = await db.collection('locations').findOne({
       _id: new ObjectId(id)
     });
@@ -126,7 +106,6 @@ const Query: BaseTypeResolver = {
       return null;
     }
 
-    filterEntityFields(location, languages, multilingualLocationFields);
     return location;
   },
 
@@ -135,17 +114,10 @@ const Query: BaseTypeResolver = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param data - empty arg
    * @param db - MongoDB connection to make queries
-   * @param languages - languages in which return data
    * @return {object[]}
    */
-  async locations(parent, data, { db, languages }) {
-    const locations = await db.collection('locations').find({}).toArray();
-
-    locations.map((location) => {
-      filterEntityFields(location, languages, multilingualLocationFields);
-      return location;
-    });
-    return locations;
+  async locations(parent, data, { db }) {
+    return db.collection('locations').find({}).toArray();
   },
 
   /**
@@ -217,18 +189,32 @@ const Location = {
    * Return all location relations
    * @param _id - location id that returned from the resolver on the parent field
    * @param _args - empty list of args
-   * @param languages - languages in which return data
    * @param dataLoaders - DataLoaders for fetching data
    */
-  async relations({ _id }: LocationDBScheme, _args: undefined, { languages, dataLoaders }: ResolverContextBase): Promise<RelationDbScheme[]> {
-    const relations = await dataLoaders.relationByLocationId.load(_id.toString());
+  async relations({ _id }: LocationDBScheme, _args: undefined, { dataLoaders }: ResolverContextBase): Promise<RelationDbScheme[]> {
+    return dataLoaders.relationByLocationId.load(_id.toString());
+  },
 
-    relations.map((relation) => {
-      filterEntityFields(relation, languages, multilingualRelationFields);
-      return relation;
+  /**
+   * Return all architects
+   * @param _id - location id that returned from the resolver on the parent field
+   * @param _args - empty list of args
+   * @param dataLoaders - DataLoaders for fetching data
+   */
+  async architects({ _id }: LocationDBScheme, _args: undefined, { dataLoaders }: ResolverContextBase): Promise<PersonDBScheme[]> {
+    const relations = await dataLoaders.relationByLocationId.load(_id.toString());
+    const personIds: string[] = [];
+
+    relations.forEach((relation) => {
+      if (!relation.relationId || !relation.personId) {
+        return;
+      }
+      if (relation.relationId.toString() === ARCHITECT_RELATION_ID) {
+        personIds.push(relation.personId.toString());
+      }
     });
 
-    return relations;
+    return (await dataLoaders.personById.loadMany(personIds)).filter(Boolean) as PersonDBScheme[];
   }
 };
 

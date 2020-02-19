@@ -1,23 +1,5 @@
 import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
-import { filterEntityFields } from '../utils';
-import { multilingualRelationFields } from './relations';
-
-/**
- * Multilingual person fields
- */
-export const multilingualPersonFields = [
-  'firstName',
-  'lastName',
-  'patronymic',
-  'pseudonym',
-  'profession',
-  'description'
-];
-
-export interface Person {
-  _id: ObjectId;
-}
 
 export interface PersonDBScheme {
   _id: ObjectId;
@@ -29,10 +11,9 @@ const Query: BaseTypeResolver = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - person id
    * @param db - MongoDB connection to make queries
-   * @param languages - languages in which return data
    * @return {object}
    */
-  async person(parent, { id }: { id: string }, { db, languages }) {
+  async person(parent, { id }: { id: string }, { db }) {
     const person = await db.collection('persons').findOne({
       _id: new ObjectId(id)
     });
@@ -40,8 +21,6 @@ const Query: BaseTypeResolver = {
     if (!person) {
       return null;
     }
-
-    filterEntityFields(person, languages, multilingualPersonFields);
 
     return person;
   },
@@ -51,37 +30,22 @@ const Query: BaseTypeResolver = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param data - empty arg
    * @param db - MongoDB connection to make queries
-   * @param languages - languages in which return data
    * @return {object[]}
    */
-  async persons(parent, data, { db, languages }) {
-    const persons = await db.collection('persons').find({}).toArray();
-
-    persons.map((person) => {
-      filterEntityFields(person, languages, multilingualPersonFields);
-      return person;
-    });
-    return persons;
+  async persons(parent, data, { db }) {
+    return db.collection('persons').find({}).toArray();
   }
 };
 
-const Person: BaseTypeResolver<Person> = {
+const Person: BaseTypeResolver<PersonDBScheme> = {
   /**
    * Return all person relations
    * @param _id - person's id that returned from the resolver on the parent field
    * @param data - empty arg
-   * @param languages - languages in which return data
    * @param dataLoaders - DataLoaders for fetching data
    */
-  async relations({ _id }, data, { languages, dataLoaders }) {
-    const relations = await dataLoaders.relationByPersonId.load(_id.toString());
-
-    relations.map((relation) => {
-      filterEntityFields(relation, languages, multilingualRelationFields);
-      return relation;
-    });
-
-    return relations;
+  async relations({ _id }, data, { dataLoaders }) {
+    return dataLoaders.relationByPersonId.load(_id.toString());
   }
 };
 
