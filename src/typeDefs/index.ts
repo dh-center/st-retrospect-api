@@ -31,6 +31,9 @@ const rootSchema = gql`
     """
     fieldName: String!
 
+    """
+    Flag for choosing between 'load' and 'loadMany' (when true)
+    """
     flag: Boolean
   ) on FIELD_DEFINITION
 

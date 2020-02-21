@@ -19,6 +19,9 @@ interface DataLoaderDirectiveArgs {
    */
   fieldName: string;
 
+  /**
+   * Flag for choosing between 'load' and 'loadMany' (when true)
+   */
   flag: boolean;
 }
 
@@ -38,7 +41,6 @@ export default class DataLoaderDirective extends SchemaDirectiveVisitor {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     field.resolve = async (parent, args, context: ResolverContextBase): Promise<any> => {
-      console.log("meow")
       if (flag) {
         if (!parent[fieldName]) {
           return [];
