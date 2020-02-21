@@ -3,7 +3,6 @@ import { GraphQLField } from 'graphql';
 import { ResolverContextBase } from '../types/graphql';
 import { FieldsWithDataLoader } from '../dataLoaders';
 import { ObjectId } from 'mongodb';
-import { LocationTypeDBScheme } from '../resolvers/locations';
 
 /**
  * Arguments for DataLoaderDirective

@@ -2,7 +2,6 @@ import { BaseTypeResolver, MultilingualString, ResolverContextBase } from '../ty
 import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
 import { PersonDBScheme } from './persons';
-import { RelationDbScheme } from './relations';
 
 /**
  * ID of relation type for architects
