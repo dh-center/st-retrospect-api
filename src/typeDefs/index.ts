@@ -24,12 +24,14 @@ const rootSchema = gql`
     """
     Name of needed DataLoader
     """
-    dataLoaderName: String!,
+    dataLoaderName: String!
 
     """
     Name of field with data for DataLoader
     """
     fieldName: String!
+
+    flag: Boolean
   ) on FIELD_DEFINITION
 
   """
