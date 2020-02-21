@@ -24,7 +24,7 @@ const rootSchema = gql`
     """
     Name of needed DataLoader
     """
-    dataLoaderName: String!,
+    dataLoaderName: String!
 
     """
     Name of field with data for DataLoader

@@ -50,7 +50,7 @@ export default gql`
     """
     Person relations
     """
-    relations: [Relation!]!
+    relations: [Relation!]! @dataLoader(dataLoaderName: "relationByPersonId", fieldName: "_id")
 
     """
     Person main photo

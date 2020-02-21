@@ -2,7 +2,6 @@ import { BaseTypeResolver, MultilingualString, ResolverContextBase } from '../ty
 import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
 import { PersonDBScheme } from './persons';
-import { RelationDbScheme } from './relations';
 
 /**
  * ID of relation type for architects
@@ -147,54 +146,6 @@ const Query: BaseTypeResolver = {
 };
 
 const Location = {
-  /**
-   * Returns type of location
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param _args - empty list of args
-   * @param dataLoaders - DataLoaders for fetching data
-   */
-  async locationTypes(parent: LocationDBScheme, _args: undefined, { dataLoaders }: ResolverContextBase): Promise<LocationTypeDBScheme[]> {
-    if (!parent.locationTypesId) {
-      return [];
-    }
-
-    const locationTypes = await dataLoaders.locationTypeById.loadMany(
-      (parent.locationTypesId.filter(id => id) as ObjectId[])
-        .map(id => id.toString())
-    );
-
-    return locationTypes.filter(type => type) as LocationTypeDBScheme[];
-  },
-
-  /**
-   * Returns addresses of location
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param _args - empty list of args
-   * @param dataLoaders - DataLoaders for fetching data
-   */
-  async addresses(parent: LocationDBScheme, _args: undefined, { dataLoaders }: ResolverContextBase): Promise<AddressesDBScheme[]> {
-    if (!parent.addressesId) {
-      return [];
-    }
-
-    const addresses = await dataLoaders.addressesById.loadMany(
-      (parent.addressesId.filter(id => id) as ObjectId[])
-        .map(id => id.toString())
-    );
-
-    return addresses.filter(type => type) as AddressesDBScheme[];
-  },
-
-  /**
-   * Return all location relations
-   * @param _id - location id that returned from the resolver on the parent field
-   * @param _args - empty list of args
-   * @param dataLoaders - DataLoaders for fetching data
-   */
-  async relations({ _id }: LocationDBScheme, _args: undefined, { dataLoaders }: ResolverContextBase): Promise<RelationDbScheme[]> {
-    return dataLoaders.relationByLocationId.load(_id.toString());
-  },
-
   /**
    * Return all architects
    * @param _id - location id that returned from the resolver on the parent field

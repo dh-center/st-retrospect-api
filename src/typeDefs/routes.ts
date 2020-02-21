@@ -28,7 +28,7 @@ export default gql`
     """
     Route locations
     """
-    locations: [Location]!
+    locations: [Location]! @dataLoader(dataLoaderName: "locationById", fieldName: "locationIds")
 
     """
     Route description

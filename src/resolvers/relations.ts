@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { MultilingualString, ResolverContextBase } from '../types/graphql';
+import { MultilingualString } from '../types/graphql';
 
 /**
  * Relation's database scheme

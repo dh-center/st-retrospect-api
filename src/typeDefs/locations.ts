@@ -108,17 +108,17 @@ export default gql`
     """
     Array of location's types
     """
-    locationTypes: [LocationType!]!
+    locationTypes: [LocationType] @dataLoader(dataLoaderName: "locationTypeById", fieldName: "locationTypesId")
 
     """
     Array of addresses ids
     """
-    addresses: [Address!]!
+    addresses: [Address] @dataLoader(dataLoaderName: "addressesById", fieldName: "addressesId")
 
     """
     Location relations
     """
-    relations: [Relation!]!
+    relations: [Relation!]! @dataLoader(dataLoaderName: "relationByLocationId", fieldName: "_id")
 
     """
     Array of architects

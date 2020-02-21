@@ -2,6 +2,7 @@ import { SchemaDirectiveVisitor } from 'graphql-tools';
 import { GraphQLField } from 'graphql';
 import { ResolverContextBase } from '../types/graphql';
 import { FieldsWithDataLoader } from '../dataLoaders';
+import { ObjectId } from 'mongodb';
 
 /**
  * Arguments for DataLoaderDirective
@@ -34,17 +35,30 @@ export default class DataLoaderDirective extends SchemaDirectiveVisitor {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     field.resolve = async (parent, args, context: ResolverContextBase): Promise<any> => {
-      if (!parent[fieldName]) {
-        return null;
+      const fieldValue = parent[fieldName];
+
+      if (fieldValue instanceof Array) {
+        if (!fieldValue) {
+          return [];
+        }
+
+        return context.dataLoaders[dataLoaderName].loadMany(
+          (fieldValue.filter(Boolean) as ObjectId[])
+            .map(id => id.toString()).filter(Boolean)
+        );
+      } else {
+        if (!fieldValue) {
+          return null;
+        }
+
+        const value = await context.dataLoaders[dataLoaderName].load(fieldValue.toString());
+
+        if (!value) {
+          return null;
+        }
+
+        return value;
       }
-
-      const value = await context.dataLoaders[dataLoaderName].load(parent[fieldName].toString());
-
-      if (!value) {
-        return null;
-      }
-
-      return value;
     };
   }
 }

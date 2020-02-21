@@ -37,19 +37,6 @@ const Query: BaseTypeResolver = {
   }
 };
 
-const Person: BaseTypeResolver<PersonDBScheme> = {
-  /**
-   * Return all person relations
-   * @param _id - person's id that returned from the resolver on the parent field
-   * @param data - empty arg
-   * @param dataLoaders - DataLoaders for fetching data
-   */
-  async relations({ _id }, data, { dataLoaders }) {
-    return dataLoaders.relationByPersonId.load(_id.toString());
-  }
-};
-
 export default {
-  Query,
-  Person
+  Query
 };
