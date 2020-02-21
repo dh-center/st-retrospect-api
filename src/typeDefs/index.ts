@@ -30,11 +30,6 @@ const rootSchema = gql`
     Name of field with data for DataLoader
     """
     fieldName: String!
-
-    """
-    Flag for choosing between 'load' and 'loadMany' (when true)
-    """
-    flag: Boolean
   ) on FIELD_DEFINITION
 
   """

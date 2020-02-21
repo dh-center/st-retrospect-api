@@ -108,12 +108,12 @@ export default gql`
     """
     Array of location's types
     """
-    locationTypes: [LocationType] @dataLoader(dataLoaderName: "locationTypeById", fieldName: "locationTypesId", flag: true)
+    locationTypes: [LocationType] @dataLoader(dataLoaderName: "locationTypeById", fieldName: "locationTypesId")
 
     """
     Array of addresses ids
     """
-    addresses: [Address] @dataLoader(dataLoaderName: "addressesById", fieldName: "addressesId", flag: true)
+    addresses: [Address] @dataLoader(dataLoaderName: "addressesById", fieldName: "addressesId")
 
     """
     Location relations

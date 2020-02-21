@@ -17,11 +17,6 @@ interface DataLoaderDirectiveArgs {
    * Name of field with data for DataLoader
    */
   fieldName: string;
-
-  /**
-   * Flag for choosing between 'load' and 'loadMany' (when true)
-   */
-  flag: boolean;
 }
 
 /**
@@ -36,27 +31,27 @@ export default class DataLoaderDirective extends SchemaDirectiveVisitor {
     field: GraphQLField<any, any>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): GraphQLField<any, any> | void | null {
-    const { dataLoaderName, fieldName, flag } = this.args as DataLoaderDirectiveArgs;
+    const { dataLoaderName, fieldName } = this.args as DataLoaderDirectiveArgs;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     field.resolve = async (parent, args, context: ResolverContextBase): Promise<any> => {
-      if (flag) {
-        if (!parent[fieldName]) {
+      const fieldValue = parent[fieldName];
+
+      if (fieldValue instanceof Array) {
+        if (!fieldValue) {
           return [];
         }
 
-        const value = await context.dataLoaders[dataLoaderName].loadMany(
-          (parent[fieldName].filter(Boolean) as ObjectId[])
+        return context.dataLoaders[dataLoaderName].loadMany(
+          (fieldValue.filter(Boolean) as ObjectId[])
             .map(id => id.toString()).filter(Boolean)
         );
-
-        return value;
       } else {
-        if (!parent[fieldName]) {
+        if (!fieldValue) {
           return null;
         }
 
-        const value = await context.dataLoaders[dataLoaderName].load(parent[fieldName].toString());
+        const value = await context.dataLoaders[dataLoaderName].load(fieldValue.toString());
 
         if (!value) {
           return null;
