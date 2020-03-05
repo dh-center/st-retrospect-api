@@ -5,18 +5,18 @@ module.exports = {
     await Promise.all(persons.map(async (person) => {
       let photoArray = [];
 
-      if (person.photoLinks){
-        photoArray = person.photoLinks.split('\n').map(link => link.trim()).filter(link => link)
+      if (person.photoLinks) {
+        photoArray = person.photoLinks.split('\n').map(link => link.trim()).filter(link => link);
       }
 
       await db.collection('persons').updateOne(
-        {_id: person._id},
+        { _id: person._id },
         {
           $set: {
             photoLinks: photoArray
           }
         }
-      )
+      );
     }));
   },
 
@@ -25,13 +25,13 @@ module.exports = {
 
     await Promise.all(persons.map(async (person) => {
       await db.collection('persons').updateOne(
-        {_id: person._id},
+        { _id: person._id },
         {
           $set: {
             photoLinks: person.photoLinks.join('\n')
           }
         }
-      )
+      );
     }));
   }
 };

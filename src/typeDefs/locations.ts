@@ -52,11 +52,11 @@ export default gql`
   }
 
   """
-  Location for displaying on map and making relations with persons
+  Location context. This can be a time period, a special description for a particular route, etc.
   """
-  type Location {
+  type Instance {
     """
-    Location's ID
+    Instance's ID
     """
     id: ID! @renameField(name: "_id")
 
@@ -69,6 +69,36 @@ export default gql`
     Location's description
     """
     description: String @multilingual
+
+    """
+    Contains links with location's photos
+    """
+    photoLinks: [String]
+
+    """
+    Link with main photo
+    """
+    mainPhotoLink: String
+
+    """
+    Start of period
+    """
+    startDate: String
+
+    """
+    End of period
+    """
+    endDate: String
+  }
+
+  """
+  Location for displaying on map and making relations with persons
+  """
+  type Location {
+    """
+    Location's ID
+    """
+    id: ID! @renameField(name: "_id")
 
     """
     Location's construction date
@@ -96,16 +126,6 @@ export default gql`
     coordinateY: Float
 
     """
-    Contains links with location's photos
-    """
-    photoLinks: [String]
-
-    """
-    Link with main photo
-    """
-    mainPhotoLink: String
-
-    """
     Array of location's types
     """
     locationTypes: [LocationType] @dataLoader(dataLoaderName: "locationTypeById", fieldName: "locationTypesId")
@@ -124,6 +144,11 @@ export default gql`
     Array of architects
     """
     architects: [Person]
+
+    """
+    Possible location representations
+    """
+    instances: [Instance]
   }
 
   extend type Query {
