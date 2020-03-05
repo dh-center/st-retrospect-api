@@ -18,7 +18,7 @@ export default gql`
     """
     Location in relation
     """
-    location: Location @dataLoader(dataLoaderName: "locationById", fieldName: "locationId")
+    locationInstance: Instance @dataLoader(dataLoaderName: "locationById", fieldName: "locationId")
 
     """
     Relation type

@@ -71,6 +71,16 @@ export default gql`
     description: String @multilingual
 
     """
+    Link for location info
+    """
+    wikiLink: String
+
+    """
+    Array of location's types
+    """
+    locationTypes: [LocationType] @dataLoader(dataLoaderName: "locationTypeById", fieldName: "locationTypesId")
+
+    """
     Contains links with location's photos
     """
     photoLinks: [String]
@@ -79,6 +89,16 @@ export default gql`
     Link with main photo
     """
     mainPhotoLink: String
+
+    """
+    Location's construction date
+    """
+    constructionDate: String
+
+    """
+    Location's demolition date
+    """
+    demolitionDate: String
 
     """
     Start of period
@@ -101,21 +121,6 @@ export default gql`
     id: ID! @renameField(name: "_id")
 
     """
-    Location's construction date
-    """
-    constructionDate: String
-
-    """
-    Location's demolition date
-    """
-    demolitionDate: String
-
-    """
-    Link for location info
-    """
-    wikiLink: String
-
-    """
     Location coordinate by X
     """
     coordinateX: Float
@@ -124,11 +129,6 @@ export default gql`
     Location coordinate by Y
     """
     coordinateY: Float
-
-    """
-    Array of location's types
-    """
-    locationTypes: [LocationType] @dataLoader(dataLoaderName: "locationTypeById", fieldName: "locationTypesId")
 
     """
     Array of addresses ids
