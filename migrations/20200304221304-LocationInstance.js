@@ -9,6 +9,7 @@ module.exports = {
       const locationInstanceId = (await db.collection('location_instances').insertOne(
         {
           name: location.name,
+          locationId: location._id,
           description: location.description,
           wikiLink: location.wikiLink,
           locationTypesId: location.locationTypesId,

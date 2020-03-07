@@ -80,10 +80,18 @@ export default class DataLoaders {
   );
 
   /**
-   * Loader for fetching locations by their ids
+   * Loader for fetching locationInstance by their ids
    */
   public locationInstanceById = new DataLoader(
     (locationInstanceIds: string[]) => this.batchByIds<LocationDBScheme>('location_instances', locationInstanceIds),
+    { cache: false }
+  );
+
+  /**
+   * Loader for fetching location by their ids
+   */
+  public locationById = new DataLoader(
+    (locationIds: string[]) => this.batchByIds<LocationDBScheme>('locations', locationIds),
     { cache: false }
   );
 

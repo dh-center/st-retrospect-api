@@ -66,6 +66,11 @@ export default gql`
     name: String @multilingual
 
     """
+    Location
+    """
+    location: Location! @dataLoader(dataLoaderName: "locationById", fieldName: "locationId")
+
+    """
     Location's description
     """
     description: String @multilingual

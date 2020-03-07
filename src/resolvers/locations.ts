@@ -156,7 +156,7 @@ const Query: BaseTypeResolver = {
   }
 };
 
-const Instance = {
+const LocationInstance = {
   /**
    * Return all architects
    * @param _id - location id that returned from the resolver on the parent field
@@ -182,5 +182,5 @@ const Instance = {
 
 export default {
   Query,
-  Instance
+  LocationInstance
 };
