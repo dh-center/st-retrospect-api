@@ -119,6 +119,13 @@ const Query: BaseTypeResolver = {
     return db.collection('locations').find({}).toArray();
   },
 
+  /**
+   * Returns all locationInstances
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param data - empty arg
+   * @param db - MongoDB connection to make queries
+   * @return {object[]}
+   */
   async locationInstances(parent, data, { db }) {
     return db.collection('location_instances').find({}).toArray();
   },

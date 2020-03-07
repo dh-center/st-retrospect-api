@@ -54,7 +54,7 @@ export default gql`
   """
   Location context. This can be a time period, a special description for a particular route, etc.
   """
-  type Instance {
+  type LocationInstance {
     """
     Instance's ID
     """
@@ -148,7 +148,7 @@ export default gql`
     """
     Possible location representations
     """
-    instances: [Instance] @dataLoader(dataLoaderName: "locationInstanceById", fieldName: "locationInstanceIds")
+    instances: [LocationInstance!]! @dataLoader(dataLoaderName: "locationInstanceById", fieldName: "locationInstanceIds")
   }
 
   extend type Query {
@@ -165,7 +165,10 @@ export default gql`
     """
     locations: [Location!]!
 
-    locationInstances: [Instance]
+    """
+    Get all locationInstances
+    """
+    locationInstances: [LocationInstance!]!
 
     """
     Get relations on user request

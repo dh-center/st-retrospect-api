@@ -29,7 +29,7 @@ export default gql`
     """
     Route locations
     """
-    locationsInstance: [Instance]! @dataLoader(dataLoaderName: "locationInstanceById", fieldName: "locationInstanceIds")
+    locationsInstance: [LocationInstance]! @dataLoader(dataLoaderName: "locationInstanceById", fieldName: "locationInstanceIds")
 
     """
     Route description
