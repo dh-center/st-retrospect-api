@@ -78,7 +78,7 @@ export default gql`
     """
     Array of location's types
     """
-    locationTypesId: [ID!] @dataLoader(dataLoaderName: "locationTypeById", fieldName: "locationTypesId")
+    locationTypes: [LocationType] @dataLoader(dataLoaderName: "locationTypeById", fieldName: "locationTypesId")
 
     """
     Contains links with location's photos
