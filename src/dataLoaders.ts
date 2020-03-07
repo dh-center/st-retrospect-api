@@ -34,8 +34,8 @@ export default class DataLoaders {
   /**
    * Loader for fetching relations by locations ids
    */
-  public relationByLocationId = new DataLoader(
-    (locationIds: string[]) => this.batchRelationsByLocationIds(locationIds),
+  public relationByLocationInstanceId = new DataLoader(
+    (locationInstanceIds: string[]) => this.batchRelationsByLocationInstanceIds(locationInstanceIds),
     { cache: false }
   );
 
@@ -82,8 +82,8 @@ export default class DataLoaders {
   /**
    * Loader for fetching locations by their ids
    */
-  public locationById = new DataLoader(
-    (locationIds: string[]) => this.batchByIds<LocationDBScheme>('locations', locationIds),
+  public locationInstanceById = new DataLoader(
+    (locationInstanceIds: string[]) => this.batchByIds<LocationDBScheme>('location_instances', locationInstanceIds),
     { cache: false }
   );
 
@@ -115,24 +115,24 @@ export default class DataLoaders {
    * Batching function for resolving relations from location ids
    * @param locationIds - location ids for resolving
    */
-  private async batchRelationsByLocationIds(locationIds: string[]): Promise<RelationDbScheme[][]> {
+  private async batchRelationsByLocationInstanceIds(locationInstanceIds: string[]): Promise<RelationDbScheme[][]> {
     const queryResult = await this.dbConnection.collection<RelationDbScheme>('relations')
-      .find({ locationId: { $in: locationIds.map(id => new ObjectId(id)) } })
+      .find({ locationInstanceId: { $in: locationInstanceIds.map(id => new ObjectId(id)) } })
       .toArray();
 
     const relationsMap: ObjectMap<RelationDbScheme[]> = {};
 
     queryResult.forEach((relation) => {
-      if (!relation.locationId) {
+      if (!relation.locationInstanceId) {
         return;
       }
-      if (!relationsMap[relation.locationId.toString()]) {
-        relationsMap[relation.locationId.toString()] = [];
+      if (!relationsMap[relation.locationInstanceId.toString()]) {
+        relationsMap[relation.locationInstanceId.toString()] = [];
       }
-      relationsMap[relation.locationId.toString()].push(relation);
+      relationsMap[relation.locationInstanceId.toString()].push(relation);
     });
 
-    return locationIds.map((personId) => relationsMap[personId] || []);
+    return locationInstanceIds.map((personId) => relationsMap[personId] || []);
   }
 
   /**

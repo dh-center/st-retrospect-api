@@ -13,7 +13,7 @@ export interface RelationDbScheme {
   /**
    * Location id
    */
-  locationId: ObjectId | null;
+  locationInstanceId: ObjectId | null;
 
   /**
    * Person id

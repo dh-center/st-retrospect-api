@@ -25,10 +25,11 @@ export default gql`
     Route name
     """
     name: String @multilingual
+
     """
     Route locations
     """
-    locationsInstance: [Instance]! @dataLoader(dataLoaderName: "locationById", fieldName: "locationIds")
+    locationsInstance: [Instance]! @dataLoader(dataLoaderName: "locationInstanceById", fieldName: "locationInstanceIds")
 
     """
     Route description

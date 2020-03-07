@@ -78,7 +78,7 @@ export default gql`
     """
     Array of location's types
     """
-    locationTypes: [LocationType] @dataLoader(dataLoaderName: "locationTypeById", fieldName: "locationTypesId")
+    locationTypesId: [ID!] @dataLoader(dataLoaderName: "locationTypeById", fieldName: "locationTypesId")
 
     """
     Contains links with location's photos
@@ -109,6 +109,16 @@ export default gql`
     End of period
     """
     endDate: String
+
+    """
+    Location relations
+    """
+    relations: [Relation!]! @dataLoader(dataLoaderName: "relationByLocationInstanceId", fieldName: "_id")
+
+    """
+    Array of architects
+    """
+    architects: [Person]
   }
 
   """
@@ -136,19 +146,9 @@ export default gql`
     addresses: [Address] @dataLoader(dataLoaderName: "addressesById", fieldName: "addressesId")
 
     """
-    Location relations
-    """
-    relations: [Relation!]! @dataLoader(dataLoaderName: "relationByLocationId", fieldName: "_id")
-
-    """
-    Array of architects
-    """
-    architects: [Person]
-
-    """
     Possible location representations
     """
-    instances: [Instance]
+    instances: [Instance] @dataLoader(dataLoaderName: "locationInstanceById", fieldName: "locationInstanceIds")
   }
 
   extend type Query {
@@ -164,6 +164,8 @@ export default gql`
     Get all locations
     """
     locations: [Location!]!
+
+    locationInstances: [Instance]
 
     """
     Get relations on user request

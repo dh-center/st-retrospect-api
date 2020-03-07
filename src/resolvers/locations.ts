@@ -119,6 +119,10 @@ const Query: BaseTypeResolver = {
     return db.collection('locations').find({}).toArray();
   },
 
+  async locationInstances(parent, data, { db }) {
+    return db.collection('location_instances').find({}).toArray();
+  },
+
   /**
    * Get relations on user request
    * @param parent - the object that contains the result returned from the resolver on the parent field
@@ -145,7 +149,7 @@ const Query: BaseTypeResolver = {
   }
 };
 
-const Location = {
+const Instance = {
   /**
    * Return all architects
    * @param _id - location id that returned from the resolver on the parent field
@@ -153,7 +157,7 @@ const Location = {
    * @param dataLoaders - DataLoaders for fetching data
    */
   async architects({ _id }: LocationDBScheme, _args: undefined, { dataLoaders }: ResolverContextBase): Promise<PersonDBScheme[]> {
-    const relations = await dataLoaders.relationByLocationId.load(_id.toString());
+    const relations = await dataLoaders.relationByLocationInstanceId.load(_id.toString());
     const personIds: string[] = [];
 
     relations.forEach((relation) => {
@@ -171,5 +175,5 @@ const Location = {
 
 export default {
   Query,
-  Location
+  Instance
 };
