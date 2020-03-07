@@ -113,7 +113,7 @@ export default class DataLoaders {
 
   /**
    * Batching function for resolving relations from location ids
-   * @param locationIds - location ids for resolving
+   * @param locationInstanceIds - location instances ids for resolving
    */
   private async batchRelationsByLocationInstanceIds(locationInstanceIds: string[]): Promise<RelationDbScheme[][]> {
     const queryResult = await this.dbConnection.collection<RelationDbScheme>('relations')
@@ -132,7 +132,7 @@ export default class DataLoaders {
       relationsMap[relation.locationInstanceId.toString()].push(relation);
     });
 
-    return locationInstanceIds.map((personId) => relationsMap[personId] || []);
+    return locationInstanceIds.map((locationInstanceId) => relationsMap[locationInstanceId] || []);
   }
 
   /**
