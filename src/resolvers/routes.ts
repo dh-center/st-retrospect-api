@@ -12,7 +12,7 @@ export interface RouteDBScheme {
   /**
    * Locations making up the route
    */
-  locationIds: ObjectId[];
+  locationInstanceIds: ObjectId[];
 }
 
 /**

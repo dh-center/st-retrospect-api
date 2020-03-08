@@ -52,11 +52,11 @@ export default gql`
   }
 
   """
-  Location for displaying on map and making relations with persons
+  Location context. This can be a time period, a special description for a particular route, etc.
   """
-  type Location {
+  type LocationInstance {
     """
-    Location's ID
+    Instance's ID
     """
     id: ID! @renameField(name: "_id")
 
@@ -66,19 +66,14 @@ export default gql`
     name: String @multilingual
 
     """
+    Location
+    """
+    location: Location! @dataLoader(dataLoaderName: "locationById", fieldName: "locationId")
+
+    """
     Location's description
     """
     description: String @multilingual
-
-    """
-    Location's construction date
-    """
-    constructionDate: String
-
-    """
-    Location's demolition date
-    """
-    demolitionDate: String
 
     """
     Link for location info
@@ -86,14 +81,9 @@ export default gql`
     wikiLink: String
 
     """
-    Location coordinate by X
+    Array of location's types
     """
-    coordinateX: Float
-
-    """
-    Location coordinate by Y
-    """
-    coordinateY: Float
+    locationTypes: [LocationType] @dataLoader(dataLoaderName: "locationTypeById", fieldName: "locationTypesId")
 
     """
     Contains links with location's photos
@@ -106,9 +96,54 @@ export default gql`
     mainPhotoLink: String
 
     """
-    Array of location's types
+    Location's construction date
     """
-    locationTypes: [LocationType] @dataLoader(dataLoaderName: "locationTypeById", fieldName: "locationTypesId")
+    constructionDate: String
+
+    """
+    Location's demolition date
+    """
+    demolitionDate: String
+
+    """
+    Start of period
+    """
+    startDate: String
+
+    """
+    End of period
+    """
+    endDate: String
+
+    """
+    Location relations
+    """
+    relations: [Relation!]! @dataLoader(dataLoaderName: "relationByLocationInstanceId", fieldName: "_id")
+
+    """
+    Array of architects
+    """
+    architects: [Person]
+  }
+
+  """
+  Location for displaying on map and making relations with persons
+  """
+  type Location {
+    """
+    Location's ID
+    """
+    id: ID! @renameField(name: "_id")
+
+    """
+    Location coordinate by X
+    """
+    coordinateX: Float
+
+    """
+    Location coordinate by Y
+    """
+    coordinateY: Float
 
     """
     Array of addresses ids
@@ -116,14 +151,9 @@ export default gql`
     addresses: [Address] @dataLoader(dataLoaderName: "addressesById", fieldName: "addressesId")
 
     """
-    Location relations
+    Possible location representations
     """
-    relations: [Relation!]! @dataLoader(dataLoaderName: "relationByLocationId", fieldName: "_id")
-
-    """
-    Array of architects
-    """
-    architects: [Person]
+    instances: [LocationInstance!]! @dataLoader(dataLoaderName: "locationInstanceById", fieldName: "locationInstanceIds")
   }
 
   extend type Query {
@@ -139,6 +169,11 @@ export default gql`
     Get all locations
     """
     locations: [Location!]!
+
+    """
+    Get all locationInstances
+    """
+    locationInstances: [LocationInstance!]!
 
     """
     Get relations on user request
