@@ -120,6 +120,25 @@ const Query: BaseTypeResolver = {
   },
 
   /**
+   * Returns specific locationInstance
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id - locationInstance id
+   * @param db - MongoDB connection to make queries
+   * @return {object}
+   */
+  async locationInstance(parent, { id }: { id: string }, { db }) {
+    const locationInstance = await db.collection('location_instances').findOne({
+      _id: new ObjectId(id)
+    });
+
+    if (!locationInstance) {
+      return null;
+    }
+
+    return locationInstance;
+  },
+
+  /**
    * Returns all locationInstances
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param data - empty arg

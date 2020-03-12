@@ -171,6 +171,14 @@ export default gql`
     locations: [Location!]!
 
     """
+    Get specific locationInstances
+    """
+    locationInstance(
+      "locationInstances id"
+      id: ID!
+    ): LocationInstance
+
+    """
     Get all locationInstances
     """
     locationInstances: [LocationInstance!]!
