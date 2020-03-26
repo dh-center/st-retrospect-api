@@ -53,7 +53,12 @@ export default gql`
     relations: [Relation!]! @dataLoader(dataLoaderName: "relationByPersonId", fieldName: "_id")
 
     """
-    Person main photo
+    Person's info link
+    """
+    wikiLink: String
+
+    """
+    Person's main photo
     """
     mainPhotoLink: String
 
