@@ -6,7 +6,7 @@
   "author": "DH Center <dh@itmo.ru>",
   "scripts": {
     "start:dev": "ts-node-dev --no-notify src/index.ts",
-    "dev:up": "docker-compose -f docker-compose.dev.yml up",
+    "dev:up": "docker-compose -f docker-compose.dev.yml up -d",
     "dev:down": "docker-compose -f docker-compose.dev.yml down",
     "lint": "eslint . --ext .ts --fix",
     "build": "tsc"
