@@ -10,12 +10,12 @@ export default gql`
     """
     Quest name
     """
-    name: String @multilingual
+    name: String
 
     """
     Quest description
     """
-    description: String @multilingual
+    description: String
 
     """
     Quest photo
@@ -38,6 +38,28 @@ export default gql`
     rewards: [JSON!]!
   }
 
+  input InputQuest {
+    """
+    Quest name
+    """
+    name: String!
+
+    """
+    Quest description
+    """
+    description: String
+
+    """
+    Quest photo
+    """
+    photo: String
+
+    """
+    Quest type (quiz, route, etc.)
+    """
+    type: String!
+  }
+
   extend type Query {
     """
     Get specific Quest
@@ -51,5 +73,16 @@ export default gql`
     Get all quests
     """
     quests: [Quest!]!
+  }
+
+  type QuestMutations {
+    """
+    Create quest
+    """
+    create(input: InputQuest): Quest!
+  }
+
+  extend type Mutation {
+    Quest: QuestMutations
   }
 `;
