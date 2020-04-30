@@ -37,4 +37,19 @@ export default gql`
     """
     rewards: [JSON!]!
   }
+
+  extend type Query {
+    """
+    Get specific Quest
+    """
+    quest(
+      "Quest id"
+      id: ID!
+    ): Quest
+
+    """
+    Get all quests
+    """
+    quests: [Quest!]!
+  }
 `;

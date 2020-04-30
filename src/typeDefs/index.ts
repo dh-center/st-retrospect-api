@@ -5,6 +5,7 @@ import locations from './locations';
 import relations from './relations';
 import routes from './routes';
 import users from './users';
+import quests from './quests';
 
 const rootSchema = gql`
   """
@@ -73,6 +74,7 @@ export default concatenateTypeDefs(
     locations,
     relations,
     routes,
-    users
+    users,
+    quests
   ]
 );
