@@ -83,6 +83,6 @@ export default gql`
   }
 
   extend type Mutation {
-    Quest: QuestMutations
+    quest: QuestMutations
   }
 `;
