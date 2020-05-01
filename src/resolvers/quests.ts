@@ -60,7 +60,12 @@ const QuestMutations: BaseTypeResolver = {
   }
 };
 
+const Mutation = {
+  quest: () => ({})
+}
+
 export default {
   Query,
+  Mutation,
   QuestMutations
 };
