@@ -10,7 +10,7 @@ export default gql`
     """
     Quest name
     """
-    name: String
+    name: String!
 
     """
     Quest description
@@ -38,7 +38,7 @@ export default gql`
     rewards: [JSON!]!
   }
 
-  input InputQuest {
+  input CreateQuestInput {
     """
     Quest name
     """
@@ -75,11 +75,38 @@ export default gql`
     quests: [Quest!]!
   }
 
+  type CreateQuestPayload {
+    """
+    Quest ID
+    """
+    id: ID @renameField(name: "_id")
+
+    """
+    Quest name
+    """
+    name: String
+
+    """
+    Quest description
+    """
+    description: String
+
+    """
+    Quest photo
+    """
+    photo: String
+
+    """
+    Quest type (quiz, route, etc.)
+    """
+    type: String
+  }
+
   type QuestMutations {
     """
     Create quest
     """
-    create(input: InputQuest): Quest!
+    create(input: CreateQuestInput): CreateQuestPayload!
   }
 
   extend type Mutation {

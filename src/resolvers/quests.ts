@@ -1,10 +1,33 @@
 import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 
-interface Quest {
+/**
+ * Scheme of quest in database
+ */
+export interface QuestDBScheme {
+  /**
+   * Id of quest
+   */
+  _id: ObjectId;
+
+  /**
+   * Quest name
+   */
   name: string;
+
+  /**
+   * Quest description
+   */
   description: string;
+
+  /**
+   * Quest photo
+   */
   photo: string;
+
+  /**
+   * Quest type
+   */
   type: string;
 }
 
@@ -14,12 +37,11 @@ const Query: BaseTypeResolver = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - quest id
    * @param db - MongoDB connection to make queries
+   * @param dataLoaders - Data loaders in context
    * @return {object}
    */
-  async quest(parent, { id }: { id: string }, { db }) {
-    const quest = await db.collection('quests').findOne({
-      _id: new ObjectId(id)
-    });
+  async quest(parent, { id }: { id: string }, { db, dataLoaders }) {
+    const quest = dataLoaders.questById.load(id);
 
     if (!quest) {
       return null;
@@ -48,8 +70,9 @@ const QuestMutations: BaseTypeResolver = {
    * @param db - MongoDB connection to make queries
    * @return {object}
    */
-  async create(parent, { input }: { input: Quest }, { db }) {
+  async create(parent, { input }: { input: QuestDBScheme }, { db }) {
     const result = await db.collection('quests').insertOne(input);
+
     return result.ops[0];
   }
 };
