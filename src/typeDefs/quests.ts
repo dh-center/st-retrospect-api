@@ -77,29 +77,14 @@ export default gql`
 
   type CreateQuestPayload {
     """
-    Quest ID
+    Created quest id
     """
-    id: ID @renameField(name: "_id")
+    questId: ID
 
     """
-    Quest name
+    Created quest
     """
-    name: String
-
-    """
-    Quest description
-    """
-    description: String
-
-    """
-    Quest photo
-    """
-    photo: String
-
-    """
-    Quest type (quiz, route, etc.)
-    """
-    type: String
+    quest: Quest
   }
 
   type QuestMutations {

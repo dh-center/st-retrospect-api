@@ -71,9 +71,13 @@ const QuestMutations: BaseTypeResolver = {
    * @return {object}
    */
   async create(parent, { input }: { input: QuestDBScheme }, { db }) {
-    const result = await db.collection('quests').insertOne(input);
+    const quest = (await db.collection('quests').insertOne(input)).ops[0];
+    const result = {
+      questId: quest._id,
+      quest
+    };
 
-    return result.ops[0];
+    return result;
   }
 };
 
