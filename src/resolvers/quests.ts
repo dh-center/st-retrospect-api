@@ -49,20 +49,14 @@ const QuestMutations: BaseTypeResolver = {
    * @return {object}
    */
   async create(parent, { input }: { input: Quest }, { db }) {
-    console.log(input);
-    await db.collection('quests').insertOne(input, (error, result) => {
-      if (error) {
-        throw error;
-      } else {
-        return result.ops[0];
-      }
-    });
+    const result = await db.collection('quests').insertOne(input);
+    return result.ops[0];
   }
 };
 
 const Mutation = {
   quest: () => ({})
-}
+};
 
 export default {
   Query,
