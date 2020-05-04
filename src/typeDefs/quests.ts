@@ -38,8 +38,18 @@ export default gql`
     rewards: [JSON!]!
   }
 
+  """
+  Possible task types
+  """
   enum TaskTypes {
+    """
+    Task type quiz
+    """
     QUIZ
+
+    """
+    Task type route
+    """
     ROUTE
   }
 
