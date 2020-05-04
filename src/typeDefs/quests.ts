@@ -72,7 +72,7 @@ export default gql`
     """
     Quest type (quiz, route, etc.)
     """
-    type: String!
+    type: TaskTypes!
   }
 
   extend type Query {
