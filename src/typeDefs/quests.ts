@@ -25,7 +25,7 @@ export default gql`
     """
     Quest type (quiz, route, etc.)
     """
-    type: String!
+    type: TaskTypes!
 
     """
     Quest task
@@ -36,6 +36,11 @@ export default gql`
     Quest rewards
     """
     rewards: [JSON!]!
+  }
+
+  enum TaskTypes {
+    QUIZ
+    ROUTE
   }
 
   input CreateQuestInput {
