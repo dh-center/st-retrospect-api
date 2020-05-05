@@ -70,12 +70,10 @@ const Query = {
       query, args.first, args.last
     );
     const persons = await query.toArray();
-    const edges = persons.map(
-      (person) => (
-        {
-          cursor: person._id,
-          node: person
-        }));
+    const edges = persons.map((person) => ({
+      cursor: person._id,
+      node: person
+    }));
 
     return {
       edges,
