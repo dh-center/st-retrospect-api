@@ -1,6 +1,6 @@
-import { BaseTypeResolver } from '../types/graphql';
+import { ResolverContextBase } from '../types/graphql';
 import { ObjectId } from 'mongodb';
-import { PageInfo, limitQueryWithId, applyPagination } from '../pagination';
+import { limitQueryWithId, applyPagination, Connection } from '../pagination';
 
 export interface PersonDBScheme {
   _id: ObjectId;
@@ -31,7 +31,7 @@ interface PaginationArguments {
   last?: number;
 }
 
-const Query: BaseTypeResolver = {
+const Query = {
   /**
    * Returns specific person
    * @param parent - the object that contains the result returned from the resolver on the parent field
@@ -39,7 +39,7 @@ const Query: BaseTypeResolver = {
    * @param db - MongoDB connection to make queries
    * @return {object}
    */
-  async person(parent, { id }: { id: string }, { db }) {
+  async person(parent: {}, { id }: { id: string }, { db }: ResolverContextBase): Promise<PersonDBScheme | null> {
     const person = await db.collection('persons').findOne({
       _id: new ObjectId(id)
     });
@@ -58,7 +58,7 @@ const Query: BaseTypeResolver = {
    * @param db - MongoDB connection to make queries
    * @return {object[]}
    */
-  async persons(parent, args: PaginationArguments, { db }) {
+  async persons(parent: {}, args: PaginationArguments, { db }: ResolverContextBase): Promise<Connection<PersonDBScheme>> {
     const query = db.collection<PersonDBScheme>('persons').find();
 
     limitQueryWithId(
