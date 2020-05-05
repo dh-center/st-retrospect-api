@@ -37,6 +37,8 @@ const rootSchema = gql`
   """
   scalar JSON
 
+  scalar Cursor
+
   """
   Supported languages for data
   """
