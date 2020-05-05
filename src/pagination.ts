@@ -14,7 +14,7 @@ export interface PageInfo {
  * @param before - the cursor after before we take the data
  * @param after - the cursor after which we take the data
  */
-export function limitQueryWithId(query: Cursor, before: string, after: string): Cursor {
+export function limitQueryWithId(query: Cursor, before?: string, after?: string): Cursor {
   let filter: FilterQuery<PersonDBScheme>;
 
   if (before) {
@@ -44,7 +44,7 @@ export function limitQueryWithId(query: Cursor, before: string, after: string): 
  * @param first - the number of requested objects from the beginning of the list
  * @param last - the number of requested objects from the eng of the list
  */
-export async function applyPagination(query: Cursor, first: number, last: number): Promise<object> {
+export async function applyPagination(query: Cursor, first?: number, last?: number): Promise<object> {
   const count = await query.clone().count();
 
   if (first || last) {

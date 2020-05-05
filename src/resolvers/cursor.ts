@@ -1,6 +1,5 @@
 import Base64URL from 'base64-url';
 import { GraphQLScalarType } from 'graphql';
-// import { Kind } from 'graphql/language';
 import { ObjectId } from 'mongodb';
 
 /**
@@ -28,15 +27,6 @@ const CursorType = new GraphQLScalarType({
       return null;
     }
   },
-  /*
-   * parseLiteral(ast): ObjectId|null {
-   *   if (ast.kind === Kind.STRING) {
-   *     return fromCursor(ast.value);
-   *   } else {
-   *     return null;
-   *   }
-   * },
-   */
   parseValue(value): ObjectId {
     return fromCursor(value);
   }

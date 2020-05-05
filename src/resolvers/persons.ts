@@ -6,26 +6,29 @@ export interface PersonDBScheme {
   _id: ObjectId;
 }
 
-interface PaginationArg {
+/**
+ * Arguments for pagination
+ */
+interface PaginationArguments {
   /**
    * The cursor after which we take the data
    */
-  after: string;
+  after?: string;
 
   /**
    * The cursor after before we take the data
    */
-  before: string;
+  before?: string;
 
   /**
    * The number of requested objects from the beginning of the list
    */
-  first: number;
+  first?: number;
 
   /**
    * The number of requested objects from the eng of the list
    */
-  last: number;
+  last?: number;
 }
 
 const Query: BaseTypeResolver = {
@@ -51,19 +54,20 @@ const Query: BaseTypeResolver = {
   /**
    * Returns all locations
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param args - arguments for pagination
    * @param db - MongoDB connection to make queries
    * @return {object[]}
    */
-  async persons(parent, { after, before, first, last }: PaginationArg, { db }) {
+  async persons(parent, args: PaginationArguments, { db }) {
     const query = db.collection<PersonDBScheme>('persons').find();
 
     limitQueryWithId(
       query,
-      before,
-      after
+      args.before,
+      args.after
     );
     const pageInfo = await applyPagination(
-      query, first, last
+      query, args.first, args.last
     );
     const persons = await query.toArray();
     const edges = persons.map(
