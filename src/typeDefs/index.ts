@@ -39,6 +39,11 @@ const rootSchema = gql`
   scalar JSON
 
   """
+  Type for representing connections cursors
+  """
+  scalar Cursor
+
+  """
   Supported languages for data
   """
   enum Languages {

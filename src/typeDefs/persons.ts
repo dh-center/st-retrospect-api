@@ -68,6 +68,57 @@ export default gql`
     photoLinks: [String]
   }
 
+  type PersonConnection {
+    """
+    List of persons edges
+    """
+    edges: [PersonEdge!]!
+
+    """
+    Information about this page
+    """
+    pageInfo: PageInfo!
+
+    """
+    Number of available edges
+    """
+    totalCount: Int!
+  }
+
+  type PersonEdge {
+    """
+    Cursor of this person
+    """
+    cursor: Cursor!
+
+    """
+    Person info
+    """
+    node: Person!
+  }
+
+  type PageInfo {
+    """
+    Information about the existence of the next page
+    """
+    hasNextPage: Boolean!
+
+    """
+    Information about the existence of the previous page
+    """
+    hasPreviousPage: Boolean!
+
+    """
+    First cursor on this page
+    """
+    startCursor: Cursor!
+
+    """
+    Last cursor on this page
+    """
+    endCursor: Cursor!
+  }
+
   extend type Query {
     """
     Get specific person
@@ -80,6 +131,11 @@ export default gql`
     """
     Get all persons
     """
-    persons: [Person!]!
+    persons(
+      after: Cursor,
+      before: Cursor,
+      first: Int,
+      last: Int
+    ): PersonConnection!
   }
 `;

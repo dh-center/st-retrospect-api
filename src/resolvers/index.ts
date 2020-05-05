@@ -6,6 +6,7 @@ import locations from './locations';
 import routes from './routes';
 import users from './users';
 import relations from './relations';
+import Cursor from './cursor';
 import quests from './quests';
 
 /**
@@ -26,4 +27,4 @@ const indexResolver = {
   JSON: GraphQLJSON
 };
 
-export default merge(indexResolver, persons, locations, routes, users, relations, quests);
+export default merge(indexResolver, persons, locations, routes, users, relations, Cursor, quests);
