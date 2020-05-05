@@ -48,6 +48,11 @@ export interface Connection<T> {
    * Information about this page
    */
   pageInfo: PageInfo;
+
+  /**
+   * Number of available edges
+   */
+  totalCount: number;
 }
 
 /**

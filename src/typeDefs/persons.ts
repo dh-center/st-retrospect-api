@@ -78,6 +78,11 @@ export default gql`
     Information about this page
     """
     pageInfo: PageInfo!
+
+    """
+    Number of available edges
+    """
+    totalCount: Int!
   }
 
   type PersonEdge {

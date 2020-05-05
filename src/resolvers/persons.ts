@@ -60,6 +60,7 @@ const Query = {
    */
   async persons(parent: {}, args: PaginationArguments, { db }: ResolverContextBase): Promise<Connection<PersonDBScheme>> {
     const query = db.collection<PersonDBScheme>('persons').find();
+    const totalCount = await query.clone().count();
 
     limitQueryWithId(
       query,
@@ -76,6 +77,7 @@ const Query = {
     }));
 
     return {
+      totalCount,
       edges,
       pageInfo: {
         ...pageInfo,
