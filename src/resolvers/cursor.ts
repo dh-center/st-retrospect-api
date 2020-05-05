@@ -4,16 +4,16 @@ import { GraphQLScalarType } from 'graphql';
 import { ObjectId } from 'mongodb';
 
 /**
- * encode
- * @param value
+ * Encode id to cursor
+ * @param value - value to encode
  */
 export function toCursor(value: ObjectId): string {
   return Base64URL.encode(value.toString());
 }
 
 /**
- * decode
- * @param string
+ * Decode cursor to id
+ * @param string - string to decode
  */
 export function fromCursor(string: string): ObjectId {
   return new ObjectId(Base64URL.decode(string));

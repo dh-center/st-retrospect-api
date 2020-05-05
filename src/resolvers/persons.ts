@@ -1,86 +1,31 @@
 import { BaseTypeResolver } from '../types/graphql';
-import { Cursor, FilterQuery, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
+import { PageInfo, limitQueryWithId, applyPagination } from '../pagination';
 
 export interface PersonDBScheme {
   _id: ObjectId;
 }
 
-interface PageInfo {
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-  startCursor: Cursor;
-  endCursor: Cursor;
-}
+interface PaginationArg {
+  /**
+   * The cursor after which we take the data
+   */
+  after: string;
 
-/**
- * limitQueryWithId
- * @param query
- * @param before
- * @param after
- */
-function limitQueryWithId(query: Cursor, before: string, after: string): Cursor {
-  let filter: FilterQuery<PersonDBScheme>;
+  /**
+   * The cursor after before we take the data
+   */
+  before: string;
 
-  if (before) {
-    filter = {
-      _id: {
-        $lt: new ObjectId(before)
-      }
-    };
-  } else if (after) {
-    filter = {
-      _id: {
-        $gt: new ObjectId(after)
-      }
-    };
-  } else {
-    filter = {
-      _id: {}
-    };
-  }
+  /**
+   * The number of requested objects from the beginning of the list
+   */
+  first: number;
 
-  return query.filter(filter);
-}
-
-/**
- * applyPagination
- * @param query
- * @param first
- * @param last
- */
-async function applyPagination(query: Cursor, first: number, last: number): Promise<object> {
-  const count = await query.clone().count();
-
-  if (first || last) {
-    let limit;
-    let skip;
-
-    if (first && count > first) {
-      limit = first;
-    }
-
-    if (last) {
-      if (limit && limit > last) {
-        skip = limit - last;
-        limit = limit - skip;
-      } else if (!limit && count > last) {
-        skip = count - last;
-      }
-    }
-
-    if (skip) {
-      query.skip(skip);
-    }
-
-    if (limit) {
-      query.limit(limit);
-    }
-  }
-
-  return {
-    hasNextPage: Boolean(first && count > first),
-    hasPreviousPage: Boolean(last && count > last)
-  };
+  /**
+   * The number of requested objects from the eng of the list
+   */
+  last: number;
 }
 
 const Query: BaseTypeResolver = {
@@ -106,13 +51,14 @@ const Query: BaseTypeResolver = {
   /**
    * Returns all locations
    * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param data - empty arg
    * @param db - MongoDB connection to make queries
    * @return {object[]}
    */
-  async persons(parent, { after, before, first, last }: {after: string; before: string; first: number; last: number}, { db }) {
-    const query = limitQueryWithId(
-      db.collection<PersonDBScheme>('persons').find(),
+  async persons(parent, { after, before, first, last }: PaginationArg, { db }) {
+    const query = db.collection<PersonDBScheme>('persons').find();
+
+    limitQueryWithId(
+      query,
       before,
       after
     );

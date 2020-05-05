@@ -37,6 +37,9 @@ const rootSchema = gql`
   """
   scalar JSON
 
+  """
+  Type for representing connections cursors
+  """
   scalar Cursor
 
   """

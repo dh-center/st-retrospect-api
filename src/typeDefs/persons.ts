@@ -69,19 +69,48 @@ export default gql`
   }
 
   type PersonConnection {
+    """
+    List of persons edges
+    """
     edges: [PersonEdge!]!
+
+    """
+    Information about this page
+    """
     pageInfo: PageInfo!
   }
 
   type PersonEdge {
+    """
+    Cursor of this person
+    """
     cursor: Cursor!
+
+    """
+    Person info
+    """
     node: Person!
   }
 
   type PageInfo {
+    """
+    Information about the existence of the next page
+    """
     hasNextPage: Boolean!
+
+    """
+    Information about the existence of the previous page
+    """
     hasPreviousPage: Boolean!
+
+    """
+    First cursor on this page
+    """
     startCursor: Cursor!
+
+    """
+    Last cursor on this page
+    """
     endCursor: Cursor!
   }
 
