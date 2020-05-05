@@ -30,9 +30,7 @@ export function limitQueryWithId(query: Cursor, before?: string, after?: string)
       }
     };
   } else {
-    filter = {
-      _id: {}
-    };
+    filter = {};
   }
 
   return query.filter(filter);
