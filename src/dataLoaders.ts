@@ -5,6 +5,7 @@ import { PersonDBScheme } from './resolvers/persons';
 import { ObjectMap } from './types/utils';
 import { AddressesDBScheme, LocationDBScheme, LocationTypeDBScheme } from './resolvers/locations';
 import { RouteDBScheme } from './resolvers/routes';
+import { QuestDBScheme } from './resolvers/quests';
 
 /**
  * Class for setting up data loaders
@@ -92,6 +93,14 @@ export default class DataLoaders {
    */
   public locationById = new DataLoader(
     (locationIds: string[]) => this.batchByIds<LocationDBScheme>('locations', locationIds),
+    { cache: false }
+  );
+
+  /**
+   * Loader for fetching quests by their ids
+   */
+  public questById = new DataLoader(
+    (questIds: string[]) => this.batchByIds<QuestDBScheme>('quests', questIds),
     { cache: false }
   );
 
