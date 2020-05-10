@@ -1,6 +1,6 @@
 import { ResolverContextBase } from '../types/graphql';
 import { ObjectId } from 'mongodb';
-import { limitQueryWithId, applyPagination, Connection } from '../pagination';
+import { limitQueryWithId, applyPagination, Connection, Edge } from '../pagination';
 
 export interface PersonDBScheme {
   _id: ObjectId;
@@ -81,8 +81,8 @@ const Query = {
       edges,
       pageInfo: {
         ...pageInfo,
-        startCursor: persons[0]._id,
-        endCursor: persons[persons.length - 1]._id
+        startCursor: persons.length ? persons[0]._id : undefined,
+        endCursor: persons.length ? persons[persons.length - 1]._id : undefined
       }
     };
   }

@@ -18,15 +18,15 @@ export interface PageInfo {
   /**
    * First cursor on this page
    */
-  startCursor: ObjectId;
+  startCursor?: ObjectId;
 
   /**
    * Last cursor on this page
    */
-  endCursor: ObjectId;
+  endCursor?: ObjectId;
 }
 
-interface Edge<T> {
+export interface Edge<T> {
   /**
    * Cursor of this node
    */

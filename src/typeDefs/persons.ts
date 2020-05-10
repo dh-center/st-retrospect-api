@@ -111,12 +111,12 @@ export default gql`
     """
     First cursor on this page
     """
-    startCursor: Cursor!
+    startCursor: Cursor
 
     """
     Last cursor on this page
     """
-    endCursor: Cursor!
+    endCursor: Cursor
   }
 
   extend type Query {
