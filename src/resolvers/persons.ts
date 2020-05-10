@@ -71,26 +71,18 @@ const Query = {
       query, args.first, args.last
     );
     const persons = await query.toArray();
-    let edges: Edge<PersonDBScheme>[] = [];
-    let startCursor;
-    let endCursor;
-
-    if (persons.length) {
-      edges = persons.map((person) => ({
-        cursor: person._id,
-        node: person
-      }));
-      startCursor = persons[0]._id;
-      endCursor = persons[persons.length - 1]._id;
-    }
+    const edges = persons.map((person) => ({
+      cursor: person._id,
+      node: person
+    }));
 
     return {
       totalCount,
       edges,
       pageInfo: {
         ...pageInfo,
-        startCursor: startCursor,
-        endCursor: endCursor
+        startCursor: persons.length ? persons[0]._id : undefined,
+        endCursor: persons.length ? persons[persons.length - 1]._id : undefined
       }
     };
   }

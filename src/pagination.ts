@@ -18,12 +18,12 @@ export interface PageInfo {
   /**
    * First cursor on this page
    */
-  startCursor: ObjectId|undefined;
+  startCursor?: ObjectId;
 
   /**
    * Last cursor on this page
    */
-  endCursor: ObjectId|undefined;
+  endCursor?: ObjectId;
 }
 
 export interface Edge<T> {
