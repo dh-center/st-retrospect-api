@@ -2,6 +2,31 @@ import { Cursor, FilterQuery, ObjectId } from 'mongodb';
 import { PersonDBScheme } from './resolvers/persons';
 
 /**
+ * Arguments for pagination
+ */
+export interface PaginationArguments {
+  /**
+   * The cursor after which we take the data
+   */
+  after?: string;
+
+  /**
+   * The cursor after before we take the data
+   */
+  before?: string;
+
+  /**
+   * The number of requested objects from the beginning of the list
+   */
+  first?: number;
+
+  /**
+   * The number of requested objects from the eng of the list
+   */
+  last?: number;
+}
+
+/**
  * Information about this page
  */
 export interface PageInfo {

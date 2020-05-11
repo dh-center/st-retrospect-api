@@ -38,6 +38,35 @@ export default gql`
     rewards: [JSON!]!
   }
 
+  type QuestConnection {
+    """
+    List of persons edges
+    """
+    edges: [QuestEdge!]!
+
+    """
+    Information about this page
+    """
+    pageInfo: PageInfo!
+
+    """
+    Number of available edges
+    """
+    totalCount: Int!
+  }
+
+  type QuestEdge {
+    """
+    Cursor of this person
+    """
+    cursor: Cursor!
+
+    """
+    Person info
+    """
+    node: Quest!
+  }
+
   """
   Possible task types
   """
@@ -87,7 +116,19 @@ export default gql`
     """
     Get all quests
     """
-    quests: [Quest!]!
+    quests(
+      "The cursor after which we take the data"
+      after: Cursor,
+
+      "The cursor after before we take the data"
+      before: Cursor,
+
+      "The number of requested objects from the beginning of the list"
+      first: Int,
+
+      "The number of requested objects from the eng of the list"
+      last: Int
+    ): QuestConnection! @pagination(collectionName: "quests")
   }
 
   type CreateQuestPayload {

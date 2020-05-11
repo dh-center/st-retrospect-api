@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server-express';
+import {gql} from 'apollo-server-express';
 
 export default gql`
   """
@@ -156,6 +156,35 @@ export default gql`
     instances: [LocationInstance!]! @dataLoader(dataLoaderName: "locationInstanceById", fieldName: "locationInstanceIds")
   }
 
+  type LocationConnection {
+    """
+    List of persons edges
+    """
+    edges: [LocationEdge!]!
+
+    """
+    Information about this page
+    """
+    pageInfo: PageInfo!
+
+    """
+    Number of available edges
+    """
+    totalCount: Int!
+  }
+
+  type LocationEdge {
+    """
+    Cursor of this person
+    """
+    cursor: Cursor!
+
+    """
+    Person info
+    """
+    node: Location!
+  }
+
   extend type Query {
     """
     Get specific location
@@ -168,7 +197,19 @@ export default gql`
     """
     Get all locations
     """
-    locations: [Location!]!
+    locations(
+      "The cursor after which we take the data"
+      after: Cursor,
+
+      "The cursor after before we take the data"
+      before: Cursor,
+
+      "The number of requested objects from the beginning of the list"
+      first: Int,
+
+      "The number of requested objects from the eng of the list"
+      last: Int
+    ): LocationConnection! @pagination(collectionName: "locations")
 
     """
     Get specific locationInstances

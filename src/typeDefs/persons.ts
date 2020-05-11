@@ -132,10 +132,17 @@ export default gql`
     Get all persons
     """
     persons(
+      "The cursor after which we take the data"
       after: Cursor,
+
+      "The cursor after before we take the data"
       before: Cursor,
+
+      "The number of requested objects from the beginning of the list"
       first: Int,
+
+      "The number of requested objects from the eng of the list"
       last: Int
-    ): PersonConnection!
+    ): PersonConnection! @pagination(collectionName: "persons")
   }
 `;

@@ -34,6 +34,11 @@ const rootSchema = gql`
   ) on FIELD_DEFINITION
 
   """
+  Directive for pagination
+  """
+  directive @pagination(collectionName: String!) on FIELD_DEFINITION
+
+  """
   Type for representing JSON object
   """
   scalar JSON
