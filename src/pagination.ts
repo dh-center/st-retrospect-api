@@ -16,12 +16,12 @@ export interface PaginationArguments {
   before?: string;
 
   /**
-   * The number of requested objects from the beginning of the list
+   * Number of requested nodes after a node with a cursor in the `after` argument
    */
   first?: number;
 
   /**
-   * The number of requested objects from the eng of the list
+   * Number of requested nodes before a node with a cursor in the `before` argument
    */
   last?: number;
 }
