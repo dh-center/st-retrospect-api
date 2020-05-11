@@ -14,7 +14,8 @@ interface PaginationDirectiveArgs {
 }
 
 /**
- * sedrfghjk
+ * Directive for pagination according to the Relay specification
+ * (https://relay.dev/graphql/connections.htm)
  */
 export default class PaginationDirective extends SchemaDirectiveVisitor {
   /**
