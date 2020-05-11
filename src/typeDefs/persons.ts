@@ -147,10 +147,10 @@ export default gql`
       "The cursor after before we take the data"
       before: Cursor,
 
-      "The number of requested objects from the beginning of the list"
+      "Number of requested nodes after a node with a cursor in the after argument"
       first: Int,
 
-      "The number of requested objects from the eng of the list"
+      "Number of requested nodes before a node with a cursor in the before argument"
       last: Int
     ): PersonConnection! @pagination(collectionName: "persons")
   }

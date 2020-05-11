@@ -111,8 +111,8 @@ export function limitQueryWithId(query: Cursor, before?: string, after?: string)
 /**
  * Modifies query according first and last arguments, returns information about the existence of the previous and next pages
  * @param query - mongodb cursor to handle
- * @param first - the number of requested objects from the beginning of the list
- * @param last - the number of requested objects from the eng of the list
+ * @param first - Number of requested nodes after a node with a cursor in the `after` argument
+ * @param last - Number of requested nodes before a node with a cursor in the before argument
  */
 export async function applyPagination(query: Cursor, first?: number, last?: number): Promise<{
   hasNextPage: boolean;
