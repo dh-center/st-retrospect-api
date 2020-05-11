@@ -38,9 +38,12 @@ export default gql`
     rewards: [JSON!]!
   }
 
+  """
+  Model for representing list of quests
+  """
   type QuestConnection {
     """
-    List of persons edges
+    List of quests edges
     """
     edges: [QuestEdge!]!
 
@@ -55,14 +58,17 @@ export default gql`
     totalCount: Int!
   }
 
+  """
+  Information about specific quest in connection
+  """
   type QuestEdge {
     """
-    Cursor of this person
+    Cursor of this quest
     """
     cursor: Cursor!
 
     """
-    Person info
+    Quest info
     """
     node: Quest!
   }

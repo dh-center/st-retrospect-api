@@ -68,6 +68,9 @@ export default gql`
     photoLinks: [String]
   }
 
+  """
+  Model for representing list of persons
+  """
   type PersonConnection {
     """
     List of persons edges
@@ -85,6 +88,9 @@ export default gql`
     totalCount: Int!
   }
 
+  """
+  Information about specific person in connection
+  """
   type PersonEdge {
     """
     Cursor of this person
@@ -97,6 +103,9 @@ export default gql`
     node: Person!
   }
 
+  """
+  Information about current page
+  """
   type PageInfo {
     """
     Information about the existence of the next page

@@ -156,9 +156,12 @@ export default gql`
     instances: [LocationInstance!]! @dataLoader(dataLoaderName: "locationInstanceById", fieldName: "locationInstanceIds")
   }
 
+  """
+  Model for representing list of locations
+  """
   type LocationConnection {
     """
-    List of persons edges
+    List of locations edges
     """
     edges: [LocationEdge!]!
 
@@ -173,14 +176,17 @@ export default gql`
     totalCount: Int!
   }
 
+  """
+  Information about specific location in connection
+  """
   type LocationEdge {
     """
-    Cursor of this person
+    Cursor of this location
     """
     cursor: Cursor!
 
     """
-    Person info
+    Location info
     """
     node: Location!
   }
