@@ -109,17 +109,6 @@ const Query: BaseTypeResolver = {
   },
 
   /**
-   * Returns all locations
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param data - empty arg
-   * @param db - MongoDB connection to make queries
-   * @return {object[]}
-   */
-  async locations(parent, data, { db }) {
-    return db.collection('locations').find({}).toArray();
-  },
-
-  /**
    * Returns specific locationInstance
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - locationInstance id

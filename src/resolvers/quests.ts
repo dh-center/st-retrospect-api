@@ -48,17 +48,6 @@ const Query: BaseTypeResolver = {
     }
 
     return quest;
-  },
-
-  /**
-   * Returns all quests
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param data - empty arg
-   * @param db - MongoDB connection to make queries
-   * @return {object[]}
-   */
-  async quests(parent, data, { db }) {
-    return db.collection('quests').find({}).toArray();
   }
 };
 

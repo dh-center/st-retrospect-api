@@ -156,6 +156,41 @@ export default gql`
     instances: [LocationInstance!]! @dataLoader(dataLoaderName: "locationInstanceById", fieldName: "locationInstanceIds")
   }
 
+  """
+  Model for representing list of locations
+  """
+  type LocationConnection {
+    """
+    List of locations edges
+    """
+    edges: [LocationEdge!]!
+
+    """
+    Information about this page
+    """
+    pageInfo: PageInfo!
+
+    """
+    Number of available edges
+    """
+    totalCount: Int!
+  }
+
+  """
+  Information about specific location in connection
+  """
+  type LocationEdge {
+    """
+    Cursor of this location
+    """
+    cursor: Cursor!
+
+    """
+    Location info
+    """
+    node: Location!
+  }
+
   extend type Query {
     """
     Get specific location
@@ -168,7 +203,19 @@ export default gql`
     """
     Get all locations
     """
-    locations: [Location!]!
+    locations(
+      "The cursor after which we take the data"
+      after: Cursor,
+
+      "The cursor after before we take the data"
+      before: Cursor,
+
+      "Number of requested nodes after a node with a cursor in the after argument"
+      first: Int,
+
+      "Number of requested nodes before a node with a cursor in the before argument"
+      last: Int
+    ): LocationConnection! @pagination(collectionName: "locations")
 
     """
     Get specific locationInstances

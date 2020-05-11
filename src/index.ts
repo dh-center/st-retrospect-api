@@ -14,6 +14,7 @@ import errorHandler from './middlewares/errorHandler';
 import renameFieldDirective from './directives/renameField';
 import Multilingual from './directives/multilingual';
 import DataLoaderDirective from './directives/dataloaders';
+import PaginationDirective from "./directives/pagination";
 import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
@@ -67,7 +68,8 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
     schemaDirectives: {
       renameField: renameFieldDirective,
       multilingual: Multilingual,
-      dataLoader: DataLoaderDirective
+      dataLoader: DataLoaderDirective,
+      pagination: PaginationDirective
     },
     async context({ req }): Promise<ResolverContextBase> {
       let languages: Languages[];

@@ -1,34 +1,8 @@
 import { ResolverContextBase } from '../types/graphql';
 import { ObjectId } from 'mongodb';
-import { limitQueryWithId, applyPagination, Connection, Edge } from '../pagination';
 
 export interface PersonDBScheme {
   _id: ObjectId;
-}
-
-/**
- * Arguments for pagination
- */
-interface PaginationArguments {
-  /**
-   * The cursor after which we take the data
-   */
-  after?: string;
-
-  /**
-   * The cursor after before we take the data
-   */
-  before?: string;
-
-  /**
-   * The number of requested objects from the beginning of the list
-   */
-  first?: number;
-
-  /**
-   * The number of requested objects from the eng of the list
-   */
-  last?: number;
 }
 
 const Query = {
@@ -49,42 +23,6 @@ const Query = {
     }
 
     return person;
-  },
-
-  /**
-   * Returns all locations
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param args - arguments for pagination
-   * @param db - MongoDB connection to make queries
-   * @return {object[]}
-   */
-  async persons(parent: {}, args: PaginationArguments, { db }: ResolverContextBase): Promise<Connection<PersonDBScheme>> {
-    const query = db.collection<PersonDBScheme>('persons').find();
-    const totalCount = await query.clone().count();
-
-    limitQueryWithId(
-      query,
-      args.before,
-      args.after
-    );
-    const pageInfo = await applyPagination(
-      query, args.first, args.last
-    );
-    const persons = await query.toArray();
-    const edges = persons.map((person) => ({
-      cursor: person._id,
-      node: person
-    }));
-
-    return {
-      totalCount,
-      edges,
-      pageInfo: {
-        ...pageInfo,
-        startCursor: persons.length ? persons[0]._id : undefined,
-        endCursor: persons.length ? persons[persons.length - 1]._id : undefined
-      }
-    };
   }
 };
 

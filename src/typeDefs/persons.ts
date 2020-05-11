@@ -68,6 +68,9 @@ export default gql`
     photoLinks: [String]
   }
 
+  """
+  Model for representing list of persons
+  """
   type PersonConnection {
     """
     List of persons edges
@@ -85,6 +88,9 @@ export default gql`
     totalCount: Int!
   }
 
+  """
+  Information about specific person in connection
+  """
   type PersonEdge {
     """
     Cursor of this person
@@ -97,6 +103,9 @@ export default gql`
     node: Person!
   }
 
+  """
+  Information about current page
+  """
   type PageInfo {
     """
     Information about the existence of the next page
@@ -132,10 +141,17 @@ export default gql`
     Get all persons
     """
     persons(
+      "The cursor after which we take the data"
       after: Cursor,
+
+      "The cursor after before we take the data"
       before: Cursor,
+
+      "Number of requested nodes after a node with a cursor in the after argument"
       first: Int,
+
+      "Number of requested nodes before a node with a cursor in the before argument"
       last: Int
-    ): PersonConnection!
+    ): PersonConnection! @pagination(collectionName: "persons")
   }
 `;
