@@ -206,12 +206,12 @@ export default gql`
     """
     Created person id
     """
-    personId: ID
+    recordId: ID
 
     """
     Created person
     """
-    person: Person
+    record: Person
   }
 
   type PersonMutations {
