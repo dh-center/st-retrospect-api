@@ -1,4 +1,4 @@
-import { BaseTypeResolver, ResolverContextBase } from '../types/graphql';
+import { CreateMutationPayload, ResolverContextBase } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 
 export interface PersonDBScheme {
@@ -34,19 +34,22 @@ const PersonMutations = {
    * @param db - MongoDB connection to make queries
    * @return {object}
    */
-  async create(parent: undefined, { input }: { input: PersonDBScheme }, { db, languages }: ResolverContextBase) {
-    const person = (await db.collection('persons').insertOne(input)).ops[0];
-    const result = {
-      personId: person._id,
-      person
-    };
+  async create(
+    parent: undefined,
+    { input }: { input: PersonDBScheme },
+    { db }: ResolverContextBase
+  ): Promise<CreateMutationPayload<PersonDBScheme>> {
+    const person = (await db.collection<PersonDBScheme>('persons').insertOne(input)).ops[0];
 
-    return result;
+    return {
+      recordId: person._id,
+      record: person
+    };
   }
 };
 
 const Mutation = {
-  person: () => ({})
+  person: (): object => ({})
 };
 
 export default {

@@ -28,6 +28,7 @@ export default class PaginationDirective extends SchemaDirectiveVisitor {
   ): GraphQLField<any, any> | void | null {
     const { collectionName } = this.args as PaginationDirectiveArgs;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     field.resolve = async (parent, args: PaginationArguments, { db }: ResolverContextBase): Promise<any> => {
       const query = db.collection(collectionName).find();
       const totalCount = await query.clone().count();

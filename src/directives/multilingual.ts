@@ -37,6 +37,10 @@ export default class Multilingual extends SchemaDirectiveVisitor {
     };
   }
 
+  /**
+   * @param field - GraphQL input field definition
+   * @param details - GraphQL type containing field
+   */
   visitInputFieldDefinition(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     field: GraphQLInputField, details: {
@@ -46,8 +50,13 @@ export default class Multilingual extends SchemaDirectiveVisitor {
     super.visitInputFieldDefinition(field, details);
   }
 
+  /**
+   * @param argument - GraphQL argument definition
+   * @param details - GraphQL field and type containing argument
+   */
   visitArgumentDefinition(
     argument: GraphQLArgument,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     details: { field: GraphQLField<any, any>; objectType: GraphQLObjectType | GraphQLInterfaceType }
   ): GraphQLArgument | void | null {
     const { resolve = defaultFieldResolver } = details.field;

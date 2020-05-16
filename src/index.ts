@@ -14,7 +14,7 @@ import errorHandler from './middlewares/errorHandler';
 import renameFieldDirective from './directives/renameField';
 import Multilingual from './directives/multilingual';
 import DataLoaderDirective from './directives/dataloaders';
-import PaginationDirective from "./directives/pagination";
+import PaginationDirective from './directives/pagination';
 import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';

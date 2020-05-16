@@ -1,4 +1,4 @@
-import { Db } from 'mongodb';
+import { Db, ObjectId } from 'mongodb';
 import { GraphQLResolveInfo } from 'graphql';
 import DataLoaders from '../dataLoaders';
 
@@ -72,6 +72,14 @@ export enum Languages {
 export interface PointCoordinates {
   longitude: number;
   latitude: number;
+}
+
+/**
+ * CreateMutation record
+ */
+export interface CreateMutationPayload<T> {
+  recordId: ObjectId;
+  record: T;
 }
 
 /**
