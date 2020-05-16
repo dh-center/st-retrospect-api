@@ -154,4 +154,74 @@ export default gql`
       last: Int
     ): PersonConnection! @pagination(collectionName: "persons")
   }
+
+  input CreatePersonInput {
+    """
+    Person's first name
+    """
+    firstName: String @multilingual
+
+    """
+    Person's last name
+    """
+    lastName: String @multilingual
+
+    """
+    Person's patronymic
+    """
+    patronymic: String @multilingual
+
+    """
+    Person's pseudonym
+    """
+    pseudonym: String @multilingual
+
+    """
+    Person's profession
+    """
+    profession: String @multilingual
+
+    """
+    Person's description
+    """
+    description: String @multilingual
+
+    """
+    Person's birth date
+    """
+    birthDate: String
+
+    """
+    Person's death date
+    """
+    deathDate: String
+
+    """
+    Person's info link
+    """
+    wikiLink: String
+  }
+
+  type CreatePersonPayload {
+    """
+    Created person id
+    """
+    recordId: ID
+
+    """
+    Created person
+    """
+    record: Person
+  }
+
+  type PersonMutations {
+    """
+    Create person
+    """
+    create(input: CreatePersonInput @multilingual): CreatePersonPayload!
+  }
+
+  extend type Mutation {
+    person: PersonMutations
+  }
 `;

@@ -1,5 +1,12 @@
 import { SchemaDirectiveVisitor } from 'graphql-tools';
-import { defaultFieldResolver, GraphQLField } from 'graphql';
+import {
+  defaultFieldResolver,
+  GraphQLField,
+  GraphQLArgument,
+  GraphQLObjectType,
+  GraphQLInterfaceType,
+  isInputObjectType, GraphQLInputField, GraphQLInputObjectType
+} from 'graphql';
 import { ResolverContextBase } from '../types/graphql';
 
 /**
@@ -27,6 +34,54 @@ export default class Multilingual extends SchemaDirectiveVisitor {
         return value.map(arrayValue => arrayValue && arrayValue[context.languages[0].toLowerCase()]);
       }
       return value[context.languages[0].toLowerCase()];
+    };
+  }
+
+  /**
+   * @param field - GraphQL input field definition
+   * @param details - GraphQL type containing field
+   */
+  visitInputFieldDefinition(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    field: GraphQLInputField, details: {
+      objectType: GraphQLInputObjectType;}
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ): GraphQLInputField | void | null {
+    super.visitInputFieldDefinition(field, details);
+  }
+
+  /**
+   * @param argument - GraphQL argument definition
+   * @param details - GraphQL field and type containing argument
+   */
+  visitArgumentDefinition(
+    argument: GraphQLArgument,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    details: { field: GraphQLField<any, any>; objectType: GraphQLObjectType | GraphQLInterfaceType }
+  ): GraphQLArgument | void | null {
+    const { resolve = defaultFieldResolver } = details.field;
+
+    const fieldNames: string[] = [];
+
+    const argumentType = argument.type;
+
+    if (isInputObjectType(argumentType)) {
+      Object.entries(argumentType.getFields()).forEach(([fieldName, fieldData]) => {
+        const directives = fieldData.astNode && fieldData.astNode.directives;
+
+        if (directives && directives.findIndex(directive => directive.name.value.toString() === 'multilingual') !== -1) {
+          fieldNames.push(fieldName);
+        }
+      });
+    }
+
+    details.field.resolve = async (object, args, context, info): Promise<void> => {
+      fieldNames.map(fieldName => {
+        args.input[fieldName] = {
+          [context.languages[0].toLowerCase()]: args.input[fieldName]
+        };
+      });
+      return resolve.call(this, object, args, context, info);
     };
   }
 }

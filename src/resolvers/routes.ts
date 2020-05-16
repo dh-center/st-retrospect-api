@@ -1,4 +1,4 @@
-import { BaseTypeResolver, PointCoordinates, ResolverContextBase } from '../types/graphql';
+import { BaseTypeResolver, PointCoordinates } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { LocationDBScheme } from './locations';
 import distance from '../utils/distance';

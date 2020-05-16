@@ -8,7 +8,13 @@ import { Request, Response, NextFunction } from 'express';
  * @param {Response} res - express response object
  * @param {Function} next - next express middleware
  */
-export default function (error: Error, req: Request, res: Response, next: NextFunction) {
+export default function (
+  error: Error,
+  req: Request,
+  res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  next: NextFunction
+): Response {
   if (error instanceof ApiError) {
     return res.status(error.httpCode).json(
       {

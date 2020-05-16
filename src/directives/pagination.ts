@@ -1,7 +1,7 @@
 import { SchemaDirectiveVisitor } from 'graphql-tools';
 import { GraphQLField } from 'graphql';
 import { ResolverContextBase } from '../types/graphql';
-import { applyPagination, limitQueryWithId, PaginationArguments } from '../pagination';
+import { applyPagination, Connection, limitQueryWithId, PaginationArguments } from '../pagination';
 
 /**
  * Arguments for PaginationDirective
@@ -28,7 +28,8 @@ export default class PaginationDirective extends SchemaDirectiveVisitor {
   ): GraphQLField<any, any> | void | null {
     const { collectionName } = this.args as PaginationDirectiveArgs;
 
-    field.resolve = async (parent, args: PaginationArguments, { db }: ResolverContextBase): Promise<any> => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    field.resolve = async (parent, args: PaginationArguments, { db }: ResolverContextBase): Promise<Connection<any>> => {
       const query = db.collection(collectionName).find();
       const totalCount = await query.clone().count();
 
