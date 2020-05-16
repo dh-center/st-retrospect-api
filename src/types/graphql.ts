@@ -78,7 +78,14 @@ export interface PointCoordinates {
  * Response type for mutations that creates entities
  */
 export interface CreateMutationPayload<T> {
+  /**
+   * id of created record
+   */
   recordId: ObjectId;
+
+  /**
+   * created record
+   */
   record: T;
 }
 
