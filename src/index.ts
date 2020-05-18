@@ -61,7 +61,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
     typeDefs,
     resolvers,
     formatError: (error: GraphQLError): GraphQLError => {
-      if (!(error instanceof ValidationError) || !(error instanceof AuthenticationError)) {
+      if (!(error instanceof ValidationError) && !(error instanceof AuthenticationError)) {
         Sentry.captureException(error);
       }
       return error;
