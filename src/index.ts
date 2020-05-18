@@ -16,7 +16,7 @@ import Multilingual from './directives/multilingual';
 import DataLoaderDirective from './directives/dataloaders';
 import PaginationDirective from './directives/pagination';
 import AuthCheckDirective from './directives/authСheck';
-import AdminCheckDirective from "./directives/adminCheck";
+import AdminCheckDirective from './directives/adminCheck';
 import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
