@@ -1,4 +1,4 @@
-import { ApolloServer, ValidationError } from 'apollo-server-express';
+import { ApolloServer, AuthenticationError, ValidationError } from 'apollo-server-express';
 import typeDefs from './typeDefs';
 import resolvers from './resolvers';
 import express from 'express';
@@ -15,6 +15,8 @@ import renameFieldDirective from './directives/renameField';
 import Multilingual from './directives/multilingual';
 import DataLoaderDirective from './directives/dataloaders';
 import PaginationDirective from './directives/pagination';
+import AuthCheckDirective from './directives/authСheck';
+import AdminCheckDirective from './directives/adminCheck';
 import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
@@ -59,7 +61,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
     typeDefs,
     resolvers,
     formatError: (error: GraphQLError): GraphQLError => {
-      if (!(error instanceof ValidationError)) {
+      if (!(error instanceof ValidationError) && !(error.originalError instanceof AuthenticationError)) {
         Sentry.captureException(error);
       }
       return error;
@@ -69,7 +71,9 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
       renameField: renameFieldDirective,
       multilingual: Multilingual,
       dataLoader: DataLoaderDirective,
-      pagination: PaginationDirective
+      pagination: PaginationDirective,
+      authCheck: AuthCheckDirective,
+      adminCheck: AdminCheckDirective
     },
     async context({ req }): Promise<ResolverContextBase> {
       let languages: Languages[];

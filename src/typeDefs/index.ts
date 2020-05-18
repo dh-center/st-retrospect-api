@@ -39,6 +39,16 @@ const rootSchema = gql`
   directive @pagination(collectionName: String!) on FIELD_DEFINITION
 
   """
+  Directive for checking user authorization
+  """
+  directive @authCheck on FIELD_DEFINITION
+
+  """
+  Directive for checking admin permissions
+  """
+  directive @adminCheck on FIELD_DEFINITION
+
+  """
   Type for representing JSON object
   """
   scalar JSON

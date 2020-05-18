@@ -153,7 +153,7 @@ export default gql`
     """
     Create quest
     """
-    create(input: CreateQuestInput): CreateQuestPayload!
+    create(input: CreateQuestInput!): CreateQuestPayload! @adminCheck
   }
 
   extend type Mutation {

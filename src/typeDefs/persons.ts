@@ -218,7 +218,7 @@ export default gql`
     """
     Create person
     """
-    create(input: CreatePersonInput @multilingual): CreatePersonPayload!
+    create(input: CreatePersonInput! @multilingual): CreatePersonPayload! @adminCheck
   }
 
   extend type Mutation {
