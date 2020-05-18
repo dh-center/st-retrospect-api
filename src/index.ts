@@ -15,6 +15,8 @@ import renameFieldDirective from './directives/renameField';
 import Multilingual from './directives/multilingual';
 import DataLoaderDirective from './directives/dataloaders';
 import PaginationDirective from './directives/pagination';
+import AuthCheckDirective from './directives/authСheck';
+import AdminCheckDirective from "./directives/adminCheck";
 import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
@@ -69,7 +71,9 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
       renameField: renameFieldDirective,
       multilingual: Multilingual,
       dataLoader: DataLoaderDirective,
-      pagination: PaginationDirective
+      pagination: PaginationDirective,
+      authCheck: AuthCheckDirective,
+      adminCheck: AdminCheckDirective
     },
     async context({ req }): Promise<ResolverContextBase> {
       let languages: Languages[];
