@@ -90,6 +90,21 @@ export interface CreateMutationPayload<T> {
 }
 
 /**
+ * Response type for mutations that creates entities
+ */
+export interface UpdateMutationPayload<T> {
+  /**
+   * id of created record
+   */
+  recordId: ObjectId;
+
+  /**
+   * created record
+   */
+  record: T;
+}
+
+/**
  * User access token
  */
 export interface AccessTokenData {

@@ -141,12 +141,12 @@ export default gql`
     """
     Created quest id
     """
-    questId: ID
+    recordId: ID
 
     """
     Created quest
     """
-    quest: Quest
+    record: Quest
   }
 
   type QuestMutations {

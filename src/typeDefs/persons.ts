@@ -214,11 +214,80 @@ export default gql`
     record: Person
   }
 
+  input UpdatePersonInput {
+    """
+    ID of person for updating
+    """
+    id: ID! @renameField(name: "_id")
+
+    """
+    Person's first name
+    """
+    firstName: String @multilingual
+
+    """
+    Person's last name
+    """
+    lastName: String @multilingual
+
+    """
+    Person's patronymic
+    """
+    patronymic: String @multilingual
+
+    """
+    Person's pseudonym
+    """
+    pseudonym: String @multilingual
+
+    """
+    Person's profession
+    """
+    profession: String @multilingual
+
+    """
+    Person's description
+    """
+    description: String @multilingual
+
+    """
+    Person's birth date
+    """
+    birthDate: String
+
+    """
+    Person's death date
+    """
+    deathDate: String
+
+    """
+    Person's info link
+    """
+    wikiLink: String
+  }
+
+  type UpdatePersonPayload {
+    """
+    Created person id
+    """
+    recordId: ID
+
+    """
+    Created person
+    """
+    record: Person
+  }
+
   type PersonMutations {
     """
     Create person
     """
-    create(input: CreatePersonInput! @multilingual): CreatePersonPayload! @adminCheck
+    create(input: CreatePersonInput @multilingual): CreatePersonPayload! @adminCheck
+
+    """
+    Update person
+    """
+    update(input: UpdatePersonInput @multilingual @renameField(name: "_id")): UpdatePersonPayload! @adminCheck
   }
 
   extend type Mutation {
