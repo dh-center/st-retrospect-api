@@ -66,7 +66,7 @@ const PersonMutations = {
     input._id = new ObjectId(input.id);
     const id = input._id;
 
-    delete input._id;
+    delete input.id;
 
     const originalPerson = await db.collection('persons').findOne({
       _id: id,
