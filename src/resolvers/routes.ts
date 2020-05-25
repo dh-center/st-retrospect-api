@@ -25,7 +25,13 @@ interface RoutesFilter {
   contains: string;
 }
 
+/**
+ * Result of aggregation for route filtering
+ */
 export type RouteWithLocations = RouteDBScheme & {
+  /**
+   * Locations in route
+   */
   locations: LocationDBScheme[];
 };
 

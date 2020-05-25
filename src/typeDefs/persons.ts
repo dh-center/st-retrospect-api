@@ -189,7 +189,7 @@ export default gql`
     """
     Person's birth date
     """
-    birthDate: String @renameField(name: "kek")
+    birthDate: String
 
     """
     Person's death date

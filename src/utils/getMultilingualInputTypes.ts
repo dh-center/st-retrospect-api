@@ -5,7 +5,7 @@ import { getDirectives, MapperKind, mapSchema } from '@graphql-tools/utils';
  * Collect all input types with multilingual fields
  *
  * @todo Collect inputs with multilingual subfields
- * @param schema GraphQL schema to extract multilingual input types
+ * @param schema - GraphQL schema to extract multilingual input types
  */
 export default function (schema: GraphQLSchema): Record<string, string[]> {
   const multilingualInputTypes:Record<string, string[]> = {};

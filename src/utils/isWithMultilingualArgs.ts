@@ -7,8 +7,7 @@ import { GraphQLFieldConfig, NamedTypeNode, NonNullTypeNode } from 'graphql';
  * @param multilingualInputTypes - object with multilingual types to check
  */
 export default function isWithMultilingualArgs(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  fieldConfig: GraphQLFieldConfig<any, any>,
+  fieldConfig: GraphQLFieldConfig<unknown, unknown>,
   multilingualInputTypes: Record<string, string[]>
 ): boolean {
   const isMultilingualNamedType = (type: NamedTypeNode): boolean => {

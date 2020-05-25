@@ -40,20 +40,60 @@ export interface LocationDBScheme {
 }
 
 export interface LocationInstanceDBScheme {
-  name: string;
+  /**
+   * Location instance name
+   */
+  name: MultilingualString;
+
+  /**
+   * Location id which instance belongs to
+   */
   locationId: ObjectId;
+
+  /**
+   * Location instance description
+   */
   description: MultilingualString;
+
+  /**
+   * Wiki link with information about instance
+   */
+
   wikiLink: string;
+
   /**
    * Array of location's types
    */
   locationTypesId?: (ObjectId | null)[];
 
-  photoLinks: string[]
+  /**
+   * Location instance photo links
+   */
+  photoLinks: string[];
+
+  /**
+   * Main photo of location instance
+   */
   mainPhotoLink: string;
+
+  /**
+   * Construction date of this instance
+   */
   constructionDate: string;
+
+  /**
+   * Demolition date of this instance
+   */
   demolitionDate: string;
+
+  /**
+   * Beginning of the period for this instance
+   */
   startDate: string;
+
+  /**
+   * Ending of the period for this instance
+   */
   endDate: string;
 }
 
