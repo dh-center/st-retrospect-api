@@ -182,5 +182,5 @@ export default class DataLoaders {
  * All field names contained dataLoader instances
  */
 export type FieldsWithDataLoader = {
-  [Key in keyof DataLoaders]: DataLoader<unknown, unknown> extends DataLoaders[Key] ? Key : never;
+  [Key in keyof DataLoaders]: DataLoader<never, never> extends DataLoaders[Key] ? Key : never;
 }[keyof DataLoaders]

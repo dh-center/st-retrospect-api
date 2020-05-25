@@ -16,7 +16,7 @@ router.get('/login', async (req, res, next) => {
     return next(new NoUserWithSuchUsernameError());
   }
 
-  const compareResult = await argon2.verify(user.hashedPassword, req.query.password);
+  const compareResult = await argon2.verify(user.hashedPassword, req.query.password as string);
 
   if (compareResult) {
     const accessToken = jwt.sign({
