@@ -5,7 +5,7 @@ export default gql`
     """
     Quest ID
     """
-    id: ID! @renameField(name: "_id")
+    id: ID! @fromField(name: "_id")
 
     """
     Quest name

@@ -11,7 +11,7 @@ const rootSchema = gql`
   """
   Directive for field renaming
   """
-  directive @renameField(name: String!) on FIELD_DEFINITION
+  directive @fromField(name: String!) on FIELD_DEFINITION
 
   """
   Directive for picking only necessary language from multilingual fields

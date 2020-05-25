@@ -1,28 +1,38 @@
-import { SchemaDirectiveVisitor } from 'graphql-tools';
-import { defaultFieldResolver, GraphQLField } from 'graphql';
+import { DirectiveTransformer, ResolverContextBase } from '../types/graphql';
+import { defaultFieldResolver, GraphQLSchema } from 'graphql';
+import { getDirectives, MapperKind, mapSchema } from '@graphql-tools/utils';
+
+interface RenameFieldDirectiveArgs {
+  /**
+   * Name of the parent's field to extract value
+   */
+  name: string;
+}
 
 /**
- * Directive for renaming type fields
+ * Checks user authentication before resolver call
+ *
+ * @param directiveName - directive name in graphql schema
  */
-export default class RenameFieldDirective extends SchemaDirectiveVisitor {
-  /**
-   * Method to be called on field visit
-   *
-   * @param field - GraphQL field definition
-   */
-  visitFieldDefinition(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    field: GraphQLField<any, any>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): GraphQLField<any, any> | void | null {
-    const { name } = this.args;
-    const { resolve = defaultFieldResolver } = field;
+export default function authCheckDirective(directiveName: string): DirectiveTransformer {
+  return (schema: GraphQLSchema): GraphQLSchema => mapSchema(schema, {
+    [MapperKind.OBJECT_FIELD]: (fieldConfig, fieldName) => {
+      const directives = getDirectives(schema, fieldConfig);
+      const directiveArgumentMap = directives[directiveName];
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    field.resolve = async (object, args, context, info): Promise<any> => {
-      object[field.name] = object[name];
+      if (directiveArgumentMap) {
+        const { name }: RenameFieldDirectiveArgs = directiveArgumentMap;
+        const { resolve = defaultFieldResolver } = fieldConfig;
 
-      return resolve.call(this, object, args, context, info);
-    };
-  }
+        fieldConfig.resolve = async (parent, args, context: ResolverContextBase, info): Promise<unknown> => {
+          parent[fieldName] = parent[name];
+          delete parent[name];
+
+          return resolve(parent, args, context, info);
+        };
+
+        return fieldConfig;
+      }
+    },
+  });
 }

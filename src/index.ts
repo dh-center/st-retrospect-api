@@ -12,12 +12,11 @@ import bodyParser from 'body-parser';
 import router from './router';
 import { ApiError } from './errorTypes';
 import errorHandler from './middlewares/errorHandler';
-import renameFieldDirective from './directives/renameField';
-import multilingualDirectiveTransformer from './directives/multilingual';
-import DataLoaderDirective from './directives/dataloaders';
-import paginationDirectiveTransformer from './directives/pagination';
-import AuthCheckDirective from './directives/authСheck';
-import AdminCheckDirective from './directives/adminCheck';
+import multilingualDirective from './directives/multilingual';
+import paginationDirective from './directives/pagination';
+import fromFieldDirective from './directives/fromField';
+import authCheckDirective from './directives/authСheck';
+import adminCheckDirective from './directives/adminCheck';
 import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
@@ -62,8 +61,11 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
     typeDefs,
     resolvers,
     schemaTransforms: [
-      paginationDirectiveTransformer('pagination'),
-      multilingualDirectiveTransformer('multilingual'),
+      paginationDirective('pagination'),
+      multilingualDirective('multilingual'),
+      fromFieldDirective('fromField'),
+      authCheckDirective('authCheck'),
+      adminCheckDirective('adminCheck'),
     ],
   });
 
@@ -77,14 +79,6 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
       return error;
     },
     playground: true,
-    schemaDirectives: {
-      // renameField: renameFieldDirective,
-      // multilingual: Multilingual,
-      // dataLoader: DataLoaderDirective,
-      // pagination: paginationDirective('pagination'),
-      // authCheck: AuthCheckDirective,
-      // adminCheck: AdminCheckDirective
-    },
     async context({ req }): Promise<ResolverContextBase> {
       let languages: Languages[];
 
