@@ -68,7 +68,7 @@ export interface CreateMutationPayload<T> {
  */
 export interface UpdateMutationPayload<T> {
   /**
-   * id of created record
+   * Id of updated record
    */
   recordId: ObjectId;
 
