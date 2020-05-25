@@ -19,7 +19,7 @@ const rootSchema = gql`
   On input field maps provided value to multilingual object (e.g. 'hello' => {en: 'hello'})
   On type field maps multilingual object to value ({en: 'hello'} => 'hello')
   """
-  directive @multilingual on FIELD_DEFINITION | INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
+  directive @multilingual on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 
   """
   Load data via specific dataLoader

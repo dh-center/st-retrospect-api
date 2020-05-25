@@ -64,6 +64,21 @@ export interface CreateMutationPayload<T> {
 }
 
 /**
+ * Response type for mutations that creates entities
+ */
+export interface UpdateMutationPayload<T> {
+  /**
+   * Id of updated record
+   */
+  recordId: ObjectId;
+
+  /**
+   * Updated record
+   */
+  record: T;
+}
+
+/**
  * User access token
  */
 export interface AccessTokenData {
