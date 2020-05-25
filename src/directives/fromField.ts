@@ -14,11 +14,11 @@ interface FromFieldDirectiveArgs {
 }
 
 /**
- * Checks user authentication before resolver call
+ * Extracts value from specified field in parent object
  *
  * @param directiveName - directive name in graphql schema
  */
-export default function authCheckDirective(directiveName: string): DirectiveTransformer {
+export default function fromFieldDirective(directiveName: string): DirectiveTransformer {
   return (schema: GraphQLSchema): GraphQLSchema => mapSchema(schema, {
     [MapperKind.OBJECT_FIELD]: (fieldConfig, fieldName) => {
       const directives = getDirectives(schema, fieldConfig);

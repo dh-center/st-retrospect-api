@@ -21,11 +21,11 @@ interface DataLoaderDirectiveArgs {
 }
 
 /**
- * Checks user authentication before resolver call
+ * Load data via specific dataLoader
  *
  * @param directiveName - directive name in graphql schema
  */
-export default function authCheckDirective(directiveName: string): DirectiveTransformer {
+export default function dataLoaderDirective(directiveName: string): DirectiveTransformer {
   return (schema: GraphQLSchema): GraphQLSchema => mapSchema(schema, {
     [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
       const directives = getDirectives(schema, fieldConfig);
