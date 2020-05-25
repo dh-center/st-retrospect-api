@@ -1,9 +1,8 @@
+import './env';
 import { ApolloServer, AuthenticationError, ValidationError } from 'apollo-server-express';
 import typeDefs from './typeDefs';
 import resolvers from './resolvers';
 import express from 'express';
-import path from 'path';
-import dotenv from 'dotenv';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import getDbConnection from './db';
 import { AccessTokenData, Languages, ResolverContextBase } from './types/graphql';
@@ -25,10 +24,6 @@ import DataLoaders from './dataLoaders';
 Sentry.init({ dsn: process.env.SENTRY_DSN });
 
 (async (): Promise<void> => {
-  dotenv.config({
-    path: path.join(__dirname, '../.env'),
-  });
-
   const dbConnection = await getDbConnection();
 
   const dataLoaders = new DataLoaders(dbConnection);

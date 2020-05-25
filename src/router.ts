@@ -1,4 +1,5 @@
 import express from 'express';
+import uploadRoutes from './middlewares/upload';
 
 /**
  * Auth routes
@@ -10,5 +11,6 @@ const router = express.Router();
 
 router.use(signUpRoute);
 router.use(loginRoute);
+router.use(uploadRoutes);
 
 export default router;
