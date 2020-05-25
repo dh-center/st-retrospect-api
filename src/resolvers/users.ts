@@ -81,7 +81,7 @@ const Mutation = {
    * @param accessToken - user access token
    * @returns {object}
    */
-  async likeRoute(parent: undefined, { routeId }: { routeId: string }, { db, user }: ResolverContextBase):Promise<UserDBScheme> {
+  async likeRoute(parent: undefined, { routeId }: { routeId: string }, { db, user }: ResolverContextBase): Promise<UserDBScheme> {
     return (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) },
       {
         $addToSet: { likedRouteIds: new ObjectId(routeId) },

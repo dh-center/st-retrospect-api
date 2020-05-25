@@ -4,7 +4,7 @@ import { defaultFieldResolver, GraphQLSchema } from 'graphql';
 import { mapSchema, getDirectives, MapperKind } from '@graphql-tools/utils';
 
 /**
- * Arguments for authCheck directive
+ * Arguments for fromField directive
  */
 interface FromFieldDirectiveArgs {
   /**
