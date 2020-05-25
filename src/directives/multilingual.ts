@@ -22,10 +22,8 @@ export default function multilingualDirective(directiveName: string): DirectiveT
   return (schema: GraphQLSchema): GraphQLSchema => {
     const multilingualInputTypes = getMultilingualInputTypes(schema);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mapArgs = (args: {[key: string]: any}, argsAst: readonly InputValueDefinitionNode[], language: string): void => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const mapMultilingualFields = (fields: {[key: string]: any}, fieldNamesToMap: string[]): void => {
+    const mapArgs = (args: {[key: string]: unknown}, argsAst: readonly InputValueDefinitionNode[], language: string): void => {
+      const mapMultilingualFields = (fields: {[key: string]: unknown}, fieldNamesToMap: string[]): void => {
         fieldNamesToMap.forEach((fieldNameToMap) => {
           if (fields[fieldNameToMap]) {
             fields[fieldNameToMap] = {
@@ -35,17 +33,13 @@ export default function multilingualDirective(directiveName: string): DirectiveT
         });
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const mapNamedType = (arg: any, type: NamedTypeNode): void => {
+      const mapNamedType = (arg: unknown, type: NamedTypeNode): void => {
         if (type.name.value in multilingualInputTypes) {
-          // console.log(arg);
-          // console.log(type);
-          mapMultilingualFields(arg, multilingualInputTypes[type.name.value]);
+          mapMultilingualFields(arg as {[key: string]: unknown}, multilingualInputTypes[type.name.value]);
         }
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const mapNonNullType = (arg: any, type: NonNullTypeNode): void => {
+      const mapNonNullType = (arg: unknown, type: NonNullTypeNode): void => {
         switch (type.type.kind) {
           case 'NamedType':
             return mapNamedType(arg, type.type);
@@ -82,8 +76,7 @@ export default function multilingualDirective(directiveName: string): DirectiveT
 
         const { resolve = defaultFieldResolver } = fieldConfig;
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        fieldConfig.resolve = async (parent, args, context: ResolverContextBase, info): Promise<any> => {
+        fieldConfig.resolve = async (parent, args, context: ResolverContextBase, info): Promise<unknown> => {
           const currentLanguage = context.languages[0].toLowerCase();
 
           /**

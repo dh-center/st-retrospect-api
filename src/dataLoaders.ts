@@ -158,7 +158,7 @@ export default class DataLoaders {
   /**
    * Batching function for resolving entities from their ids
    *
-   * @param collectionName
+   * @param collectionName - collection name to fetch data
    * @param ids - ids for resolving
    */
   private async batchByIds<T extends {_id: ObjectId}>(collectionName: string, ids: string[]): Promise<(T| null)[]> {
@@ -182,6 +182,5 @@ export default class DataLoaders {
  * All field names contained dataLoader instances
  */
 export type FieldsWithDataLoader = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [Key in keyof DataLoaders]: DataLoader<any, any> extends DataLoaders[Key] ? Key : never;
+  [Key in keyof DataLoaders]: DataLoader<unknown, unknown> extends DataLoaders[Key] ? Key : never;
 }[keyof DataLoaders]

@@ -28,7 +28,7 @@ export default function paginationDirective(directiveName: string): DirectiveTra
       if (directiveArgumentMap) {
         const { collectionName }: PaginationDirectiveArgs = directiveArgumentMap;
 
-        fieldConfig.resolve = async (parent, args: PaginationArguments, { db }: ResolverContextBase): Promise<Connection<any>> => {
+        fieldConfig.resolve = async (parent, args: PaginationArguments, { db }: ResolverContextBase): Promise<Connection<unknown>> => {
           const query = db.collection(collectionName).find();
           const totalCount = await query.clone().count();
 
