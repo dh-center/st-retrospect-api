@@ -12,19 +12,6 @@ import { QuestDBScheme } from './resolvers/quests';
  */
 export default class DataLoaders {
   /**
-   * MongoDB connection to make queries
-   */
-  private dbConnection: Db;
-
-  /**
-   * Creates DataLoaders instance
-   * @param dbConnection - MongoDB connection to make queries
-   */
-  constructor(dbConnection: Db) {
-    this.dbConnection = dbConnection;
-  }
-
-  /**
    * Loader for fetching relations by persons ids
    */
   public relationByPersonId = new DataLoader(
@@ -105,7 +92,22 @@ export default class DataLoaders {
   );
 
   /**
+   * MongoDB connection to make queries
+   */
+  private dbConnection: Db;
+
+  /**
+   * Creates DataLoaders instance
+   *
+   * @param dbConnection - MongoDB connection to make queries
+   */
+  constructor(dbConnection: Db) {
+    this.dbConnection = dbConnection;
+  }
+
+  /**
    * Batching function for resolving relations from persons ids
+   *
    * @param personIds - persons ids for resolving
    */
   private async batchRelationsByPersonIds(personIds: string[]): Promise<RelationDbScheme[][]> {
@@ -130,6 +132,7 @@ export default class DataLoaders {
 
   /**
    * Batching function for resolving relations from location ids
+   *
    * @param locationInstanceIds - location instances ids for resolving
    */
   private async batchRelationsByLocationInstanceIds(locationInstanceIds: string[]): Promise<RelationDbScheme[][]> {
@@ -154,13 +157,14 @@ export default class DataLoaders {
 
   /**
    * Batching function for resolving entities from their ids
-   * @param collectionName
+   *
+   * @param collectionName - collection name to fetch data
    * @param ids - ids for resolving
    */
   private async batchByIds<T extends {_id: ObjectId}>(collectionName: string, ids: string[]): Promise<(T| null)[]> {
     const queryResult = await this.dbConnection.collection(collectionName)
       .find({
-        _id: { $in: ids.map(id => new ObjectId(id)) }
+        _id: { $in: ids.map(id => new ObjectId(id)) },
       })
       .toArray();
 
@@ -178,6 +182,5 @@ export default class DataLoaders {
  * All field names contained dataLoader instances
  */
 export type FieldsWithDataLoader = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [Key in keyof DataLoaders]: DataLoader<any, any> extends DataLoaders[Key] ? Key : never;
+  [Key in keyof DataLoaders]: DataLoader<never, never> extends DataLoaders[Key] ? Key : never;
 }[keyof DataLoaders]

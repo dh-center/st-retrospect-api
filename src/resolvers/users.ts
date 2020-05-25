@@ -1,7 +1,8 @@
-import { BaseTypeResolver } from '../types/graphql';
 import { ObjectId } from 'mongodb';
+import { ResolverContextBase } from '../types/graphql';
+import { RouteDBScheme } from './routes';
 
-interface User {
+interface UserDBScheme {
   /**
    * User id
    */
@@ -18,134 +19,138 @@ interface User {
   likedRouteIds: ObjectId[] | null;
 }
 
-const Query: BaseTypeResolver = {
+const Query = {
   /**
    * Returns saved routes
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param data - empty arg
    * @param db - MongoDB connection to make queries
    * @param user - user access token
    */
-  async me(parent, data, { db, user }) {
-    return db.collection('users').findOne({ _id: new ObjectId(user.id) });
-  }
+  async me(parent: undefined, data: undefined, { db, user }: ResolverContextBase): Promise<UserDBScheme| null> {
+    return db.collection<UserDBScheme>('users').findOne({ _id: new ObjectId(user.id) });
+  },
 };
 
-const Mutation: BaseTypeResolver = {
+const Mutation = {
   /**
    * Add route to saved
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param routeId - route id
    * @param db - MongoDB connection to make queries
    * @param user - user access token
-   * @param accessToken - user access token
-   * @return {object}
    */
-  async saveRoute(parent, { routeId }: { routeId: string }, { db, user }) {
+  async saveRoute(parent: undefined, { routeId }: { routeId: string }, { db, user }: ResolverContextBase): Promise<UserDBScheme> {
     return (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) }, {
-      $addToSet: { savedRouteIds: new ObjectId(routeId) }
+      $addToSet: { savedRouteIds: new ObjectId(routeId) },
     },
     {
-      returnOriginal: false
+      returnOriginal: false,
     })).value;
   },
 
   /**
    * Delete route from saved
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param routeId - route id
    * @param db - MongoDB connection to make queries
    * @param user - user access token
    * @param accessToken - user access token
-   * @return {object}
+   * @returns {object}
    */
-  async deleteRouteFromSaved(parent, { routeId }: { routeId: string }, { db, user }) {
+  async deleteRouteFromSaved(parent: undefined, { routeId }: { routeId: string }, { db, user }: ResolverContextBase): Promise<UserDBScheme> {
     return (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) },
       {
-        $pull: { savedRouteIds: new ObjectId(routeId) }
+        $pull: { savedRouteIds: new ObjectId(routeId) },
       },
       {
-        returnOriginal: false
+        returnOriginal: false,
       })).value;
   },
 
   /**
    * Add route to liked
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param routeId - route id
    * @param db - MongoDB connection to make queries
    * @param user - user access token
    * @param accessToken - user access token
-   * @return {object}
+   * @returns {object}
    */
-  async likeRoute(parent, { routeId }: { routeId: string }, { db, user }) {
+  async likeRoute(parent: undefined, { routeId }: { routeId: string }, { db, user }: ResolverContextBase): Promise<UserDBScheme> {
     return (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) },
       {
-        $addToSet: { likedRouteIds: new ObjectId(routeId) }
+        $addToSet: { likedRouteIds: new ObjectId(routeId) },
       },
       {
-        returnOriginal: false
+        returnOriginal: false,
       })).value;
   },
 
   /**
    * Dislike route
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param routeId - route id
    * @param db - MongoDB connection to make queries
    * @param user - user access token
    * @param accessToken - user access token
-   * @return {object}
+   * @returns {object}
    */
-  async dislikeRoute(parent, { routeId }: { routeId: string }, { db, user }) {
+  async dislikeRoute(parent: undefined, { routeId }: { routeId: string }, { db, user }: ResolverContextBase): Promise<UserDBScheme> {
     return (await db.collection('users').findOneAndUpdate({ _id: new ObjectId(user.id) },
       {
-        $pull: { likedRouteIds: new ObjectId(routeId) }
+        $pull: { likedRouteIds: new ObjectId(routeId) },
       },
       {
-        returnOriginal: false
+        returnOriginal: false,
       })).value;
-  }
+  },
 };
 
-const User: BaseTypeResolver<User> = {
+const User = {
   /**
    * Returns saved routes
+   *
    * @param user - user for resolving
-   * @param _id - user id
    * @param data - empty arg
    * @param dataLoaders - DataLoaders for fetching data
    */
-  async savedRoutes(user, data, { dataLoaders }) {
+  async savedRoutes(user: UserDBScheme, data: undefined, { dataLoaders }: ResolverContextBase): Promise<RouteDBScheme[]> {
     if (!user.savedRouteIds) {
       return [];
     }
 
     const savedRoutes = await dataLoaders.routesById.loadMany(user.savedRouteIds.map(id => id.toString()));
 
-    return savedRoutes.filter(Boolean);
+    return savedRoutes.filter(Boolean) as RouteDBScheme[];
   },
 
   /**
    * Returns liked routes
+   *
    * @param user - user for resolving
    * @param _id - user id
    * @param data - empty arg
    * @param dataLoaders - DataLoaders for fetching data
    */
-  async likedRoutes(user, data, { dataLoaders }) {
+  async likedRoutes(user: UserDBScheme, data: undefined, { dataLoaders }: ResolverContextBase): Promise<RouteDBScheme[]> {
     if (!user.likedRouteIds) {
       return [];
     }
 
     const likedRoutes = await dataLoaders.routesById.loadMany(user.likedRouteIds.map(id => id.toString()));
 
-    return likedRoutes.filter(Boolean);
-  }
+    return likedRoutes.filter(Boolean) as RouteDBScheme[];
+  },
 };
 
 export default {
   Query,
   User,
-  Mutation
+  Mutation,
 };

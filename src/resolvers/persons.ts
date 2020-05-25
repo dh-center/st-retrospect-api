@@ -15,7 +15,7 @@ const Query = {
    * @param db - MongoDB connection to make queries
    * @returns {object}
    */
-  async person(parent: {}, { id }: { id: string }, { db }: ResolverContextBase): Promise<PersonDBScheme | null> {
+  async person(parent: undefined, { id }: { id: string }, { db }: ResolverContextBase): Promise<PersonDBScheme | null> {
     const person = await db.collection('persons').findOne({
       _id: new ObjectId(id),
     });
@@ -87,7 +87,7 @@ const PersonMutations = {
 };
 
 const Mutation = {
-  person: (): object => ({}),
+  person: (): Record<string, undefined> => ({}),
 };
 
 export default {

@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 
 /**
  * Check error type and send it to the user with right http code and other information
+ *
  * @param {Error} error - occurred error
  * @param {Request} req - express request object
  * @param {Response} res - express response object
@@ -21,10 +22,10 @@ export default function (
         errors: [
           {
             extensions: {
-              code: error.code
-            }
-          }
-        ]
+              code: error.code,
+            },
+          },
+        ],
       });
   } else {
     // console.log('Unexpected server error: ', error);
@@ -34,10 +35,10 @@ export default function (
           {
             message: 'Unexpected server error: ' + error.toString(),
             extensions: {
-              code: 'INTERNAL_SERVER_ERROR'
-            }
-          }
-        ]
+              code: 'INTERNAL_SERVER_ERROR',
+            },
+          },
+        ],
       });
   }
-};
+}

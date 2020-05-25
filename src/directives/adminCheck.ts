@@ -1,28 +1,34 @@
-import { SchemaDirectiveVisitor } from 'graphql-tools';
-import { defaultFieldResolver, GraphQLField } from 'graphql';
+import { defaultFieldResolver, GraphQLSchema } from 'graphql';
+import { DirectiveTransformer, ResolverContextBase } from '../types/graphql';
+import { mapSchema, getDirectives, MapperKind } from '@graphql-tools/utils';
 import { AuthenticationError } from 'apollo-server-express';
 
 /**
- * Directive for checking admin permissions
+ * Checks admin permission before resolver call
+ *
+ * @param directiveName - directive name in graphql schema
  */
-export default class AdminCheckDirective extends SchemaDirectiveVisitor {
-  /**
-   * @param field - GraphQL field definition
-   */
-  visitFieldDefinition(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    field: GraphQLField<any, any>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): GraphQLField<any, any> | void | null {
-    const { resolve = defaultFieldResolver } = field;
+export default function adminCheckDirective(directiveName: string): DirectiveTransformer {
+  return (schema: GraphQLSchema): GraphQLSchema => mapSchema(schema, {
+    [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
+      const directives = getDirectives(schema, fieldConfig);
+      const directiveArgumentMap = directives[directiveName];
 
-    field.resolve = async (parent, args, context, info): Promise<any> => {
-      if (!context.user.isAdmin) {
-        throw new AuthenticationError(
-          'This action is available to administrators only.'
-        );
+      if (directiveArgumentMap) {
+        const { resolve = defaultFieldResolver } = fieldConfig;
+
+        fieldConfig.resolve = async (parent, args, context: ResolverContextBase, info): Promise<unknown> => {
+          if (!context.user.isAdmin) {
+            throw new AuthenticationError(
+              'This action is available to administrators only.'
+            );
+          }
+
+          return resolve(parent, args, context, info);
+        };
+
+        return fieldConfig;
       }
-      return resolve.call(this, parent, args, context, info);
-    };
-  }
+    },
+  });
 }

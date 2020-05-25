@@ -8,7 +8,7 @@ export default gql`
     """
     Relation's id
     """
-    id: ID! @renameField(name: "_id")
+    id: ID! @fromField(name: "_id")
 
     """
     Person in relation
@@ -38,7 +38,7 @@ export default gql`
     """
     Relation type id
     """
-    id: ID! @renameField(name: "_id")
+    id: ID! @fromField(name: "_id")
 
     """
     Relation type name
