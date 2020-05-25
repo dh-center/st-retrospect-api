@@ -11,8 +11,6 @@ const s3 = new AWS.S3({
   secretAccessKey: process.env.AWS_SECRET_KEY,
 });
 
-console.log(process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_KEY);
-
 /**
  * Allow only JPEG and PNG images
  *
