@@ -5,7 +5,7 @@ const connectionConfig: MongoClientOptions = {
   reconnectTries: +(process.env.MONGO_RECONNECT_TRIES || 60),
   reconnectInterval: +(process.env.MONGO_RECONNECT_INTERVAL || 1000),
   autoReconnect: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 };
 
 let connection: Db;
@@ -14,7 +14,8 @@ let logCount = 0;
 
 /**
  * Setups connections to the database
- * @return {Promise<Db>}
+ *
+ * @returns {Promise<Db>}
  */
 export default async function getConnection(): Promise<Db> {
   if (!connection) {
@@ -30,4 +31,4 @@ export default async function getConnection(): Promise<Db> {
   }
 
   return connection;
-};
+}

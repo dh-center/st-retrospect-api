@@ -13,7 +13,8 @@ export class ApiError extends Error {
   public code = '';
   /**
    * Creates error instance
-   * @param {Number} httpCode - http code to send to user
+   *
+   * @param {number} httpCode - http code to send to user
    */
   constructor(httpCode: number) {
     super();
@@ -28,7 +29,8 @@ export class ApiError extends Error {
 export class NoUserWithSuchUsernameError extends ApiError {
   /**
    * Creates error instance
-   * @param {Number} [httpCode=401] - http code to send to user
+   *
+   * @param {number} [httpCode=401] - http code to send to user
    */
   constructor(httpCode = 401) {
     super(httpCode);
@@ -42,7 +44,8 @@ export class NoUserWithSuchUsernameError extends ApiError {
 export class WrongUserPasswordError extends ApiError {
   /**
    * Creates error instance
-   * @param {Number} [httpCode=401] - http code to send to user
+   *
+   * @param {number} [httpCode=401] - http code to send to user
    */
   constructor(httpCode = 401) {
     super(httpCode);
@@ -56,7 +59,8 @@ export class WrongUserPasswordError extends ApiError {
 export class UsernameDuplicationError extends ApiError {
   /**
    * Creates error instance
-   * @param {Number} [httpCode=409] - http code to send to user
+   *
+   * @param {number} [httpCode=409] - http code to send to user
    */
   constructor(httpCode = 409) {
     super(httpCode);

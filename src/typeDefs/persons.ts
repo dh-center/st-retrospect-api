@@ -5,7 +5,7 @@ export default gql`
     """
     Person's id
     """
-    id: ID! @renameField(name: "_id")
+    id: ID! @fromField(name: "_id")
 
     """
     Person's first name
@@ -218,7 +218,7 @@ export default gql`
     """
     Create person
     """
-    create(input: CreatePersonInput @multilingual): CreatePersonPayload! @adminCheck
+    create(input: CreatePersonInput!): CreatePersonPayload! @adminCheck
   }
 
   extend type Mutation {

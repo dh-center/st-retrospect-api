@@ -1,8 +1,9 @@
-import { SchemaDirectiveVisitor } from 'graphql-tools';
-import { GraphQLField } from 'graphql';
-import { ResolverContextBase } from '../types/graphql';
+import { DirectiveTransformer, ResolverContextBase } from '../types/graphql';
 import { FieldsWithDataLoader } from '../dataLoaders';
 import { ObjectId } from 'mongodb';
+import { GraphQLSchema } from 'graphql';
+
+import { mapSchema, getDirectives, MapperKind } from '@graphql-tools/utils';
 
 /**
  * Arguments for DataLoaderDirective
@@ -20,45 +21,48 @@ interface DataLoaderDirectiveArgs {
 }
 
 /**
- * Directive for data loaders
+ * Load data via specific dataLoader
+ *
+ * @param directiveName - directive name in graphql schema
  */
-export default class DataLoaderDirective extends SchemaDirectiveVisitor {
-  /**
-   * @param field - GraphQL field definition
-   */
-  visitFieldDefinition(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    field: GraphQLField<any, any>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): GraphQLField<any, any> | void | null {
-    const { dataLoaderName, fieldName } = this.args as DataLoaderDirectiveArgs;
+export default function dataLoaderDirective(directiveName: string): DirectiveTransformer {
+  return (schema: GraphQLSchema): GraphQLSchema => mapSchema(schema, {
+    [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
+      const directives = getDirectives(schema, fieldConfig);
+      const directiveArgumentMap = directives[directiveName];
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    field.resolve = async (parent, args, context: ResolverContextBase): Promise<any> => {
-      const fieldValue = parent[fieldName];
+      if (directiveArgumentMap) {
+        const { dataLoaderName, fieldName }: DataLoaderDirectiveArgs = directiveArgumentMap;
 
-      if (fieldValue instanceof Array) {
-        if (!fieldValue) {
-          return [];
-        }
+        fieldConfig.resolve = async (parent, args, context: ResolverContextBase): Promise<unknown> => {
+          const fieldValue = parent[fieldName];
 
-        return context.dataLoaders[dataLoaderName].loadMany(
-          (fieldValue.filter(Boolean) as ObjectId[])
-            .map(id => id.toString()).filter(Boolean)
-        );
-      } else {
-        if (!fieldValue) {
-          return null;
-        }
+          if (fieldValue instanceof Array) {
+            if (!fieldValue) {
+              return [];
+            }
 
-        const value = await context.dataLoaders[dataLoaderName].load(fieldValue.toString());
+            return context.dataLoaders[dataLoaderName].loadMany(
+              (fieldValue.filter(Boolean) as ObjectId[])
+                .map(id => id.toString()).filter(Boolean)
+            );
+          } else {
+            if (!fieldValue) {
+              return null;
+            }
 
-        if (!value) {
-          return null;
-        }
+            const value = await context.dataLoaders[dataLoaderName].load(fieldValue.toString());
 
-        return value;
+            if (!value) {
+              return null;
+            }
+
+            return value;
+          }
+        };
+
+        return fieldConfig;
       }
-    };
-  }
+    },
+  });
 }

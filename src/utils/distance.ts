@@ -9,6 +9,7 @@ enum DistanceUnits {
 
 /**
  * This routine calculates the distance between two points (given the latitude/longitude of those points)
+ *
  * @param lat1 - Latitude of point 1
  * @param lon1 - Longitude of point 1
  * @param lat2 - Latitude of point 2
@@ -43,6 +44,7 @@ export default function distance(
     if (unit == DistanceUnits.NauticalMiles) {
       dist = dist * 0.8684;
     }
+
     return dist;
   }
 }

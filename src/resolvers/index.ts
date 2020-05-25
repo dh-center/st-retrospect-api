@@ -15,16 +15,17 @@ import quests from './quests';
 const indexResolver = {
   Query: {
     /**
-     * Healthcheck endpoint
-     * @return {string}
+     * Health-check endpoint
+     *
+     * @returns {string}
      */
-    health: (): string => 'ok'
+    health: (): string => 'ok',
   },
 
   /**
    * Represents JSON object
    */
-  JSON: GraphQLJSON
+  JSON: GraphQLJSON,
 };
 
 export default merge(indexResolver, persons, locations, routes, users, relations, Cursor, quests);

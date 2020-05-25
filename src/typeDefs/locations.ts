@@ -8,7 +8,7 @@ export default gql`
     """
     LocationType's ID
     """
-    id: ID! @renameField(name: "_id")
+    id: ID! @fromField(name: "_id")
 
     """
     LocationTypes's name
@@ -23,7 +23,7 @@ export default gql`
     """
     Address's ID
     """
-    id: ID! @renameField(name: "_id")
+    id: ID! @fromField(name: "_id")
 
     """
     Street on which the location is located
@@ -58,7 +58,7 @@ export default gql`
     """
     Instance's ID
     """
-    id: ID! @renameField(name: "_id")
+    id: ID! @fromField(name: "_id")
 
     """
     Location's name
@@ -133,7 +133,7 @@ export default gql`
     """
     Location's ID
     """
-    id: ID! @renameField(name: "_id")
+    id: ID! @fromField(name: "_id")
 
     """
     Location coordinate by X

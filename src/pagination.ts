@@ -82,6 +82,7 @@ export interface Connection<T> {
 
 /**
  * Returns the cursor (of the first object after the object with cursor = after, the last before cursor = before or all)
+ *
  * @param query - mongodb cursor to handle
  * @param before - the cursor after before we take the data
  * @param after - the cursor after which we take the data
@@ -92,14 +93,14 @@ export function limitQueryWithId(query: Cursor, before?: string, after?: string)
   if (before) {
     filter = {
       _id: {
-        $lt: new ObjectId(before)
-      }
+        $lt: new ObjectId(before),
+      },
     };
   } else if (after) {
     filter = {
       _id: {
-        $gt: new ObjectId(after)
-      }
+        $gt: new ObjectId(after),
+      },
     };
   } else {
     filter = {};
@@ -110,6 +111,7 @@ export function limitQueryWithId(query: Cursor, before?: string, after?: string)
 
 /**
  * Modifies query according first and last arguments, returns information about the existence of the previous and next pages
+ *
  * @param query - mongodb cursor to handle
  * @param first - Number of requested nodes after a node with a cursor in the `after` argument
  * @param last - Number of requested nodes before a node with a cursor in the before argument
@@ -148,6 +150,6 @@ export async function applyPagination(query: Cursor, first?: number, last?: numb
 
   return {
     hasNextPage: Boolean(first && count > first),
-    hasPreviousPage: Boolean(last && count > last)
+    hasPreviousPage: Boolean(last && count > last),
   };
 }
