@@ -218,7 +218,7 @@ export default gql`
     """
     ID of person for updating
     """
-    id: ID! @renameField(name: "_id")
+    id: ID!
 
     """
     Person's first name
@@ -287,7 +287,7 @@ export default gql`
     """
     Update person
     """
-    update(input: UpdatePersonInput @multilingual @renameField(name: "_id")): UpdatePersonPayload! @adminCheck
+    update(input: UpdatePersonInput!): UpdatePersonPayload! @adminCheck
   }
 
   extend type Mutation {
