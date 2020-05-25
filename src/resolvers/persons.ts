@@ -8,14 +8,15 @@ export interface PersonDBScheme {
 const Query = {
   /**
    * Returns specific person
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - person id
    * @param db - MongoDB connection to make queries
-   * @return {object}
+   * @returns {object}
    */
-  async person(parent: {}, { id }: { id: string }, { db }: ResolverContextBase): Promise<PersonDBScheme | null> {
+  async person(parent: undefined, { id }: { id: string }, { db }: ResolverContextBase): Promise<PersonDBScheme | null> {
     const person = await db.collection('persons').findOne({
-      _id: new ObjectId(id)
+      _id: new ObjectId(id),
     });
 
     if (!person) {
@@ -23,16 +24,17 @@ const Query = {
     }
 
     return person;
-  }
+  },
 };
 
 const PersonMutations = {
   /**
    * Create new person
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param input - person object
    * @param db - MongoDB connection to make queries
-   * @return {object}
+   * @returns {object}
    */
   async create(
     parent: undefined,
@@ -43,17 +45,17 @@ const PersonMutations = {
 
     return {
       recordId: person._id,
-      record: person
+      record: person,
     };
-  }
+  },
 };
 
 const Mutation = {
-  person: (): object => ({})
+  person: (): Record<string, undefined> => ({}),
 };
 
 export default {
   Query,
   Mutation,
-  PersonMutations
+  PersonMutations,
 };

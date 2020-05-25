@@ -1,5 +1,5 @@
 import { Db, ObjectId } from 'mongodb';
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLSchema } from 'graphql';
 import DataLoaders from '../dataLoaders';
 
 /**
@@ -26,17 +26,8 @@ export interface ResolverContextBase {
 }
 
 /**
- * Describes the signature of type resolvers
- */
-export interface BaseTypeResolver<
-    ParentType = undefined,
-    ResolverContext extends ResolverContextBase = ResolverContextBase
-  > {
-  [key: string]: ResolverFunction<ParentType, ResolverContext>;
-}
-
-/**
  * Resolver function
+ *
  * @param parent - the object that contains the result returned from the resolver on the parent field
  * @param arg - resolver's args
  * @param context - resolver's context
@@ -96,3 +87,8 @@ export interface AccessTokenData {
   id: string;
   isAdmin: boolean;
 }
+
+/**
+ * Common return type for directives
+ */
+export type DirectiveTransformer = (schema: GraphQLSchema) => GraphQLSchema;

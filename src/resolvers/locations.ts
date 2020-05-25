@@ -1,7 +1,8 @@
-import { BaseTypeResolver, MultilingualString, ResolverContextBase } from '../types/graphql';
+import { MultilingualString, ResolverContextBase } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
 import { PersonDBScheme } from './persons';
+import { RelationDbScheme } from './relations';
 
 /**
  * ID of relation type for architects
@@ -28,14 +29,32 @@ export interface LocationDBScheme {
   coordinateX: number;
 
   /**
+   * Array of addresses ids
+   */
+  addressesId?: (ObjectId | null)[];
+
+  /**
+   * Array with location instances ids
+   */
+  locationInstanceIds: ObjectId[]
+}
+
+export interface LocationInstanceDBScheme {
+  name: string;
+  locationId: ObjectId;
+  description: MultilingualString;
+  wikiLink: string;
+  /**
    * Array of location's types
    */
   locationTypesId?: (ObjectId | null)[];
 
-  /**
-   * Array of addresses ids
-   */
-  addressesId?: (ObjectId | null)[];
+  photoLinks: string[]
+  mainPhotoLink: string;
+  constructionDate: string;
+  demolitionDate: string;
+  startDate: string;
+  endDate: string;
 }
 
 /**
@@ -88,17 +107,18 @@ export interface LocationTypeDBScheme {
   name: MultilingualString;
 }
 
-const Query: BaseTypeResolver = {
+const Query = {
   /**
    * Returns specific location
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - location id
    * @param db - MongoDB connection to make queries
-   * @return {object}
+   * @returns {object}
    */
-  async location(parent, { id }: { id: string }, { db }) {
+  async location(parent: undefined, { id }: { id: string }, { db }: ResolverContextBase): Promise<LocationDBScheme | null> {
     const location = await db.collection('locations').findOne({
-      _id: new ObjectId(id)
+      _id: new ObjectId(id),
     });
 
     if (!location) {
@@ -110,14 +130,15 @@ const Query: BaseTypeResolver = {
 
   /**
    * Returns specific locationInstance
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - locationInstance id
    * @param db - MongoDB connection to make queries
-   * @return {object}
+   * @returns {object}
    */
-  async locationInstance(parent, { id }: { id: string }, { db }) {
+  async locationInstance(parent: undefined, { id }: { id: string }, { db }: ResolverContextBase): Promise<LocationInstanceDBScheme | null> {
     const locationInstance = await db.collection('location_instances').findOne({
-      _id: new ObjectId(id)
+      _id: new ObjectId(id),
     });
 
     if (!locationInstance) {
@@ -129,23 +150,26 @@ const Query: BaseTypeResolver = {
 
   /**
    * Returns all locationInstances
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param data - empty arg
    * @param db - MongoDB connection to make queries
-   * @return {object[]}
+   * @returns {object[]}
    */
-  async locationInstances(parent, data, { db }) {
-    return db.collection('location_instances').find({}).toArray();
+  async locationInstances(parent: undefined, data: undefined, { db }: ResolverContextBase): Promise<LocationInstanceDBScheme[]> {
+    return db.collection('location_instances').find({})
+      .toArray();
   },
 
   /**
    * Get relations on user request
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param searchString - the string on the basis of which the request will be made
    * @param db - MongoDB connection to make queries
    * @param dataLoaders - DataLoaders for fetching data
    */
-  async search(parent, { searchString }: { searchString: string }, { db, dataLoaders }) {
+  async search(parent: undefined, { searchString }: { searchString: string }, { db, dataLoaders }: ResolverContextBase): Promise<RelationDbScheme[]> {
     searchString = searchString.trim();
     if (searchString.length <= 2) {
       throw new UserInputError('Search string must contain at least 3 characters');
@@ -155,18 +179,20 @@ const Query: BaseTypeResolver = {
     const persons = await db.collection<PersonDBScheme>('persons').find({
       $or: [
         { 'lastName.ru': searchRegExp },
-        { 'lastName.en': searchRegExp }
-      ]
-    }).toArray();
+        { 'lastName.en': searchRegExp },
+      ],
+    })
+      .toArray();
     const personsIds = persons.map(person => person._id.toString());
 
-    return (await dataLoaders.relationByPersonId.loadMany(personsIds)).flat();
-  }
+    return (await dataLoaders.relationByPersonId.loadMany(personsIds)).flat() as RelationDbScheme[];
+  },
 };
 
 const LocationInstance = {
   /**
    * Return all architects
+   *
    * @param _id - location id that returned from the resolver on the parent field
    * @param _args - empty list of args
    * @param dataLoaders - DataLoaders for fetching data
@@ -185,10 +211,10 @@ const LocationInstance = {
     });
 
     return (await dataLoaders.personById.loadMany(personIds)).filter(Boolean) as PersonDBScheme[];
-  }
+  },
 };
 
 export default {
   Query,
-  LocationInstance
+  LocationInstance,
 };

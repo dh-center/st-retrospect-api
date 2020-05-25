@@ -4,6 +4,7 @@ import resolvers from './resolvers';
 import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import getDbConnection from './db';
 import { AccessTokenData, Languages, ResolverContextBase } from './types/graphql';
 import languageParser from 'accept-language-parser';
@@ -12,9 +13,9 @@ import router from './router';
 import { ApiError } from './errorTypes';
 import errorHandler from './middlewares/errorHandler';
 import renameFieldDirective from './directives/renameField';
-import Multilingual from './directives/multilingual';
+import multilingualDirectiveTransformer from './directives/multilingual';
 import DataLoaderDirective from './directives/dataloaders';
-import PaginationDirective from './directives/pagination';
+import paginationDirectiveTransformer from './directives/pagination';
 import AuthCheckDirective from './directives/authСheck';
 import AdminCheckDirective from './directives/adminCheck';
 import * as Sentry from '@sentry/node';
@@ -26,7 +27,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
 
 (async (): Promise<void> => {
   dotenv.config({
-    path: path.join(__dirname, '../.env')
+    path: path.join(__dirname, '../.env'),
   });
 
   const dbConnection = await getDbConnection();
@@ -57,23 +58,32 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
    */
   app.use(router);
 
-  const apolloServer = new ApolloServer({
+  const schema = makeExecutableSchema({
     typeDefs,
     resolvers,
+    schemaTransforms: [
+      paginationDirectiveTransformer('pagination'),
+      multilingualDirectiveTransformer('multilingual'),
+    ],
+  });
+
+  const apolloServer = new ApolloServer({
+    schema,
     formatError: (error: GraphQLError): GraphQLError => {
       if (!(error instanceof ValidationError) && !(error.originalError instanceof AuthenticationError)) {
         Sentry.captureException(error);
       }
+
       return error;
     },
     playground: true,
     schemaDirectives: {
-      renameField: renameFieldDirective,
-      multilingual: Multilingual,
-      dataLoader: DataLoaderDirective,
-      pagination: PaginationDirective,
-      authCheck: AuthCheckDirective,
-      adminCheck: AdminCheckDirective
+      // renameField: renameFieldDirective,
+      // multilingual: Multilingual,
+      // dataLoader: DataLoaderDirective,
+      // pagination: paginationDirective('pagination'),
+      // authCheck: AuthCheckDirective,
+      // adminCheck: AdminCheckDirective
     },
     async context({ req }): Promise<ResolverContextBase> {
       let languages: Languages[];
@@ -89,7 +99,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
       let jsonToken = '';
       let user: AccessTokenData = {
         id: '',
-        isAdmin: false
+        isAdmin: false,
       };
 
       if (req.headers.authorization) {
@@ -104,9 +114,9 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
         db: dbConnection,
         languages,
         user,
-        dataLoaders
+        dataLoaders,
       };
-    }
+    },
   });
 
   apolloServer.applyMiddleware({ app });
@@ -117,7 +127,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
   app.use(Sentry.Handlers.errorHandler({
     shouldHandleError(error) {
       return !(error instanceof ApiError);
-    }
+    },
   }));
 
   /**

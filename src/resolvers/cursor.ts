@@ -4,6 +4,7 @@ import { ObjectId } from 'mongodb';
 
 /**
  * Encode id to cursor
+ *
  * @param value - value to encode
  */
 export function toCursor(value: ObjectId): string {
@@ -12,6 +13,7 @@ export function toCursor(value: ObjectId): string {
 
 /**
  * Decode cursor to id
+ *
  * @param string - string to decode
  */
 export function fromCursor(string: string): ObjectId {
@@ -29,9 +31,9 @@ const CursorType = new GraphQLScalarType({
   },
   parseValue(value): ObjectId {
     return fromCursor(value);
-  }
+  },
 });
 
 export default {
-  Cursor: CursorType
+  Cursor: CursorType,
 };

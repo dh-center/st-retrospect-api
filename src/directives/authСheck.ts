@@ -22,6 +22,7 @@ export default class AuthCheckDirective extends SchemaDirectiveVisitor {
           'You must be signed in to have access to this functionality.'
         );
       }
+
       return resolve.call(this, parent, args, context, info);
     };
   }

@@ -22,6 +22,7 @@ export default class AdminCheckDirective extends SchemaDirectiveVisitor {
           'This action is available to administrators only.'
         );
       }
+
       return resolve.call(this, parent, args, context, info);
     };
   }

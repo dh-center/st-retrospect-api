@@ -1,4 +1,4 @@
-import { BaseTypeResolver, CreateMutationPayload, ResolverContextBase } from '../types/graphql';
+import { CreateMutationPayload, ResolverContextBase } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 
 /**
@@ -31,16 +31,17 @@ export interface QuestDBScheme {
   type: string;
 }
 
-const Query: BaseTypeResolver = {
+const Query = {
   /**
    * Returns specific quest
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - quest id
    * @param db - MongoDB connection to make queries
    * @param dataLoaders - Data loaders in context
-   * @return {object}
+   * @returns {object}
    */
-  async quest(parent, { id }: { id: string }, { dataLoaders }) {
+  async quest(parent: undefined, { id }: { id: string }, { dataLoaders }: ResolverContextBase): Promise<QuestDBScheme | null> {
     const quest = dataLoaders.questById.load(id);
 
     if (!quest) {
@@ -48,16 +49,17 @@ const Query: BaseTypeResolver = {
     }
 
     return quest;
-  }
+  },
 };
 
 const QuestMutations = {
   /**
    * Create new quest
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param input - quest object
    * @param db - MongoDB connection to make queries
-   * @return {object}
+   * @returns {object}
    */
   async create(
     parent: undefined,
@@ -68,17 +70,17 @@ const QuestMutations = {
 
     return {
       recordId: quest._id,
-      record: quest
+      record: quest,
     };
-  }
+  },
 };
 
 const Mutation = {
-  quest: (): object => ({})
+  quest: (): Record<string, undefined> => ({}),
 };
 
 export default {
   Query,
   Mutation,
-  QuestMutations
+  QuestMutations,
 };

@@ -95,6 +95,6 @@ export default concatenateTypeDefs(
     relations,
     routes,
     users,
-    quests
+    quests,
   ]
 );

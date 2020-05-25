@@ -18,6 +18,7 @@ export default class DataLoaders {
 
   /**
    * Creates DataLoaders instance
+   *
    * @param dbConnection - MongoDB connection to make queries
    */
   constructor(dbConnection: Db) {
@@ -106,6 +107,7 @@ export default class DataLoaders {
 
   /**
    * Batching function for resolving relations from persons ids
+   *
    * @param personIds - persons ids for resolving
    */
   private async batchRelationsByPersonIds(personIds: string[]): Promise<RelationDbScheme[][]> {
@@ -130,6 +132,7 @@ export default class DataLoaders {
 
   /**
    * Batching function for resolving relations from location ids
+   *
    * @param locationInstanceIds - location instances ids for resolving
    */
   private async batchRelationsByLocationInstanceIds(locationInstanceIds: string[]): Promise<RelationDbScheme[][]> {
@@ -154,13 +157,14 @@ export default class DataLoaders {
 
   /**
    * Batching function for resolving entities from their ids
+   *
    * @param collectionName
    * @param ids - ids for resolving
    */
   private async batchByIds<T extends {_id: ObjectId}>(collectionName: string, ids: string[]): Promise<(T| null)[]> {
     const queryResult = await this.dbConnection.collection(collectionName)
       .find({
-        _id: { $in: ids.map(id => new ObjectId(id)) }
+        _id: { $in: ids.map(id => new ObjectId(id)) },
       })
       .toArray();
 

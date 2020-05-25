@@ -9,7 +9,10 @@ router.post('/sign-up', async (req, res, next) => {
     const db = await getConnection();
     const hashedPassword = await argon2.hash(req.body.password);
 
-    await db.collection('users').insertOne({ username: req.body.username, hashedPassword });
+    await db.collection('users').insertOne({
+      username: req.body.username,
+      hashedPassword,
+    });
 
     res.sendStatus(201);
   } catch (error) {
@@ -17,6 +20,7 @@ router.post('/sign-up', async (req, res, next) => {
     if (error.name === 'MongoError' && error.code === 11000) {
       return next(new UsernameDuplicationError());
     }
+
     return next(error);
   }
 });

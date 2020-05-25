@@ -7,6 +7,7 @@ import { defaultFieldResolver, GraphQLField } from 'graphql';
 export default class RenameFieldDirective extends SchemaDirectiveVisitor {
   /**
    * Method to be called on field visit
+   *
    * @param field - GraphQL field definition
    */
   visitFieldDefinition(
@@ -20,6 +21,7 @@ export default class RenameFieldDirective extends SchemaDirectiveVisitor {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     field.resolve = async (object, args, context, info): Promise<any> => {
       object[field.name] = object[name];
+
       return resolve.call(this, object, args, context, info);
     };
   }

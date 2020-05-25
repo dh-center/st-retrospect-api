@@ -1,4 +1,4 @@
-import { BaseTypeResolver, PointCoordinates } from '../types/graphql';
+import { PointCoordinates, ResolverContextBase } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { LocationDBScheme } from './locations';
 import distance from '../utils/distance';
@@ -25,28 +25,26 @@ interface RoutesFilter {
   contains: string;
 }
 
+export type RouteWithLocations = RouteDBScheme & {
+  locations: LocationDBScheme[];
+};
+
 /**
  * Returns match stage for MongoDB aggregation form Routes filter
+ *
  * @param filter - search filter
  */
-function getMatchStageFromFilter(filter: RoutesFilter): object {
+function getMatchStageFromFilter(filter: RoutesFilter): Record<string, unknown> {
   const searchRegExp = new RegExp(filter.contains, 'i');
 
   return {
     $match: {
       $or: [
         { 'name.ru': searchRegExp },
-        { 'name.en': searchRegExp }
-      ]
-    }
+        { 'name.en': searchRegExp },
+      ],
+    },
   };
-}
-
-// @todo improve tipization
-export interface Route {
-  _id: ObjectId;
-  locations: LocationDBScheme[];
-  locationIds: string[];
 }
 
 /**
@@ -57,23 +55,23 @@ const lookupLocationsStage = {
     from: 'locations',
     localField: 'locationIds',
     foreignField: '_id',
-    as: 'locations'
-  }
+    as: 'locations',
+  },
 };
 
-const Query: BaseTypeResolver = {
+const Query = {
   /**
    * Returns specific route
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - route id
    * @param db - MongoDB connection to make queries
-   * @return {object}
+   * @returns {object}
    */
-  async route(parent, { id }: { id: string }, { db }) {
-    const route = (await db.collection<Route>('routes').aggregate([
-      { $match: { _id: new ObjectId(id) } },
-      lookupLocationsStage
-    ]).toArray()).shift();
+  async route(parent: undefined, { id }: { id: string }, { db }: ResolverContextBase): Promise<RouteDBScheme | null> {
+    const route = await db.collection<RouteDBScheme>('routes').findOne({
+      _id: new ObjectId(id),
+    });
 
     if (!route) {
       return null;
@@ -84,25 +82,29 @@ const Query: BaseTypeResolver = {
 
   /**
    * Returns all routes
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param filter - search filter
    * @param db - MongoDB connection to make queries
-   * @return {object[]}
+   * @returns {object[]}
    */
-  async routes(parent, { filter }: { filter?: RoutesFilter }, { db }) {
-    const aggregationPipeline: object[] = [
-      lookupLocationsStage
+  async routes(parent: undefined, { filter }: { filter?: RoutesFilter }, { db }: ResolverContextBase): Promise<RouteWithLocations[]> {
+    const aggregationPipeline: Record<string, unknown>[] = [
+      lookupLocationsStage,
     ];
 
     if (filter) {
       aggregationPipeline.unshift(getMatchStageFromFilter(filter));
     }
 
-    return db.collection<Route>('routes').aggregate(aggregationPipeline).toArray();
+    return db.collection<RouteDBScheme>('routes')
+      .aggregate<RouteWithLocations>(aggregationPipeline)
+      .toArray();
   },
 
   /**
    * Returns nearest routes
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param center - center coordinates
    * @param radius - search radius
@@ -110,20 +112,20 @@ const Query: BaseTypeResolver = {
    * @param db - MongoDB connection to make queries
    */
   async nearestRoutes(
-    parent,
+    parent: undefined,
     { center, radius, filter }: { center: PointCoordinates; radius: number; filter?: RoutesFilter },
-    { db }
-  ) {
-    const aggregationPipeline: object[] = [
-      lookupLocationsStage
+    { db }: ResolverContextBase
+  ): Promise<RouteWithLocations[]> {
+    const aggregationPipeline: Record<string, unknown>[] = [
+      lookupLocationsStage,
     ];
 
     if (filter) {
       aggregationPipeline.unshift(getMatchStageFromFilter(filter));
     }
 
-    let routes = await db.collection<Route>('routes')
-      .aggregate(aggregationPipeline)
+    let routes = await db.collection<RouteDBScheme>('routes')
+      .aggregate<RouteWithLocations>(aggregationPipeline)
       .toArray();
 
     routes = routes.filter((route) => {
@@ -148,10 +150,11 @@ const Query: BaseTypeResolver = {
 
       return isValid;
     });
+
     return routes;
-  }
+  },
 };
 
 export default {
-  Query
+  Query,
 };

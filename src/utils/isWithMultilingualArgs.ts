@@ -1,10 +1,13 @@
 import { GraphQLFieldConfig, NamedTypeNode, NonNullTypeNode } from 'graphql';
 
 /**
- * @param fieldConfig
- * @param multilingualInputTypes
+ * Returns true if there are any multilingual args in field resolver
+ *
+ * @param fieldConfig - field config to parse
+ * @param multilingualInputTypes - object with multilingual types to check
  */
 export default function isWithMultilingualArgs(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fieldConfig: GraphQLFieldConfig<any, any>,
   multilingualInputTypes: Record<string, string[]>
 ): boolean {

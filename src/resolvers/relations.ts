@@ -65,6 +65,7 @@ export default {
   RelationType: {
     /**
      * Resolver for relation type synonyms
+     *
      * @param relation - the object that contains the result returned from the resolver on the parent field
      */
     synonyms(
@@ -77,6 +78,6 @@ export default {
 
         return synonym.name;
       });
-    }
-  }
+    },
+  },
 };
