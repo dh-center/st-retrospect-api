@@ -60,7 +60,6 @@ const PersonMutations = {
    */
   async update(
     parent: undefined,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     { input }: { input: PersonDBScheme & {id: string} },
     { db }: ResolverContextBase
   ): Promise<UpdateMutationPayload<PersonDBScheme>> {

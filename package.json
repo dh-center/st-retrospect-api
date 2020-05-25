@@ -29,8 +29,6 @@
     "accept-language-parser": "^1.5.0",
     "apollo-server-express": "^2.13.1",
     "argon2": "^0.26.2",
-    "apollo-server-express": "^2.9.5",
-    "argon2": "^0.25.1",
     "aws-sdk": "^2.679.0",
     "base64-url": "^2.3.3",
     "body-parser": "^1.19.0",
