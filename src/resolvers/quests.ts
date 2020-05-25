@@ -1,7 +1,7 @@
 import { CreateMutationPayload, ResolverContextBase, UpdateMutationPayload } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import merge from 'lodash.merge';
-import { PersonDBScheme } from './persons';
+import { EditorData } from '../types/editorData';
 
 /**
  * Scheme of quest in database
@@ -31,6 +31,11 @@ export interface QuestDBScheme {
    * Quest type
    */
   type: string;
+
+  /**
+   * Quest data
+   */
+  data: EditorData;
 }
 
 const Query = {
@@ -101,7 +106,10 @@ const QuestMutations = {
     const quest = await db.collection('quests').findOneAndUpdate(
       { _id: id },
       {
-        $set: merge(originalQuest, input),
+        $set: {
+          ...merge(originalQuest, input),
+          data: input.data,
+        },
       },
       { returnOriginal: false });
 

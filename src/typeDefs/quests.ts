@@ -33,6 +33,11 @@ export default gql`
     task: JSON!
 
     """
+    Quest data
+    """
+    data: JSON
+
+    """
     Quest rewards
     """
     rewards: [JSON!]!
@@ -174,6 +179,11 @@ export default gql`
     Quest type (quiz, route, etc.)
     """
     type: TaskTypes
+
+    """
+    Quest data
+    """
+    data: JSON
   }
 
   type UpdateQuestPayload {
