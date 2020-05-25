@@ -273,7 +273,7 @@ export default gql`
     recordId: ID
 
     """
-    Created person
+    Updated person
     """
     record: Person
   }
