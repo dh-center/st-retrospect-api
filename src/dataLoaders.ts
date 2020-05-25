@@ -12,20 +12,6 @@ import { QuestDBScheme } from './resolvers/quests';
  */
 export default class DataLoaders {
   /**
-   * MongoDB connection to make queries
-   */
-  private dbConnection: Db;
-
-  /**
-   * Creates DataLoaders instance
-   *
-   * @param dbConnection - MongoDB connection to make queries
-   */
-  constructor(dbConnection: Db) {
-    this.dbConnection = dbConnection;
-  }
-
-  /**
    * Loader for fetching relations by persons ids
    */
   public relationByPersonId = new DataLoader(
@@ -104,6 +90,20 @@ export default class DataLoaders {
     (questIds: string[]) => this.batchByIds<QuestDBScheme>('quests', questIds),
     { cache: false }
   );
+
+  /**
+   * MongoDB connection to make queries
+   */
+  private dbConnection: Db;
+
+  /**
+   * Creates DataLoaders instance
+   *
+   * @param dbConnection - MongoDB connection to make queries
+   */
+  constructor(dbConnection: Db) {
+    this.dbConnection = dbConnection;
+  }
 
   /**
    * Batching function for resolving relations from persons ids
