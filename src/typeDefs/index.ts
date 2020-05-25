@@ -9,17 +9,20 @@ import quests from './quests';
 
 const rootSchema = gql`
   """
-  Directive for field renaming
+  Extracts value from specified field in parent object
   """
-  directive @renameField(name: String!) on FIELD_DEFINITION
+  directive @fromField(name: String!) on FIELD_DEFINITION
 
   """
-  Directive for picking only necessary language from multilingual fields
+  Directive for multilingual fields support
+
+  On input field maps provided value to multilingual object (e.g. 'hello' => {en: 'hello'})
+  On type field maps multilingual object to value ({en: 'hello'} => 'hello')
   """
   directive @multilingual on FIELD_DEFINITION | INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
 
   """
-  Directive for data loaders
+  Load data via specific dataLoader
   """
   directive @dataLoader(
     """
@@ -95,6 +98,6 @@ export default concatenateTypeDefs(
     relations,
     routes,
     users,
-    quests
+    quests,
   ]
 );

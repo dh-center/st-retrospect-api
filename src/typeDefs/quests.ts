@@ -5,7 +5,7 @@ export default gql`
     """
     Quest ID
     """
-    id: ID! @renameField(name: "_id")
+    id: ID! @fromField(name: "_id")
 
     """
     Quest name
@@ -141,19 +141,19 @@ export default gql`
     """
     Created quest id
     """
-    questId: ID
+    recordId: ID
 
     """
     Created quest
     """
-    quest: Quest
+    record: Quest
   }
 
   type QuestMutations {
     """
     Create quest
     """
-    create(input: CreateQuestInput!): CreateQuestPayload! @adminCheck
+    create(input: CreateQuestInput): CreateQuestPayload! @adminCheck
   }
 
   extend type Mutation {

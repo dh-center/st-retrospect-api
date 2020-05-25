@@ -1,28 +1,35 @@
-import { defaultFieldResolver, GraphQLSchema } from 'graphql';
 import { DirectiveTransformer, ResolverContextBase } from '../types/graphql';
+import { defaultFieldResolver, GraphQLSchema } from 'graphql';
+
 import { mapSchema, getDirectives, MapperKind } from '@graphql-tools/utils';
-import { AuthenticationError } from 'apollo-server-express';
 
 /**
- * Checks user authentication before resolver call
+ * Arguments for fromField directive
+ */
+interface FromFieldDirectiveArgs {
+  /**
+   * Name of the parent's field to extract value
+   */
+  name: string;
+}
+
+/**
+ * Extracts value from specified field in parent object
  *
  * @param directiveName - directive name in graphql schema
  */
-export default function authCheckDirective(directiveName: string): DirectiveTransformer {
+export default function fromFieldDirective(directiveName: string): DirectiveTransformer {
   return (schema: GraphQLSchema): GraphQLSchema => mapSchema(schema, {
-    [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
+    [MapperKind.OBJECT_FIELD]: (fieldConfig, fieldName) => {
       const directives = getDirectives(schema, fieldConfig);
       const directiveArgumentMap = directives[directiveName];
 
       if (directiveArgumentMap) {
+        const { name }: FromFieldDirectiveArgs = directiveArgumentMap;
         const { resolve = defaultFieldResolver } = fieldConfig;
 
         fieldConfig.resolve = async (parent, args, context: ResolverContextBase, info): Promise<unknown> => {
-          if (!context.user.id) {
-            throw new AuthenticationError(
-              'You must be signed in to have access to this functionality.'
-            );
-          }
+          parent[fieldName] = parent[name];
 
           return resolve(parent, args, context, info);
         };
