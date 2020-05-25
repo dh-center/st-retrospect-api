@@ -9,14 +9,15 @@ export interface PersonDBScheme {
 const Query = {
   /**
    * Returns specific person
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - person id
    * @param db - MongoDB connection to make queries
-   * @return {object}
+   * @returns {object}
    */
   async person(parent: {}, { id }: { id: string }, { db }: ResolverContextBase): Promise<PersonDBScheme | null> {
     const person = await db.collection('persons').findOne({
-      _id: new ObjectId(id)
+      _id: new ObjectId(id),
     });
 
     if (!person) {
@@ -24,16 +25,17 @@ const Query = {
     }
 
     return person;
-  }
+  },
 };
 
 const PersonMutations = {
   /**
    * Create new person
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param input - person object
    * @param db - MongoDB connection to make queries
-   * @return {object}
+   * @returns {object}
    */
   async create(
     parent: undefined,
@@ -44,16 +46,17 @@ const PersonMutations = {
 
     return {
       recordId: person._id,
-      record: person
+      record: person,
     };
   },
 
   /**
    * Update person
+   *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param input - person object
    * @param db - MongoDB connection to make queries
-   * @return {object}
+   * @returns {object}
    */
   async update(
     parent: undefined,
@@ -66,29 +69,29 @@ const PersonMutations = {
     delete input._id;
 
     const originalPerson = await db.collection('persons').findOne({
-      _id: new ObjectId(id)
+      _id: new ObjectId(id),
     });
 
     const person = await db.collection('persons').findOneAndUpdate(
       { _id: new ObjectId(id) },
       {
-        $set: merge(originalPerson, input)
+        $set: merge(originalPerson, input),
       },
       { returnOriginal: false });
 
     return {
       recordId: id,
-      record: person.value
+      record: person.value,
     };
-  }
+  },
 };
 
 const Mutation = {
-  person: (): object => ({})
+  person: (): object => ({}),
 };
 
 export default {
   Query,
   Mutation,
-  PersonMutations
+  PersonMutations,
 };
