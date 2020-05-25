@@ -268,7 +268,7 @@ export default gql`
 
   type UpdatePersonPayload {
     """
-    Created person id
+    Updated person id
     """
     recordId: ID
 
