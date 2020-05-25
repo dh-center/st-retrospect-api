@@ -73,7 +73,7 @@ export interface UpdateMutationPayload<T> {
   recordId: ObjectId;
 
   /**
-   * created record
+   * Updated record
    */
   record: T;
 }
