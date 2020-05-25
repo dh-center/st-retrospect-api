@@ -63,17 +63,17 @@ const PersonMutations = {
     { input }: { input: PersonDBScheme & {id: string} },
     { db }: ResolverContextBase
   ): Promise<UpdateMutationPayload<PersonDBScheme>> {
-    input['_id'] = new ObjectId(input.id);
+    input._id = new ObjectId(input.id);
     const id = input._id;
 
     delete input._id;
 
     const originalPerson = await db.collection('persons').findOne({
-      _id: new ObjectId(id),
+      _id: id,
     });
 
     const person = await db.collection('persons').findOneAndUpdate(
-      { _id: new ObjectId(id) },
+      { _id: id },
       {
         $set: merge(originalPerson, input),
       },

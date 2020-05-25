@@ -1,5 +1,7 @@
-import { CreateMutationPayload, ResolverContextBase } from '../types/graphql';
+import { CreateMutationPayload, ResolverContextBase, UpdateMutationPayload } from '../types/graphql';
 import { ObjectId } from 'mongodb';
+import merge from 'lodash.merge';
+import { PersonDBScheme } from './persons';
 
 /**
  * Scheme of quest in database
@@ -71,6 +73,41 @@ const QuestMutations = {
     return {
       recordId: quest._id,
       record: quest,
+    };
+  },
+
+  /**
+   * Update person
+   *
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input - person object
+   * @param db - MongoDB connection to make queries
+   * @returns {object}
+   */
+  async update(
+    parent: undefined,
+    { input }: { input: QuestDBScheme & {id: string} },
+    { db }: ResolverContextBase
+  ): Promise<UpdateMutationPayload<QuestDBScheme>> {
+    input._id = new ObjectId(input.id);
+    const id = input._id;
+
+    delete input._id;
+
+    const originalQuest = await db.collection('quests').findOne({
+      _id: id,
+    });
+
+    const quest = await db.collection('quests').findOneAndUpdate(
+      { _id: id },
+      {
+        $set: merge(originalQuest, input),
+      },
+      { returnOriginal: false });
+
+    return {
+      recordId: id,
+      record: quest.value,
     };
   },
 };
