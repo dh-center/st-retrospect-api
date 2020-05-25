@@ -1,87 +1,109 @@
-import { SchemaDirectiveVisitor } from 'graphql-tools';
 import {
   defaultFieldResolver,
-  GraphQLField,
-  GraphQLArgument,
-  GraphQLObjectType,
-  GraphQLInterfaceType,
-  isInputObjectType, GraphQLInputField, GraphQLInputObjectType
+  GraphQLSchema,
+  InputValueDefinitionNode,
+  NamedTypeNode,
+  NonNullTypeNode
 } from 'graphql';
-import { ResolverContextBase } from '../types/graphql';
+import { getDirectives, MapperKind, mapSchema } from '@graphql-tools/utils';
+import { DirectiveTransformer, ResolverContextBase } from '../types/graphql';
+import getMultilingualInputTypes from '../utils/getMultilingualInputTypes';
+import isWithMultilingualArgs from '../utils/isWithMultilingualArgs';
 
 /**
- * Directive for picking only necessary language from multilingual fields
+ * Directive for multilingual fields support
+ *
+ * On input field maps provided value to multilingual object (e.g. 'hello' => {en: 'hello'})
+ * On type field maps multilingual object to value ({en: 'hello'} => 'hello')
+ *
+ * @param directiveName - directive name in GraphQL schema
  */
-export default class Multilingual extends SchemaDirectiveVisitor {
-  /**
-   * @param field - GraphQL field definition
-   */
-  visitFieldDefinition(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    field: GraphQLField<any, any>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): GraphQLField<any, any> | void | null {
-    const { resolve = defaultFieldResolver } = field;
+export default function multilingualDirective(directiveName: string): DirectiveTransformer {
+  return (schema: GraphQLSchema): GraphQLSchema => {
+    const multilingualInputTypes = getMultilingualInputTypes(schema);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    field.resolve = async (object, args, context: ResolverContextBase, info): Promise<any> => {
-      const value = resolve.call(this, object, args, context, info);
+    const mapArgs = (args: {[key: string]: any}, argsAst: readonly InputValueDefinitionNode[], language: string): void => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mapMultilingualFields = (fields: {[key: string]: any}, fieldNamesToMap: string[]): void => {
+        fieldNamesToMap.forEach((fieldNameToMap) => {
+          if (fields[fieldNameToMap]) {
+            fields[fieldNameToMap] = {
+              [language.toLowerCase()]: fields[fieldNameToMap],
+            };
+          }
+        });
+      };
 
-      if (!value) {
-        return null;
-      }
-      if (value instanceof Array) {
-        return value.map(arrayValue => arrayValue && arrayValue[context.languages[0].toLowerCase()]);
-      }
-      return value[context.languages[0].toLowerCase()];
-    };
-  }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mapNamedType = (arg: any, type: NamedTypeNode): void => {
+        if (type.name.value in multilingualInputTypes) {
+          // console.log(arg);
+          // console.log(type);
+          mapMultilingualFields(arg, multilingualInputTypes[type.name.value]);
+        }
+      };
 
-  /**
-   * @param field - GraphQL input field definition
-   * @param details - GraphQL type containing field
-   */
-  visitInputFieldDefinition(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    field: GraphQLInputField, details: {
-      objectType: GraphQLInputObjectType;}
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): GraphQLInputField | void | null {
-    super.visitInputFieldDefinition(field, details);
-  }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mapNonNullType = (arg: any, type: NonNullTypeNode): void => {
+        switch (type.type.kind) {
+          case 'NamedType':
+            return mapNamedType(arg, type.type);
 
-  /**
-   * @param argument - GraphQL argument definition
-   * @param details - GraphQL field and type containing argument
-   */
-  visitArgumentDefinition(
-    argument: GraphQLArgument,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    details: { field: GraphQLField<any, any>; objectType: GraphQLObjectType | GraphQLInterfaceType }
-  ): GraphQLArgument | void | null {
-    const { resolve = defaultFieldResolver } = details.field;
+          /**
+           * @todo add support for list types
+           */
+          case 'ListType':
+        }
+      };
 
-    const fieldNames: string[] = [];
-
-    const argumentType = argument.type;
-
-    if (isInputObjectType(argumentType)) {
-      Object.entries(argumentType.getFields()).forEach(([fieldName, fieldData]) => {
-        const directives = fieldData.astNode && fieldData.astNode.directives;
-
-        if (directives && directives.findIndex(directive => directive.name.value.toString() === 'multilingual') !== -1) {
-          fieldNames.push(fieldName);
+      argsAst.forEach((argAst: InputValueDefinitionNode) => {
+        switch (argAst.type.kind) {
+          case 'NamedType':
+            return mapNamedType(args[argAst.name.value], argAst.type);
+          case 'NonNullType':
+            return mapNonNullType(args[argAst.name.value], argAst.type);
         }
       });
-    }
-
-    details.field.resolve = async (object, args, context, info): Promise<void> => {
-      fieldNames.map(fieldName => {
-        args.input[fieldName] = {
-          [context.languages[0].toLowerCase()]: args.input[fieldName]
-        };
-      });
-      return resolve.call(this, object, args, context, info);
     };
-  }
+
+    return mapSchema(schema, {
+      [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
+        const directives = getDirectives(schema, fieldConfig);
+        const directiveArgumentMap = directives[directiveName];
+        const withMultilingualArgs = isWithMultilingualArgs(fieldConfig, multilingualInputTypes);
+
+        /**
+         * Do not patch field resolver if there is no multilingual directives and fields on it
+         */
+        if (!directiveArgumentMap && !withMultilingualArgs) {
+          return;
+        }
+
+        const { resolve = defaultFieldResolver } = fieldConfig;
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        fieldConfig.resolve = async (parent, args, context: ResolverContextBase, info): Promise<any> => {
+          const currentLanguage = context.languages[0].toLowerCase();
+
+          /**
+           * Map multilingual args if any
+           */
+          if (fieldConfig.astNode?.arguments && isWithMultilingualArgs) {
+            mapArgs(args, fieldConfig.astNode.arguments, currentLanguage);
+          }
+
+          const result = await resolve(parent, args, context, info);
+
+          if (directiveArgumentMap) {
+            return result && result[currentLanguage];
+          }
+
+          return result;
+        };
+
+        return fieldConfig;
+      },
+    });
+  };
 }
