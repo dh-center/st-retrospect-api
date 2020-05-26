@@ -1,7 +1,7 @@
 import { CreateMutationPayload, ResolverContextBase, UpdateMutationPayload } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { EditorData } from '../types/editorData';
-import mergeWith from "lodash.mergewith";
+import mergeWith from 'lodash.mergewith';
 
 /**
  * Scheme of quest in database
@@ -108,7 +108,7 @@ const QuestMutations = {
       {
         $set: {
           ...mergeWith(originalQuest, input, (original, inp) => inp === null ? original : undefined),
-          data: input.data,
+          ...input.data ? { data: input.data } : {},
         },
       },
       { returnOriginal: false });
