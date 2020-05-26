@@ -33,6 +33,11 @@ export default gql`
     task: JSON!
 
     """
+    Quest data
+    """
+    data: JSON
+
+    """
     Quest rewards
     """
     rewards: [JSON!]!
@@ -107,7 +112,7 @@ export default gql`
     """
     Quest type (quiz, route, etc.)
     """
-    type: TaskTypes!
+    type: TaskTypes! = ROUTE
   }
 
   extend type Query {
@@ -149,11 +154,60 @@ export default gql`
     record: Quest
   }
 
+  input UpdateQuestInput {
+    """
+    Quest ID
+    """
+    id: ID!
+
+    """
+    Quest name
+    """
+    name: String
+
+    """
+    Quest description
+    """
+    description: String
+
+    """
+    Quest photo
+    """
+    photo: String
+
+    """
+    Quest type (quiz, route, etc.)
+    """
+    type: TaskTypes
+
+    """
+    Quest data
+    """
+    data: JSON
+  }
+
+  type UpdateQuestPayload {
+    """
+    Created quest id
+    """
+    recordId: ID
+
+    """
+    Created quest
+    """
+    record: Quest
+  }
+
   type QuestMutations {
     """
     Create quest
     """
-    create(input: CreateQuestInput): CreateQuestPayload! @adminCheck
+    create(input: CreateQuestInput!): CreateQuestPayload! @adminCheck
+
+    """
+    Update quest
+    """
+    update(input: UpdateQuestInput!): UpdateQuestPayload! @adminCheck
   }
 
   extend type Mutation {
