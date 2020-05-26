@@ -108,7 +108,7 @@ const QuestMutations = {
       {
         $set: {
           ...mergeWith(originalQuest, input, (original, inp) => inp === null ? original : undefined),
-          ...input.data ? { data: input.data } : {},
+          ...(input.data ? { data: input.data } : {}),
         },
       },
       { returnOriginal: false });
