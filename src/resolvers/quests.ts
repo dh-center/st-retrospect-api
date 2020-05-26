@@ -35,7 +35,7 @@ export interface QuestDBScheme {
   /**
    * Quest data
    */
-  data: EditorData;
+  data?: EditorData;
 }
 
 const Query = {
