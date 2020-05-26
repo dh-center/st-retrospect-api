@@ -1,6 +1,6 @@
 import { CreateMutationPayload, ResolverContextBase, UpdateMutationPayload } from '../types/graphql';
 import { ObjectId } from 'mongodb';
-import merge from 'lodash.merge';
+import mergeWith from 'lodash.mergewith';
 
 export interface PersonDBScheme {
   _id: ObjectId;
@@ -75,7 +75,7 @@ const PersonMutations = {
     const person = await db.collection('persons').findOneAndUpdate(
       { _id: id },
       {
-        $set: merge(originalPerson, input),
+        $set: mergeWith(originalPerson, input, (original, inp) => inp === null ? original : undefined),
       },
       { returnOriginal: false });
 
