@@ -64,7 +64,7 @@ export interface CreateMutationPayload<T> {
 }
 
 /**
- * Response type for mutations that creates entities
+ * Response type for mutations that updates entities
  */
 export interface UpdateMutationPayload<T> {
   /**
@@ -76,6 +76,16 @@ export interface UpdateMutationPayload<T> {
    * Updated record
    */
   record: T;
+}
+
+/**
+ * Response type for mutations that deletes entities
+ */
+export interface DeleteMutationPayload {
+  /**
+   * Id of deleted record
+   */
+  recordId: ObjectId;
 }
 
 /**

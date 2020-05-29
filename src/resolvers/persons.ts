@@ -1,4 +1,9 @@
-import { CreateMutationPayload, ResolverContextBase, UpdateMutationPayload } from '../types/graphql';
+import {
+  CreateMutationPayload,
+  DeleteMutationPayload,
+  ResolverContextBase,
+  UpdateMutationPayload
+} from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import mergeWith from 'lodash.mergewith';
 
@@ -82,6 +87,26 @@ const PersonMutations = {
     return {
       recordId: id,
       record: person.value,
+    };
+  },
+
+  /**
+   * Delete person
+   *
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id - object id
+   * @param db - MongoDB connection to make queries
+   * @returns {object}
+   */
+  async delete(
+    parent: undefined,
+    { id }: { id: string },
+    { db }: ResolverContextBase
+  ): Promise<DeleteMutationPayload> {
+    await db.collection<PersonDBScheme>('persons').deleteOne({ _id: new ObjectId(id) });
+
+    return {
+      recordId: new ObjectId(id),
     };
   },
 };

@@ -1,7 +1,13 @@
-import { CreateMutationPayload, ResolverContextBase, UpdateMutationPayload } from '../types/graphql';
+import {
+  CreateMutationPayload,
+  DeleteMutationPayload,
+  ResolverContextBase,
+  UpdateMutationPayload
+} from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { EditorData } from '../types/editorData';
 import mergeWith from 'lodash.mergewith';
+import {PersonDBScheme} from "./persons";
 
 /**
  * Scheme of quest in database
@@ -116,6 +122,26 @@ const QuestMutations = {
     return {
       recordId: id,
       record: quest.value,
+    };
+  },
+
+  /**
+   * Delete quest
+   *
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id - object id
+   * @param db - MongoDB connection to make queries
+   * @returns {object}
+   */
+  async delete(
+    parent: undefined,
+    { id }: { id: string },
+    { db }: ResolverContextBase
+  ): Promise<DeleteMutationPayload> {
+    await db.collection<QuestDBScheme>('quests').deleteOne({ _id: new ObjectId(id) });
+
+    return {
+      recordId: new ObjectId(id),
     };
   },
 };
