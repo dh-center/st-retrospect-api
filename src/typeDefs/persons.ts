@@ -278,6 +278,13 @@ export default gql`
     record: Person
   }
 
+  type DeletePersonPayload {
+    """
+    Deleted person id
+    """
+    recordId: ID
+  }
+
   type PersonMutations {
     """
     Create person
@@ -288,6 +295,10 @@ export default gql`
     Update person
     """
     update(input: UpdatePersonInput!): UpdatePersonPayload! @adminCheck
+
+    """
+    """
+    delete(id: ID!): DeletePersonPayload! @adminCheck
   }
 
   extend type Mutation {
