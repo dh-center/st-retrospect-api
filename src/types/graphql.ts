@@ -81,7 +81,7 @@ export interface UpdateMutationPayload<T> {
 /**
  * Response type for mutations that deletes entities
  */
-export interface DeleteMutationPayload<T> {
+export interface DeleteMutationPayload {
   /**
    * Id of deleted record
    */

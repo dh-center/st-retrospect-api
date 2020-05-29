@@ -297,6 +297,7 @@ export default gql`
     update(input: UpdatePersonInput!): UpdatePersonPayload! @adminCheck
 
     """
+    Delete person
     """
     delete(id: ID!): DeletePersonPayload! @adminCheck
   }

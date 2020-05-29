@@ -198,6 +198,13 @@ export default gql`
     record: Quest
   }
 
+  type DeleteQuestPayload {
+    """
+    Deleted quest id
+    """
+    recordId: ID
+  }
+
   type QuestMutations {
     """
     Create quest
@@ -208,6 +215,11 @@ export default gql`
     Update quest
     """
     update(input: UpdateQuestInput!): UpdateQuestPayload! @adminCheck
+
+    """
+    Delete quest
+    """
+    delete(id: ID!): DeleteQuestPayload! @adminCheck
   }
 
   extend type Mutation {

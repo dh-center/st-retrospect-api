@@ -102,7 +102,7 @@ const PersonMutations = {
     parent: undefined,
     { id }: { id: string },
     { db }: ResolverContextBase
-  ): Promise<DeleteMutationPayload<PersonDBScheme>> {
+  ): Promise<DeleteMutationPayload> {
     await db.collection<PersonDBScheme>('persons').deleteOne({ _id: new ObjectId(id) });
 
     return {
