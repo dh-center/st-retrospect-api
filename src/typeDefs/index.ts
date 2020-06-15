@@ -33,7 +33,13 @@ const rootSchema = gql`
     """
     Name of field with data for DataLoader
     """
-    fieldName: String!
+    fieldName: String
+
+    """
+    Arg name to extract id from
+    """
+    argName: String
+
   ) on FIELD_DEFINITION
 
   """

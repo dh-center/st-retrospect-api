@@ -18,6 +18,11 @@ interface DataLoaderDirectiveArgs {
    * Name of field with data for DataLoader
    */
   fieldName: string;
+
+  /**
+   * Arg name to extract id from
+   */
+  argName: string;
 }
 
 /**
@@ -32,10 +37,10 @@ export default function dataLoaderDirective(directiveName: string): DirectiveTra
       const directiveArgumentMap = directives[directiveName];
 
       if (directiveArgumentMap) {
-        const { dataLoaderName, fieldName }: DataLoaderDirectiveArgs = directiveArgumentMap;
+        const { dataLoaderName, fieldName, argName }: DataLoaderDirectiveArgs = directiveArgumentMap;
 
         fieldConfig.resolve = async (parent, args, context: ResolverContextBase): Promise<unknown> => {
-          const fieldValue = parent[fieldName];
+          const fieldValue = argName ? args[argName] : parent[fieldName];
 
           if (fieldValue instanceof Array) {
             if (!fieldValue) {

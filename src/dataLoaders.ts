@@ -20,6 +20,14 @@ export default class DataLoaders {
   );
 
   /**
+   * Loader for fetching relations by their ids
+   */
+  public relationById = new DataLoader(
+    (relationIds: string[]) => this.batchByIds<RelationDbScheme>('relations', relationIds),
+    { cache: false }
+  );
+
+  /**
    * Loader for fetching relations by locations ids
    */
   public relationByLocationInstanceId = new DataLoader(
