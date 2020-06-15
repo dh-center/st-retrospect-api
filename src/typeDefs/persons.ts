@@ -133,7 +133,7 @@ export default gql`
     Get specific person
     """
     person(
-      "Project id"
+      "Person id"
       id: ID!
     ): Person
 
