@@ -16,6 +16,7 @@ import paginationDirective from './directives/pagination';
 import fromFieldDirective from './directives/fromField';
 import authCheckDirective from './directives/authСheck';
 import adminCheckDirective from './directives/adminCheck';
+import dataLoaderDirective from './directives/dataloaders';
 import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
@@ -62,6 +63,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
       fromFieldDirective('fromField'),
       authCheckDirective('authCheck'),
       adminCheckDirective('adminCheck'),
+      dataLoaderDirective('dataLoader'),
     ],
   });
 
