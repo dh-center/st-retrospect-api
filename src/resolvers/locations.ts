@@ -207,10 +207,9 @@ const Query = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param data - empty arg
    * @param db - MongoDB connection to make queries
-   * @returns {object[]}
    */
-  async locationTypes(parent: undefined, data: undefined, { db }: ResolverContextBase): Promise<LocationInstanceDBScheme[]> {
-    return db.collection('locationtypes').find()
+  async locationTypes(parent: undefined, data: undefined, { db }: ResolverContextBase): Promise<LocationTypeDBScheme[]> {
+    return db.collection<LocationTypeDBScheme>('locationtypes').find()
       .toArray();
   },
 
