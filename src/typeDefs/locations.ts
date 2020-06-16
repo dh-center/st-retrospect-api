@@ -237,5 +237,10 @@ export default gql`
       "The string on the basis of which the request will be made"
       searchString: String!
     ): [Relation!]!
+
+    """
+    Returns list of all location types
+    """
+    locationTypes: [LocationType!]!
   }
 `;
