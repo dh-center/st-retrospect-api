@@ -1,3 +1,5 @@
+[![Discord](https://img.shields.io/discord/713035729768546385.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/vD86gKY)
+![CI](https://github.com/dh-center/st-retrospect-api/workflows/CI/badge.svg?branch=master)
 # St.Retrospect project API
 
 ## Development
