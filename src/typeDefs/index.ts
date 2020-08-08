@@ -59,19 +59,9 @@ const rootSchema = gql`
   directive @adminCheck on FIELD_DEFINITION
 
   """
-  Type for representing JSON object
-  """
-  scalar JSON
-
-  """
   Type for representing connections cursors
   """
   scalar Cursor
-
-  """
-  Type for representing timestamps
-  """
-  scalar Timestamp
 
   """
   Supported languages for data
