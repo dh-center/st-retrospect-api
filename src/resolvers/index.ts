@@ -7,13 +7,12 @@ import users from './users';
 import relations from './relations';
 import Cursor from './cursor';
 import quests from './quests';
-import { resolvers } from 'graphql-scalars';
+import { JSONResolver, LongResolver, TimestampResolver } from 'graphql-scalars';
 
 /**
  * See all types and fields here {@link '../typeDefs/schema.graphql'}
  */
 const indexResolver = {
-  ...resolvers,
   Query: {
     /**
      * Health-check endpoint
@@ -22,6 +21,10 @@ const indexResolver = {
      */
     health: (): string => 'ok',
   },
+
+  JSON: JSONResolver,
+  Long: LongResolver,
+  Timestamp: TimestampResolver,
 };
 
 export default merge(indexResolver, persons, locations, routes, users, relations, Cursor, quests);

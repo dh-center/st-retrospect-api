@@ -9,7 +9,7 @@ export default gql`
     """
     Saving timestamp
     """
-    time : Long
+    time : Timestamp
 
     """
     List of Blocks data
@@ -30,7 +30,7 @@ export default gql`
     """
     Saving timestamp
     """
-    time : Long
+    time : Timestamp
 
     """
     List of Blocks data

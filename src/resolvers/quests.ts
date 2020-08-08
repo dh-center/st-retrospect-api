@@ -79,6 +79,8 @@ const QuestMutations = {
   ): Promise<CreateMutationPayload<QuestDBScheme>> {
     const quest = (await db.collection<QuestDBScheme>('quests').insertOne(input)).ops[0];
 
+    console.log(input);
+
     return {
       recordId: quest._id,
       record: quest,
