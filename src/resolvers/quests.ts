@@ -7,7 +7,6 @@ import {
 import { ObjectId } from 'mongodb';
 import { EditorData } from '../types/editorData';
 import mergeWith from 'lodash.mergewith';
-import {PersonDBScheme} from "./persons";
 
 /**
  * Scheme of quest in database
@@ -52,7 +51,6 @@ const Query = {
    * @param id - quest id
    * @param db - MongoDB connection to make queries
    * @param dataLoaders - Data loaders in context
-   * @returns {object}
    */
   async quest(parent: undefined, { id }: { id: string }, { dataLoaders }: ResolverContextBase): Promise<QuestDBScheme | null> {
     const quest = dataLoaders.questById.load(id);
