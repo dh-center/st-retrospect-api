@@ -22,6 +22,23 @@ export default gql`
     version : String!
   }
 
+  input EditorDataInput {
+    """
+    Saving timestamp
+    """
+    time : Int!
+
+    """
+    List of Blocks data
+    """
+    blocks : [JSON!]!
+
+    """
+    Version of Editor.js
+    """
+    version : String!
+  }
+
 
   type Quest {
     """
@@ -139,7 +156,7 @@ export default gql`
     """
     Quest data
     """
-    data: EditorData!
+    data: EditorDataInput!
   }
 
   extend type Query {
@@ -210,7 +227,7 @@ export default gql`
     """
     Quest data
     """
-    data: EditorData
+    data: EditorDataInput
   }
 
   type UpdateQuestPayload {
