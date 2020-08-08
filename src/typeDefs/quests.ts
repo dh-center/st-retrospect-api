@@ -1,6 +1,28 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
+  """
+  Data saved from Editor.js
+  See https://editorjs.io/saving-data
+  """
+  type EditorData {
+    """
+    Saving timestamp
+    """
+    time : Int!
+
+    """
+    List of Blocks data
+    """
+    blocks : [JSON!]!
+
+    """
+    Version of Editor.js
+    """
+    version : String!
+  }
+
+
   type Quest {
     """
     Quest ID
@@ -35,7 +57,7 @@ export default gql`
     """
     Quest data
     """
-    data: JSON
+    data: EditorData
 
     """
     Quest rewards
@@ -117,7 +139,7 @@ export default gql`
     """
     Quest data
     """
-    data: JSON!
+    data: EditorData!
   }
 
   extend type Query {
@@ -188,7 +210,7 @@ export default gql`
     """
     Quest data
     """
-    data: JSON
+    data: EditorData
   }
 
   type UpdateQuestPayload {
