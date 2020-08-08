@@ -9,7 +9,7 @@ export default gql`
     """
     Saving timestamp
     """
-    time : Int
+    time : Long
 
     """
     List of Blocks data
@@ -22,11 +22,15 @@ export default gql`
     version : String
   }
 
+  """
+  Data saved from Editor.js
+  See https://editorjs.io/saving-data
+  """
   input EditorDataInput {
     """
     Saving timestamp
     """
-    time : Int
+    time : Long
 
     """
     List of Blocks data

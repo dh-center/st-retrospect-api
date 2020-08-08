@@ -8,11 +8,13 @@ import users from './users';
 import relations from './relations';
 import Cursor from './cursor';
 import quests from './quests';
+import { resolvers } from 'graphql-scalars';
 
 /**
  * See all types and fields here {@link '../typeDefs/schema.graphql'}
  */
 const indexResolver = {
+  ...resolvers,
   Query: {
     /**
      * Health-check endpoint

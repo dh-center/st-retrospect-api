@@ -6,6 +6,7 @@ import relations from './relations';
 import routes from './routes';
 import users from './users';
 import quests from './quests';
+import graphqlScalars from './graphqlScalars';
 
 const rootSchema = gql`
   """
@@ -68,6 +69,11 @@ const rootSchema = gql`
   scalar Cursor
 
   """
+  Type for representing timestamps
+  """
+  scalar Timestamp
+
+  """
   Supported languages for data
   """
   enum Languages {
@@ -105,5 +111,6 @@ export default concatenateTypeDefs(
     routes,
     users,
     quests,
+    graphqlScalars,
   ]
 );

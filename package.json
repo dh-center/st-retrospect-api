@@ -38,6 +38,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "^15.0.0",
+    "graphql-scalars": "^1.2.6",
     "graphql-type-json": "^0.3.1",
     "graphql-voyager": "^1.0.0-rc.31",
     "jsonwebtoken": "^8.5.1",
