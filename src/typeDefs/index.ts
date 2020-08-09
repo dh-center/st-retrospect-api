@@ -6,6 +6,7 @@ import relations from './relations';
 import routes from './routes';
 import users from './users';
 import quests from './quests';
+import graphqlScalars from './graphqlScalars';
 
 const rootSchema = gql`
   """
@@ -58,11 +59,6 @@ const rootSchema = gql`
   directive @adminCheck on FIELD_DEFINITION
 
   """
-  Type for representing JSON object
-  """
-  scalar JSON
-
-  """
   Type for representing connections cursors
   """
   scalar Cursor
@@ -105,5 +101,6 @@ export default concatenateTypeDefs(
     routes,
     users,
     quests,
+    graphqlScalars,
   ]
 );

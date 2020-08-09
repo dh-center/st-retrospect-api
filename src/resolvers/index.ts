@@ -1,5 +1,4 @@
 import merge from 'lodash.merge';
-import { GraphQLJSON } from 'graphql-type-json';
 
 import persons from './persons';
 import locations from './locations';
@@ -8,6 +7,7 @@ import users from './users';
 import relations from './relations';
 import Cursor from './cursor';
 import quests from './quests';
+import { JSONResolver, LongResolver, TimestampResolver } from 'graphql-scalars';
 
 /**
  * See all types and fields here {@link '../typeDefs/schema.graphql'}
@@ -22,10 +22,9 @@ const indexResolver = {
     health: (): string => 'ok',
   },
 
-  /**
-   * Represents JSON object
-   */
-  JSON: GraphQLJSON,
+  JSON: JSONResolver,
+  Long: LongResolver,
+  Timestamp: TimestampResolver,
 };
 
 export default merge(indexResolver, persons, locations, routes, users, relations, Cursor, quests);

@@ -1,6 +1,49 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
+  """
+  Data saved from Editor.js
+  See https://editorjs.io/saving-data
+  """
+  type EditorData {
+    """
+    Saving timestamp
+    """
+    time : Timestamp
+
+    """
+    List of Blocks data
+    """
+    blocks : [JSON!]!
+
+    """
+    Version of Editor.js
+    """
+    version : String
+  }
+
+  """
+  Data saved from Editor.js
+  See https://editorjs.io/saving-data
+  """
+  input EditorDataInput {
+    """
+    Saving timestamp
+    """
+    time : Timestamp
+
+    """
+    List of Blocks data
+    """
+    blocks : [JSON!]!
+
+    """
+    Version of Editor.js
+    """
+    version : String
+  }
+
+
   type Quest {
     """
     Quest ID
@@ -35,7 +78,7 @@ export default gql`
     """
     Quest data
     """
-    data: JSON
+    data: EditorData
 
     """
     Quest rewards
@@ -113,6 +156,11 @@ export default gql`
     Quest type (quiz, route, etc.)
     """
     type: TaskTypes! = ROUTE
+
+    """
+    Quest data
+    """
+    data: EditorDataInput!
   }
 
   extend type Query {
@@ -146,12 +194,12 @@ export default gql`
     """
     Created quest id
     """
-    recordId: ID
+    recordId: ID!
 
     """
     Created quest
     """
-    record: Quest
+    record: Quest!
   }
 
   input UpdateQuestInput {
@@ -183,26 +231,26 @@ export default gql`
     """
     Quest data
     """
-    data: JSON
+    data: EditorDataInput
   }
 
   type UpdateQuestPayload {
     """
     Created quest id
     """
-    recordId: ID
+    recordId: ID!
 
     """
     Created quest
     """
-    record: Quest
+    record: Quest!
   }
 
   type DeleteQuestPayload {
     """
     Deleted quest id
     """
-    recordId: ID
+    recordId: ID!
   }
 
   type QuestMutations {
@@ -223,6 +271,6 @@ export default gql`
   }
 
   extend type Mutation {
-    quest: QuestMutations
+    quest: QuestMutations!
   }
 `;
