@@ -2,6 +2,7 @@ import merge from 'lodash.merge';
 
 import persons from './persons';
 import locations from './locations';
+import locationInstances from './locationInstances';
 import routes from './routes';
 import users from './users';
 import relations from './relations';
@@ -27,4 +28,14 @@ const indexResolver = {
   Timestamp: TimestampResolver,
 };
 
-export default merge(indexResolver, persons, locations, routes, users, relations, Cursor, quests);
+export default merge(
+  indexResolver,
+  persons,
+  locations,
+  locationInstances,
+  routes,
+  users,
+  relations,
+  Cursor,
+  quests
+);

@@ -11,6 +11,7 @@ import { PersonDBScheme } from './persons';
 import { RelationDbScheme } from './relations';
 import mergeWith from 'lodash.mergewith';
 import { QuestDBScheme } from './quests';
+import emptyMutation from '../utils/emptyMutation';
 
 /**
  * ID of relation type for architects
@@ -276,30 +277,30 @@ const LocationInstance = {
 
 const LocationMutations = {
   /**
-   * Create new quest
+   * Create new location
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input - quest object
+   * @param input - mutation input object
    * @param db - MongoDB connection to make queries
    */
   async create(
     parent: undefined,
-    { input }: { input: QuestDBScheme },
+    { input }: { input: LocationDBScheme },
     { db }: ResolverContextBase
-  ): Promise<CreateMutationPayload<QuestDBScheme>> {
-    const quest = (await db.collection<QuestDBScheme>('quests').insertOne(input)).ops[0];
+  ): Promise<CreateMutationPayload<LocationDBScheme>> {
+    const location = (await db.collection<LocationDBScheme>('locations').insertOne(input)).ops[0];
 
     return {
-      recordId: quest._id,
-      record: quest,
+      recordId: location._id,
+      record: location,
     };
   },
 
   /**
-   * Update person
+   * Update location
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input - person object
+   * @param input - mutation input object
    * @param db - MongoDB connection to make queries
    */
   async update(
@@ -333,7 +334,7 @@ const LocationMutations = {
   },
 
   /**
-   * Delete quest
+   * Delete location
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - object id
@@ -353,12 +354,12 @@ const LocationMutations = {
 };
 
 const Mutation = {
-  location: (): Record<string, undefined> => ({}),
+  location: emptyMutation,
 };
 
 export default {
   Query,
   LocationInstance,
-  // LocationMutations,
+  LocationMutations,
   Mutation,
 };
