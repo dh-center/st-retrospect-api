@@ -68,8 +68,7 @@ export default gql`
     """
     Possible location representations
     """
-    instances: [CreateLocationInstanceInput!]!
-
+    instances: [String!]!
   }
 
   type CreateLocationPayload {
