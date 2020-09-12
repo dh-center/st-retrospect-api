@@ -3,11 +3,6 @@ import { gql } from 'apollo-server-express';
 export default gql`
   input CreateLocationInstanceInput {
     """
-    Instance's ID
-    """
-    id: ID!
-
-    """
     Location's name
     """
     name: String!
@@ -53,7 +48,6 @@ export default gql`
     endDate: String
   }
 
-
   input CreateLocationInput {
     """
     Location coordinate by X
@@ -68,7 +62,7 @@ export default gql`
     """
     Possible location representations
     """
-    instances: [String!]!
+    instances: [CreateLocationInstanceInput!]!
   }
 
   type CreateLocationPayload {
@@ -85,34 +79,19 @@ export default gql`
 
   input UpdateLocationInput {
     """
-    Location ID
+    Location coordinate by X
     """
-    id: ID!
+    coordinateX: Float
 
     """
-    Location name
+    Location coordinate by Y
     """
-    name: String
+    coordinateY: Float
 
     """
-    Location description
+    Possible location instances id
     """
-    description: String
-
-    """
-    Location photo
-    """
-    photo: String
-
-    """
-    Location type (quiz, route, etc.)
-    """
-    type: TaskTypes
-
-    """
-    Location data
-    """
-    data: EditorDataInput
+    instances: [ID!]!
   }
 
   type UpdateLocationPayload {
