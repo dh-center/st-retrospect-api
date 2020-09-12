@@ -100,6 +100,7 @@ export default concatenateTypeDefs(
     persons,
     locations,
     locationsMutations,
+    locationsMutations,
     relations,
     routes,
     users,
