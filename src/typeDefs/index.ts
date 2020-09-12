@@ -7,6 +7,8 @@ import routes from './routes';
 import users from './users';
 import quests from './quests';
 import graphqlScalars from './graphqlScalars';
+import questsMutations from './questsMutations';
+import locationsMutations from './locationsMutations';
 
 const rootSchema = gql`
   """
@@ -97,10 +99,12 @@ export default concatenateTypeDefs(
     rootSchema,
     persons,
     locations,
+    locationsMutations,
     relations,
     routes,
     users,
     quests,
+    questsMutations,
     graphqlScalars,
   ]
 );
