@@ -11,10 +11,6 @@ export default function isWithMultilingualArgs(
   multilingualInputTypes: Record<string, string[]>
 ): boolean {
   const isMultilingualNamedType = (type: NamedTypeNode): boolean => {
-    // if (fieldConfig.astNode?.name.value === 'create' && fieldConfig.astNode.description?.value === 'Create location') {
-    //   console.log(type);
-    //   console.log(multilingualInputTypes);
-    // }
     const argTypeName = type.name.value;
 
     return !!multilingualInputTypes[argTypeName];

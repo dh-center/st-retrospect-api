@@ -9,14 +9,18 @@ import {
 import { getDirectives, MapperKind, mapSchema } from '@graphql-tools/utils';
 
 /**
- * @param fieldConfig
+ * Returns type name of names field
+ *
+ * @param fieldConfig - field to parse
  */
 function getNamedTypeName(fieldConfig: NamedTypeNode): string {
   return fieldConfig.name.value;
 }
 
 /**
- * @param fieldConfig
+ * Returns type name of non-null field
+ *
+ * @param fieldConfig - field to parse
  */
 function getNonNullTypeName(fieldConfig: NonNullTypeNode): string {
   switch (fieldConfig.type.kind) {
@@ -29,7 +33,9 @@ function getNonNullTypeName(fieldConfig: NonNullTypeNode): string {
 }
 
 /**
- * @param fieldConfig
+ * Returns type name of list-type field
+ *
+ * @param fieldConfig - field to parse
  */
 function getListTypeName(fieldConfig: ListTypeNode): string {
   switch (fieldConfig.type.kind) {
@@ -47,7 +53,7 @@ function getListTypeName(fieldConfig: ListTypeNode): string {
 /**
  * Returns input type name (scalar or object)
  *
- * @param field
+ * @param field - field to parse
  */
 function getInputTypeName(field: GraphQLInputField): string {
   switch (field.astNode?.type.kind) {
@@ -65,9 +71,9 @@ function getInputTypeName(field: GraphQLInputField): string {
 /**
  * Checks is provided field multilingual
  *
- * @param schema
- * @param field
- * @param inputTypes
+ * @param schema - GraphQL schema to parse
+ * @param field - field to parse
+ * @param inputTypes - input types map of this schema
  */
 function isFieldMultilingual(schema: GraphQLSchema, field: GraphQLInputField, inputTypes: Record<string, GraphQLInputObjectType>): boolean {
   const isWithDirective = !!getDirectives(schema, field)['multilingual'];
@@ -79,6 +85,9 @@ function isFieldMultilingual(schema: GraphQLSchema, field: GraphQLInputField, in
     return true;
   }
 
+  /**
+   * Get type name and if it is multilingual then return true
+   */
   const getTypeName = getInputTypeName(field);
   const inputType = inputTypes[getTypeName];
 
@@ -92,7 +101,6 @@ function isFieldMultilingual(schema: GraphQLSchema, field: GraphQLInputField, in
 /**
  * Collect all input types with multilingual fields
  *
- * @todo Collect inputs with multilingual subfields
  * @param schema - GraphQL schema to extract multilingual input types
  */
 export default function getMultilingualInputTypes(schema: GraphQLSchema): Record<string, string[]> {
