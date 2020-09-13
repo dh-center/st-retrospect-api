@@ -66,7 +66,7 @@ describe('getMultilingualInputTypes', () => {
 
     expect(result).toEqual({
       AInput: ['name', 'b'],
-      BInput: ['instance', 'instance'],
+      BInput: [ 'instance' ],
     });
   });
 });

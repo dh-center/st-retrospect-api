@@ -2,8 +2,9 @@ import {
   GraphQLInputField,
   GraphQLInputObjectType,
   GraphQLSchema,
-  InputValueDefinitionNode,
-  ListTypeNode, NamedTypeNode, NonNullTypeNode
+  ListTypeNode,
+  NamedTypeNode,
+  NonNullTypeNode
 } from 'graphql';
 import { getDirectives, MapperKind, mapSchema } from '@graphql-tools/utils';
 
@@ -13,6 +14,7 @@ import { getDirectives, MapperKind, mapSchema } from '@graphql-tools/utils';
 function getNamedTypeName(fieldConfig: NamedTypeNode): string {
   return fieldConfig.name.value;
 }
+
 /**
  * @param fieldConfig
  */
