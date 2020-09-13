@@ -1,7 +1,7 @@
 import {
   defaultFieldResolver,
   GraphQLSchema,
-  InputValueDefinitionNode,
+  InputValueDefinitionNode, ListTypeNode,
   NamedTypeNode,
   NonNullTypeNode
 } from 'graphql';
@@ -30,7 +30,10 @@ export default function multilingualDirective(directiveName: string): DirectiveT
      * @param language - language to map
      */
     const mapArgs = (args: {[key: string]: unknown}, argsAst: readonly InputValueDefinitionNode[], language: string): void => {
-      const mapMultilingualFields = (fields: {[key: string]: unknown}, fieldNamesToMap: string[], typeName: string): void => {
+      const mapMultilingualFields = (fields: {[key: string]: unknown} | {[key: string]: unknown}[], fieldNamesToMap: string[], typeName: string): void => {
+        if (Array.isArray(fields)) {
+          return fields.forEach(f => mapMultilingualFields(f, fieldNamesToMap, language));
+        }
         const typeConfig = multilingualInputTypesWithConfig[typeName];
 
         fieldNamesToMap.forEach((fieldNameToMap) => {
