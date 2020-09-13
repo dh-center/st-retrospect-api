@@ -59,6 +59,7 @@ describe('Multilingual directive', () => {
 
         input CreateLocationInstanceInput {
           name: String! @multilingual
+          meow: Float
         }
 
         input CreateLocationInput {
@@ -84,7 +85,7 @@ describe('Multilingual directive', () => {
       // language=GraphQL
       `
         query {
-          rootValue(input: {longitude: 234.3, latitude: 235, instance: {name: "kek"} })
+          rootValue(input: {longitude: 234.3, latitude: 235, instance: {name: "kek", meow: 123} })
         }
       `,
       undefined,
@@ -96,7 +97,10 @@ describe('Multilingual directive', () => {
     expect(mockedResolver.mock.calls[0][1].input).toEqual({
       longitude: 234.3,
       latitude: 235,
-      instance: { name: { ru: 'kek' } },
+      instance: {
+        name: { ru: 'kek' },
+        meow: 123,
+      },
     });
   });
 });

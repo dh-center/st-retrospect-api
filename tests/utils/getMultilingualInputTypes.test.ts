@@ -14,7 +14,7 @@ describe('getMultilingualInputTypes', () => {
       }
     `);
 
-    const result = getMultilingualInputTypes(schema);
+    const [ result ] = getMultilingualInputTypes(schema);
 
     expect(result).toEqual({
       CreatePersonInput: ['firstName', 'lastName'],
@@ -37,7 +37,7 @@ describe('getMultilingualInputTypes', () => {
       }
     `);
 
-    const result = getMultilingualInputTypes(schema);
+    const [ result ] = getMultilingualInputTypes(schema);
 
     expect(result).toEqual({
       CreateLocationInstanceInput: [ 'name' ],
@@ -62,7 +62,7 @@ describe('getMultilingualInputTypes', () => {
       }
     `);
 
-    const result = getMultilingualInputTypes(schema);
+    const [ result ] = getMultilingualInputTypes(schema);
 
     expect(result).toEqual({
       AInput: ['name', 'b'],
@@ -96,7 +96,7 @@ describe('getMultilingualInputTypes', () => {
       }
     `);
 
-    const result = getMultilingualInputTypes(schema);
+    const [ result ] = getMultilingualInputTypes(schema);
 
     expect(result).toEqual({
       AInput: ['name', 'b'],

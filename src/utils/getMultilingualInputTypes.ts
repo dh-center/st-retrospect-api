@@ -8,6 +8,9 @@ import {
 } from 'graphql';
 import { getDirectives, MapperKind, mapSchema } from '@graphql-tools/utils';
 
+export type MultilingualInputTypesWithFields = Record<string, string[]>;
+export type MultilingualInputTypesWithConfig = Record<string, GraphQLInputObjectType>;
+
 /**
  * Returns type name of names field
  *
@@ -55,7 +58,7 @@ function getListTypeName(fieldConfig: ListTypeNode): string {
  *
  * @param field - field to parse
  */
-function getInputTypeName(field: GraphQLInputField): string {
+export function getInputTypeName(field: GraphQLInputField): string {
   switch (field.astNode?.type.kind) {
     case 'ListType':
       return getListTypeName(field.astNode.type);
@@ -103,9 +106,9 @@ function isFieldMultilingual(schema: GraphQLSchema, field: GraphQLInputField, in
  *
  * @param schema - GraphQL schema to extract multilingual input types
  */
-export default function getMultilingualInputTypes(schema: GraphQLSchema): Record<string, string[]> {
-  const multilingualInputTypes:Record<string, string[]> = {};
-  const inputTypesWithConfig: Record<string, GraphQLInputObjectType> = {};
+export default function getMultilingualInputTypes(schema: GraphQLSchema): [MultilingualInputTypesWithFields, MultilingualInputTypesWithConfig] {
+  const multilingualInputTypes: MultilingualInputTypesWithFields = {};
+  const inputTypesWithConfig: MultilingualInputTypesWithConfig = {};
 
   /**
    * Collect all input types with its configs
@@ -132,5 +135,5 @@ export default function getMultilingualInputTypes(schema: GraphQLSchema): Record
     });
   });
 
-  return multilingualInputTypes;
+  return [multilingualInputTypes, inputTypesWithConfig];
 }
