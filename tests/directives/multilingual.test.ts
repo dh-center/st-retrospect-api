@@ -103,4 +103,58 @@ describe('Multilingual directive', () => {
       },
     });
   });
+
+  test('Should convert multilingual fields in lists in input type', async () => {
+    const mockedResolver = jest.fn();
+    const schema = makeExecutableSchema({
+      // language=GraphQL
+      typeDefs: `
+        directive @multilingual on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+        input CreateLocationInstanceInput {
+          name: String! @multilingual
+          meow: Float
+        }
+
+        input CreateLocationInput {
+          longitude: Float!
+          latitude: Float!
+          instance: [CreateLocationInstanceInput!]
+        }
+
+        type Query {
+          rootValue(input: CreateLocationInput!): Boolean
+        }
+      `,
+      resolvers: {
+        Query: {
+          rootValue: mockedResolver,
+        },
+      },
+      schemaTransforms: [ multilingual('multilingual') ],
+    });
+
+    const { data, errors } = await graphql(
+      schema,
+      // language=GraphQL
+      `
+        query {
+          rootValue(input: {longitude: 234.3, latitude: 235, instance: [{name: "kek", meow: 123}] })
+        }
+      `,
+      undefined,
+      { languages: [ 'RU' ] }
+    );
+
+    expect(data).toBeDefined();
+    expect(errors).toBeUndefined();
+    expect(mockedResolver.mock.calls[0][1].input).toEqual({
+      longitude: 234.3,
+      latitude: 235,
+      instance: [ {
+        name: { ru: 'kek' },
+        meow: 123,
+      } ],
+    });
+  });
 });
