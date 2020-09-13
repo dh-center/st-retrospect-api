@@ -7,7 +7,7 @@ import {
 } from 'graphql';
 import { getDirectives, MapperKind, mapSchema } from '@graphql-tools/utils';
 import { DirectiveTransformer, ResolverContextBase } from '../types/graphql';
-import getMultilingualInputTypes from '../utils/getMultilingualInputTypes';
+import getMultilingualInputTypes, { getInputTypeName } from '../utils/getMultilingualInputTypes';
 import isWithMultilingualArgs from '../utils/isWithMultilingualArgs';
 
 /**
@@ -20,11 +20,28 @@ import isWithMultilingualArgs from '../utils/isWithMultilingualArgs';
  */
 export default function multilingualDirective(directiveName: string): DirectiveTransformer {
   return (schema: GraphQLSchema): GraphQLSchema => {
-    const multilingualInputTypes = getMultilingualInputTypes(schema);
+    const [multilingualInputTypes, multilingualInputTypesWithConfig] = getMultilingualInputTypes(schema);
 
+    /**
+     * Maps multilingual fields according to @multilingual directive positions
+     *
+     * @param args - args to map
+     * @param argsAst - args AST values
+     * @param language - language to map
+     */
     const mapArgs = (args: {[key: string]: unknown}, argsAst: readonly InputValueDefinitionNode[], language: string): void => {
-      const mapMultilingualFields = (fields: {[key: string]: unknown}, fieldNamesToMap: string[]): void => {
+      const mapMultilingualFields = (fields: {[key: string]: unknown}, fieldNamesToMap: string[], typeName: string): void => {
+        const typeConfig = multilingualInputTypesWithConfig[typeName];
+
         fieldNamesToMap.forEach((fieldNameToMap) => {
+          if (typeConfig) {
+            const fieldConfig = typeConfig.getFields()[fieldNameToMap];
+            const newFieldsToMap = multilingualInputTypes[getInputTypeName(fieldConfig)];
+
+            if (newFieldsToMap) {
+              return mapMultilingualFields(fields[fieldNameToMap] as {[key: string]: unknown}, newFieldsToMap, language);
+            }
+          }
           if (fields[fieldNameToMap]) {
             fields[fieldNameToMap] = {
               [language.toLowerCase()]: fields[fieldNameToMap],
@@ -34,8 +51,11 @@ export default function multilingualDirective(directiveName: string): DirectiveT
       };
 
       const mapNamedType = (arg: unknown, type: NamedTypeNode): void => {
+        /**
+         * If provided input type is with multilingual fields, then map them
+         */
         if (type.name.value in multilingualInputTypes) {
-          mapMultilingualFields(arg as {[key: string]: unknown}, multilingualInputTypes[type.name.value]);
+          mapMultilingualFields(arg as {[key: string]: unknown}, multilingualInputTypes[type.name.value], type.name.value);
         }
       };
 
@@ -51,7 +71,7 @@ export default function multilingualDirective(directiveName: string): DirectiveT
         }
       };
 
-      argsAst.forEach((argAst: InputValueDefinitionNode) => {
+      argsAst.forEach((argAst) => {
         switch (argAst.type.kind) {
           case 'NamedType':
             return mapNamedType(args[argAst.name.value], argAst.type);
@@ -64,7 +84,15 @@ export default function multilingualDirective(directiveName: string): DirectiveT
     return mapSchema(schema, {
       [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
         const directives = getDirectives(schema, fieldConfig);
+
+        /**
+         * Map with directive args. If undefined then directive is not applied here
+         */
         const directiveArgumentMap = directives[directiveName];
+
+        /**
+         * Is that field contains multilingual args
+         */
         const withMultilingualArgs = isWithMultilingualArgs(fieldConfig, multilingualInputTypes);
 
         /**
@@ -86,8 +114,14 @@ export default function multilingualDirective(directiveName: string): DirectiveT
             mapArgs(args, fieldConfig.astNode.arguments, currentLanguage);
           }
 
+          /**
+           * Execute original resolver
+           */
           const result = await resolve(parent, args, context, info);
 
+          /**
+           * Map output multilingual fields
+           */
           if (directiveArgumentMap) {
             return result && result[currentLanguage];
           }
