@@ -22,8 +22,6 @@ export default function multilingualDirective(directiveName: string): DirectiveT
   return (schema: GraphQLSchema): GraphQLSchema => {
     const multilingualInputTypes = getMultilingualInputTypes(schema);
 
-    // console.log(multilingualInputTypes);
-
     const mapArgs = (args: {[key: string]: unknown}, argsAst: readonly InputValueDefinitionNode[], language: string): void => {
       const mapMultilingualFields = (fields: {[key: string]: unknown}, fieldNamesToMap: string[]): void => {
         fieldNamesToMap.forEach((fieldNameToMap) => {
@@ -77,10 +75,6 @@ export default function multilingualDirective(directiveName: string): DirectiveT
          */
         const withMultilingualArgs = isWithMultilingualArgs(fieldConfig, multilingualInputTypes);
 
-        // if (fieldConfig.astNode?.name.value === 'create' && fieldConfig.astNode.description?.value === 'Create location') {
-        //   console.log(directiveArgumentMap, withMultilingualArgs);
-        // }
-
         /**
          * Do not patch field resolver if there is no multilingual directives and fields on it
          */
@@ -91,8 +85,6 @@ export default function multilingualDirective(directiveName: string): DirectiveT
         const { resolve = defaultFieldResolver } = fieldConfig;
 
         fieldConfig.resolve = async (parent, args, context: ResolverContextBase, info): Promise<unknown> => {
-          // console.log(fieldConfig.astNode?.name.value);
-          // console.log(fieldConfig.astNode?.description?.value);
           const currentLanguage = context.languages[0].toLowerCase();
 
           /**
