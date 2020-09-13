@@ -5,7 +5,7 @@ import resolvers from './resolvers';
 import express from 'express';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import getDbConnection from './db';
-import { AccessTokenData, Languages, ResolverContextBase } from './types/graphql';
+import { AccessTokenData, CollectionAccessFunction, Languages, ResolverContextBase } from './types/graphql';
 import languageParser from 'accept-language-parser';
 import bodyParser from 'body-parser';
 import router from './router';
@@ -107,6 +107,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
         languages,
         user,
         dataLoaders,
+        collection: (name => dbConnection.collection(name)) as CollectionAccessFunction,
       };
     },
   });

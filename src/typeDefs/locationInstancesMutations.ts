@@ -5,12 +5,12 @@ export default gql`
     """
     Location's name
     """
-    name: String!
+    name: MultilingualString! @multilingual
 
     """
     Location's description
     """
-    description: String
+    description: MultilingualString! @multilingual
 
     """
     Link for location info
@@ -20,7 +20,7 @@ export default gql`
     """
     Contains links with location's photos
     """
-    photoLinks: [String]
+    photoLinks: [String!]
 
     """
     Link with main photo
@@ -134,17 +134,17 @@ export default gql`
 
   type LocationInstanceMutations {
     """
-    Create location
+    Create location instance
     """
     create(input: CreateLocationInstanceInput!): CreateLocationInstancePayload! @adminCheck
 
     """
-    Update location
+    Update location instance
     """
     update(input: UpdateLocationInstanceInput!): UpdateLocationInstancePayload! @adminCheck
 
     """
-    Delete location
+    Delete location instance
     """
     delete(id: ID!): DeleteLocationInstancePayload! @adminCheck
   }

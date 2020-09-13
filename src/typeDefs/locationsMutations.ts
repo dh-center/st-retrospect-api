@@ -5,12 +5,12 @@ export default gql`
     """
     Location coordinate by X
     """
-    coordinateX: Float
+    coordinateX: Float!
 
     """
     Location coordinate by Y
     """
-    coordinateY: Float
+    coordinateY: Float!
 
     """
     Possible location representations
@@ -22,12 +22,12 @@ export default gql`
     """
     Created location id
     """
-    recordId: ID!
+    recordId: ObjectId!
 
     """
     Created location
     """
-    record: Location!
+    record: Location! @dataLoader(dataLoaderName: "locationById", fieldName: "recordId")
   }
 
   input UpdateLocationInput {
@@ -44,7 +44,7 @@ export default gql`
     """
     Possible location instances id
     """
-    instances: [ID!]!
+    instances: [ObjectId!]!
   }
 
   type UpdateLocationPayload {

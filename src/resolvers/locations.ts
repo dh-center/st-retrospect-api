@@ -12,6 +12,8 @@ import { RelationDbScheme } from './relations';
 import mergeWith from 'lodash.mergewith';
 import { QuestDBScheme } from './quests';
 import emptyMutation from '../utils/emptyMutation';
+import { CreateLocationInput } from '../generated/graphql';
+import { WithoutId } from '../types/utils';
 
 /**
  * ID of relation type for architects
@@ -50,6 +52,11 @@ export interface LocationDBScheme {
 
 export interface LocationInstanceDBScheme {
   /**
+   * LocationInstance id
+   */
+  _id: ObjectId
+
+  /**
    * Location instance name
    */
   name: MultilingualString;
@@ -62,13 +69,13 @@ export interface LocationInstanceDBScheme {
   /**
    * Location instance description
    */
-  description: MultilingualString;
+  description?: MultilingualString;
 
   /**
    * Wiki link with information about instance
    */
 
-  wikiLink: string;
+  wikiLink?: string | null;
 
   /**
    * Array of location's types
@@ -78,32 +85,32 @@ export interface LocationInstanceDBScheme {
   /**
    * Location instance photo links
    */
-  photoLinks: string[];
+  photoLinks?: string[] | null;
 
   /**
    * Main photo of location instance
    */
-  mainPhotoLink: string;
+  mainPhotoLink?: string | null;
 
   /**
    * Construction date of this instance
    */
-  constructionDate: string;
+  constructionDate?: string | null;
 
   /**
    * Demolition date of this instance
    */
-  demolitionDate: string;
+  demolitionDate?: string | null;
 
   /**
    * Beginning of the period for this instance
    */
-  startDate: string;
+  startDate?: string | null;
 
   /**
    * Ending of the period for this instance
    */
-  endDate: string;
+  endDate?: string | null;
 }
 
 /**
@@ -281,14 +288,34 @@ const LocationMutations = {
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param input - mutation input object
-   * @param db - MongoDB connection to make queries
+   * @param collection - method for accessing to database collections
    */
   async create(
     parent: undefined,
-    { input }: { input: LocationDBScheme },
-    { db }: ResolverContextBase
+    { input }: { input: CreateLocationInput },
+    { collection }: ResolverContextBase
   ): Promise<CreateMutationPayload<LocationDBScheme>> {
-    const location = (await db.collection<LocationDBScheme>('locations').insertOne(input)).ops[0];
+    // console.log(input);
+    const location = (await collection('locations').insertOne({
+      coordinateX: input.coordinateX,
+      coordinateY: input.coordinateY,
+      locationInstanceIds: [],
+    })).ops[0];
+
+    const instances = input.instances.map((inst): WithoutId<LocationInstanceDBScheme> => {
+      return {
+        ...inst,
+        locationId: location._id,
+      };
+    });
+
+    const locationInstances = (await collection('location_instances').insertMany(instances));
+
+    const res = (await collection('locations').updateOne({ _id: location._id }, {
+      $set: {
+        locationInstanceIds: Object.values(locationInstances.insertedIds),
+      },
+    }));
 
     return {
       recordId: location._id,

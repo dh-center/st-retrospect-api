@@ -1,6 +1,10 @@
-import { Db, ObjectId } from 'mongodb';
+import { Collection, Db, ObjectId } from 'mongodb';
 import { GraphQLSchema } from 'graphql';
 import DataLoaders from '../dataLoaders';
+import { PersonDBScheme } from '../resolvers/persons';
+import { LocationDBScheme, LocationInstanceDBScheme } from '../resolvers/locations';
+
+export type CollectionAccessFunction = <T extends keyof Collections>(name: T) => Collection<Collections[T]>
 
 /**
  * Resolver's Context argument
@@ -23,6 +27,15 @@ export interface ResolverContextBase {
    * DataLoaders for data fetching
    */
   readonly dataLoaders: DataLoaders;
+
+  readonly collection: CollectionAccessFunction;
+}
+
+interface Collections {
+  persons: PersonDBScheme;
+  locations: LocationDBScheme;
+  // eslint-disable-next-line camelcase
+  location_instances: LocationInstanceDBScheme
 }
 
 /**

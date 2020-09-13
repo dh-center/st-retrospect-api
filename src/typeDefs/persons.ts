@@ -5,7 +5,7 @@ export default gql`
     """
     Person's id
     """
-    id: ID! @fromField(name: "_id")
+    id: ObjectId! @fromField(name: "_id")
 
     """
     Person's first name
