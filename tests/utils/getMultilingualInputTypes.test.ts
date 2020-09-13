@@ -69,4 +69,40 @@ describe('getMultilingualInputTypes', () => {
       BInput: [ 'instance' ],
     });
   });
+
+  test('should return correct input types with deep nested multilingual fields with circular deps', () => {
+    // language=GraphQL
+    const schema = buildSchema(`
+      directive @multilingual on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+      input AInput {
+        name: String! @multilingual
+        b: BInput!
+      }
+
+      input BInput {
+        longitude: Float!
+        lantitude: Float!
+        instance: AInput!
+      }
+
+      input CInput {
+        test: AInput
+      }
+
+      input DInput {
+        test: CInput!
+        name: Float! @multilingual
+      }
+    `);
+
+    const result = getMultilingualInputTypes(schema);
+
+    expect(result).toEqual({
+      AInput: ['name', 'b'],
+      BInput: [ 'instance' ],
+      CInput: [ 'test' ],
+      DInput: ['test', 'name'],
+    });
+  });
 });
