@@ -22,6 +22,8 @@ export default function multilingualDirective(directiveName: string): DirectiveT
   return (schema: GraphQLSchema): GraphQLSchema => {
     const multilingualInputTypes = getMultilingualInputTypes(schema);
 
+    // console.log(multilingualInputTypes);
+
     const mapArgs = (args: {[key: string]: unknown}, argsAst: readonly InputValueDefinitionNode[], language: string): void => {
       const mapMultilingualFields = (fields: {[key: string]: unknown}, fieldNamesToMap: string[]): void => {
         fieldNamesToMap.forEach((fieldNameToMap) => {
@@ -64,8 +66,20 @@ export default function multilingualDirective(directiveName: string): DirectiveT
     return mapSchema(schema, {
       [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
         const directives = getDirectives(schema, fieldConfig);
+
+        /**
+         * Map with directive args. If undefined then directive is not applied here
+         */
         const directiveArgumentMap = directives[directiveName];
+
+        /**
+         * Is that field contains multilingual args
+         */
         const withMultilingualArgs = isWithMultilingualArgs(fieldConfig, multilingualInputTypes);
+
+        // if (fieldConfig.astNode?.name.value === 'create' && fieldConfig.astNode.description?.value === 'Create location') {
+        //   console.log(directiveArgumentMap, withMultilingualArgs);
+        // }
 
         /**
          * Do not patch field resolver if there is no multilingual directives and fields on it
@@ -77,6 +91,8 @@ export default function multilingualDirective(directiveName: string): DirectiveT
         const { resolve = defaultFieldResolver } = fieldConfig;
 
         fieldConfig.resolve = async (parent, args, context: ResolverContextBase, info): Promise<unknown> => {
+          // console.log(fieldConfig.astNode?.name.value);
+          // console.log(fieldConfig.astNode?.description?.value);
           const currentLanguage = context.languages[0].toLowerCase();
 
           /**
@@ -86,8 +102,14 @@ export default function multilingualDirective(directiveName: string): DirectiveT
             mapArgs(args, fieldConfig.astNode.arguments, currentLanguage);
           }
 
+          /**
+           * Execute original resolver
+           */
           const result = await resolve(parent, args, context, info);
 
+          /**
+           * Map output multilingual fields
+           */
           if (directiveArgumentMap) {
             return result && result[currentLanguage];
           }
