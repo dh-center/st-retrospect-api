@@ -20,4 +20,4 @@ COPY migrations ./migrations
 COPY migrate-mongo-config.js migrate-mongo-setup.sh ./
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 
-CMD ["node", "build/src/index.js"]
+CMD ["node", "build/index.js"]
