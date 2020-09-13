@@ -32,7 +32,7 @@ describe('getMultilingualInputTypes', () => {
 
       input CreateLocationInput {
         longitude: Float!
-        lantitude: Float!
+        latitude: Float!
         instance: CreateLocationInstanceInput
       }
     `);
