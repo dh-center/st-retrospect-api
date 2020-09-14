@@ -6,9 +6,9 @@ import locationInstances from './locationInstances';
 import routes from './routes';
 import users from './users';
 import relations from './relations';
-import Cursor from './cursor';
 import quests from './quests';
 import { JSONResolver, LongResolver, TimestampResolver } from 'graphql-scalars';
+import scalars from './scalars';
 
 /**
  * See all types and fields here {@link '../typeDefs/schema.graphql'}
@@ -36,6 +36,6 @@ export default merge(
   routes,
   users,
   relations,
-  Cursor,
-  quests
+  quests,
+  scalars
 );
