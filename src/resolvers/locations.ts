@@ -374,14 +374,14 @@ const LocationMutations = {
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - object id
-   * @param db - MongoDB connection to make queries
+   * @param collection - method for accessing to database collections
    */
   async delete(
     parent: undefined,
-    { id }: { id: string },
-    { db }: ResolverContextBase
+    { id }: { id: ObjectId },
+    { collection }: ResolverContextBase
   ): Promise<DeleteMutationPayload> {
-    await db.collection<QuestDBScheme>('quests').deleteOne({ _id: new ObjectId(id) });
+    await collection('locations').deleteOne({ _id: id });
 
     return {
       recordId: new ObjectId(id),

@@ -133,7 +133,7 @@ export default gql`
     """
     Delete location
     """
-    delete(id: ID!): DeleteLocationPayload! @adminCheck
+    delete(id: ObjectId!): DeleteLocationPayload! @adminCheck
   }
 
   extend type Mutation {
