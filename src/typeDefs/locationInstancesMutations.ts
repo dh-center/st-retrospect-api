@@ -46,6 +46,8 @@ export default gql`
     End of period
     """
     endDate: String
+
+    locationId: ObjectId!
   }
 
   type CreateLocationInstancePayload {

@@ -295,7 +295,7 @@ const LocationMutations = {
     { input }: { input: CreateLocationInput },
     { collection }: ResolverContextBase
   ): Promise<CreateMutationPayload<LocationDBScheme>> {
-    // console.log(input);
+    console.log(input);
     const location = (await collection('locations').insertOne({
       coordinateX: input.coordinateX,
       coordinateY: input.coordinateY,

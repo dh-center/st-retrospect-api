@@ -15,8 +15,56 @@ export default gql`
     """
     Possible location representations
     """
-    instances: [CreateLocationInstanceInput!]!
+    instances: [LocationInstanceInput!]!
   }
+
+  input LocationInstanceInput {
+    """
+    Location's name
+    """
+    name: MultilingualString! @multilingual
+
+    """
+    Location's description
+    """
+    description: MultilingualString! @multilingual
+
+    """
+    Link for location info
+    """
+    wikiLink: String
+
+    """
+    Contains links with location's photos
+    """
+    photoLinks: [String!]
+
+    """
+    Link with main photo
+    """
+    mainPhotoLink: String
+
+    """
+    Location's construction date
+    """
+    constructionDate: String
+
+    """
+    Location's demolition date
+    """
+    demolitionDate: String
+
+    """
+    Start of period
+    """
+    startDate: String
+
+    """
+    End of period
+    """
+    endDate: String
+  }
+
 
   type CreateLocationPayload {
     """
