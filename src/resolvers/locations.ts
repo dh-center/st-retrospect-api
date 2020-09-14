@@ -12,7 +12,7 @@ import { RelationDbScheme } from './relations';
 import mergeWith from 'lodash.mergewith';
 import { QuestDBScheme } from './quests';
 import emptyMutation from '../utils/emptyMutation';
-import { CreateLocationInput } from '../generated/graphql';
+import { CreateLocationInput, UpdateLocationInput } from '../generated/graphql';
 import { WithoutId } from '../types/utils';
 
 /**
@@ -329,35 +329,43 @@ const LocationMutations = {
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param input - mutation input object
-   * @param db - MongoDB connection to make queries
+   * @param collection - method for accessing to database collections
    */
   async update(
     parent: undefined,
-    { input }: { input: QuestDBScheme & {id: string} },
-    { db }: ResolverContextBase
-  ): Promise<UpdateMutationPayload<QuestDBScheme>> {
+    { input }: { input: UpdateLocationInput & {_id: ObjectId} },
+    { collection }: ResolverContextBase
+  ): Promise<UpdateMutationPayload<LocationDBScheme>> {
     input._id = new ObjectId(input.id);
     const id = input._id;
 
-    delete input._id;
+    delete input.id;
 
-    const originalQuest = await db.collection('quests').findOne({
+    const originalLocation = await collection('locations').findOne({
       _id: id,
     });
 
-    const quest = await db.collection('quests').findOneAndUpdate(
+    if (!originalLocation) {
+      throw new UserInputError('There is no location with such id: ' + id);
+    }
+
+    const location = await collection('locations').findOneAndUpdate(
       { _id: id },
       {
         $set: {
-          ...mergeWith(originalQuest, input, (original, inp) => inp === null ? original : undefined),
-          ...(input.data ? { data: input.data } : {}),
+          ...mergeWith(originalLocation, input, (original, inp) => inp === null ? original : undefined),
         },
       },
-      { returnOriginal: false });
+      { returnOriginal: false }
+    );
+
+    if (!location.value) {
+      throw new UserInputError('There is no location with such id: ' + id);
+    }
 
     return {
       recordId: id,
-      record: quest.value,
+      record: location.value,
     };
   },
 

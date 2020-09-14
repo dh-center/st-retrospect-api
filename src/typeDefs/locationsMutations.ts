@@ -80,6 +80,11 @@ export default gql`
 
   input UpdateLocationInput {
     """
+    Location id to update
+    """
+    id: ObjectId!
+
+    """
     Location coordinate by X
     """
     coordinateX: Float

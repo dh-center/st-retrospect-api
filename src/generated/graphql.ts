@@ -10,8 +10,9 @@ export type Scalars = {
   Int: number;
   Float: number;
   Cursor: string;
-  /** MongoDB ObjectId type */
+  /** A field whose value conforms with the standard mongodb object ID as described here: https://docs.mongodb.com/manual/reference/method/ObjectId/#ObjectId. Example: 5e5677d71bdc2ae76344968c */
   ObjectId: import('mongodb').ObjectId;
+  /** The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text. */
   MultilingualString: import('../types/graphql').MultilingualString;
   /** The `BigInt` scalar type represents non-fractional signed whole numeric values. */
   Long: any;
@@ -491,6 +492,8 @@ export type CreateLocationPayload = {
 };
 
 export type UpdateLocationInput = {
+  /** Location id to update */
+  id: Scalars['ObjectId'];
   /** Location coordinate by X */
   coordinateX?: Maybe<Scalars['Float']>;
   /** Location coordinate by Y */
