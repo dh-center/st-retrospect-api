@@ -381,7 +381,25 @@ const LocationMutations = {
     { id }: { id: ObjectId },
     { collection }: ResolverContextBase
   ): Promise<DeleteMutationPayload> {
-    await collection('locations').deleteOne({ _id: id });
+    const location = (await collection('locations').findOneAndDelete({ _id: id })).value;
+
+    if (!location) {
+      throw new UserInputError('There is no location with such id: ' + id);
+    }
+
+    const locationInstancesIds = location.locationInstanceIds;
+
+    await collection('location_instances').deleteMany({
+      _id: {
+        $in: locationInstancesIds,
+      },
+    });
+
+    await collection('relations').deleteMany({
+      locationInstanceId: {
+        $in: locationInstancesIds,
+      },
+    });
 
     return {
       recordId: new ObjectId(id),
