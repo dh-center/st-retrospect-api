@@ -458,7 +458,28 @@ export type CreateLocationInput = {
   /** Location coordinate by Y */
   coordinateY: Scalars['Float'];
   /** Possible location representations */
-  instances: Array<CreateLocationInstanceInput>;
+  instances: Array<LocationInstanceInput>;
+};
+
+export type LocationInstanceInput = {
+  /** Location's name */
+  name: Scalars['MultilingualString'];
+  /** Location's description */
+  description: Scalars['MultilingualString'];
+  /** Link for location info */
+  wikiLink?: Maybe<Scalars['String']>;
+  /** Contains links with location's photos */
+  photoLinks?: Maybe<Array<Scalars['String']>>;
+  /** Link with main photo */
+  mainPhotoLink?: Maybe<Scalars['String']>;
+  /** Location's construction date */
+  constructionDate?: Maybe<Scalars['String']>;
+  /** Location's demolition date */
+  demolitionDate?: Maybe<Scalars['String']>;
+  /** Start of period */
+  startDate?: Maybe<Scalars['String']>;
+  /** End of period */
+  endDate?: Maybe<Scalars['String']>;
 };
 
 export type CreateLocationPayload = {
@@ -536,6 +557,7 @@ export type CreateLocationInstanceInput = {
   startDate?: Maybe<Scalars['String']>;
   /** End of period */
   endDate?: Maybe<Scalars['String']>;
+  locationId: Scalars['ObjectId'];
 };
 
 export type CreateLocationInstancePayload = {
@@ -585,11 +607,11 @@ export type DeleteLocationInstancePayload = {
 
 export type LocationInstanceMutations = {
   __typename?: 'LocationInstanceMutations';
-  /** Create location */
+  /** Create location instance */
   create: CreateLocationInstancePayload;
-  /** Update location */
+  /** Update location instance */
   update: UpdateLocationInstancePayload;
-  /** Delete location */
+  /** Delete location instance */
   delete: DeleteLocationInstancePayload;
 };
 
@@ -951,6 +973,7 @@ export type ResolversTypes = {
   LocationConnection: ResolverTypeWrapper<LocationConnection>;
   LocationEdge: ResolverTypeWrapper<LocationEdge>;
   CreateLocationInput: CreateLocationInput;
+  LocationInstanceInput: LocationInstanceInput;
   CreateLocationPayload: ResolverTypeWrapper<CreateLocationPayload>;
   UpdateLocationInput: UpdateLocationInput;
   UpdateLocationPayload: ResolverTypeWrapper<UpdateLocationPayload>;
@@ -1016,6 +1039,7 @@ export type ResolversParentTypes = {
   LocationConnection: LocationConnection;
   LocationEdge: LocationEdge;
   CreateLocationInput: CreateLocationInput;
+  LocationInstanceInput: LocationInstanceInput;
   CreateLocationPayload: CreateLocationPayload;
   UpdateLocationInput: UpdateLocationInput;
   UpdateLocationPayload: UpdateLocationPayload;
