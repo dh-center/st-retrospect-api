@@ -3,6 +3,8 @@ import { GraphQLSchema } from 'graphql';
 import DataLoaders from '../dataLoaders';
 import { PersonDBScheme } from '../resolvers/persons';
 import { LocationDBScheme, LocationInstanceDBScheme } from '../resolvers/locations';
+import { RelationDBScheme } from '../resolvers/relations';
+import { QuestDBScheme } from '../resolvers/quests';
 
 export type CollectionAccessFunction = <T extends keyof Collections>(name: T) => Collection<Collections[T]>
 
@@ -28,14 +30,22 @@ export interface ResolverContextBase {
    */
   readonly dataLoaders: DataLoaders;
 
+  /**
+   * Method for accessing to database collections
+   */
   readonly collection: CollectionAccessFunction;
 }
 
+/**
+ * Map with collection name and its type
+ */
 interface Collections {
   persons: PersonDBScheme;
   locations: LocationDBScheme;
   // eslint-disable-next-line camelcase
-  location_instances: LocationInstanceDBScheme
+  location_instances: LocationInstanceDBScheme;
+  relations: RelationDBScheme;
+  quests: QuestDBScheme;
 }
 
 /**
