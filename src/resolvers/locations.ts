@@ -8,7 +8,7 @@ import {
 import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
 import { PersonDBScheme } from './persons';
-import { RelationDbScheme } from './relations';
+import { RelationDBScheme } from './relations';
 import mergeWith from 'lodash.mergewith';
 import { QuestDBScheme } from './quests';
 import emptyMutation from '../utils/emptyMutation';
@@ -237,7 +237,7 @@ const Query = {
    * @param db - MongoDB connection to make queries
    * @param dataLoaders - DataLoaders for fetching data
    */
-  async search(parent: undefined, { searchString }: { searchString: string }, { db, dataLoaders }: ResolverContextBase): Promise<RelationDbScheme[]> {
+  async search(parent: undefined, { searchString }: { searchString: string }, { db, dataLoaders }: ResolverContextBase): Promise<RelationDBScheme[]> {
     searchString = searchString.trim();
     if (searchString.length <= 2) {
       throw new UserInputError('Search string must contain at least 3 characters');
@@ -253,7 +253,7 @@ const Query = {
       .toArray();
     const personsIds = persons.map(person => person._id.toString());
 
-    return (await dataLoaders.relationByPersonId.loadMany(personsIds)).flat() as RelationDbScheme[];
+    return (await dataLoaders.relationByPersonId.loadMany(personsIds)).flat() as RelationDBScheme[];
   },
 };
 
