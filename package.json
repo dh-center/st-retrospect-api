@@ -52,9 +52,6 @@
     "multer-s3": "^2.9.0",
     "typescript": "^3.9.3"
   },
-  "resolutions": {
-    "graphql-tools": "4.0.7"
-  },
   "devDependencies": {
     "@graphql-codegen/cli": "1.17.8",
     "@graphql-codegen/introspection": "1.17.8",
