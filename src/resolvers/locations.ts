@@ -402,7 +402,7 @@ const LocationMutations = {
     });
 
     return {
-      recordId: new ObjectId(id),
+      recordId: id,
     };
   },
 };
