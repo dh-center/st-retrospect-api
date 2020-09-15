@@ -538,7 +538,7 @@ export type LocationMutationsUpdateArgs = {
 
 
 export type LocationMutationsDeleteArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ObjectId'];
 };
 
 export type CreateLocationInstanceInput = {
@@ -560,6 +560,7 @@ export type CreateLocationInstanceInput = {
   startDate?: Maybe<Scalars['String']>;
   /** End of period */
   endDate?: Maybe<Scalars['String']>;
+  /** Location id to which this instance below */
   locationId: Scalars['ObjectId'];
 };
 
@@ -630,7 +631,7 @@ export type LocationInstanceMutationsUpdateArgs = {
 
 
 export type LocationInstanceMutationsDeleteArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ObjectId'];
 };
 
 /** Represents relation between person and location */

@@ -47,6 +47,9 @@ export default gql`
     """
     endDate: String
 
+    """
+    Location id to which this instance below
+    """
     locationId: ObjectId!
   }
 

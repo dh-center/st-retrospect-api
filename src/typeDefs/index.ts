@@ -71,8 +71,10 @@ const rootSchema = gql`
   """
   scalar ObjectId
 
+  """
+  Represents data that can be accessed in many languages
+  """
   scalar MultilingualString
-
 
   """
   Supported languages for data
