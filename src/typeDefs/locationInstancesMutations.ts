@@ -133,7 +133,6 @@ export default gql`
     recordId: ID!
   }
 
-
   type LocationInstanceMutations {
     """
     Create location instance
@@ -148,7 +147,7 @@ export default gql`
     """
     Delete location instance
     """
-    delete(id: ID!): DeleteLocationInstancePayload! @adminCheck
+    delete(id: ObjectId!): DeleteLocationInstancePayload! @adminCheck
   }
 
   extend type Mutation {
