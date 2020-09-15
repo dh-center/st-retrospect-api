@@ -20,8 +20,8 @@
     "@sentry/node": "5.15.5",
     "@types/accept-language-parser": "^1.5.1",
     "@types/base64-url": "^2.2.0",
-    "@types/jest": "^26.0.13",
     "@types/graphql-type-json": "^0.3.2",
+    "@types/jest": "^26.0.13",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lodash.isnull": "^3.0.6",
     "@types/lodash.merge": "^4.6.6",
@@ -53,12 +53,9 @@
     "typescript": "^3.9.3"
   },
   "devDependencies": {
+    "@graphql-codegen/add": "^2.0.1",
     "@graphql-codegen/cli": "1.17.8",
-    "@graphql-codegen/introspection": "1.17.8",
     "@graphql-codegen/typescript": "1.17.8",
-    "@graphql-codegen/typescript-compatibility": "^2.0.0",
-    "@graphql-codegen/typescript-document-nodes": "1.17.8",
-    "@graphql-codegen/typescript-mongodb": "1.17.8",
     "@graphql-codegen/typescript-resolvers": "^1.17.9",
     "@typescript-eslint/eslint-plugin": "^3.0.0",
     "@typescript-eslint/parser": "^3.0.0",
