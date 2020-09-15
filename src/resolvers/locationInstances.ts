@@ -6,7 +6,7 @@ import {
   ResolverContextBase,
   UpdateMutationPayload
 } from '../types/graphql';
-import { LocationDBScheme, LocationInstanceDBScheme } from './locations';
+import { LocationInstanceDBScheme } from './locations';
 import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
 import mergeWith from 'lodash.mergewith';
