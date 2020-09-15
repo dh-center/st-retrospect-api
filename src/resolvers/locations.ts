@@ -10,7 +10,6 @@ import { UserInputError } from 'apollo-server-express';
 import { PersonDBScheme } from './persons';
 import { RelationDBScheme } from './relations';
 import mergeWith from 'lodash.mergewith';
-import { QuestDBScheme } from './quests';
 import emptyMutation from '../utils/emptyMutation';
 import { CreateLocationInput, UpdateLocationInput } from '../generated/graphql';
 import { WithoutId } from '../types/utils';
