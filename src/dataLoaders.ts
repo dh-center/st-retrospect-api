@@ -1,6 +1,6 @@
 import DataLoader from 'dataloader';
 import { Db, ObjectId } from 'mongodb';
-import { RelationDbScheme, RelationTypeDBScheme } from './resolvers/relations';
+import { RelationDBScheme, RelationTypeDBScheme } from './resolvers/relations';
 import { PersonDBScheme } from './resolvers/persons';
 import { ObjectMap } from './types/utils';
 import { AddressesDBScheme, LocationDBScheme, LocationTypeDBScheme } from './resolvers/locations';
@@ -23,7 +23,7 @@ export default class DataLoaders {
    * Loader for fetching relations by their ids
    */
   public relationById = new DataLoader(
-    (relationIds: string[]) => this.batchByIds<RelationDbScheme>('relations', relationIds),
+    (relationIds: string[]) => this.batchByIds<RelationDBScheme>('relations', relationIds),
     { cache: false }
   );
 
@@ -118,12 +118,12 @@ export default class DataLoaders {
    *
    * @param personIds - persons ids for resolving
    */
-  private async batchRelationsByPersonIds(personIds: string[]): Promise<RelationDbScheme[][]> {
-    const queryResult = await this.dbConnection.collection<RelationDbScheme>('relations')
+  private async batchRelationsByPersonIds(personIds: string[]): Promise<RelationDBScheme[][]> {
+    const queryResult = await this.dbConnection.collection<RelationDBScheme>('relations')
       .find({ personId: { $in: personIds.map(id => new ObjectId(id)) } })
       .toArray();
 
-    const relationsMap: ObjectMap<RelationDbScheme[]> = {};
+    const relationsMap: ObjectMap<RelationDBScheme[]> = {};
 
     queryResult.forEach((relation) => {
       if (!relation.personId) {
@@ -143,12 +143,12 @@ export default class DataLoaders {
    *
    * @param locationInstanceIds - location instances ids for resolving
    */
-  private async batchRelationsByLocationInstanceIds(locationInstanceIds: string[]): Promise<RelationDbScheme[][]> {
-    const queryResult = await this.dbConnection.collection<RelationDbScheme>('relations')
+  private async batchRelationsByLocationInstanceIds(locationInstanceIds: string[]): Promise<RelationDBScheme[][]> {
+    const queryResult = await this.dbConnection.collection<RelationDBScheme>('relations')
       .find({ locationInstanceId: { $in: locationInstanceIds.map(id => new ObjectId(id)) } })
       .toArray();
 
-    const relationsMap: ObjectMap<RelationDbScheme[]> = {};
+    const relationsMap: ObjectMap<RelationDBScheme[]> = {};
 
     queryResult.forEach((relation) => {
       if (!relation.locationInstanceId) {

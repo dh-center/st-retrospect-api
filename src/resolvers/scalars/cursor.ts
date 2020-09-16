@@ -20,7 +20,7 @@ export function fromCursor(string: string): ObjectId {
   return new ObjectId(Base64URL.decode(string));
 }
 
-const CursorType = new GraphQLScalarType({
+const GraphQLCursor = new GraphQLScalarType({
   name: 'Cursor',
   serialize(value: ObjectId): string|null {
     if (value) {
@@ -34,6 +34,4 @@ const CursorType = new GraphQLScalarType({
   },
 });
 
-export default {
-  Cursor: CursorType,
-};
+export default GraphQLCursor;

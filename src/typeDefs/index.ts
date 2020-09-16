@@ -7,6 +7,9 @@ import routes from './routes';
 import users from './users';
 import quests from './quests';
 import graphqlScalars from './graphqlScalars';
+import questsMutations from './questsMutations';
+import locationsMutations from './locationsMutations';
+import locationInstancesMutations from './locationInstancesMutations';
 
 const rootSchema = gql`
   """
@@ -64,6 +67,16 @@ const rootSchema = gql`
   scalar Cursor
 
   """
+  MongoDB ObjectId type
+  """
+  scalar ObjectId
+
+  """
+  Represents data that can be accessed in many languages
+  """
+  scalar MultilingualString
+
+  """
   Supported languages for data
   """
   enum Languages {
@@ -97,10 +110,13 @@ export default concatenateTypeDefs(
     rootSchema,
     persons,
     locations,
+    locationsMutations,
+    locationInstancesMutations,
     relations,
     routes,
     users,
     quests,
+    questsMutations,
     graphqlScalars,
   ]
 );

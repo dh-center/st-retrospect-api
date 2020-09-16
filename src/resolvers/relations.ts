@@ -4,7 +4,7 @@ import { MultilingualString } from '../types/graphql';
 /**
  * Relation's database scheme
  */
-export interface RelationDbScheme {
+export interface RelationDBScheme {
   /**
    * Relation id
    */

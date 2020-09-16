@@ -7,6 +7,7 @@ import {
 import { ObjectId } from 'mongodb';
 import { EditorData } from '../types/editorData';
 import mergeWith from 'lodash.mergewith';
+import emptyMutation from '../utils/emptyMutation';
 
 /**
  * Scheme of quest in database
@@ -68,9 +69,8 @@ const QuestMutations = {
    * Create new quest
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input - quest object
+   * @param input - mutation input object
    * @param db - MongoDB connection to make queries
-   * @returns {object}
    */
   async create(
     parent: undefined,
@@ -86,12 +86,11 @@ const QuestMutations = {
   },
 
   /**
-   * Update person
+   * Update quest
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input - person object
+   * @param input - mutation input object
    * @param db - MongoDB connection to make queries
-   * @returns {object}
    */
   async update(
     parent: undefined,
@@ -129,7 +128,6 @@ const QuestMutations = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - object id
    * @param db - MongoDB connection to make queries
-   * @returns {object}
    */
   async delete(
     parent: undefined,
@@ -145,7 +143,7 @@ const QuestMutations = {
 };
 
 const Mutation = {
-  quest: (): Record<string, undefined> => ({}),
+  quest: emptyMutation,
 };
 
 export default {

@@ -133,7 +133,7 @@ export default gql`
     """
     Location's ID
     """
-    id: ID! @fromField(name: "_id")
+    id: ObjectId! @fromField(name: "_id")
 
     """
     Location coordinate by X

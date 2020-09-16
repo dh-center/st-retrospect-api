@@ -1,0 +1,18 @@
+overwrite: true
+schema: "http://localhost:4000/graphql"
+documents: null
+generates:
+  src/generated/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-resolvers"
+      - add:
+          content: "/* eslint-disable */"
+
+config:
+  scalars:
+    DateTime: Date
+    Cursor: string
+    ObjectId: "import('mongodb').ObjectId"
+    MultilingualString: "import('../types/graphql').MultilingualString"
+

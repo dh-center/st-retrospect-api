@@ -1,8 +1,18 @@
-import { MultilingualString, ResolverContextBase } from '../types/graphql';
+import {
+  CreateMutationPayload,
+  DeleteMutationPayload,
+  MultilingualString,
+  ResolverContextBase,
+  UpdateMutationPayload
+} from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
 import { PersonDBScheme } from './persons';
-import { RelationDbScheme } from './relations';
+import { RelationDBScheme } from './relations';
+import mergeWith from 'lodash.mergewith';
+import emptyMutation from '../utils/emptyMutation';
+import { CreateLocationInput, UpdateLocationInput } from '../generated/graphql';
+import { WithoutId } from '../types/utils';
 
 /**
  * ID of relation type for architects
@@ -41,6 +51,11 @@ export interface LocationDBScheme {
 
 export interface LocationInstanceDBScheme {
   /**
+   * LocationInstance id
+   */
+  _id: ObjectId
+
+  /**
    * Location instance name
    */
   name: MultilingualString;
@@ -53,13 +68,13 @@ export interface LocationInstanceDBScheme {
   /**
    * Location instance description
    */
-  description: MultilingualString;
+  description?: MultilingualString;
 
   /**
    * Wiki link with information about instance
    */
 
-  wikiLink: string;
+  wikiLink?: string | null;
 
   /**
    * Array of location's types
@@ -69,32 +84,32 @@ export interface LocationInstanceDBScheme {
   /**
    * Location instance photo links
    */
-  photoLinks: string[];
+  photoLinks?: string[] | null;
 
   /**
    * Main photo of location instance
    */
-  mainPhotoLink: string;
+  mainPhotoLink?: string | null;
 
   /**
    * Construction date of this instance
    */
-  constructionDate: string;
+  constructionDate?: string | null;
 
   /**
    * Demolition date of this instance
    */
-  demolitionDate: string;
+  demolitionDate?: string | null;
 
   /**
    * Beginning of the period for this instance
    */
-  startDate: string;
+  startDate?: string | null;
 
   /**
    * Ending of the period for this instance
    */
-  endDate: string;
+  endDate?: string | null;
 }
 
 /**
@@ -221,7 +236,7 @@ const Query = {
    * @param db - MongoDB connection to make queries
    * @param dataLoaders - DataLoaders for fetching data
    */
-  async search(parent: undefined, { searchString }: { searchString: string }, { db, dataLoaders }: ResolverContextBase): Promise<RelationDbScheme[]> {
+  async search(parent: undefined, { searchString }: { searchString: string }, { db, dataLoaders }: ResolverContextBase): Promise<RelationDBScheme[]> {
     searchString = searchString.trim();
     if (searchString.length <= 2) {
       throw new UserInputError('Search string must contain at least 3 characters');
@@ -237,7 +252,7 @@ const Query = {
       .toArray();
     const personsIds = persons.map(person => person._id.toString());
 
-    return (await dataLoaders.relationByPersonId.loadMany(personsIds)).flat() as RelationDbScheme[];
+    return (await dataLoaders.relationByPersonId.loadMany(personsIds)).flat() as RelationDBScheme[];
   },
 };
 
@@ -266,7 +281,138 @@ const LocationInstance = {
   },
 };
 
+const LocationMutations = {
+  /**
+   * Create new location
+   *
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input - mutation input object
+   * @param collection - method for accessing to database collections
+   */
+  async create(
+    parent: undefined,
+    { input }: { input: CreateLocationInput },
+    { collection }: ResolverContextBase
+  ): Promise<CreateMutationPayload<LocationDBScheme>> {
+    const location = (await collection('locations').insertOne({
+      coordinateX: input.coordinateX,
+      coordinateY: input.coordinateY,
+      locationInstanceIds: [],
+    })).ops[0];
+
+    const instances = input.instances.map((inst): WithoutId<LocationInstanceDBScheme> => {
+      return {
+        ...inst,
+        locationId: location._id,
+      };
+    });
+
+    const locationInstances = (await collection('location_instances').insertMany(instances));
+
+    await collection('locations').updateOne({ _id: location._id }, {
+      $set: {
+        locationInstanceIds: Object.values(locationInstances.insertedIds),
+      },
+    });
+
+    location.locationInstanceIds = Object.values(locationInstances.insertedIds);
+
+    return {
+      recordId: location._id,
+      record: location,
+    };
+  },
+
+  /**
+   * Update location
+   *
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input - mutation input object
+   * @param collection - method for accessing to database collections
+   */
+  async update(
+    parent: undefined,
+    { input }: { input: UpdateLocationInput & {_id: ObjectId} },
+    { collection }: ResolverContextBase
+  ): Promise<UpdateMutationPayload<LocationDBScheme>> {
+    input._id = new ObjectId(input.id);
+    const id = input._id;
+
+    delete input.id;
+
+    const originalLocation = await collection('locations').findOne({
+      _id: id,
+    });
+
+    if (!originalLocation) {
+      throw new UserInputError('There is no location with such id: ' + id);
+    }
+
+    const location = await collection('locations').findOneAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          ...mergeWith(originalLocation, input, (original, inp) => inp === null ? original : undefined),
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!location.value) {
+      throw new UserInputError('There is no location with such id: ' + id);
+    }
+
+    return {
+      recordId: id,
+      record: location.value,
+    };
+  },
+
+  /**
+   * Delete location
+   *
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id - object id
+   * @param collection - method for accessing to database collections
+   */
+  async delete(
+    parent: undefined,
+    { id }: { id: ObjectId },
+    { collection }: ResolverContextBase
+  ): Promise<DeleteMutationPayload> {
+    const location = (await collection('locations').findOneAndDelete({ _id: id })).value;
+
+    if (!location) {
+      throw new UserInputError('There is no location with such id: ' + id);
+    }
+
+    const locationInstancesIds = location.locationInstanceIds;
+
+    await collection('location_instances').deleteMany({
+      _id: {
+        $in: locationInstancesIds,
+      },
+    });
+
+    await collection('relations').deleteMany({
+      locationInstanceId: {
+        $in: locationInstancesIds,
+      },
+    });
+
+    return {
+      recordId: id,
+    };
+  },
+};
+
+const Mutation = {
+  location: emptyMutation,
+};
+
 export default {
   Query,
   LocationInstance,
+  LocationMutations,
+  Mutation,
 };
