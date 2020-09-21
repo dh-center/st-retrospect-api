@@ -5,12 +5,12 @@ export default gql`
     """
     Location coordinate by X
     """
-    coordinateX: Float!
+    latitude: Float!
 
     """
     Location coordinate by Y
     """
-    coordinateY: Float!
+    longitude: Float!
 
     """
     Possible location representations
@@ -87,12 +87,12 @@ export default gql`
     """
     Location coordinate by X
     """
-    coordinateX: Float
+    latitude: Float
 
     """
     Location coordinate by Y
     """
-    coordinateY: Float
+    longitude: Float
 
     """
     Possible location instances id

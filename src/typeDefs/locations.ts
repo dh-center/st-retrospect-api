@@ -138,12 +138,12 @@ export default gql`
     """
     Location coordinate by X
     """
-    coordinateX: Float
+    latitude: Float
 
     """
     Location coordinate by Y
     """
-    coordinateY: Float
+    longitude: Float
 
     """
     Array of addresses ids
