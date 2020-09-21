@@ -424,9 +424,9 @@ export type Location = {
   __typename?: 'Location';
   /** Location's ID */
   id: Scalars['ObjectId'];
-  /** Location coordinate by X */
+  /** Location position latitude */
   latitude?: Maybe<Scalars['Float']>;
-  /** Location coordinate by Y */
+  /** Location position longitude */
   longitude?: Maybe<Scalars['Float']>;
   /** Array of addresses ids */
   addresses?: Maybe<Array<Maybe<Address>>>;
@@ -455,9 +455,9 @@ export type LocationEdge = {
 };
 
 export type CreateLocationInput = {
-  /** Location coordinate by X */
+  /** Location position latitude */
   latitude: Scalars['Float'];
-  /** Location coordinate by Y */
+  /** Location position longitude */
   longitude: Scalars['Float'];
   /** Possible location representations */
   instances: Array<LocationInstanceInput>;
@@ -495,9 +495,9 @@ export type CreateLocationPayload = {
 export type UpdateLocationInput = {
   /** Location id to update */
   id: Scalars['ObjectId'];
-  /** Location coordinate by X */
+  /** Location position latitude */
   latitude?: Maybe<Scalars['Float']>;
-  /** Location coordinate by Y */
+  /** Location position longitude */
   longitude?: Maybe<Scalars['Float']>;
   /** Possible location instances id */
   instances: Array<Scalars['ObjectId']>;

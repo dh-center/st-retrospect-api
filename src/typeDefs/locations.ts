@@ -136,12 +136,12 @@ export default gql`
     id: ObjectId! @fromField(name: "_id")
 
     """
-    Location coordinate by X
+    Location position latitude
     """
     latitude: Float
 
     """
-    Location coordinate by Y
+    Location position longitude
     """
     longitude: Float
 

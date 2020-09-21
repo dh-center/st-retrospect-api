@@ -3,12 +3,12 @@ import { gql } from 'apollo-server-express';
 export default gql`
   input CreateLocationInput {
     """
-    Location coordinate by X
+    Location position latitude
     """
     latitude: Float!
 
     """
-    Location coordinate by Y
+    Location position longitude
     """
     longitude: Float!
 
@@ -85,12 +85,12 @@ export default gql`
     id: ObjectId!
 
     """
-    Location coordinate by X
+    Location position latitude
     """
     latitude: Float
 
     """
-    Location coordinate by Y
+    Location position longitude
     """
     longitude: Float
 

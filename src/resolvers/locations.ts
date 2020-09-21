@@ -29,12 +29,12 @@ export interface LocationDBScheme {
   _id: ObjectId;
 
   /**
-   * Location coordinate by Y
+   * Location position longitude
    */
   longitude: number;
 
   /**
-   * Location coordinate by X
+   * Location position latitude
    */
   latitude: number;
 
