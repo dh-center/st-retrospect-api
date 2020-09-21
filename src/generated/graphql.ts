@@ -424,10 +424,10 @@ export type Location = {
   __typename?: 'Location';
   /** Location's ID */
   id: Scalars['ObjectId'];
-  /** Location coordinate by X */
-  coordinateX?: Maybe<Scalars['Float']>;
-  /** Location coordinate by Y */
-  coordinateY?: Maybe<Scalars['Float']>;
+  /** Location position latitude */
+  latitude?: Maybe<Scalars['Float']>;
+  /** Location position longitude */
+  longitude?: Maybe<Scalars['Float']>;
   /** Array of addresses ids */
   addresses?: Maybe<Array<Maybe<Address>>>;
   /** Possible location representations */
@@ -455,10 +455,10 @@ export type LocationEdge = {
 };
 
 export type CreateLocationInput = {
-  /** Location coordinate by X */
-  coordinateX: Scalars['Float'];
-  /** Location coordinate by Y */
-  coordinateY: Scalars['Float'];
+  /** Location position latitude */
+  latitude: Scalars['Float'];
+  /** Location position longitude */
+  longitude: Scalars['Float'];
   /** Possible location representations */
   instances: Array<LocationInstanceInput>;
 };
@@ -495,10 +495,10 @@ export type CreateLocationPayload = {
 export type UpdateLocationInput = {
   /** Location id to update */
   id: Scalars['ObjectId'];
-  /** Location coordinate by X */
-  coordinateX?: Maybe<Scalars['Float']>;
-  /** Location coordinate by Y */
-  coordinateY?: Maybe<Scalars['Float']>;
+  /** Location position latitude */
+  latitude?: Maybe<Scalars['Float']>;
+  /** Location position longitude */
+  longitude?: Maybe<Scalars['Float']>;
   /** Possible location instances id */
   instances: Array<Scalars['ObjectId']>;
 };
@@ -1222,8 +1222,8 @@ export type LocationInstanceResolvers<ContextType = any, ParentType extends Reso
 
 export type LocationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Location'] = ResolversParentTypes['Location']> = {
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
-  coordinateX?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  coordinateY?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  latitude?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  longitude?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   addresses?: Resolver<Maybe<Array<Maybe<ResolversTypes['Address']>>>, ParentType, ContextType>;
   instances?: Resolver<Array<ResolversTypes['LocationInstance']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;

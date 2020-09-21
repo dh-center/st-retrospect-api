@@ -136,14 +136,14 @@ export default gql`
     id: ObjectId! @fromField(name: "_id")
 
     """
-    Location coordinate by X
+    Location position latitude
     """
-    coordinateX: Float
+    latitude: Float
 
     """
-    Location coordinate by Y
+    Location position longitude
     """
-    coordinateY: Float
+    longitude: Float
 
     """
     Array of addresses ids

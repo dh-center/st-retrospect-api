@@ -145,10 +145,10 @@ const Query = {
         /**
          * Check distance to location
          */
-        if (location.coordinateY && location.coordinateX) {
+        if (location.longitude && location.latitude) {
           const metresInKilometres = 1000;
 
-          if (metresInKilometres * distance(location.coordinateX, location.coordinateY, center.latitude, center.longitude) <= radius) {
+          if (metresInKilometres * distance(location.latitude, location.longitude, center.latitude, center.longitude) <= radius) {
             isValid = true;
           }
         }

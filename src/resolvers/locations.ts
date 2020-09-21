@@ -29,14 +29,14 @@ export interface LocationDBScheme {
   _id: ObjectId;
 
   /**
-   * Location coordinate by Y
+   * Location position longitude
    */
-  coordinateY: number;
+  longitude: number;
 
   /**
-   * Location coordinate by X
+   * Location position latitude
    */
-  coordinateX: number;
+  latitude: number;
 
   /**
    * Array of addresses ids
@@ -295,8 +295,8 @@ const LocationMutations = {
     { collection }: ResolverContextBase
   ): Promise<CreateMutationPayload<LocationDBScheme>> {
     const location = (await collection('locations').insertOne({
-      coordinateX: input.coordinateX,
-      coordinateY: input.coordinateY,
+      latitude: input.latitude,
+      longitude: input.longitude,
       locationInstanceIds: [],
     })).ops[0];
 
