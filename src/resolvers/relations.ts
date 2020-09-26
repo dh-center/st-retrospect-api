@@ -3,8 +3,9 @@ import {
   CreateMutationPayload,
   DeleteMutationPayload,
   MultilingualString,
-  ResolverContextBase
+  ResolverContextBase, UpdateMutationPayload
 } from '../types/graphql';
+import mergeWith from 'lodash.mergewith';
 
 /**
  * Relation's database scheme
@@ -84,6 +85,40 @@ const RelationMutations = {
     return {
       recordId: relation._id,
       record: relation,
+    };
+  },
+
+  /**
+   * Update relation
+   *
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input - relation object
+   * @param db - MongoDB connection to make queries
+   */
+  async update(
+    parent: undefined,
+    { input }: { input: RelationDBScheme & {id: string} },
+    { db }: ResolverContextBase
+  ): Promise<UpdateMutationPayload<RelationDBScheme>> {
+    input._id = new ObjectId(input.id);
+    const id = input._id;
+
+    delete input.id;
+
+    const originalRelation = await db.collection('relations').findOne({
+      _id: id,
+    });
+
+    const relation = await db.collection('relations').findOneAndUpdate(
+      { _id: id },
+      {
+        $set: mergeWith(originalRelation, input, (original, inp) => inp === null ? original : undefined),
+      },
+      { returnOriginal: false });
+
+    return {
+      recordId: id,
+      record: relation.value,
     };
   },
 
