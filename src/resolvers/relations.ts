@@ -1,6 +1,10 @@
 import { ObjectId } from 'mongodb';
-import { CreateMutationPayload, MultilingualString, ResolverContextBase } from '../types/graphql';
-import { PersonDBScheme } from './persons';
+import {
+  CreateMutationPayload,
+  DeleteMutationPayload,
+  MultilingualString,
+  ResolverContextBase
+} from '../types/graphql';
 
 /**
  * Relation's database scheme
@@ -80,6 +84,25 @@ const RelationMutations = {
     return {
       recordId: relation._id,
       record: relation,
+    };
+  },
+
+  /**
+   * Delete relation
+   *
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id - relation id
+   * @param db - MongoDB connection to make queries
+   */
+  async delete(
+    parent: undefined,
+    { id }: { id: string },
+    { db }: ResolverContextBase
+  ): Promise<DeleteMutationPayload> {
+    await db.collection<RelationDBScheme>('relations').deleteOne({ _id: new ObjectId(id) });
+
+    return {
+      recordId: new ObjectId(id),
     };
   },
 };
