@@ -32,7 +32,7 @@ function fileFilter(req: Request, file: Express.Multer.File, cb: FileFilterCallb
  * @param {string} folder - folder in S3 bucket to store in
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getUploadMiddleware(folder: string): any {
+function getUploadMiddleware(folder: string): multer.Multer {
   return multer({
     fileFilter,
     storage: multerS3({
@@ -74,13 +74,16 @@ function filesProcessMiddleware(req: Request, res: Response): void {
 /**
  * Upload persons images
  */
-router.post('/persons/images', getUploadMiddleware('persons').single('image'), filesProcessMiddleware);
+router.post('/upload/person', getUploadMiddleware('persons').single('image'), filesProcessMiddleware);
 
 /**
  * Upload locations images
  */
-router.post('/locations/images', getUploadMiddleware('locations').single('image'), filesProcessMiddleware);
+router.post('/upload/location', getUploadMiddleware('locations').single('image'), filesProcessMiddleware);
 
+/**
+ * Upload images for routes
+ */
 router.post('/upload/route', getUploadMiddleware('routes').single('image'), filesProcessMiddleware);
 
 export default router;
