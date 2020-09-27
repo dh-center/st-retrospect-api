@@ -142,13 +142,13 @@ const RelationMutations = {
    */
   async delete(
     parent: undefined,
-    { id }: { id: string },
+    { id }: { id: ObjectId },
     { collection }: ResolverContextBase
   ): Promise<DeleteMutationPayload> {
-    await collection('relations').deleteOne({ _id: new ObjectId(id) });
+    await collection('relations').deleteOne({ _id: id });
 
     return {
-      recordId: new ObjectId(id),
+      recordId: id,
     };
   },
 };
