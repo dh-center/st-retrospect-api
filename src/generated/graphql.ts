@@ -171,6 +171,7 @@ export type Mutation = {
   person?: Maybe<PersonMutations>;
   location: LocationMutations;
   locationInstances: LocationInstanceMutations;
+  relation?: Maybe<RelationMutations>;
   /** Save route to user */
   saveRoute: User;
   /** Unsave route from user */
@@ -681,6 +682,36 @@ export type RelationType = {
   synonyms?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
+export type CreateRelationInput = {
+  /** Person ID in relation */
+  personId: Scalars['ObjectId'];
+  /** Location Instance ID in relation */
+  locationInstanceId: Scalars['ObjectId'];
+  /** Relation type ID */
+  relationId: Scalars['ObjectId'];
+  /** Quote about relation */
+  quote: Scalars['MultilingualString'];
+};
+
+export type CreateRelationPayload = {
+  __typename?: 'CreateRelationPayload';
+  /** Created relation id */
+  recordId: Scalars['ID'];
+  /** Created relation */
+  record: Relation;
+};
+
+export type RelationMutations = {
+  __typename?: 'RelationMutations';
+  /** Create relation */
+  create: CreateRelationPayload;
+};
+
+
+export type RelationMutationsCreateArgs = {
+  input: CreateRelationInput;
+};
+
 /** Input to search routes */
 export type RoutesFilter = {
   /** String for searching in all languages */
@@ -994,6 +1025,9 @@ export type ResolversTypes = {
   RelationConnection: ResolverTypeWrapper<RelationConnection>;
   RelationEdge: ResolverTypeWrapper<RelationEdge>;
   RelationType: ResolverTypeWrapper<RelationType>;
+  CreateRelationInput: CreateRelationInput;
+  CreateRelationPayload: ResolverTypeWrapper<CreateRelationPayload>;
+  RelationMutations: ResolverTypeWrapper<RelationMutations>;
   RoutesFilter: RoutesFilter;
   Route: ResolverTypeWrapper<Route>;
   Coordinates: Coordinates;
@@ -1060,6 +1094,9 @@ export type ResolversParentTypes = {
   RelationConnection: RelationConnection;
   RelationEdge: RelationEdge;
   RelationType: RelationType;
+  CreateRelationInput: CreateRelationInput;
+  CreateRelationPayload: CreateRelationPayload;
+  RelationMutations: RelationMutations;
   RoutesFilter: RoutesFilter;
   Route: Route;
   Coordinates: Coordinates;
@@ -1117,6 +1154,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   person?: Resolver<Maybe<ResolversTypes['PersonMutations']>, ParentType, ContextType>;
   location?: Resolver<ResolversTypes['LocationMutations'], ParentType, ContextType>;
   locationInstances?: Resolver<ResolversTypes['LocationInstanceMutations'], ParentType, ContextType>;
+  relation?: Resolver<Maybe<ResolversTypes['RelationMutations']>, ParentType, ContextType>;
   saveRoute?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationSaveRouteArgs, 'routeId'>>;
   deleteRouteFromSaved?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationDeleteRouteFromSavedArgs, 'routeId'>>;
   likeRoute?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationLikeRouteArgs, 'routeId'>>;
@@ -1319,6 +1357,17 @@ export type RelationTypeResolvers<ContextType = any, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
+export type CreateRelationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateRelationPayload'] = ResolversParentTypes['CreateRelationPayload']> = {
+  recordId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  record?: Resolver<ResolversTypes['Relation'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type RelationMutationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['RelationMutations'] = ResolversParentTypes['RelationMutations']> = {
+  create?: Resolver<ResolversTypes['CreateRelationPayload'], ParentType, ContextType, RequireFields<RelationMutationsCreateArgs, 'input'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
 export type RouteResolvers<ContextType = any, ParentType extends ResolversParentTypes['Route'] = ResolversParentTypes['Route']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1436,6 +1485,8 @@ export type Resolvers<ContextType = any> = {
   RelationConnection?: RelationConnectionResolvers<ContextType>;
   RelationEdge?: RelationEdgeResolvers<ContextType>;
   RelationType?: RelationTypeResolvers<ContextType>;
+  CreateRelationPayload?: CreateRelationPayloadResolvers<ContextType>;
+  RelationMutations?: RelationMutationsResolvers<ContextType>;
   Route?: RouteResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   EditorData?: EditorDataResolvers<ContextType>;
