@@ -88,7 +88,7 @@ export default gql`
     """
     Contains links with location's photos
     """
-    photoLinks: [String]
+    photoLinks: [String!]
 
     """
     Link with main photo
