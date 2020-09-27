@@ -94,14 +94,14 @@ const RelationMutations = {
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - relation id
-   * @param db - MongoDB connection to make queries
+   * @param collection - collection in MongoDB for queries
    */
   async delete(
     parent: undefined,
     { id }: { id: string },
-    { db }: ResolverContextBase
+    { collection }: ResolverContextBase
   ): Promise<DeleteMutationPayload> {
-    await db.collection<RelationDBScheme>('relations').deleteOne({ _id: new ObjectId(id) });
+    await collection('relations').deleteOne({ _id: new ObjectId(id) });
 
     return {
       recordId: new ObjectId(id),

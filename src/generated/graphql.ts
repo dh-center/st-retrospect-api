@@ -171,7 +171,7 @@ export type Mutation = {
   person?: Maybe<PersonMutations>;
   location: LocationMutations;
   locationInstances: LocationInstanceMutations;
-  relation?: Maybe<RelationMutations>;
+  relation: RelationMutations;
   /** Save route to user */
   saveRoute: User;
   /** Unsave route from user */
@@ -701,15 +701,28 @@ export type CreateRelationPayload = {
   record: Relation;
 };
 
+export type DeleteRelationPayload = {
+  __typename?: 'DeleteRelationPayload';
+  /** Deleted relation id */
+  recordId?: Maybe<Scalars['ID']>;
+};
+
 export type RelationMutations = {
   __typename?: 'RelationMutations';
   /** Create relation */
   create: CreateRelationPayload;
+  /** Delete relation */
+  delete: DeleteRelationPayload;
 };
 
 
 export type RelationMutationsCreateArgs = {
   input: CreateRelationInput;
+};
+
+
+export type RelationMutationsDeleteArgs = {
+  id: Scalars['ID'];
 };
 
 /** Input to search routes */
@@ -1027,6 +1040,7 @@ export type ResolversTypes = {
   RelationType: ResolverTypeWrapper<RelationType>;
   CreateRelationInput: CreateRelationInput;
   CreateRelationPayload: ResolverTypeWrapper<CreateRelationPayload>;
+  DeleteRelationPayload: ResolverTypeWrapper<DeleteRelationPayload>;
   RelationMutations: ResolverTypeWrapper<RelationMutations>;
   RoutesFilter: RoutesFilter;
   Route: ResolverTypeWrapper<Route>;
@@ -1096,6 +1110,7 @@ export type ResolversParentTypes = {
   RelationType: RelationType;
   CreateRelationInput: CreateRelationInput;
   CreateRelationPayload: CreateRelationPayload;
+  DeleteRelationPayload: DeleteRelationPayload;
   RelationMutations: RelationMutations;
   RoutesFilter: RoutesFilter;
   Route: Route;
@@ -1154,7 +1169,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   person?: Resolver<Maybe<ResolversTypes['PersonMutations']>, ParentType, ContextType>;
   location?: Resolver<ResolversTypes['LocationMutations'], ParentType, ContextType>;
   locationInstances?: Resolver<ResolversTypes['LocationInstanceMutations'], ParentType, ContextType>;
-  relation?: Resolver<Maybe<ResolversTypes['RelationMutations']>, ParentType, ContextType>;
+  relation?: Resolver<ResolversTypes['RelationMutations'], ParentType, ContextType>;
   saveRoute?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationSaveRouteArgs, 'routeId'>>;
   deleteRouteFromSaved?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationDeleteRouteFromSavedArgs, 'routeId'>>;
   likeRoute?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationLikeRouteArgs, 'routeId'>>;
@@ -1363,8 +1378,14 @@ export type CreateRelationPayloadResolvers<ContextType = any, ParentType extends
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
+export type DeleteRelationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteRelationPayload'] = ResolversParentTypes['DeleteRelationPayload']> = {
+  recordId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
 export type RelationMutationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['RelationMutations'] = ResolversParentTypes['RelationMutations']> = {
   create?: Resolver<ResolversTypes['CreateRelationPayload'], ParentType, ContextType, RequireFields<RelationMutationsCreateArgs, 'input'>>;
+  delete?: Resolver<ResolversTypes['DeleteRelationPayload'], ParentType, ContextType, RequireFields<RelationMutationsDeleteArgs, 'id'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1486,6 +1507,7 @@ export type Resolvers<ContextType = any> = {
   RelationEdge?: RelationEdgeResolvers<ContextType>;
   RelationType?: RelationTypeResolvers<ContextType>;
   CreateRelationPayload?: CreateRelationPayloadResolvers<ContextType>;
+  DeleteRelationPayload?: DeleteRelationPayloadResolvers<ContextType>;
   RelationMutations?: RelationMutationsResolvers<ContextType>;
   Route?: RouteResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
