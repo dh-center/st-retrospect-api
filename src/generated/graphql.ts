@@ -693,12 +693,33 @@ export type CreateRelationInput = {
   quote: Scalars['MultilingualString'];
 };
 
+export type UpdateRelationInput = {
+  /** ID of relation for updating */
+  id: Scalars['ID'];
+  /** Person ID in relation */
+  personId?: Maybe<Scalars['ObjectId']>;
+  /** Location Instance ID in relation */
+  locationInstanceId?: Maybe<Scalars['ObjectId']>;
+  /** Relation type ID */
+  relationId?: Maybe<Scalars['ObjectId']>;
+  /** Quote about relation */
+  quote?: Maybe<Scalars['MultilingualString']>;
+};
+
 export type CreateRelationPayload = {
   __typename?: 'CreateRelationPayload';
   /** Created relation id */
   recordId: Scalars['ObjectId'];
   /** Created relation */
   record: Relation;
+};
+
+export type UpdateRelationPayload = {
+  __typename?: 'UpdateRelationPayload';
+  /** Updated relation id */
+  recordId?: Maybe<Scalars['ID']>;
+  /** Updated relation */
+  record?: Maybe<Relation>;
 };
 
 export type DeleteRelationPayload = {
@@ -711,6 +732,8 @@ export type RelationMutations = {
   __typename?: 'RelationMutations';
   /** Create relation */
   create: CreateRelationPayload;
+  /** Update relation */
+  update: UpdateRelationPayload;
   /** Delete relation */
   delete: DeleteRelationPayload;
 };
@@ -718,6 +741,11 @@ export type RelationMutations = {
 
 export type RelationMutationsCreateArgs = {
   input: CreateRelationInput;
+};
+
+
+export type RelationMutationsUpdateArgs = {
+  input: UpdateRelationInput;
 };
 
 
@@ -1039,7 +1067,9 @@ export type ResolversTypes = {
   RelationEdge: ResolverTypeWrapper<RelationEdge>;
   RelationType: ResolverTypeWrapper<RelationType>;
   CreateRelationInput: CreateRelationInput;
+  UpdateRelationInput: UpdateRelationInput;
   CreateRelationPayload: ResolverTypeWrapper<CreateRelationPayload>;
+  UpdateRelationPayload: ResolverTypeWrapper<UpdateRelationPayload>;
   DeleteRelationPayload: ResolverTypeWrapper<DeleteRelationPayload>;
   RelationMutations: ResolverTypeWrapper<RelationMutations>;
   RoutesFilter: RoutesFilter;
@@ -1109,7 +1139,9 @@ export type ResolversParentTypes = {
   RelationEdge: RelationEdge;
   RelationType: RelationType;
   CreateRelationInput: CreateRelationInput;
+  UpdateRelationInput: UpdateRelationInput;
   CreateRelationPayload: CreateRelationPayload;
+  UpdateRelationPayload: UpdateRelationPayload;
   DeleteRelationPayload: DeleteRelationPayload;
   RelationMutations: RelationMutations;
   RoutesFilter: RoutesFilter;
@@ -1378,6 +1410,12 @@ export type CreateRelationPayloadResolvers<ContextType = any, ParentType extends
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
+export type UpdateRelationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateRelationPayload'] = ResolversParentTypes['UpdateRelationPayload']> = {
+  recordId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  record?: Resolver<Maybe<ResolversTypes['Relation']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
 export type DeleteRelationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteRelationPayload'] = ResolversParentTypes['DeleteRelationPayload']> = {
   recordId?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
@@ -1385,6 +1423,7 @@ export type DeleteRelationPayloadResolvers<ContextType = any, ParentType extends
 
 export type RelationMutationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['RelationMutations'] = ResolversParentTypes['RelationMutations']> = {
   create?: Resolver<ResolversTypes['CreateRelationPayload'], ParentType, ContextType, RequireFields<RelationMutationsCreateArgs, 'input'>>;
+  update?: Resolver<ResolversTypes['UpdateRelationPayload'], ParentType, ContextType, RequireFields<RelationMutationsUpdateArgs, 'input'>>;
   delete?: Resolver<ResolversTypes['DeleteRelationPayload'], ParentType, ContextType, RequireFields<RelationMutationsDeleteArgs, 'id'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
@@ -1507,6 +1546,7 @@ export type Resolvers<ContextType = any> = {
   RelationEdge?: RelationEdgeResolvers<ContextType>;
   RelationType?: RelationTypeResolvers<ContextType>;
   CreateRelationPayload?: CreateRelationPayloadResolvers<ContextType>;
+  UpdateRelationPayload?: UpdateRelationPayloadResolvers<ContextType>;
   DeleteRelationPayload?: DeleteRelationPayloadResolvers<ContextType>;
   RelationMutations?: RelationMutationsResolvers<ContextType>;
   Route?: RouteResolvers<ContextType>;

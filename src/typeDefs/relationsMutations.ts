@@ -23,6 +23,33 @@ export default gql`
     quote: MultilingualString!
   }
 
+  input UpdateRelationInput {
+    """
+    ID of relation for updating
+    """
+    id: ID!
+
+    """
+    Person ID in relation
+    """
+    personId: ObjectId
+
+    """
+    Location Instance ID in relation
+    """
+    locationInstanceId: ObjectId
+
+    """
+    Relation type ID
+    """
+    relationId: ObjectId
+
+    """
+    Quote about relation
+    """
+    quote: MultilingualString
+  }
+
   type CreateRelationPayload {
     """
     Created relation id
@@ -31,6 +58,18 @@ export default gql`
 
     """
     Created relation
+    """
+    record: Relation!
+  }
+
+  type UpdateRelationPayload {
+    """
+    Updated relation id
+    """
+    recordId: ObjectId!
+
+    """
+    Updated relation
     """
     record: Relation!
   }
@@ -47,6 +86,11 @@ export default gql`
     Create relation
     """
     create(input: CreateRelationInput!): CreateRelationPayload! @adminCheck
+
+    """
+    Update relation
+    """
+    update(input: UpdateRelationInput!): UpdateRelationPayload! @adminCheck
 
     """
     Delete relation
