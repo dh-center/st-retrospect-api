@@ -20,19 +20,19 @@ export default gql`
     """
     Quote about relation
     """
-    quote: MultilingualString
+    quote: MultilingualString!
   }
 
   type CreateRelationPayload {
     """
     Created relation id
     """
-    recordId: ID
+    recordId: ID!
 
     """
     Created relation
     """
-    record: Relation
+    record: Relation!
   }
 
   type DeleteRelationPayload {
@@ -55,6 +55,6 @@ export default gql`
   }
 
   extend type Mutation {
-    relation: RelationMutations
+    relation: RelationMutations!
   }
 `;

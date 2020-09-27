@@ -5,6 +5,8 @@ import {
   MultilingualString,
   ResolverContextBase
 } from '../types/graphql';
+import emptyMutation from '../utils/emptyMutation';
+import { CreateRelationInput } from '../generated/graphql';
 
 /**
  * Relation's database scheme
@@ -72,14 +74,14 @@ const RelationMutations = {
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param input - relation object
-   * @param db - MongoDB connection to make queries
+   * @param collection - collection in MongoDB for queries
    */
   async create(
     parent: undefined,
-    { input }: { input: RelationDBScheme },
-    { db }: ResolverContextBase
+    { input }: { input: CreateRelationInput },
+    { collection }: ResolverContextBase
   ): Promise<CreateMutationPayload<RelationDBScheme>> {
-    const relation = (await db.collection<RelationDBScheme>('relations').insertOne(input)).ops[0];
+    const relation = (await collection('relations').insertOne(input)).ops[0];
 
     return {
       recordId: relation._id,
@@ -127,7 +129,7 @@ const RelationType = {
 };
 
 const Mutation = {
-  relation: (): Record<string, undefined> => ({}),
+  relation: emptyMutation,
 };
 
 export default {
