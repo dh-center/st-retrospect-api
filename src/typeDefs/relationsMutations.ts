@@ -20,7 +20,7 @@ export default gql`
     """
     Quote about relation
     """
-    quote: MultilingualString
+    quote: MultilingualString!
   }
 
   input UpdateRelationInput {
@@ -54,12 +54,12 @@ export default gql`
     """
     Created relation id
     """
-    recordId: ID
+    recordId: ID!
 
     """
     Created relation
     """
-    record: Relation
+    record: Relation!
   }
 
   type UpdateRelationPayload {
@@ -99,6 +99,6 @@ export default gql`
   }
 
   extend type Mutation {
-    relation: RelationMutations
+    relation: RelationMutations!
   }
 `;
