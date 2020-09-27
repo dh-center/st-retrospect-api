@@ -66,12 +66,12 @@ export default gql`
     """
     Updated relation id
     """
-    recordId: ID
+    recordId: ObjectId!
 
     """
     Updated relation
     """
-    record: Relation
+    record: Relation!
   }
 
   type DeleteRelationPayload {
