@@ -709,7 +709,7 @@ export type UpdateRelationInput = {
 export type CreateRelationPayload = {
   __typename?: 'CreateRelationPayload';
   /** Created relation id */
-  recordId: Scalars['ID'];
+  recordId: Scalars['ObjectId'];
   /** Created relation */
   record: Relation;
 };
@@ -725,7 +725,7 @@ export type UpdateRelationPayload = {
 export type DeleteRelationPayload = {
   __typename?: 'DeleteRelationPayload';
   /** Deleted relation id */
-  recordId?: Maybe<Scalars['ID']>;
+  recordId?: Maybe<Scalars['ObjectId']>;
 };
 
 export type RelationMutations = {
@@ -750,7 +750,7 @@ export type RelationMutationsUpdateArgs = {
 
 
 export type RelationMutationsDeleteArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ObjectId'];
 };
 
 /** Input to search routes */
@@ -1405,7 +1405,7 @@ export type RelationTypeResolvers<ContextType = any, ParentType extends Resolver
 };
 
 export type CreateRelationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateRelationPayload'] = ResolversParentTypes['CreateRelationPayload']> = {
-  recordId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['Relation'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
@@ -1417,7 +1417,7 @@ export type UpdateRelationPayloadResolvers<ContextType = any, ParentType extends
 };
 
 export type DeleteRelationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteRelationPayload'] = ResolversParentTypes['DeleteRelationPayload']> = {
-  recordId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  recordId?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
