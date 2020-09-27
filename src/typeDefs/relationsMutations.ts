@@ -27,7 +27,7 @@ export default gql`
     """
     Created relation id
     """
-    recordId: ID!
+    recordId: ObjectId!
 
     """
     Created relation
@@ -35,11 +35,23 @@ export default gql`
     record: Relation!
   }
 
+  type DeleteRelationPayload {
+    """
+    Deleted relation id
+    """
+    recordId: ObjectId
+  }
+
   type RelationMutations {
     """
     Create relation
     """
     create(input: CreateRelationInput!): CreateRelationPayload! @adminCheck
+
+    """
+    Delete relation
+    """
+    delete(id: ObjectId!): DeleteRelationPayload! @adminCheck
   }
 
   extend type Mutation {
