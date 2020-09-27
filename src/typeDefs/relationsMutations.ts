@@ -43,6 +43,6 @@ export default gql`
   }
 
   extend type Mutation {
-    relation: RelationMutations
+    relation: RelationMutations!
   }
 `;
