@@ -4,7 +4,7 @@ export default gql`
   """
   Represents relation between person and location
   """
-  type Relation {
+  type Relation implements Node {
     """
     Relation's id
     """

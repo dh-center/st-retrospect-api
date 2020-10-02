@@ -22,6 +22,7 @@ import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
 import DataLoaders from './dataLoaders';
 import { express as voyagerMiddleware } from 'graphql-voyager/middleware';
+import globalIdResolver from './globalIdResolver';
 
 Sentry.init({ dsn: process.env.SENTRY_DSN });
 
@@ -58,6 +59,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
     typeDefs,
     resolvers,
     schemaTransforms: [
+      globalIdResolver,
       paginationDirective('pagination'),
       multilingualDirective('multilingual'),
       fromFieldDirective('fromField'),

@@ -4,7 +4,7 @@ export default gql`
   """
   Location type to add it to Location
   """
-  type LocationType {
+  type LocationType implements Node {
     """
     LocationType's ID
     """
@@ -19,7 +19,7 @@ export default gql`
   """
   Location address representation
   """
-  type Address {
+  type Address implements Node {
     """
     Address's ID
     """
@@ -54,7 +54,7 @@ export default gql`
   """
   Location context. This can be a time period, a special description for a particular route, etc.
   """
-  type LocationInstance {
+  type LocationInstance implements Node {
     """
     Instance's ID
     """
@@ -129,11 +129,11 @@ export default gql`
   """
   Location for displaying on map and making relations with persons
   """
-  type Location {
+  type Location implements Node {
     """
     Location's ID
     """
-    id: ObjectId! @fromField(name: "_id")
+    id: ID! @fromField(name: "_id")
 
     """
     Location position latitude

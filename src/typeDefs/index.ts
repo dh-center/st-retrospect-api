@@ -14,6 +14,16 @@ import relationsMutations from './relationsMutations';
 
 const rootSchema = gql`
   """
+  An object with a Globally Unique ID
+  """
+  interface Node {
+    """
+    The ID of the object.
+    """
+    id: ID!
+  }
+
+  """
   Extracts value from specified field in parent object
   """
   directive @fromField(name: String!) on FIELD_DEFINITION
@@ -89,10 +99,7 @@ const rootSchema = gql`
   API queries
   """
   type Query {
-    """
-    Healthcheck endpoint
-    """
-    health: String!
+    node(id: ID!): Node
   }
 
   """

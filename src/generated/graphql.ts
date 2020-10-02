@@ -23,6 +23,12 @@ export type Scalars = {
   Timestamp: any;
 };
 
+/** An object with a Globally Unique ID */
+export type Node = {
+  /** The ID of the object. */
+  id: Scalars['ID'];
+};
+
 
 
 
@@ -35,8 +41,7 @@ export enum Languages {
 /** API queries */
 export type Query = {
   __typename?: 'Query';
-  /** Healthcheck endpoint */
-  health: Scalars['String'];
+  node?: Maybe<Node>;
   /** Get specific person */
   person?: Maybe<Person>;
   /** Get all persons */
@@ -69,6 +74,12 @@ export type Query = {
   quest?: Maybe<Quest>;
   /** Get all quests */
   quests: QuestConnection;
+};
+
+
+/** API queries */
+export type QueryNodeArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -207,10 +218,10 @@ export type MutationDislikeRouteArgs = {
   routeId: Scalars['String'];
 };
 
-export type Person = {
+export type Person = Node & {
   __typename?: 'Person';
   /** Person's id */
-  id: Scalars['ObjectId'];
+  id: Scalars['ID'];
   /** Person's first name */
   firstName?: Maybe<Scalars['String']>;
   /** Person's last name */
@@ -362,7 +373,7 @@ export type PersonMutationsDeleteArgs = {
 };
 
 /** Location type to add it to Location */
-export type LocationType = {
+export type LocationType = Node & {
   __typename?: 'LocationType';
   /** LocationType's ID */
   id: Scalars['ID'];
@@ -371,7 +382,7 @@ export type LocationType = {
 };
 
 /** Location address representation */
-export type Address = {
+export type Address = Node & {
   __typename?: 'Address';
   /** Address's ID */
   id: Scalars['ID'];
@@ -388,7 +399,7 @@ export type Address = {
 };
 
 /** Location context. This can be a time period, a special description for a particular route, etc. */
-export type LocationInstance = {
+export type LocationInstance = Node & {
   __typename?: 'LocationInstance';
   /** Instance's ID */
   id: Scalars['ID'];
@@ -403,7 +414,7 @@ export type LocationInstance = {
   /** Array of location's types */
   locationTypes?: Maybe<Array<Maybe<LocationType>>>;
   /** Contains links with location's photos */
-  photoLinks?: Maybe<Array<Maybe<Scalars['String']>>>;
+  photoLinks?: Maybe<Array<Scalars['String']>>;
   /** Link with main photo */
   mainPhotoLink?: Maybe<Scalars['String']>;
   /** Location's construction date */
@@ -421,10 +432,10 @@ export type LocationInstance = {
 };
 
 /** Location for displaying on map and making relations with persons */
-export type Location = {
+export type Location = Node & {
   __typename?: 'Location';
   /** Location's ID */
-  id: Scalars['ObjectId'];
+  id: Scalars['ID'];
   /** Location position latitude */
   latitude?: Maybe<Scalars['Float']>;
   /** Location position longitude */
@@ -578,13 +589,13 @@ export type UpdateLocationInstanceInput = {
   /** Location instance id */
   id: Scalars['ID'];
   /** Location's name */
-  name: Scalars['String'];
+  name: Scalars['MultilingualString'];
   /** Location's description */
-  description?: Maybe<Scalars['String']>;
+  description: Scalars['MultilingualString'];
   /** Link for location info */
   wikiLink?: Maybe<Scalars['String']>;
   /** Contains links with location's photos */
-  photoLinks?: Maybe<Array<Maybe<Scalars['String']>>>;
+  photoLinks?: Maybe<Array<Scalars['String']>>;
   /** Link with main photo */
   mainPhotoLink?: Maybe<Scalars['String']>;
   /** Location's construction date */
@@ -637,7 +648,7 @@ export type LocationInstanceMutationsDeleteArgs = {
 };
 
 /** Represents relation between person and location */
-export type Relation = {
+export type Relation = Node & {
   __typename?: 'Relation';
   /** Relation's id */
   id: Scalars['ID'];
@@ -717,9 +728,9 @@ export type CreateRelationPayload = {
 export type UpdateRelationPayload = {
   __typename?: 'UpdateRelationPayload';
   /** Updated relation id */
-  recordId?: Maybe<Scalars['ID']>;
+  recordId: Scalars['ObjectId'];
   /** Updated relation */
-  record?: Maybe<Relation>;
+  record: Relation;
 };
 
 export type DeleteRelationPayload = {
@@ -760,7 +771,7 @@ export type RoutesFilter = {
 };
 
 /** Route between locations */
-export type Route = {
+export type Route = Node & {
   __typename?: 'Route';
   /** Route id */
   id: Scalars['ID'];
@@ -779,7 +790,7 @@ export type Coordinates = {
   latitude: Scalars['Float'];
 };
 
-export type User = {
+export type User = Node & {
   __typename?: 'User';
   /** User's ID */
   id: Scalars['ID'];
@@ -818,7 +829,7 @@ export type EditorDataInput = {
   version?: Maybe<Scalars['String']>;
 };
 
-export type Quest = {
+export type Quest = Node & {
   __typename?: 'Quest';
   /** Quest ID */
   id: Scalars['ID'];
@@ -1022,14 +1033,15 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  Node: ResolversTypes['Person'] | ResolversTypes['LocationType'] | ResolversTypes['Address'] | ResolversTypes['LocationInstance'] | ResolversTypes['Location'] | ResolversTypes['Relation'] | ResolversTypes['Route'] | ResolversTypes['User'] | ResolversTypes['Quest'];
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   ObjectId: ResolverTypeWrapper<Scalars['ObjectId']>;
   MultilingualString: ResolverTypeWrapper<Scalars['MultilingualString']>;
   Languages: Languages;
   Query: ResolverTypeWrapper<{}>;
-  String: ResolverTypeWrapper<Scalars['String']>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  String: ResolverTypeWrapper<Scalars['String']>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -1095,13 +1107,14 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  Node: ResolversParentTypes['Person'] | ResolversParentTypes['LocationType'] | ResolversParentTypes['Address'] | ResolversParentTypes['LocationInstance'] | ResolversParentTypes['Location'] | ResolversParentTypes['Relation'] | ResolversParentTypes['Route'] | ResolversParentTypes['User'] | ResolversParentTypes['Quest'];
+  ID: Scalars['ID'];
   Cursor: Scalars['Cursor'];
   ObjectId: Scalars['ObjectId'];
   MultilingualString: Scalars['MultilingualString'];
   Query: {};
-  String: Scalars['String'];
-  ID: Scalars['ID'];
   Int: Scalars['Int'];
+  String: Scalars['String'];
   Float: Scalars['Float'];
   Mutation: {};
   Boolean: Scalars['Boolean'];
@@ -1164,6 +1177,11 @@ export type ResolversParentTypes = {
   Timestamp: Scalars['Timestamp'];
 };
 
+export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
+  __resolveType: TypeResolveFn<'Person' | 'LocationType' | 'Address' | 'LocationInstance' | 'Location' | 'Relation' | 'Route' | 'User' | 'Quest', ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+};
+
 export interface CursorScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Cursor'], any> {
   name: 'Cursor';
 }
@@ -1177,7 +1195,7 @@ export interface MultilingualStringScalarConfig extends GraphQLScalarTypeConfig<
 }
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  health?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   person?: Resolver<Maybe<ResolversTypes['Person']>, ParentType, ContextType, RequireFields<QueryPersonArgs, 'id'>>;
   persons?: Resolver<ResolversTypes['PersonConnection'], ParentType, ContextType, RequireFields<QueryPersonsArgs, never>>;
   location?: Resolver<Maybe<ResolversTypes['Location']>, ParentType, ContextType, RequireFields<QueryLocationArgs, 'id'>>;
@@ -1210,7 +1228,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type PersonResolvers<ContextType = any, ParentType extends ResolversParentTypes['Person'] = ResolversParentTypes['Person']> = {
-  id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   patronymic?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1294,7 +1312,7 @@ export type LocationInstanceResolvers<ContextType = any, ParentType extends Reso
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   wikiLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   locationTypes?: Resolver<Maybe<Array<Maybe<ResolversTypes['LocationType']>>>, ParentType, ContextType>;
-  photoLinks?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  photoLinks?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   mainPhotoLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   constructionDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   demolitionDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1306,7 +1324,7 @@ export type LocationInstanceResolvers<ContextType = any, ParentType extends Reso
 };
 
 export type LocationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Location'] = ResolversParentTypes['Location']> = {
-  id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   latitude?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   longitude?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   addresses?: Resolver<Maybe<Array<Maybe<ResolversTypes['Address']>>>, ParentType, ContextType>;
@@ -1411,8 +1429,8 @@ export type CreateRelationPayloadResolvers<ContextType = any, ParentType extends
 };
 
 export type UpdateRelationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateRelationPayload'] = ResolversParentTypes['UpdateRelationPayload']> = {
-  recordId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  record?: Resolver<Maybe<ResolversTypes['Relation']>, ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  record?: Resolver<ResolversTypes['Relation'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1514,6 +1532,7 @@ export interface TimestampScalarConfig extends GraphQLScalarTypeConfig<Resolvers
 }
 
 export type Resolvers<ContextType = any> = {
+  Node?: NodeResolvers<ContextType>;
   Cursor?: GraphQLScalarType;
   ObjectId?: GraphQLScalarType;
   MultilingualString?: GraphQLScalarType;

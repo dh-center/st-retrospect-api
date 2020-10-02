@@ -44,7 +44,7 @@ export default gql`
   }
 
 
-  type Quest {
+  type Quest implements Node {
     """
     Quest ID
     """

@@ -1,11 +1,11 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
-  type Person {
+  type Person implements Node {
     """
     Person's id
     """
-    id: ObjectId! @fromField(name: "_id")
+    id: ID! @fromField(name: "_id")
 
     """
     Person's first name
