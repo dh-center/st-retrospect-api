@@ -1,6 +1,6 @@
 import { defaultFieldResolver, GraphQLSchema } from 'graphql';
 import { MapperKind, mapSchema } from '@graphql-tools/utils';
-import { ResolverContextBase } from './types/graphql';
+import { NodeName, ResolverContextBase } from './types/graphql';
 import { toGlobalId } from './utils/globalId';
 
 /**
@@ -11,7 +11,7 @@ import { toGlobalId } from './utils/globalId';
 export default function (schema: GraphQLSchema): GraphQLSchema {
   return mapSchema(schema, {
     [MapperKind.OBJECT_TYPE]: (fieldConfig) => {
-      const typeName = fieldConfig.astNode?.name.value;
+      const typeName = fieldConfig.astNode?.name.value as NodeName;
 
       if (!typeName) {
         return fieldConfig;

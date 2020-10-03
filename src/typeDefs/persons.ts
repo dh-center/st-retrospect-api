@@ -135,7 +135,7 @@ export default gql`
     person(
       "Person id"
       id: GlobalId!
-    ): Person
+    ): Person @dataLoader(dataLoaderName: "personById", argName: "id")
 
     """
     Get all persons

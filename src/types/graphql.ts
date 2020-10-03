@@ -123,3 +123,18 @@ export interface AccessTokenData {
  * Common return type for directives
  */
 export type DirectiveTransformer = (schema: GraphQLSchema) => GraphQLSchema;
+
+/**
+ * Possible values of the type names in our API
+ */
+export type NodeName =
+  'Person' |
+  'Location' |
+  'Relation' |
+  'Quest' |
+  'LocationInstance' |
+  'User' |
+  'LocationType' |
+  'Address' |
+  'RelationType' |
+  'Route';

@@ -1,11 +1,10 @@
 import { defaultFieldResolver, GraphQLSchema } from 'graphql';
-import { DirectiveTransformer, ResolverContextBase } from '../types/graphql';
+import { DirectiveTransformer, NodeName, ResolverContextBase } from '../types/graphql';
 import { mapSchema, getDirectives, MapperKind } from '@graphql-tools/utils';
-import { AuthenticationError } from 'apollo-server-express';
 import { toGlobalId } from '../utils/globalId';
 
 interface ToGlobalIdDirectiveArgs {
-  type: string;
+  type: NodeName;
 }
 
 /**

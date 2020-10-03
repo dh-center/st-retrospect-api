@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { base64, unbase64 } from './base64';
+import { NodeName } from '../types/graphql';
 
 /**
  * Converts unique type name and unique id for that type name to unique global id
@@ -7,7 +8,7 @@ import { base64, unbase64 } from './base64';
  * @param type - type for encoding
  * @param id - id for encoding
  */
-export function toGlobalId(type: string, id: ObjectId): string {
+export function toGlobalId(type: NodeName, id: ObjectId): string {
   return base64(`${type}:${id}`);
 }
 
@@ -18,7 +19,7 @@ interface DecodedGlobalId {
   /**
    * Unique type name
    */
-  type: string;
+  type: NodeName;
 
   /**
    * Unique object id for provided typename
@@ -32,7 +33,7 @@ interface DecodedGlobalId {
  * @param id - id to decode
  */
 export function fromGlobalId(id: string): DecodedGlobalId {
-  const [type, objectId] = unbase64(id).split(':');
+  const [type, objectId] = unbase64(id).split(':') as [NodeName, string];
 
   return {
     type,

@@ -11,24 +11,36 @@ import { JSONResolver, LongResolver, TimestampResolver } from 'graphql-scalars';
 import scalars from './scalars';
 import { ResolverContextBase } from '../types/graphql';
 import { fromGlobalId } from '../utils/globalId';
-import { QueryNodeArgs } from '../generated/graphql';
+import { QueryNodeArgs, Node } from '../generated/graphql';
+import camelCase from 'lodash.camelcase';
+import { FieldsWithDataLoader } from '../dataLoaders';
 
 /**
  * See all types and fields here {@link '../typeDefs/schema.graphql'}
  */
 const indexResolver = {
   Query: {
-    node(parent: undefined, args: QueryNodeArgs, context: ResolverContextBase) {
-      const { type, id } = fromGlobalId(args.id);
+    /**
+     * Node resolver according to Global Object Identification (https://graphql.org/learn/global-object-identification/)
+     *
+     * @param parent - top-level resolver result
+     * @param args - resolver args
+     * @param dataLoaders - dataloader for data-fetching
+     */
+    async node(parent: undefined, args: QueryNodeArgs, { dataLoaders }: ResolverContextBase): Promise<unknown> {
+      const { type, id: _id } = fromGlobalId(args.id);
+      const id = _id.toString();
 
-      if (type === 'Person') {
-        return context.dataLoaders.personById.load(id.toString());
-      }
+      const dataloaderName = camelCase(type) + 'ById' as FieldsWithDataLoader;
 
-      return null;
+      const node = await dataLoaders[dataloaderName].load(id);
+
+      return {
+        ...node,
+        __typename: type,
+      };
     },
   },
-
   JSON: JSONResolver,
   Long: LongResolver,
   Timestamp: TimestampResolver,
