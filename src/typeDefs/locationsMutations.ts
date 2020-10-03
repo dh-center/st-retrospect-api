@@ -70,7 +70,7 @@ export default gql`
     """
     Created location id
     """
-    recordId: ObjectId!
+    recordId: GlobalId! @toGlobalId(type: "Location")
 
     """
     Created location
@@ -82,7 +82,7 @@ export default gql`
     """
     Location id to update
     """
-    id: ObjectId!
+    id: GlobalId!
 
     """
     Location position latitude
@@ -97,14 +97,14 @@ export default gql`
     """
     Possible location instances id
     """
-    instances: [ObjectId!]!
+    instances: [GlobalId!]!
   }
 
   type UpdateLocationPayload {
     """
     Updated location id
     """
-    recordId: ID!
+    recordId: GlobalId! @toGlobalId(type: "Location")
 
     """
     Updated location
@@ -116,7 +116,7 @@ export default gql`
     """
     Deleted location id
     """
-    recordId: ID!
+    recordId: GlobalId! @toGlobalId(type: "Location")
   }
 
   type LocationMutations {
@@ -133,7 +133,7 @@ export default gql`
     """
     Delete location
     """
-    delete(id: ObjectId!): DeleteLocationPayload! @adminCheck
+    delete(id: GlobalId!): DeleteLocationPayload! @adminCheck
   }
 
   extend type Mutation {

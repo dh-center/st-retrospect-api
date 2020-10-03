@@ -75,7 +75,7 @@ export default gql`
     """
     route(
       "Route id"
-      id: ID!
+      id: GlobalId!
     ): Route
   }
 `;

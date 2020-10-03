@@ -69,7 +69,7 @@ export default gql`
   """
   Represents one of the relations types
   """
-  type RelationType {
+  type RelationType implements Node {
     """
     Relation type id
     """
@@ -91,7 +91,7 @@ export default gql`
     """
     relation (
       "Relation id"
-      id: ID!
+      id: GlobalId!
     ): Relation @dataLoader(dataLoaderName: "relationById", argName: "id")
 
     """

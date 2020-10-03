@@ -14,5 +14,6 @@ config:
     DateTime: Date
     Cursor: string
     ObjectId: "import('mongodb').ObjectId"
+    GlobalId: "import('mongodb').ObjectId"
     MultilingualString: "import('../types/graphql').MultilingualString"
 

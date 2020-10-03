@@ -197,7 +197,7 @@ export default gql`
     """
     location(
       "Location id"
-      id: ID!
+      id: GlobalId!
     ): Location
 
     """
@@ -222,7 +222,7 @@ export default gql`
     """
     locationInstance(
       "locationInstances id"
-      id: ID!
+      id: GlobalId!
     ): LocationInstance
 
     """

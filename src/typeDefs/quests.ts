@@ -142,7 +142,7 @@ export default gql`
     """
     quest(
       "Quest id"
-      id: ID!
+      id: GlobalId!
     ): Quest
 
     """

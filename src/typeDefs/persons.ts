@@ -134,7 +134,7 @@ export default gql`
     """
     person(
       "Person id"
-      id: ID!
+      id: GlobalId!
     ): Person
 
     """
@@ -206,19 +206,19 @@ export default gql`
     """
     Created person id
     """
-    recordId: ID
+    recordId: GlobalId! @toGlobalId(type: "Person")
 
     """
     Created person
     """
-    record: Person
+    record: Person!
   }
 
   input UpdatePersonInput {
     """
     ID of person for updating
     """
-    id: ID!
+    id: GlobalId!
 
     """
     Person's first name
@@ -270,19 +270,19 @@ export default gql`
     """
     Updated person id
     """
-    recordId: ID
+    recordId: GlobalId! @toGlobalId(type: "Person")
 
     """
     Updated person
     """
-    record: Person
+    record: Person!
   }
 
   type DeletePersonPayload {
     """
     Deleted person id
     """
-    recordId: ID
+    recordId: GlobalId!
   }
 
   type PersonMutations {
@@ -299,7 +299,7 @@ export default gql`
     """
     Delete person
     """
-    delete(id: ID!): DeletePersonPayload! @adminCheck
+    delete(id: GlobalId!): DeletePersonPayload! @adminCheck
   }
 
   extend type Mutation {

@@ -24,6 +24,11 @@ const rootSchema = gql`
   }
 
   """
+  Converts MongoDB ObjectId value to the Global Unique ID
+  """
+  directive @toGlobalId(type: String!) on FIELD_DEFINITION
+
+  """
   Extracts value from specified field in parent object
   """
   directive @fromField(name: String!) on FIELD_DEFINITION
@@ -86,6 +91,11 @@ const rootSchema = gql`
   Represents data that can be accessed in many languages
   """
   scalar MultilingualString
+
+  """
+  @todo
+  """
+  scalar GlobalId
 
   """
   Supported languages for data
