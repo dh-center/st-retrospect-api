@@ -282,7 +282,7 @@ export default gql`
     """
     Deleted person id
     """
-    recordId: GlobalId!
+    recordId: GlobalId! @toGlobalId(type: "Person")
   }
 
   type PersonMutations {

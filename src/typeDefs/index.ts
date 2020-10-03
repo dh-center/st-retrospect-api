@@ -93,7 +93,7 @@ const rootSchema = gql`
   scalar MultilingualString
 
   """
-  @todo
+  Unique global entity ID
   """
   scalar GlobalId
 
