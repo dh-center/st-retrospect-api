@@ -1,11 +1,11 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
-  type Person {
+  type Person implements Node {
     """
     Person's id
     """
-    id: ObjectId! @fromField(name: "_id")
+    id: ID! @fromField(name: "_id")
 
     """
     Person's first name
@@ -134,8 +134,8 @@ export default gql`
     """
     person(
       "Person id"
-      id: ID!
-    ): Person
+      id: GlobalId!
+    ): Person @dataLoader(dataLoaderName: "personById", argName: "id")
 
     """
     Get all persons
@@ -206,19 +206,19 @@ export default gql`
     """
     Created person id
     """
-    recordId: ID
+    recordId: GlobalId! @toGlobalId(type: "Person")
 
     """
     Created person
     """
-    record: Person
+    record: Person!
   }
 
   input UpdatePersonInput {
     """
     ID of person for updating
     """
-    id: ID!
+    id: GlobalId!
 
     """
     Person's first name
@@ -270,19 +270,19 @@ export default gql`
     """
     Updated person id
     """
-    recordId: ID
+    recordId: GlobalId! @toGlobalId(type: "Person")
 
     """
     Updated person
     """
-    record: Person
+    record: Person!
   }
 
   type DeletePersonPayload {
     """
     Deleted person id
     """
-    recordId: ID
+    recordId: GlobalId! @toGlobalId(type: "Person")
   }
 
   type PersonMutations {
@@ -299,7 +299,7 @@ export default gql`
     """
     Delete person
     """
-    delete(id: ID!): DeletePersonPayload! @adminCheck
+    delete(id: GlobalId!): DeletePersonPayload! @adminCheck
   }
 
   extend type Mutation {

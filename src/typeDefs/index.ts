@@ -14,6 +14,21 @@ import relationsMutations from './relationsMutations';
 
 const rootSchema = gql`
   """
+  An object with a Globally Unique ID
+  """
+  interface Node {
+    """
+    The ID of the object.
+    """
+    id: ID!
+  }
+
+  """
+  Converts MongoDB ObjectId value to the Global Unique ID
+  """
+  directive @toGlobalId(type: String!) on FIELD_DEFINITION
+
+  """
   Extracts value from specified field in parent object
   """
   directive @fromField(name: String!) on FIELD_DEFINITION
@@ -78,6 +93,11 @@ const rootSchema = gql`
   scalar MultilingualString
 
   """
+  Unique global entity ID
+  """
+  scalar GlobalId
+
+  """
   Supported languages for data
   """
   enum Languages {
@@ -89,10 +109,7 @@ const rootSchema = gql`
   API queries
   """
   type Query {
-    """
-    Healthcheck endpoint
-    """
-    health: String!
+    node(id: ID!): Node
   }
 
   """

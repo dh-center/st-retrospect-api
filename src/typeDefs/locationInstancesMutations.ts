@@ -50,14 +50,14 @@ export default gql`
     """
     Location id to which this instance below
     """
-    locationId: ObjectId!
+    locationId: GlobalId!
   }
 
   type CreateLocationInstancePayload {
     """
     Created location id
     """
-    recordId: ID!
+    recordId: GlobalId! @toGlobalId(type: "LocationInstance")
 
     """
     Created location
@@ -69,7 +69,7 @@ export default gql`
     """
     Location instance id
     """
-    id: ID!
+    id: GlobalId!
 
     """
     Location's name
@@ -121,7 +121,7 @@ export default gql`
     """
     Created location id
     """
-    recordId: ID!
+    recordId: GlobalId! @toGlobalId(type: "LocationInstance")
 
     """
     Created location
@@ -133,7 +133,7 @@ export default gql`
     """
     Created location id
     """
-    recordId: ID!
+    recordId: GlobalId! @toGlobalId(type: "LocationInstance")
   }
 
   type LocationInstanceMutations {
@@ -150,7 +150,7 @@ export default gql`
     """
     Delete location instance
     """
-    delete(id: ObjectId!): DeleteLocationInstancePayload! @adminCheck
+    delete(id: GlobalId!): DeleteLocationInstancePayload! @adminCheck
   }
 
   extend type Mutation {

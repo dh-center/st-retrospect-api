@@ -32,7 +32,7 @@ export default gql`
     """
     Created quest id
     """
-    recordId: ID!
+    recordId: GlobalId! @toGlobalId(type: "Location")
 
     """
     Created quest
@@ -44,7 +44,7 @@ export default gql`
     """
     Quest ID
     """
-    id: ID!
+    id: GlobalId!
 
     """
     Quest name
@@ -76,7 +76,7 @@ export default gql`
     """
     Updated quest id
     """
-    recordId: ID!
+    recordId: GlobalId! @toGlobalId(type: "Location")
 
     """
     Updated quest
@@ -88,7 +88,7 @@ export default gql`
     """
     Deleted quest id
     """
-    recordId: ID!
+    recordId: GlobalId! @toGlobalId(type: "Location")
   }
 
   type QuestMutations {
@@ -105,7 +105,7 @@ export default gql`
     """
     Delete quest
     """
-    delete(id: ID!): DeleteQuestPayload! @adminCheck
+    delete(id: GlobalId!): DeleteQuestPayload! @adminCheck
   }
 
   extend type Mutation {

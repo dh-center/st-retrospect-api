@@ -15,7 +15,7 @@ export default gql`
   """
   Route between locations
   """
-  type Route {
+  type Route implements Node {
     """
     Route id
     """
@@ -75,7 +75,7 @@ export default gql`
     """
     route(
       "Route id"
-      id: ID!
+      id: GlobalId!
     ): Route
   }
 `;

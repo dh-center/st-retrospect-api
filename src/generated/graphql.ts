@@ -15,6 +15,7 @@ export type Scalars = {
   ObjectId: import('mongodb').ObjectId;
   /** The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text. */
   MultilingualString: import('../types/graphql').MultilingualString;
+  GlobalId: import('mongodb').ObjectId;
   /** The `BigInt` scalar type represents non-fractional signed whole numeric values. */
   Long: any;
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
@@ -22,6 +23,13 @@ export type Scalars = {
   /** The javascript `Date` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch. */
   Timestamp: any;
 };
+
+/** An object with a Globally Unique ID */
+export type Node = {
+  /** The ID of the object. */
+  id: Scalars['ID'];
+};
+
 
 
 
@@ -35,8 +43,7 @@ export enum Languages {
 /** API queries */
 export type Query = {
   __typename?: 'Query';
-  /** Healthcheck endpoint */
-  health: Scalars['String'];
+  node?: Maybe<Node>;
   /** Get specific person */
   person?: Maybe<Person>;
   /** Get all persons */
@@ -73,8 +80,14 @@ export type Query = {
 
 
 /** API queries */
-export type QueryPersonArgs = {
+export type QueryNodeArgs = {
   id: Scalars['ID'];
+};
+
+
+/** API queries */
+export type QueryPersonArgs = {
+  id: Scalars['GlobalId'];
 };
 
 
@@ -89,7 +102,7 @@ export type QueryPersonsArgs = {
 
 /** API queries */
 export type QueryLocationArgs = {
-  id: Scalars['ID'];
+  id: Scalars['GlobalId'];
 };
 
 
@@ -104,7 +117,7 @@ export type QueryLocationsArgs = {
 
 /** API queries */
 export type QueryLocationInstanceArgs = {
-  id: Scalars['ID'];
+  id: Scalars['GlobalId'];
 };
 
 
@@ -116,7 +129,7 @@ export type QuerySearchArgs = {
 
 /** API queries */
 export type QueryRelationArgs = {
-  id: Scalars['ID'];
+  id: Scalars['GlobalId'];
 };
 
 
@@ -145,13 +158,13 @@ export type QueryNearestRoutesArgs = {
 
 /** API queries */
 export type QueryRouteArgs = {
-  id: Scalars['ID'];
+  id: Scalars['GlobalId'];
 };
 
 
 /** API queries */
 export type QueryQuestArgs = {
-  id: Scalars['ID'];
+  id: Scalars['GlobalId'];
 };
 
 
@@ -207,10 +220,10 @@ export type MutationDislikeRouteArgs = {
   routeId: Scalars['String'];
 };
 
-export type Person = {
+export type Person = Node & {
   __typename?: 'Person';
   /** Person's id */
-  id: Scalars['ObjectId'];
+  id: Scalars['ID'];
   /** Person's first name */
   firstName?: Maybe<Scalars['String']>;
   /** Person's last name */
@@ -294,14 +307,14 @@ export type CreatePersonInput = {
 export type CreatePersonPayload = {
   __typename?: 'CreatePersonPayload';
   /** Created person id */
-  recordId?: Maybe<Scalars['ID']>;
+  recordId: Scalars['GlobalId'];
   /** Created person */
-  record?: Maybe<Person>;
+  record: Person;
 };
 
 export type UpdatePersonInput = {
   /** ID of person for updating */
-  id: Scalars['ID'];
+  id: Scalars['GlobalId'];
   /** Person's first name */
   firstName?: Maybe<Scalars['String']>;
   /** Person's last name */
@@ -325,15 +338,15 @@ export type UpdatePersonInput = {
 export type UpdatePersonPayload = {
   __typename?: 'UpdatePersonPayload';
   /** Updated person id */
-  recordId?: Maybe<Scalars['ID']>;
+  recordId: Scalars['GlobalId'];
   /** Updated person */
-  record?: Maybe<Person>;
+  record: Person;
 };
 
 export type DeletePersonPayload = {
   __typename?: 'DeletePersonPayload';
   /** Deleted person id */
-  recordId?: Maybe<Scalars['ID']>;
+  recordId: Scalars['GlobalId'];
 };
 
 export type PersonMutations = {
@@ -358,11 +371,11 @@ export type PersonMutationsUpdateArgs = {
 
 
 export type PersonMutationsDeleteArgs = {
-  id: Scalars['ID'];
+  id: Scalars['GlobalId'];
 };
 
 /** Location type to add it to Location */
-export type LocationType = {
+export type LocationType = Node & {
   __typename?: 'LocationType';
   /** LocationType's ID */
   id: Scalars['ID'];
@@ -371,7 +384,7 @@ export type LocationType = {
 };
 
 /** Location address representation */
-export type Address = {
+export type Address = Node & {
   __typename?: 'Address';
   /** Address's ID */
   id: Scalars['ID'];
@@ -388,7 +401,7 @@ export type Address = {
 };
 
 /** Location context. This can be a time period, a special description for a particular route, etc. */
-export type LocationInstance = {
+export type LocationInstance = Node & {
   __typename?: 'LocationInstance';
   /** Instance's ID */
   id: Scalars['ID'];
@@ -403,7 +416,7 @@ export type LocationInstance = {
   /** Array of location's types */
   locationTypes?: Maybe<Array<Maybe<LocationType>>>;
   /** Contains links with location's photos */
-  photoLinks?: Maybe<Array<Maybe<Scalars['String']>>>;
+  photoLinks?: Maybe<Array<Scalars['String']>>;
   /** Link with main photo */
   mainPhotoLink?: Maybe<Scalars['String']>;
   /** Location's construction date */
@@ -421,10 +434,10 @@ export type LocationInstance = {
 };
 
 /** Location for displaying on map and making relations with persons */
-export type Location = {
+export type Location = Node & {
   __typename?: 'Location';
   /** Location's ID */
-  id: Scalars['ObjectId'];
+  id: Scalars['ID'];
   /** Location position latitude */
   latitude?: Maybe<Scalars['Float']>;
   /** Location position longitude */
@@ -488,26 +501,26 @@ export type LocationInstanceInput = {
 export type CreateLocationPayload = {
   __typename?: 'CreateLocationPayload';
   /** Created location id */
-  recordId: Scalars['ObjectId'];
+  recordId: Scalars['GlobalId'];
   /** Created location */
   record: Location;
 };
 
 export type UpdateLocationInput = {
   /** Location id to update */
-  id: Scalars['ObjectId'];
+  id: Scalars['GlobalId'];
   /** Location position latitude */
   latitude?: Maybe<Scalars['Float']>;
   /** Location position longitude */
   longitude?: Maybe<Scalars['Float']>;
   /** Possible location instances id */
-  instances: Array<Scalars['ObjectId']>;
+  instances: Array<Scalars['GlobalId']>;
 };
 
 export type UpdateLocationPayload = {
   __typename?: 'UpdateLocationPayload';
   /** Updated location id */
-  recordId: Scalars['ID'];
+  recordId: Scalars['GlobalId'];
   /** Updated location */
   record: Location;
 };
@@ -515,7 +528,7 @@ export type UpdateLocationPayload = {
 export type DeleteLocationPayload = {
   __typename?: 'DeleteLocationPayload';
   /** Deleted location id */
-  recordId: Scalars['ID'];
+  recordId: Scalars['GlobalId'];
 };
 
 export type LocationMutations = {
@@ -540,7 +553,7 @@ export type LocationMutationsUpdateArgs = {
 
 
 export type LocationMutationsDeleteArgs = {
-  id: Scalars['ObjectId'];
+  id: Scalars['GlobalId'];
 };
 
 export type CreateLocationInstanceInput = {
@@ -563,28 +576,28 @@ export type CreateLocationInstanceInput = {
   /** End of period */
   endDate?: Maybe<Scalars['String']>;
   /** Location id to which this instance below */
-  locationId: Scalars['ObjectId'];
+  locationId: Scalars['GlobalId'];
 };
 
 export type CreateLocationInstancePayload = {
   __typename?: 'CreateLocationInstancePayload';
   /** Created location id */
-  recordId: Scalars['ID'];
+  recordId: Scalars['GlobalId'];
   /** Created location */
   record: LocationInstance;
 };
 
 export type UpdateLocationInstanceInput = {
   /** Location instance id */
-  id: Scalars['ID'];
+  id: Scalars['GlobalId'];
   /** Location's name */
-  name: Scalars['String'];
+  name: Scalars['MultilingualString'];
   /** Location's description */
-  description?: Maybe<Scalars['String']>;
+  description: Scalars['MultilingualString'];
   /** Link for location info */
   wikiLink?: Maybe<Scalars['String']>;
   /** Contains links with location's photos */
-  photoLinks?: Maybe<Array<Maybe<Scalars['String']>>>;
+  photoLinks?: Maybe<Array<Scalars['String']>>;
   /** Link with main photo */
   mainPhotoLink?: Maybe<Scalars['String']>;
   /** Location's construction date */
@@ -600,7 +613,7 @@ export type UpdateLocationInstanceInput = {
 export type UpdateLocationInstancePayload = {
   __typename?: 'UpdateLocationInstancePayload';
   /** Created location id */
-  recordId: Scalars['ID'];
+  recordId: Scalars['GlobalId'];
   /** Created location */
   record: LocationInstance;
 };
@@ -608,7 +621,7 @@ export type UpdateLocationInstancePayload = {
 export type DeleteLocationInstancePayload = {
   __typename?: 'DeleteLocationInstancePayload';
   /** Created location id */
-  recordId: Scalars['ID'];
+  recordId: Scalars['GlobalId'];
 };
 
 export type LocationInstanceMutations = {
@@ -633,11 +646,11 @@ export type LocationInstanceMutationsUpdateArgs = {
 
 
 export type LocationInstanceMutationsDeleteArgs = {
-  id: Scalars['ObjectId'];
+  id: Scalars['GlobalId'];
 };
 
 /** Represents relation between person and location */
-export type Relation = {
+export type Relation = Node & {
   __typename?: 'Relation';
   /** Relation's id */
   id: Scalars['ID'];
@@ -672,7 +685,7 @@ export type RelationEdge = {
 };
 
 /** Represents one of the relations types */
-export type RelationType = {
+export type RelationType = Node & {
   __typename?: 'RelationType';
   /** Relation type id */
   id: Scalars['ID'];
@@ -684,24 +697,24 @@ export type RelationType = {
 
 export type CreateRelationInput = {
   /** Person ID in relation */
-  personId: Scalars['ObjectId'];
+  personId: Scalars['GlobalId'];
   /** Location Instance ID in relation */
-  locationInstanceId: Scalars['ObjectId'];
+  locationInstanceId: Scalars['GlobalId'];
   /** Relation type ID */
-  relationId: Scalars['ObjectId'];
+  relationId: Scalars['GlobalId'];
   /** Quote about relation */
   quote: Scalars['MultilingualString'];
 };
 
 export type UpdateRelationInput = {
   /** ID of relation for updating */
-  id: Scalars['ID'];
+  id: Scalars['GlobalId'];
   /** Person ID in relation */
-  personId?: Maybe<Scalars['ObjectId']>;
+  personId?: Maybe<Scalars['GlobalId']>;
   /** Location Instance ID in relation */
-  locationInstanceId?: Maybe<Scalars['ObjectId']>;
+  locationInstanceId?: Maybe<Scalars['GlobalId']>;
   /** Relation type ID */
-  relationId?: Maybe<Scalars['ObjectId']>;
+  relationId?: Maybe<Scalars['GlobalId']>;
   /** Quote about relation */
   quote?: Maybe<Scalars['MultilingualString']>;
 };
@@ -709,7 +722,7 @@ export type UpdateRelationInput = {
 export type CreateRelationPayload = {
   __typename?: 'CreateRelationPayload';
   /** Created relation id */
-  recordId: Scalars['ObjectId'];
+  recordId: Scalars['GlobalId'];
   /** Created relation */
   record: Relation;
 };
@@ -717,15 +730,15 @@ export type CreateRelationPayload = {
 export type UpdateRelationPayload = {
   __typename?: 'UpdateRelationPayload';
   /** Updated relation id */
-  recordId?: Maybe<Scalars['ID']>;
+  recordId: Scalars['GlobalId'];
   /** Updated relation */
-  record?: Maybe<Relation>;
+  record: Relation;
 };
 
 export type DeleteRelationPayload = {
   __typename?: 'DeleteRelationPayload';
   /** Deleted relation id */
-  recordId?: Maybe<Scalars['ObjectId']>;
+  recordId: Scalars['GlobalId'];
 };
 
 export type RelationMutations = {
@@ -750,7 +763,7 @@ export type RelationMutationsUpdateArgs = {
 
 
 export type RelationMutationsDeleteArgs = {
-  id: Scalars['ObjectId'];
+  id: Scalars['GlobalId'];
 };
 
 /** Input to search routes */
@@ -760,7 +773,7 @@ export type RoutesFilter = {
 };
 
 /** Route between locations */
-export type Route = {
+export type Route = Node & {
   __typename?: 'Route';
   /** Route id */
   id: Scalars['ID'];
@@ -779,7 +792,7 @@ export type Coordinates = {
   latitude: Scalars['Float'];
 };
 
-export type User = {
+export type User = Node & {
   __typename?: 'User';
   /** User's ID */
   id: Scalars['ID'];
@@ -818,7 +831,7 @@ export type EditorDataInput = {
   version?: Maybe<Scalars['String']>;
 };
 
-export type Quest = {
+export type Quest = Node & {
   __typename?: 'Quest';
   /** Quest ID */
   id: Scalars['ID'];
@@ -882,14 +895,14 @@ export type CreateQuestInput = {
 export type CreateQuestPayload = {
   __typename?: 'CreateQuestPayload';
   /** Created quest id */
-  recordId: Scalars['ID'];
+  recordId: Scalars['GlobalId'];
   /** Created quest */
   record: Quest;
 };
 
 export type UpdateQuestInput = {
   /** Quest ID */
-  id: Scalars['ID'];
+  id: Scalars['GlobalId'];
   /** Quest name */
   name?: Maybe<Scalars['String']>;
   /** Quest description */
@@ -905,7 +918,7 @@ export type UpdateQuestInput = {
 export type UpdateQuestPayload = {
   __typename?: 'UpdateQuestPayload';
   /** Updated quest id */
-  recordId: Scalars['ID'];
+  recordId: Scalars['GlobalId'];
   /** Updated quest */
   record: Quest;
 };
@@ -913,7 +926,7 @@ export type UpdateQuestPayload = {
 export type DeleteQuestPayload = {
   __typename?: 'DeleteQuestPayload';
   /** Deleted quest id */
-  recordId: Scalars['ID'];
+  recordId: Scalars['GlobalId'];
 };
 
 export type QuestMutations = {
@@ -938,7 +951,7 @@ export type QuestMutationsUpdateArgs = {
 
 
 export type QuestMutationsDeleteArgs = {
-  id: Scalars['ID'];
+  id: Scalars['GlobalId'];
 };
 
 
@@ -1022,14 +1035,16 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  Node: ResolversTypes['Person'] | ResolversTypes['LocationType'] | ResolversTypes['Address'] | ResolversTypes['LocationInstance'] | ResolversTypes['Location'] | ResolversTypes['Relation'] | ResolversTypes['RelationType'] | ResolversTypes['Route'] | ResolversTypes['User'] | ResolversTypes['Quest'];
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   ObjectId: ResolverTypeWrapper<Scalars['ObjectId']>;
   MultilingualString: ResolverTypeWrapper<Scalars['MultilingualString']>;
+  GlobalId: ResolverTypeWrapper<Scalars['GlobalId']>;
   Languages: Languages;
   Query: ResolverTypeWrapper<{}>;
-  String: ResolverTypeWrapper<Scalars['String']>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  String: ResolverTypeWrapper<Scalars['String']>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -1095,13 +1110,15 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  Node: ResolversParentTypes['Person'] | ResolversParentTypes['LocationType'] | ResolversParentTypes['Address'] | ResolversParentTypes['LocationInstance'] | ResolversParentTypes['Location'] | ResolversParentTypes['Relation'] | ResolversParentTypes['RelationType'] | ResolversParentTypes['Route'] | ResolversParentTypes['User'] | ResolversParentTypes['Quest'];
+  ID: Scalars['ID'];
   Cursor: Scalars['Cursor'];
   ObjectId: Scalars['ObjectId'];
   MultilingualString: Scalars['MultilingualString'];
+  GlobalId: Scalars['GlobalId'];
   Query: {};
-  String: Scalars['String'];
-  ID: Scalars['ID'];
   Int: Scalars['Int'];
+  String: Scalars['String'];
   Float: Scalars['Float'];
   Mutation: {};
   Boolean: Scalars['Boolean'];
@@ -1164,6 +1181,11 @@ export type ResolversParentTypes = {
   Timestamp: Scalars['Timestamp'];
 };
 
+export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
+  __resolveType: TypeResolveFn<'Person' | 'LocationType' | 'Address' | 'LocationInstance' | 'Location' | 'Relation' | 'RelationType' | 'Route' | 'User' | 'Quest', ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+};
+
 export interface CursorScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Cursor'], any> {
   name: 'Cursor';
 }
@@ -1176,8 +1198,12 @@ export interface MultilingualStringScalarConfig extends GraphQLScalarTypeConfig<
   name: 'MultilingualString';
 }
 
+export interface GlobalIdScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['GlobalId'], any> {
+  name: 'GlobalId';
+}
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  health?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   person?: Resolver<Maybe<ResolversTypes['Person']>, ParentType, ContextType, RequireFields<QueryPersonArgs, 'id'>>;
   persons?: Resolver<ResolversTypes['PersonConnection'], ParentType, ContextType, RequireFields<QueryPersonsArgs, never>>;
   location?: Resolver<Maybe<ResolversTypes['Location']>, ParentType, ContextType, RequireFields<QueryLocationArgs, 'id'>>;
@@ -1210,7 +1236,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type PersonResolvers<ContextType = any, ParentType extends ResolversParentTypes['Person'] = ResolversParentTypes['Person']> = {
-  id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   patronymic?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1248,19 +1274,19 @@ export type PageInfoResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type CreatePersonPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreatePersonPayload'] = ResolversParentTypes['CreatePersonPayload']> = {
-  recordId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  record?: Resolver<Maybe<ResolversTypes['Person']>, ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
+  record?: Resolver<ResolversTypes['Person'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type UpdatePersonPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdatePersonPayload'] = ResolversParentTypes['UpdatePersonPayload']> = {
-  recordId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  record?: Resolver<Maybe<ResolversTypes['Person']>, ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
+  record?: Resolver<ResolversTypes['Person'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type DeletePersonPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeletePersonPayload'] = ResolversParentTypes['DeletePersonPayload']> = {
-  recordId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1294,7 +1320,7 @@ export type LocationInstanceResolvers<ContextType = any, ParentType extends Reso
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   wikiLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   locationTypes?: Resolver<Maybe<Array<Maybe<ResolversTypes['LocationType']>>>, ParentType, ContextType>;
-  photoLinks?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  photoLinks?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   mainPhotoLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   constructionDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   demolitionDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1306,7 +1332,7 @@ export type LocationInstanceResolvers<ContextType = any, ParentType extends Reso
 };
 
 export type LocationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Location'] = ResolversParentTypes['Location']> = {
-  id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   latitude?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   longitude?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   addresses?: Resolver<Maybe<Array<Maybe<ResolversTypes['Address']>>>, ParentType, ContextType>;
@@ -1328,19 +1354,19 @@ export type LocationEdgeResolvers<ContextType = any, ParentType extends Resolver
 };
 
 export type CreateLocationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateLocationPayload'] = ResolversParentTypes['CreateLocationPayload']> = {
-  recordId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['Location'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type UpdateLocationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateLocationPayload'] = ResolversParentTypes['UpdateLocationPayload']> = {
-  recordId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['Location'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type DeleteLocationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteLocationPayload'] = ResolversParentTypes['DeleteLocationPayload']> = {
-  recordId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1352,19 +1378,19 @@ export type LocationMutationsResolvers<ContextType = any, ParentType extends Res
 };
 
 export type CreateLocationInstancePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateLocationInstancePayload'] = ResolversParentTypes['CreateLocationInstancePayload']> = {
-  recordId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['LocationInstance'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type UpdateLocationInstancePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateLocationInstancePayload'] = ResolversParentTypes['UpdateLocationInstancePayload']> = {
-  recordId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['LocationInstance'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type DeleteLocationInstancePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteLocationInstancePayload'] = ResolversParentTypes['DeleteLocationInstancePayload']> = {
-  recordId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1405,19 +1431,19 @@ export type RelationTypeResolvers<ContextType = any, ParentType extends Resolver
 };
 
 export type CreateRelationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateRelationPayload'] = ResolversParentTypes['CreateRelationPayload']> = {
-  recordId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['Relation'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type UpdateRelationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateRelationPayload'] = ResolversParentTypes['UpdateRelationPayload']> = {
-  recordId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  record?: Resolver<Maybe<ResolversTypes['Relation']>, ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
+  record?: Resolver<ResolversTypes['Relation'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type DeleteRelationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteRelationPayload'] = ResolversParentTypes['DeleteRelationPayload']> = {
-  recordId?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1478,19 +1504,19 @@ export type QuestEdgeResolvers<ContextType = any, ParentType extends ResolversPa
 };
 
 export type CreateQuestPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateQuestPayload'] = ResolversParentTypes['CreateQuestPayload']> = {
-  recordId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['Quest'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type UpdateQuestPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateQuestPayload'] = ResolversParentTypes['UpdateQuestPayload']> = {
-  recordId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['Quest'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type DeleteQuestPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteQuestPayload'] = ResolversParentTypes['DeleteQuestPayload']> = {
-  recordId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1514,9 +1540,11 @@ export interface TimestampScalarConfig extends GraphQLScalarTypeConfig<Resolvers
 }
 
 export type Resolvers<ContextType = any> = {
+  Node?: NodeResolvers<ContextType>;
   Cursor?: GraphQLScalarType;
   ObjectId?: GraphQLScalarType;
   MultilingualString?: GraphQLScalarType;
+  GlobalId?: GraphQLScalarType;
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Person?: PersonResolvers<ContextType>;

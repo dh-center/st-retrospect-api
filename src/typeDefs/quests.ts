@@ -44,7 +44,7 @@ export default gql`
   }
 
 
-  type Quest {
+  type Quest implements Node {
     """
     Quest ID
     """
@@ -142,7 +142,7 @@ export default gql`
     """
     quest(
       "Quest id"
-      id: ID!
+      id: GlobalId!
     ): Quest
 
     """

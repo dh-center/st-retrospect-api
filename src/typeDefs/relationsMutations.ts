@@ -5,17 +5,17 @@ export default gql`
     """
     Person ID in relation
     """
-    personId: ObjectId!
+    personId: GlobalId!
 
     """
     Location Instance ID in relation
     """
-    locationInstanceId: ObjectId!
+    locationInstanceId: GlobalId!
 
     """
     Relation type ID
     """
-    relationId: ObjectId!
+    relationId: GlobalId!
 
     """
     Quote about relation
@@ -27,22 +27,22 @@ export default gql`
     """
     ID of relation for updating
     """
-    id: ID!
+    id: GlobalId!
 
     """
     Person ID in relation
     """
-    personId: ObjectId
+    personId: GlobalId
 
     """
     Location Instance ID in relation
     """
-    locationInstanceId: ObjectId
+    locationInstanceId: GlobalId
 
     """
     Relation type ID
     """
-    relationId: ObjectId
+    relationId: GlobalId
 
     """
     Quote about relation
@@ -54,7 +54,7 @@ export default gql`
     """
     Created relation id
     """
-    recordId: ObjectId!
+    recordId: GlobalId! @toGlobalId(type: "Relation")
 
     """
     Created relation
@@ -66,7 +66,7 @@ export default gql`
     """
     Updated relation id
     """
-    recordId: ObjectId!
+    recordId: GlobalId! @toGlobalId(type: "Relation")
 
     """
     Updated relation
@@ -78,7 +78,7 @@ export default gql`
     """
     Deleted relation id
     """
-    recordId: ObjectId
+    recordId: GlobalId! @toGlobalId(type: "Relation")
   }
 
   type RelationMutations {
@@ -95,7 +95,7 @@ export default gql`
     """
     Delete relation
     """
-    delete(id: ObjectId!): DeleteRelationPayload! @adminCheck
+    delete(id: GlobalId!): DeleteRelationPayload! @adminCheck
   }
 
   extend type Mutation {
