@@ -514,7 +514,7 @@ export type UpdateLocationInput = {
   /** Location position longitude */
   longitude?: Maybe<Scalars['Float']>;
   /** Possible location instances id */
-  instances: Array<Scalars['ObjectId']>;
+  instances: Array<Scalars['GlobalId']>;
 };
 
 export type UpdateLocationPayload = {
@@ -553,7 +553,7 @@ export type LocationMutationsUpdateArgs = {
 
 
 export type LocationMutationsDeleteArgs = {
-  id: Scalars['ObjectId'];
+  id: Scalars['GlobalId'];
 };
 
 export type CreateLocationInstanceInput = {
@@ -576,7 +576,7 @@ export type CreateLocationInstanceInput = {
   /** End of period */
   endDate?: Maybe<Scalars['String']>;
   /** Location id to which this instance below */
-  locationId: Scalars['ObjectId'];
+  locationId: Scalars['GlobalId'];
 };
 
 export type CreateLocationInstancePayload = {
