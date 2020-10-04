@@ -3,7 +3,7 @@ import { GraphQLSchema } from 'graphql';
 import DataLoaders from '../dataLoaders';
 import { PersonDBScheme } from '../resolvers/persons';
 import { LocationDBScheme, LocationInstanceDBScheme } from '../resolvers/locations';
-import { RelationDBScheme } from '../resolvers/relations';
+import { RelationDBScheme, RelationTypeDBScheme } from '../resolvers/relations';
 import { QuestDBScheme } from '../resolvers/quests';
 
 export type CollectionAccessFunction = <T extends keyof Collections>(name: T) => Collection<Collections[T]>
@@ -46,6 +46,7 @@ interface Collections {
   location_instances: LocationInstanceDBScheme;
   relations: RelationDBScheme;
   quests: QuestDBScheme;
+  relationtypes: RelationTypeDBScheme;
 }
 
 /**

@@ -64,6 +64,8 @@ export type Query = {
   relation?: Maybe<Relation>;
   /** Get all relations */
   relations: RelationConnection;
+  /** List of available relation types */
+  relationTypes: Array<RelationType>;
   /** Get all routes */
   routes: Array<Route>;
   /** Get nearest routes */
@@ -1214,6 +1216,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   locationTypes?: Resolver<Array<ResolversTypes['LocationType']>, ParentType, ContextType>;
   relation?: Resolver<Maybe<ResolversTypes['Relation']>, ParentType, ContextType, RequireFields<QueryRelationArgs, 'id'>>;
   relations?: Resolver<ResolversTypes['RelationConnection'], ParentType, ContextType, RequireFields<QueryRelationsArgs, never>>;
+  relationTypes?: Resolver<Array<ResolversTypes['RelationType']>, ParentType, ContextType>;
   routes?: Resolver<Array<ResolversTypes['Route']>, ParentType, ContextType, RequireFields<QueryRoutesArgs, never>>;
   nearestRoutes?: Resolver<Array<ResolversTypes['Route']>, ParentType, ContextType, RequireFields<QueryNearestRoutesArgs, 'center' | 'radius'>>;
   route?: Resolver<Maybe<ResolversTypes['Route']>, ParentType, ContextType, RequireFields<QueryRouteArgs, 'id'>>;

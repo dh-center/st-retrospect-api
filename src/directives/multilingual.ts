@@ -126,6 +126,10 @@ export default function multilingualDirective(directiveName: string): DirectiveT
            * Map output multilingual fields
            */
           if (directiveArgumentMap) {
+            if (Array.isArray(result)) {
+              return result.map(res => res && res[currentLanguage]);
+            }
+
             return result && result[currentLanguage];
           }
 

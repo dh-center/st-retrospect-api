@@ -172,6 +172,22 @@ const RelationType = {
   },
 };
 
+const Query = {
+  /**
+   * Returns list of available relation types
+   *
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param args - arguments map (empty in that resolver)
+   * @param context - resolver context
+   */
+  relationTypes(parent: undefined, args: undefined, context: ResolverContextBase): Promise<RelationTypeDBScheme[]> {
+    return context
+      .collection('relationtypes')
+      .find({})
+      .toArray();
+  },
+};
+
 const Mutation = {
   relation: emptyMutation,
 };
@@ -180,4 +196,5 @@ export default {
   RelationType,
   Mutation,
   RelationMutations,
+  Query,
 };

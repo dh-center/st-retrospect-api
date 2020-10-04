@@ -85,6 +85,7 @@ export default gql`
     """
     synonyms: [String] @multilingual
   }
+
   extend type Query {
     """
     Get specific relation
@@ -110,5 +111,10 @@ export default gql`
       "Number of requested nodes before a node with a cursor in the before argument"
       last: Int
     ): RelationConnection! @pagination(collectionName: "relations")
+
+    """
+    List of available relation types
+    """
+    relationTypes: [RelationType!]!
   }
 `;
