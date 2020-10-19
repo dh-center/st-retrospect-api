@@ -24,7 +24,7 @@ interface DecodedGlobalId {
   /**
    * Unique object id for provided typename
    */
-  id: ObjectId;
+  id: string;
 }
 
 /**
@@ -37,6 +37,6 @@ export function fromGlobalId(id: string): DecodedGlobalId {
 
   return {
     type,
-    id: new ObjectId(objectId),
+    id: objectId,
   };
 }

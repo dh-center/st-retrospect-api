@@ -7,11 +7,12 @@ import routes from './routes';
 import users from './users';
 import relations from './relations';
 import quests from './quests';
+import address from './address';
 import { JSONResolver, LongResolver, TimestampResolver } from 'graphql-scalars';
 import scalars from './scalars';
 import { ResolverContextBase } from '../types/graphql';
 import { fromGlobalId } from '../utils/globalId';
-import { QueryNodeArgs, Node } from '../generated/graphql';
+import { QueryNodeArgs } from '../generated/graphql';
 import camelCase from 'lodash.camelcase';
 import { FieldsWithDataLoader } from '../dataLoaders';
 
@@ -28,8 +29,7 @@ const indexResolver = {
      * @param dataLoaders - dataloader for data-fetching
      */
     async node(parent: undefined, args: QueryNodeArgs, { dataLoaders }: ResolverContextBase): Promise<unknown> {
-      const { type, id: _id } = fromGlobalId(args.id);
-      const id = _id.toString();
+      const { type, id } = fromGlobalId(args.id);
 
       const dataloaderName = camelCase(type) + 'ById' as FieldsWithDataLoader;
 
@@ -55,5 +55,6 @@ export default merge(
   users,
   relations,
   quests,
+  address,
   scalars
 );

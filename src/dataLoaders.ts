@@ -3,9 +3,10 @@ import { Db, ObjectId } from 'mongodb';
 import { RelationDBScheme, RelationTypeDBScheme } from './resolvers/relations';
 import { PersonDBScheme } from './resolvers/persons';
 import { ObjectMap } from './types/utils';
-import { AddressesDBScheme, LocationDBScheme, LocationTypeDBScheme } from './resolvers/locations';
+import { LocationDBScheme, LocationTypeDBScheme } from './resolvers/locations';
 import { RouteDBScheme } from './resolvers/routes';
 import { QuestDBScheme } from './resolvers/quests';
+import { countries, regions } from './resolvers/address';
 
 /**
  * Class for setting up data loaders
@@ -52,14 +53,6 @@ export default class DataLoaders {
   );
 
   /**
-   * Loader for fetching addresses by their ids
-   */
-  public addressesById = new DataLoader(
-    (addressIds: string[]) => this.batchByIds<AddressesDBScheme>('addresses', addressIds),
-    { cache: false }
-  );
-
-  /**
    * Loader for fetching relation types by their ids
    */
   public relationTypeById = new DataLoader(
@@ -74,6 +67,14 @@ export default class DataLoaders {
     (locationTypesIds: string[]) => this.batchByIds<LocationTypeDBScheme>('locationtypes', locationTypesIds),
     { cache: false }
   );
+
+  public countryById = new DataLoader(
+    async (codes: string[]) => codes.map((code) => countries[code])
+  )
+
+  public regionById = new DataLoader(
+    async (codes: string[]) => codes.map((code) => regions[code])
+  )
 
   /**
    * Loader for fetching locationInstance by their ids

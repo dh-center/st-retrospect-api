@@ -138,4 +138,6 @@ export type NodeName =
   'LocationType' |
   'Address' |
   'RelationType' |
-  'Route';
+  'Route' |
+  'Country' |
+  'Region';

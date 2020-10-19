@@ -16,41 +16,31 @@ export default gql`
     name: String @multilingual
   }
 
+  type Country implements Node {
+    id: ID! @fromField(name: "code")
+    code: String!
+    name: MultilingualString! @multilingual
+  }
+
+  type Region implements Node {
+    id: ID! @fromField(name: "code")
+    code: String!
+    name: MultilingualString! @multilingual
+  }
+
+
   """
   Location address representation
   """
-  type Address implements Node {
-    """
-    Address's ID
-    """
-    id: ID! @fromField(name: "_id")
-
-    """
-    Street on which the location is located
-    """
-    street: String @multilingual
-
-    """
-    Build name
-    """
-    build: String @multilingual
-
-    """
-    House number on the street
-    """
-    homeNumber: String
-
-    """
-    Corps of home
-    """
-    housing: String
-
-    """
-    Link for location info
-    """
-    link: String
+  type Address {
+    country: Country!
+    region: Region!
+    place: MultilingualString! @multilingual
+    locality: MultilingualString! @multilingual
+    address: MultilingualString! @multilingual
+    address2: MultilingualString! @multilingual
+    postcode: MultilingualString! @multilingual
   }
-
   """
   Location context. This can be a time period, a special description for a particular route, etc.
   """
@@ -148,7 +138,7 @@ export default gql`
     """
     Array of addresses ids
     """
-    addresses: [Address] @dataLoader(dataLoaderName: "addressesById", fieldName: "addressesId")
+    addresses: [Address]
 
     """
     Possible location representations

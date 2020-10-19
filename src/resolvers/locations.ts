@@ -13,6 +13,7 @@ import mergeWith from 'lodash.mergewith';
 import emptyMutation from '../utils/emptyMutation';
 import { CreateLocationInput, UpdateLocationInput } from '../generated/graphql';
 import { WithoutId } from '../types/utils';
+import { LocationAddress } from './address';
 
 /**
  * ID of relation type for architects
@@ -41,7 +42,7 @@ export interface LocationDBScheme {
   /**
    * Array of addresses ids
    */
-  addressesId?: (ObjectId | null)[];
+  addresses?: LocationAddress[];
 
   /**
    * Array with location instances ids
@@ -110,41 +111,6 @@ export interface LocationInstanceDBScheme {
    * Ending of the period for this instance
    */
   endDate?: string | null;
-}
-
-/**
- * Address representation in DataBase
- */
-export interface AddressesDBScheme {
-  /**
-   * Id of address
-   */
-  _id: ObjectId;
-
-  /**
-   * Street on which the location is located
-   */
-  street: MultilingualString;
-
-  /**
-   * Build name
-   */
-  build: MultilingualString;
-
-  /**
-   * House number on the street
-   */
-  homeNumber: string;
-
-  /**
-   * Corps of home
-   */
-  housing: string;
-
-  /**
-   * Link for location info
-   */
-  link: string;
 }
 
 /**

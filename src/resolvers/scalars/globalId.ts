@@ -5,7 +5,7 @@ import { fromGlobalId } from '../../utils/globalId';
 const GlobalId = new GraphQLScalarType({
   name: 'GlobalId',
   parseValue(value): ObjectId {
-    return fromGlobalId(value).id;
+    return new ObjectId(fromGlobalId(value).id);
   },
 });
 
