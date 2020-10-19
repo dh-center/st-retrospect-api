@@ -3,6 +3,7 @@ import { gql, concatenateTypeDefs } from 'apollo-server-express';
 import persons from './persons';
 import locations from './locations';
 import relations from './relations';
+import relationTypes from './relationTypes';
 import routes from './routes';
 import users from './users';
 import quests from './quests';
@@ -132,6 +133,7 @@ export default concatenateTypeDefs(
     locationInstancesMutations,
     relations,
     relationsMutations,
+    relationTypes,
     routes,
     users,
     quests,

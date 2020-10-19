@@ -3,8 +3,9 @@ import { GraphQLSchema } from 'graphql';
 import DataLoaders from '../dataLoaders';
 import { PersonDBScheme } from '../resolvers/persons';
 import { LocationDBScheme, LocationInstanceDBScheme } from '../resolvers/locations';
-import { RelationDBScheme, RelationTypeDBScheme } from '../resolvers/relations';
+import { RelationDBScheme } from '../resolvers/relations';
 import { QuestDBScheme } from '../resolvers/quests';
+import { RelationTypeDBScheme } from '../resolvers/relationTypes';
 
 export type CollectionAccessFunction = <T extends keyof Collections>(name: T) => Collection<Collections[T]>
 

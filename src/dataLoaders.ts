@@ -1,12 +1,13 @@
 import DataLoader from 'dataloader';
 import { Db, ObjectId } from 'mongodb';
-import { RelationDBScheme, RelationTypeDBScheme } from './resolvers/relations';
+import { RelationDBScheme } from './resolvers/relations';
 import { PersonDBScheme } from './resolvers/persons';
 import { ObjectMap } from './types/utils';
 import { LocationDBScheme, LocationTypeDBScheme } from './resolvers/locations';
 import { RouteDBScheme } from './resolvers/routes';
 import { QuestDBScheme } from './resolvers/quests';
 import { countries, regions } from './resolvers/address';
+import { RelationTypeDBScheme } from './resolvers/relationTypes';
 
 /**
  * Class for setting up data loaders
