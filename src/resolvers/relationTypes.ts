@@ -1,7 +1,15 @@
 import { ObjectId } from 'mongodb';
-import { CreateMutationPayload, MultilingualString, ResolverContextBase } from '../types/graphql';
-import { CreateRelationTypeInput } from '../generated/graphql';
+import {
+  CreateMutationPayload,
+  DeleteMutationPayload,
+  MultilingualString,
+  ResolverContextBase,
+  UpdateMutationPayload
+} from '../types/graphql';
+import { CreateRelationTypeInput, UpdateRelationTypeInput } from '../generated/graphql';
 import emptyMutation from '../utils/emptyMutation';
+import { UserInputError } from 'apollo-server-express';
+import mergeWith from 'lodash.mergewith';
 
 /**
  * Relation type DB representation
@@ -41,6 +49,67 @@ const RelationTypeMutations = {
     return {
       recordId: relationType._id,
       record: relationType,
+    };
+  },
+
+  /**
+   * Update relation type
+   *
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input - relation type object
+   * @param collection - collection in MongoDB for queries
+   */
+  async update(
+    parent: undefined,
+    { input }: { input: UpdateRelationTypeInput & {_id: ObjectId} },
+    { collection }: ResolverContextBase
+  ): Promise<UpdateMutationPayload<RelationTypeDBScheme>> {
+    input._id = new ObjectId(input.id);
+    const id = input._id;
+
+    delete input.id;
+
+    const originalRelationType = await collection('relationtypes').findOne({
+      _id: id,
+    });
+
+    if (!originalRelationType) {
+      throw new UserInputError('There is no relation type with such id: ' + id);
+    }
+
+    const relationType = await collection('relationtypes').findOneAndUpdate(
+      { _id: id },
+      {
+        $set: mergeWith(originalRelationType, input, (original, inp) => inp === null ? original : undefined),
+      },
+      { returnOriginal: false });
+
+    if (!relationType.value) {
+      throw new UserInputError('Can\'t update relation type with such id: ' + id);
+    }
+
+    return {
+      recordId: id,
+      record: relationType.value,
+    };
+  },
+
+  /**
+   * Delete relation type
+   *
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id - relation type id
+   * @param collection - collection in MongoDB for queries
+   */
+  async delete(
+    parent: undefined,
+    { id }: { id: ObjectId },
+    { collection }: ResolverContextBase
+  ): Promise<DeleteMutationPayload> {
+    await collection('relationtypes').deleteOne({ _id: id });
+
+    return {
+      recordId: id,
     };
   },
 };
