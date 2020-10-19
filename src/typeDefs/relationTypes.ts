@@ -13,12 +13,12 @@ export default gql`
     """
     Relation type name
     """
-    name: String @multilingual
+    name: MultilingualString! @multilingual
 
     """
     Relation type synonyms
     """
-    synonyms: [String] @multilingual
+    synonyms: [MultilingualString]! @multilingual
   }
 
   """
@@ -36,7 +36,7 @@ export default gql`
     node: RelationType!
   }
 
-    """
+  """
   Model for representing list of relation types
   """
   type RelationTypeConnection {

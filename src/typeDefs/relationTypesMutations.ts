@@ -5,12 +5,12 @@ export default gql`
     """
     Relation type name
     """
-    name: String! @multilingual
+    name: MultilingualString! @multilingual
 
     """
     Relation type synonyms
     """
-    synonyms: [String!]! @multilingual
+    synonyms: [MultilingualString!]! @multilingual
   }
 
   type CreateRelationTypePayload {
@@ -29,6 +29,10 @@ export default gql`
     """
     Creates relation type
     """
-    create(input: CreateRelationTypeInput!): CreateRelationTypePayload @adminCheck
+    create(input: CreateRelationTypeInput!): CreateRelationTypePayload! @adminCheck
+  }
+
+  extend type Mutation {
+    relationType: RelationTypeMutations!
   }
 `;
