@@ -385,14 +385,16 @@ export type LocationType = Node & {
   name?: Maybe<Scalars['String']>;
 };
 
-export type Country = {
+export type Country = Node & {
   __typename?: 'Country';
+  id: Scalars['ID'];
   code: Scalars['String'];
   name: Scalars['MultilingualString'];
 };
 
-export type Region = {
+export type Region = Node & {
   __typename?: 'Region';
+  id: Scalars['ID'];
   code: Scalars['String'];
   name: Scalars['MultilingualString'];
 };
@@ -400,13 +402,13 @@ export type Region = {
 /** Location address representation */
 export type Address = {
   __typename?: 'Address';
-  country: Country;
-  region: Region;
-  place: Scalars['String'];
-  locality: Scalars['String'];
-  address: Scalars['String'];
-  address2: Scalars['String'];
-  postcode: Scalars['String'];
+  country?: Maybe<Country>;
+  region?: Maybe<Region>;
+  place?: Maybe<Scalars['MultilingualString']>;
+  locality?: Maybe<Scalars['MultilingualString']>;
+  address?: Maybe<Scalars['MultilingualString']>;
+  address2?: Maybe<Scalars['MultilingualString']>;
+  postcode?: Maybe<Scalars['MultilingualString']>;
 };
 
 /** Location context. This can be a time period, a special description for a particular route, etc. */
@@ -452,7 +454,7 @@ export type Location = Node & {
   /** Location position longitude */
   longitude?: Maybe<Scalars['Float']>;
   /** Array of addresses ids */
-  addresses?: Maybe<Array<Maybe<Address>>>;
+  addresses?: Maybe<Array<Address>>;
   /** Possible location representations */
   instances: Array<LocationInstance>;
 };
@@ -477,24 +479,24 @@ export type LocationEdge = {
   node: Location;
 };
 
-export type CountryInput = {
-  code: Scalars['String'];
-  name: Scalars['String'];
+export type UpdateAddressInput = {
+  countryCode?: Maybe<Scalars['String']>;
+  regionCode?: Maybe<Scalars['String']>;
+  place?: Maybe<Scalars['MultilingualString']>;
+  locality?: Maybe<Scalars['MultilingualString']>;
+  address?: Maybe<Scalars['MultilingualString']>;
+  address2?: Maybe<Scalars['MultilingualString']>;
+  postcode?: Maybe<Scalars['MultilingualString']>;
 };
 
-export type RegionInput = {
-  code: Scalars['String'];
-  name: Scalars['String'];
-};
-
-export type AddressInput = {
-  country: CountryInput;
-  region: RegionInput;
-  place: Scalars['String'];
-  locality: Scalars['String'];
-  address: Scalars['String'];
-  address2: Scalars['String'];
-  postcode: Scalars['String'];
+export type CreateAddressInput = {
+  countryCode: Scalars['String'];
+  regionCode: Scalars['String'];
+  place?: Maybe<Scalars['MultilingualString']>;
+  locality?: Maybe<Scalars['MultilingualString']>;
+  address: Scalars['MultilingualString'];
+  address2?: Maybe<Scalars['MultilingualString']>;
+  postcode?: Maybe<Scalars['MultilingualString']>;
 };
 
 export type CreateLocationInput = {
@@ -504,7 +506,7 @@ export type CreateLocationInput = {
   longitude: Scalars['Float'];
   /** Possible location representations */
   instances: Array<LocationInstanceInput>;
-  addresses: Array<AddressInput>;
+  addresses: Array<CreateAddressInput>;
 };
 
 export type LocationInstanceInput = {
@@ -543,7 +545,7 @@ export type UpdateLocationInput = {
   latitude?: Maybe<Scalars['Float']>;
   /** Location position longitude */
   longitude?: Maybe<Scalars['Float']>;
-  addresses: Array<AddressInput>;
+  addresses?: Maybe<Array<UpdateAddressInput>>;
 };
 
 export type UpdateLocationPayload = {
@@ -1064,7 +1066,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  Node: ResolversTypes['Person'] | ResolversTypes['LocationType'] | ResolversTypes['LocationInstance'] | ResolversTypes['Location'] | ResolversTypes['Relation'] | ResolversTypes['RelationType'] | ResolversTypes['Route'] | ResolversTypes['User'] | ResolversTypes['Quest'];
+  Node: ResolversTypes['Person'] | ResolversTypes['LocationType'] | ResolversTypes['Country'] | ResolversTypes['Region'] | ResolversTypes['LocationInstance'] | ResolversTypes['Location'] | ResolversTypes['Relation'] | ResolversTypes['RelationType'] | ResolversTypes['Route'] | ResolversTypes['User'] | ResolversTypes['Quest'];
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   ObjectId: ResolverTypeWrapper<Scalars['ObjectId']>;
@@ -1095,9 +1097,8 @@ export type ResolversTypes = {
   Location: ResolverTypeWrapper<Location>;
   LocationConnection: ResolverTypeWrapper<LocationConnection>;
   LocationEdge: ResolverTypeWrapper<LocationEdge>;
-  CountryInput: CountryInput;
-  RegionInput: RegionInput;
-  AddressInput: AddressInput;
+  UpdateAddressInput: UpdateAddressInput;
+  CreateAddressInput: CreateAddressInput;
   CreateLocationInput: CreateLocationInput;
   LocationInstanceInput: LocationInstanceInput;
   CreateLocationPayload: ResolverTypeWrapper<CreateLocationPayload>;
@@ -1144,7 +1145,7 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Node: ResolversParentTypes['Person'] | ResolversParentTypes['LocationType'] | ResolversParentTypes['LocationInstance'] | ResolversParentTypes['Location'] | ResolversParentTypes['Relation'] | ResolversParentTypes['RelationType'] | ResolversParentTypes['Route'] | ResolversParentTypes['User'] | ResolversParentTypes['Quest'];
+  Node: ResolversParentTypes['Person'] | ResolversParentTypes['LocationType'] | ResolversParentTypes['Country'] | ResolversParentTypes['Region'] | ResolversParentTypes['LocationInstance'] | ResolversParentTypes['Location'] | ResolversParentTypes['Relation'] | ResolversParentTypes['RelationType'] | ResolversParentTypes['Route'] | ResolversParentTypes['User'] | ResolversParentTypes['Quest'];
   ID: Scalars['ID'];
   Cursor: Scalars['Cursor'];
   ObjectId: Scalars['ObjectId'];
@@ -1174,9 +1175,8 @@ export type ResolversParentTypes = {
   Location: Location;
   LocationConnection: LocationConnection;
   LocationEdge: LocationEdge;
-  CountryInput: CountryInput;
-  RegionInput: RegionInput;
-  AddressInput: AddressInput;
+  UpdateAddressInput: UpdateAddressInput;
+  CreateAddressInput: CreateAddressInput;
   CreateLocationInput: CreateLocationInput;
   LocationInstanceInput: LocationInstanceInput;
   CreateLocationPayload: CreateLocationPayload;
@@ -1221,7 +1221,7 @@ export type ResolversParentTypes = {
 };
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'Person' | 'LocationType' | 'LocationInstance' | 'Location' | 'Relation' | 'RelationType' | 'Route' | 'User' | 'Quest', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Person' | 'LocationType' | 'Country' | 'Region' | 'LocationInstance' | 'Location' | 'Relation' | 'RelationType' | 'Route' | 'User' | 'Quest', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -1344,25 +1344,27 @@ export type LocationTypeResolvers<ContextType = any, ParentType extends Resolver
 };
 
 export type CountryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Country'] = ResolversParentTypes['Country']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['MultilingualString'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type RegionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Region'] = ResolversParentTypes['Region']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['MultilingualString'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type AddressResolvers<ContextType = any, ParentType extends ResolversParentTypes['Address'] = ResolversParentTypes['Address']> = {
-  country?: Resolver<ResolversTypes['Country'], ParentType, ContextType>;
-  region?: Resolver<ResolversTypes['Region'], ParentType, ContextType>;
-  place?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  locality?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  address2?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  postcode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>;
+  region?: Resolver<Maybe<ResolversTypes['Region']>, ParentType, ContextType>;
+  place?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  locality?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  address?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  address2?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  postcode?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1388,7 +1390,7 @@ export type LocationResolvers<ContextType = any, ParentType extends ResolversPar
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   latitude?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   longitude?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  addresses?: Resolver<Maybe<Array<Maybe<ResolversTypes['Address']>>>, ParentType, ContextType>;
+  addresses?: Resolver<Maybe<Array<ResolversTypes['Address']>>, ParentType, ContextType>;
   instances?: Resolver<Array<ResolversTypes['LocationInstance']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
