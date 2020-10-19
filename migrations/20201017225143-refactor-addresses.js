@@ -35,7 +35,9 @@ module.exports = {
           /**
            * The first line of an address e.g. Пл. Никольская 1
            */
-          address: (address.street.ru + ', ' + address.homeNumber).trim(),
+          address: {
+            ru: (address.street.ru + ', ' + address.homeNumber).trim()
+          },
         }
       ))
 

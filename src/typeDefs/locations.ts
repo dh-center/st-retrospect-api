@@ -33,14 +33,15 @@ export default gql`
   Location address representation
   """
   type Address {
-    country: Country!
-    region: Region!
-    place: MultilingualString! @multilingual
-    locality: MultilingualString! @multilingual
-    address: MultilingualString! @multilingual
-    address2: MultilingualString! @multilingual
-    postcode: MultilingualString! @multilingual
+    country: Country
+    region: Region
+    place: MultilingualString @multilingual
+    locality: MultilingualString @multilingual
+    address: MultilingualString @multilingual
+    address2: MultilingualString @multilingual
+    postcode: MultilingualString @multilingual
   }
+
   """
   Location context. This can be a time period, a special description for a particular route, etc.
   """
@@ -138,7 +139,7 @@ export default gql`
     """
     Array of addresses ids
     """
-    addresses: [Address]
+    addresses: [Address!]
 
     """
     Possible location representations

@@ -1,16 +1,25 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
-  input AddressInput {
-    countryCode: String!
-    regionCode: String!
-    place: MultilingualString! @multilingual
-    locality: MultilingualString! @multilingual
-    address: MultilingualString! @multilingual
-    address2: MultilingualString! @multilingual
-    postcode: MultilingualString! @multilingual
+  input UpdateAddressInput {
+    countryCode: String
+    regionCode: String
+    place: MultilingualString @multilingual
+    locality: MultilingualString @multilingual
+    address: MultilingualString @multilingual
+    address2: MultilingualString @multilingual
+    postcode: MultilingualString @multilingual
   }
 
+  input CreateAddressInput {
+    countryCode: String!
+    regionCode: String!
+    place: MultilingualString @multilingual
+    locality: MultilingualString @multilingual
+    address: MultilingualString! @multilingual
+    address2: MultilingualString @multilingual
+    postcode: MultilingualString @multilingual
+  }
 
   input CreateLocationInput {
     """
@@ -28,7 +37,7 @@ export default gql`
     """
     instances: [LocationInstanceInput!]!
 
-    addresses: [AddressInput!]!
+    addresses: [CreateAddressInput!]!
   }
 
   input LocationInstanceInput {
@@ -107,7 +116,7 @@ export default gql`
     """
     longitude: Float
 
-    addresses: [AddressInput!]!
+    addresses: [UpdateAddressInput!]
   }
 
   type UpdateLocationPayload {
