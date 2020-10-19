@@ -9,7 +9,6 @@ import mergeWith from 'lodash.mergewith';
 import emptyMutation from '../utils/emptyMutation';
 import { CreateRelationInput, UpdateRelationInput } from '../generated/graphql';
 import { UserInputError } from 'apollo-server-express';
-import { RelationTypeDBScheme } from './relationTypes';
 
 /**
  * Relation's database scheme

@@ -12,6 +12,7 @@ import questsMutations from './questsMutations';
 import locationsMutations from './locationsMutations';
 import locationInstancesMutations from './locationInstancesMutations';
 import relationsMutations from './relationsMutations';
+import relationTypesMutations from './relationTypesMutations';
 
 const rootSchema = gql`
   """
@@ -134,6 +135,7 @@ export default concatenateTypeDefs(
     relations,
     relationsMutations,
     relationTypes,
+    relationTypesMutations,
     routes,
     users,
     quests,
