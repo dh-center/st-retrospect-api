@@ -46,12 +46,12 @@ export interface LocationAddress {
   /**
    * City name, e.g. Saint-Petersburg
    */
-  place?: MultilingualString;
+  place?: MultilingualString | null;
 
   /**
    * City district e.g. Адмиралтейский округ
    */
-  locality?: MultilingualString;
+  locality?: MultilingualString | null;
 
   /**
    * The first line of an address e.g. Пл. Никольская 1
@@ -61,12 +61,12 @@ export interface LocationAddress {
   /**
    * An optional second line of an address
    */
-  address2?: MultilingualString;
+  address2?: MultilingualString | null;
 
   /**
    * Address postcode
    */
-  postcode?: MultilingualString;
+  postcode?: MultilingualString | null;
 }
 
 const Address = {
