@@ -6,7 +6,7 @@ module.exports = {
 
     await asyncForEach(locations, async (location) => {
       console.log(`process location with id ${location._id}`)
-      if (!location.addressesId && location.addressesId.length === 0) {
+      if (!location.addressesId || location.addressesId.length === 0) {
         return;
       }
 
