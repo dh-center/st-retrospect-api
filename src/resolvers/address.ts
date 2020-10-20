@@ -5,6 +5,9 @@ import { WithoutId } from '../types/utils';
 type CountryWithoutId = WithoutId<Country>;
 type RegionWithoutId = WithoutId<Region>;
 
+/**
+ * Available countries
+ */
 export const countries: Record<string, CountryWithoutId> = {
   RU: {
     code: 'RU',
@@ -15,6 +18,9 @@ export const countries: Record<string, CountryWithoutId> = {
   },
 };
 
+/**
+ * Available regions
+ */
 export const regions: Record<string, RegionWithoutId> = {
   'RU-LEN': {
     code: 'RU-LEN',
@@ -32,6 +38,9 @@ export const regions: Record<string, RegionWithoutId> = {
   },
 };
 
+/**
+ * Location address representation
+ */
 export interface LocationAddress {
   /**
    * Country data
@@ -70,10 +79,20 @@ export interface LocationAddress {
 }
 
 const Address = {
+  /**
+   * Get country data by its code
+   *
+   * @param address - resolved address from parent resolver
+   */
   country(address: LocationAddress): CountryWithoutId {
     return countries[address.countryCode];
   },
 
+  /**
+   * Get region data by its code
+   *
+   * @param address - resolved address from parent resolver
+   */
   region(address: LocationAddress): RegionWithoutId {
     return regions[address.regionCode];
   },
