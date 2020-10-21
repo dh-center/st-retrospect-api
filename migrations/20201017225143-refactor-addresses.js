@@ -6,7 +6,7 @@ module.exports = {
 
     await asyncForEach(locations, async (location) => {
       console.log(`process location with id ${location._id}`)
-      if (!location.addressesId && location.addressesId.length === 0) {
+      if (!location.addressesId || location.addressesId.length === 0) {
         return;
       }
 
@@ -35,7 +35,9 @@ module.exports = {
           /**
            * The first line of an address e.g. Пл. Никольская 1
            */
-          address: (address.street.ru + ', ' + address.homeNumber).trim(),
+          address: {
+            ru: (address.street.ru + ', ' + address.homeNumber).trim()
+          },
         }
       ))
 

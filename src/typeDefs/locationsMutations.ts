@@ -1,17 +1,89 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
-  input AddressInput {
-    countryCode: String!
-    regionCode: String!
-    place: MultilingualString! @multilingual
-    locality: MultilingualString! @multilingual
-    address: MultilingualString! @multilingual
-    address2: MultilingualString! @multilingual
-    postcode: MultilingualString! @multilingual
+  """
+  Input type for updating address in location
+  """
+  input UpdateAddressInput {
+    """
+    Unique country code from ISO 3166
+    """
+    countryCode: String
+
+    """
+    Unique region code from ISO 3166
+    """
+    regionCode: String
+
+    """
+    City name, e.g. Saint-Petersburg
+    """
+    place: MultilingualString @multilingual
+
+    """
+    City district e.g. Адмиралтейский округ
+    """
+    locality: MultilingualString @multilingual
+
+    """
+    The first line of an address e.g. Пл. Никольская 1
+    """
+    address: MultilingualString @multilingual
+
+    """
+    An optional second line of an address
+    """
+    address2: MultilingualString @multilingual
+
+    """
+    Address postcode
+    """
+    postcode: MultilingualString @multilingual
   }
 
+  """
+  Input type for specifying address in new location
+  """
+  input CreateAddressInput {
+    """
+    Unique country code from ISO 3166
+    """
+    countryCode: String!
 
+    """
+    Unique region code from ISO 3166
+    """
+    regionCode: String!
+
+    """
+    City name, e.g. Saint-Petersburg
+    """
+    place: MultilingualString @multilingual
+
+    """
+    City district e.g. Адмиралтейский округ
+    """
+    locality: MultilingualString @multilingual
+
+    """
+    The first line of an address e.g. Пл. Никольская 1
+    """
+    address: MultilingualString! @multilingual
+
+    """
+    An optional second line of an address
+    """
+    address2: MultilingualString @multilingual
+
+    """
+    Address postcode
+    """
+    postcode: MultilingualString @multilingual
+  }
+
+  """
+  Input for creating new location
+  """
   input CreateLocationInput {
     """
     Location position latitude
@@ -28,7 +100,10 @@ export default gql`
     """
     instances: [LocationInstanceInput!]!
 
-    addresses: [AddressInput!]!
+    """
+    Address to bind to new location
+    """
+    addresses: [CreateAddressInput!]!
   }
 
   input LocationInstanceInput {
@@ -107,7 +182,10 @@ export default gql`
     """
     longitude: Float
 
-    addresses: [AddressInput!]!
+    """
+    Updated location address
+    """
+    addresses: [UpdateAddressInput!]
   }
 
   type UpdateLocationPayload {

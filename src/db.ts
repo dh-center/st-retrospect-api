@@ -2,9 +2,6 @@ import { Db, MongoClient, MongoClientOptions, Logger } from 'mongodb';
 
 const connectionConfig: MongoClientOptions = {
   useNewUrlParser: true,
-  reconnectTries: +(process.env.MONGO_RECONNECT_TRIES || 60),
-  reconnectInterval: +(process.env.MONGO_RECONNECT_INTERVAL || 1000),
-  autoReconnect: true,
   useUnifiedTopology: true,
 };
 

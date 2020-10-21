@@ -264,6 +264,7 @@ const LocationMutations = {
       latitude: input.latitude,
       longitude: input.longitude,
       locationInstanceIds: [],
+      addresses: input.addresses,
     })).ops[0];
 
     const instances = input.instances.map((inst): WithoutId<LocationInstanceDBScheme> => {
