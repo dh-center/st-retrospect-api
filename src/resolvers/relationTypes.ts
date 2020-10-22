@@ -80,7 +80,16 @@ const RelationTypeMutations = {
     const relationType = await collection('relationtypes').findOneAndUpdate(
       { _id: id },
       {
-        $set: mergeWith(originalRelationType, input, (original, inp) => inp === null ? original : undefined),
+        $set: mergeWith(originalRelationType, input, (original, inp) => {
+          if (inp === null) {
+            return original;
+          }
+          if (Array.isArray(original)) {
+            return inp;
+          }
+
+          return undefined;
+        }),
       },
       { returnOriginal: false });
 
