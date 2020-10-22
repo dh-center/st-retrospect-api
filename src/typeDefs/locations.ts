@@ -16,15 +16,44 @@ export default gql`
     name: String @multilingual
   }
 
+  """
+  Country data in address of location
+  """
   type Country implements Node {
+    """
+    Country identifier
+    """
     id: ID! @fromField(name: "code")
+
+    """
+    ISO 3166 country code
+    """
     code: String!
+
+    """
+    Country name
+    """
     name: MultilingualString! @multilingual
   }
 
+  """
+  Region data in address of location
+  """
   type Region implements Node {
+    """
+    Region identifier
+    """
     id: ID! @fromField(name: "code")
+
+    """
+    ISO 3166 country code
+    see https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
+    """
     code: String!
+
+    """
+    Region name
+    """
     name: MultilingualString! @multilingual
   }
 
@@ -33,12 +62,39 @@ export default gql`
   Location address representation
   """
   type Address {
+    """
+    Country data
+    """
     country: Country
+
+    """
+    Country region data
+    """
     region: Region
+
+    """
+    City name, e.g. Saint-Petersburg
+    """
     place: MultilingualString @multilingual
+
+    """
+    City district e.g. Адмиралтейский округ
+    """
     locality: MultilingualString @multilingual
+
+    """
+    The first line of an address e.g. Пл. Никольская 1
+    """
     address: MultilingualString @multilingual
+
+    """
+    An optional second line of an address
+    """
     address2: MultilingualString @multilingual
+
+    """
+    Address postcode
+    """
     postcode: MultilingualString @multilingual
   }
 
