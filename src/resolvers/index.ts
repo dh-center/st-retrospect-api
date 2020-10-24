@@ -6,6 +6,7 @@ import locationInstances from './locationInstances';
 import routes from './routes';
 import users from './users';
 import relations from './relations';
+import relationTypes from './relationTypes';
 import quests from './quests';
 import address from './address';
 import { JSONResolver, LongResolver, TimestampResolver } from 'graphql-scalars';
@@ -54,6 +55,7 @@ export default merge(
   routes,
   users,
   relations,
+  relationTypes,
   quests,
   address,
   scalars

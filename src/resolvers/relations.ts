@@ -40,36 +40,6 @@ export interface RelationDBScheme {
   quote: MultilingualString;
 }
 
-/**
- * Relation type DB representation
- */
-export interface RelationTypeDBScheme {
-  /**
-   * Relation type id
-   */
-  _id: ObjectId;
-
-  /**
-   * Relation type name
-   */
-  name: MultilingualString;
-
-  /**
-   * Relation type synonym
-   */
-  synonyms: [RelationSynonymDBScheme];
-}
-
-/**
- * Relation type synonym representation
- */
-export interface RelationSynonymDBScheme {
-  /**
-   * Synonym name
-   */
-  name: MultilingualString;
-}
-
 const RelationMutations = {
   /**
    * Create new relation
@@ -153,48 +123,11 @@ const RelationMutations = {
   },
 };
 
-const RelationType = {
-  /**
-   * Resolver for relation type synonyms
-   *
-   * @param relation - the object that contains the result returned from the resolver on the parent field
-   */
-  synonyms(
-    relation: RelationTypeDBScheme
-  ): (MultilingualString | null)[] {
-    return relation.synonyms.map((synonym) => {
-      if (!synonym) {
-        return null;
-      }
-
-      return synonym.name;
-    });
-  },
-};
-
-const Query = {
-  /**
-   * Returns list of available relation types
-   *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param args - arguments map (empty in that resolver)
-   * @param context - resolver context
-   */
-  relationTypes(parent: undefined, args: undefined, context: ResolverContextBase): Promise<RelationTypeDBScheme[]> {
-    return context
-      .collection('relationtypes')
-      .find({})
-      .toArray();
-  },
-};
-
 const Mutation = {
   relation: emptyMutation,
 };
 
 export default {
-  RelationType,
   Mutation,
   RelationMutations,
-  Query,
 };
