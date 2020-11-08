@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
  *
  * @param user - user to generate token for
  */
-export function getUserToken(user: UserDBScheme): string {
+export function generateUserToken(user: UserDBScheme): string {
   return jwt.sign({
     id: user._id,
     isAdmin: user.isAdmin,

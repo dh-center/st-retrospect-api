@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { google, people_v1 } from 'googleapis';
 import { OAuth2Client } from 'google-auth-library';
 import { getCollection } from '../../db';
-import { getUserToken } from '../../utils/jwt';
+import { generateUserToken } from '../../utils/jwt';
 
 const router = Router();
 
@@ -86,7 +86,7 @@ router.post('/oauth/google/callback', async (req, res) => {
    * Authorize user if already signed up
    */
   if (existedUser) {
-    const accessToken = getUserToken(existedUser);
+    const accessToken = generateUserToken(existedUser);
 
     return res.json({ data: { accessToken } });
   }
@@ -115,7 +115,7 @@ router.post('/oauth/google/callback', async (req, res) => {
     },
   })).ops[0];
 
-  const accessToken = getUserToken(newUser);
+  const accessToken = generateUserToken(newUser);
 
   return res.json({ data: { accessToken } });
 });
