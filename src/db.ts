@@ -1,4 +1,5 @@
-import { Db, MongoClient, MongoClientOptions, Logger } from 'mongodb';
+import { Db, MongoClient, MongoClientOptions, Logger, Collection } from 'mongodb';
+import { CollectionAccessFunction, Collections } from './types/graphql';
 
 const connectionConfig: MongoClientOptions = {
   useNewUrlParser: true,
@@ -28,4 +29,13 @@ export default async function getConnection(): Promise<Db> {
   }
 
   return connection;
+}
+
+/**
+ * Function for direct access to collections
+ *
+ * @param name - collection name
+ */
+export async function getCollection<T extends keyof Collections>(name: T): Promise<Collection<Collections[T]>> {
+  return (await getConnection()).collection(name);
 }

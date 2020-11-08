@@ -6,6 +6,7 @@ import { LocationDBScheme, LocationInstanceDBScheme } from '../resolvers/locatio
 import { RelationDBScheme } from '../resolvers/relations';
 import { QuestDBScheme } from '../resolvers/quests';
 import { RelationTypeDBScheme } from '../resolvers/relationTypes';
+import { UserDBScheme } from '../resolvers/users';
 
 export type CollectionAccessFunction = <T extends keyof Collections>(name: T) => Collection<Collections[T]>
 
@@ -40,7 +41,8 @@ export interface ResolverContextBase {
 /**
  * Map with collection name and its type
  */
-interface Collections {
+export interface Collections {
+  users: UserDBScheme;
   persons: PersonDBScheme;
   locations: LocationDBScheme;
   // eslint-disable-next-line camelcase

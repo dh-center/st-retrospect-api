@@ -2,21 +2,74 @@ import { ObjectId } from 'mongodb';
 import { ResolverContextBase } from '../types/graphql';
 import { RouteDBScheme } from './routes';
 
-interface UserDBScheme {
+/**
+ * Information about user in database
+ */
+export interface UserDBScheme {
   /**
    * User id
    */
   _id: ObjectId;
 
   /**
+   * Username
+   */
+  username: string;
+
+  /**
+   * User password for logging in
+   */
+  password?: string;
+
+  /**
+   * User photo
+   */
+  photo?: string | null;
+
+  /**
+   * User email address
+   */
+  email?: string;
+
+  /**
+   * Is user with administrator privileges or not
+   */
+  isAdmin?: boolean;
+
+  /**
+   * User first name
+   */
+  firstName?: string | null;
+
+  /**
+   * User last name
+   */
+  lastName?: string | null;
+
+  /**
    * Saved routes ids array
    */
-  savedRouteIds: ObjectId[] | null;
+  savedRouteIds?: ObjectId[] | null;
 
   /**
    * Liked routes ids array
    */
-  likedRouteIds: ObjectId[] | null;
+  likedRouteIds?: ObjectId[] | null;
+
+  /**
+   * Information about auth providers
+   */
+  auth?: {
+    /**
+     * Info about user's google account
+     */
+    google?: {
+      /**
+       * Google id of the user
+       */
+      id: string;
+    }
+  }
 }
 
 const Query = {

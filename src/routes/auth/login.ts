@@ -5,7 +5,7 @@ import {
 } from '../../errorTypes';
 import getConnection from '../../db';
 import argon2 from 'argon2';
-import jwt from 'jsonwebtoken';
+import { getUserToken } from '../../utils/jwt';
 const router = express.Router();
 
 router.get('/login', async (req, res, next) => {
@@ -19,10 +19,7 @@ router.get('/login', async (req, res, next) => {
   const compareResult = await argon2.verify(user.hashedPassword, req.query.password as string);
 
   if (compareResult) {
-    const accessToken = jwt.sign({
-      id: user._id,
-      isAdmin: user.isAdmin,
-    }, process.env.JWT_SECRET_STRING || 'secret_string');
+    const accessToken = getUserToken(user);
 
     res.json({ data: { accessToken } });
   } else {
