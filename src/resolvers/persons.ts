@@ -58,7 +58,16 @@ const PersonMutations = {
     const person = await db.collection('persons').findOneAndUpdate(
       { _id: id },
       {
-        $set: mergeWith(originalPerson, input, (original, inp) => inp === null ? original : undefined),
+        $set: mergeWith(originalPerson, input, (original, inp) => {
+          if (inp === null) {
+            return original;
+          }
+          if (Array.isArray(original)) {
+            return inp;
+          }
+
+          return undefined;
+        }),
       },
       { returnOriginal: false });
 
