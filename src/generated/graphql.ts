@@ -252,8 +252,8 @@ export type Person = Node & {
   patronymic?: Maybe<Scalars['String']>;
   /** Person's pseudonym */
   pseudonym?: Maybe<Scalars['String']>;
-  /** Person's profession */
-  profession?: Maybe<Scalars['String']>;
+  /** Person's professions */
+  professions: Array<Maybe<Scalars['MultilingualString']>>;
   /** Person's description */
   description?: Maybe<Scalars['String']>;
   /** Person's birth date */
@@ -312,8 +312,8 @@ export type CreatePersonInput = {
   patronymic?: Maybe<Scalars['String']>;
   /** Person's pseudonym */
   pseudonym?: Maybe<Scalars['String']>;
-  /** Person's profession */
-  profession?: Maybe<Scalars['String']>;
+  /** Person's professions */
+  professions: Array<Maybe<Scalars['MultilingualString']>>;
   /** Person's description */
   description?: Maybe<Scalars['String']>;
   /** Person's birth date */
@@ -343,8 +343,8 @@ export type UpdatePersonInput = {
   patronymic?: Maybe<Scalars['String']>;
   /** Person's pseudonym */
   pseudonym?: Maybe<Scalars['String']>;
-  /** Person's profession */
-  profession?: Maybe<Scalars['String']>;
+  /** Person's professions */
+  professions?: Maybe<Array<Maybe<Scalars['MultilingualString']>>>;
   /** Person's description */
   description?: Maybe<Scalars['String']>;
   /** Person's birth date */
@@ -403,29 +403,47 @@ export type LocationType = Node & {
   name?: Maybe<Scalars['String']>;
 };
 
+/** Country data in address of location */
 export type Country = Node & {
   __typename?: 'Country';
+  /** Country identifier */
   id: Scalars['ID'];
+  /** ISO 3166 country code */
   code: Scalars['String'];
+  /** Country name */
   name: Scalars['MultilingualString'];
 };
 
+/** Region data in address of location */
 export type Region = Node & {
   __typename?: 'Region';
+  /** Region identifier */
   id: Scalars['ID'];
+  /**
+   * ISO 3166 country code
+   * see https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
+   */
   code: Scalars['String'];
+  /** Region name */
   name: Scalars['MultilingualString'];
 };
 
 /** Location address representation */
 export type Address = {
   __typename?: 'Address';
+  /** Country data */
   country?: Maybe<Country>;
+  /** Country region data */
   region?: Maybe<Region>;
+  /** City name, e.g. Saint-Petersburg */
   place?: Maybe<Scalars['MultilingualString']>;
+  /** City district e.g. Адмиралтейский округ */
   locality?: Maybe<Scalars['MultilingualString']>;
+  /** The first line of an address e.g. Пл. Никольская 1 */
   address?: Maybe<Scalars['MultilingualString']>;
+  /** An optional second line of an address */
   address2?: Maybe<Scalars['MultilingualString']>;
+  /** Address postcode */
   postcode?: Maybe<Scalars['MultilingualString']>;
 };
 
@@ -497,26 +515,43 @@ export type LocationEdge = {
   node: Location;
 };
 
+/** Input type for updating address in location */
 export type UpdateAddressInput = {
+  /** Unique country code from ISO 3166 */
   countryCode?: Maybe<Scalars['String']>;
+  /** Unique region code from ISO 3166 */
   regionCode?: Maybe<Scalars['String']>;
+  /** City name, e.g. Saint-Petersburg */
   place?: Maybe<Scalars['MultilingualString']>;
+  /** City district e.g. Адмиралтейский округ */
   locality?: Maybe<Scalars['MultilingualString']>;
+  /** The first line of an address e.g. Пл. Никольская 1 */
   address?: Maybe<Scalars['MultilingualString']>;
+  /** An optional second line of an address */
   address2?: Maybe<Scalars['MultilingualString']>;
+  /** Address postcode */
   postcode?: Maybe<Scalars['MultilingualString']>;
 };
 
+/** Input type for specifying address in new location */
 export type CreateAddressInput = {
+  /** Unique country code from ISO 3166 */
   countryCode: Scalars['String'];
+  /** Unique region code from ISO 3166 */
   regionCode: Scalars['String'];
+  /** City name, e.g. Saint-Petersburg */
   place?: Maybe<Scalars['MultilingualString']>;
+  /** City district e.g. Адмиралтейский округ */
   locality?: Maybe<Scalars['MultilingualString']>;
+  /** The first line of an address e.g. Пл. Никольская 1 */
   address: Scalars['MultilingualString'];
+  /** An optional second line of an address */
   address2?: Maybe<Scalars['MultilingualString']>;
+  /** Address postcode */
   postcode?: Maybe<Scalars['MultilingualString']>;
 };
 
+/** Input for creating new location */
 export type CreateLocationInput = {
   /** Location position latitude */
   latitude: Scalars['Float'];
@@ -524,6 +559,7 @@ export type CreateLocationInput = {
   longitude: Scalars['Float'];
   /** Possible location representations */
   instances: Array<LocationInstanceInput>;
+  /** Address to bind to new location */
   addresses: Array<CreateAddressInput>;
 };
 
@@ -563,6 +599,7 @@ export type UpdateLocationInput = {
   latitude?: Maybe<Scalars['Float']>;
   /** Location position longitude */
   longitude?: Maybe<Scalars['Float']>;
+  /** Updated location address */
   addresses?: Maybe<Array<UpdateAddressInput>>;
 };
 
@@ -839,7 +876,7 @@ export type CreateRelationTypeInput = {
   /** Relation type name */
   name: Scalars['MultilingualString'];
   /** Relation type synonyms */
-  synonyms: Array<Scalars['MultilingualString']>;
+  synonyms: Array<Maybe<Scalars['MultilingualString']>>;
 };
 
 export type UpdateRelationTypeInput = {
@@ -1400,7 +1437,7 @@ export type PersonResolvers<ContextType = any, ParentType extends ResolversParen
   lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   patronymic?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   pseudonym?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  profession?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  professions?: Resolver<Array<Maybe<ResolversTypes['MultilingualString']>>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   birthDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   deathDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;

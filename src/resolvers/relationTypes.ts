@@ -6,7 +6,7 @@ import {
   ResolverContextBase,
   UpdateMutationPayload
 } from '../types/graphql';
-import { CreateRelationTypeInput, UpdateRelationTypeInput } from '../generated/graphql';
+import { CreateRelationTypeInput, Maybe, UpdateRelationTypeInput } from '../generated/graphql';
 import emptyMutation from '../utils/emptyMutation';
 import { UserInputError } from 'apollo-server-express';
 import mergeWith from 'lodash.mergewith';
@@ -28,7 +28,7 @@ export interface RelationTypeDBScheme {
   /**
    * Relation type synonym
    */
-  synonyms: MultilingualString[];
+  synonyms: Maybe<MultilingualString>[];
 }
 
 const RelationTypeMutations = {
