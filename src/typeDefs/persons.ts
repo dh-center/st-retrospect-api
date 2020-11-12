@@ -28,9 +28,9 @@ export default gql`
     pseudonym: String @multilingual
 
     """
-    Person's profession
+    Person's professions
     """
-    profession: String @multilingual
+    professions: [MultilingualString] @multilingual
 
     """
     Person's description
@@ -177,9 +177,9 @@ export default gql`
     pseudonym: String @multilingual
 
     """
-    Person's profession
+    Person's professions
     """
-    profession: String @multilingual
+    professions: [MultilingualString] @multilingual
 
     """
     Person's description
@@ -241,9 +241,9 @@ export default gql`
     pseudonym: String @multilingual
 
     """
-    Person's profession
+    Person's professions
     """
-    profession: String @multilingual
+    professions: [MultilingualString] @multilingual
 
     """
     Person's description
