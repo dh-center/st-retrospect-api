@@ -253,7 +253,7 @@ export type Person = Node & {
   /** Person's pseudonym */
   pseudonym?: Maybe<Scalars['String']>;
   /** Person's professions */
-  professions?: Maybe<Array<Maybe<Scalars['MultilingualString']>>>;
+  professions: Array<Maybe<Scalars['MultilingualString']>>;
   /** Person's description */
   description?: Maybe<Scalars['String']>;
   /** Person's birth date */
@@ -313,7 +313,7 @@ export type CreatePersonInput = {
   /** Person's pseudonym */
   pseudonym?: Maybe<Scalars['String']>;
   /** Person's professions */
-  professions?: Maybe<Array<Maybe<Scalars['MultilingualString']>>>;
+  professions: Array<Maybe<Scalars['MultilingualString']>>;
   /** Person's description */
   description?: Maybe<Scalars['String']>;
   /** Person's birth date */
@@ -1437,7 +1437,7 @@ export type PersonResolvers<ContextType = any, ParentType extends ResolversParen
   lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   patronymic?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   pseudonym?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  professions?: Resolver<Maybe<Array<Maybe<ResolversTypes['MultilingualString']>>>, ParentType, ContextType>;
+  professions?: Resolver<Array<Maybe<ResolversTypes['MultilingualString']>>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   birthDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   deathDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
