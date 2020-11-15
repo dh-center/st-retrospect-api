@@ -52,7 +52,7 @@ const PersonMutations = {
     await axios({
       method: 'post',
       url: process.env.NOTIFY_URL,
-      data: 'message=' + '<b>New person!</b>\n' + `Created by <i>${currentUser.username}</i> (${user.id})\n` +
+      data: 'message=' + '<b>New person! 👶</b>\n' + `Created by <i>${currentUser.username}</i> (${user.id})\n` +
         `See on <a href="${process.env.ADMIN_URL}${newId}">this page</a>\n\n${message}` + '&parse_mode=HTML',
     });
 
