@@ -1,15 +1,35 @@
 import {
   CreateMutationPayload,
-  DeleteMutationPayload,
+  DeleteMutationPayload, NodeName,
   ResolverContextBase,
   UpdateMutationPayload
 } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import mergeWith from 'lodash.mergewith';
 import { toGlobalId } from '../utils/globalId';
-import { countries } from './address';
 
 const axios = require('axios');
+
+/**
+ * @param input
+ * @param message
+ * @param depth
+ */
+function messageCreating(input: PersonDBScheme, message: string, depth = 1): string {
+  for (const [key, value] of Object.entries(input)) {
+    if (!value || value.ru == '' || value.en == '' || key == '_id') {
+      continue;
+    }
+    message += '\t'.repeat(depth * 3) + `<i>${key}</i>\n`;
+    if (typeof value == 'object') {
+      message = messageCreating(value, message, depth + 1);
+    } else {
+      message += '\t'.repeat((depth + 1) * 3) + `${encodeURIComponent(value)}\n\n`;
+    }
+  }
+
+  return message;
+}
 
 export interface PersonDBScheme {
   _id: ObjectId;
@@ -34,27 +54,15 @@ const PersonMutations = {
     const newId = toGlobalId('Person', input._id);
     const currentUser = (await db.collection('users').findOne({ _id: new ObjectId(user.id) }));
 
-    let message = `<b>Person:</b>\n`;
+    const message = `<b>Person:</b>\n`;
 
-    for (const [key, obj] of Object.entries(input)) {
-      if (obj && key != '_id') {
-        if (typeof obj == 'object') {
-          for (const [lang, value] of Object.entries(obj)) {
-            if (value != '') {
-              message += `\t\t\t<i>${key}</i>\n\t\t\t\t\t\t${lang}: ${value}\n\n`;
-            }
-          }
-        } else {
-          message += `\t\t\t<i>${key}</i>\n\t\t\t\t\t\t${obj}\n\n`;
-        }
-      }
-    }
+    const fullMessage = messageCreating(input, message);
 
     await axios({
       method: 'post',
       url: process.env.NOTIFY_URL,
       data: 'message=' + '<b>New person! 👶</b>\n' + `Created by <i>${currentUser.username}</i> (${user.id})\n` +
-        `See on <a href="${process.env.ADMIN_URL}${newId}">this page</a>\n\n${message}` + '&parse_mode=HTML',
+        `See on <a href="${process.env.ADMIN_URL}${newId}">this page</a>\n\n${fullMessage}` + '&parse_mode=HTML',
     });
 
     return {
@@ -84,6 +92,8 @@ const PersonMutations = {
     const originalPerson = await db.collection('persons').findOne({
       _id: id,
     });
+
+    console.log(input);
 
     const newId = toGlobalId('Person', id);
     const currentUser = (await db.collection('users').findOne({ _id: new ObjectId(user.id) }));
