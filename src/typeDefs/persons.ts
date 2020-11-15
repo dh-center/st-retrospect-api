@@ -157,14 +157,14 @@ export default gql`
 
   input CreatePersonInput {
     """
-    Person's first name
-    """
-    firstName: String @multilingual
-
-    """
     Person's last name
     """
     lastName: String @multilingual
+
+    """
+    Person's first name
+    """
+    firstName: String @multilingual
 
     """
     Person's patronymic
@@ -221,14 +221,14 @@ export default gql`
     id: GlobalId!
 
     """
-    Person's first name
-    """
-    firstName: String @multilingual
-
-    """
     Person's last name
     """
     lastName: String @multilingual
+
+    """
+    Person's first name
+    """
+    firstName: String @multilingual
 
     """
     Person's patronymic

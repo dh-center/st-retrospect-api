@@ -7,6 +7,7 @@ import {
 import { ObjectId } from 'mongodb';
 import mergeWith from 'lodash.mergewith';
 import { toGlobalId } from '../utils/globalId';
+import { countries } from './address';
 
 const axios = require('axios');
 
@@ -73,7 +74,7 @@ const PersonMutations = {
   async update(
     parent: undefined,
     { input }: { input: PersonDBScheme & {id: string} },
-    { db }: ResolverContextBase
+    { db, user }: ResolverContextBase
   ): Promise<UpdateMutationPayload<PersonDBScheme>> {
     input._id = new ObjectId(input.id);
     const id = input._id;
@@ -83,6 +84,34 @@ const PersonMutations = {
     const originalPerson = await db.collection('persons').findOne({
       _id: id,
     });
+
+    const newId = toGlobalId('Person', id);
+    const currentUser = (await db.collection('users').findOne({ _id: new ObjectId(user.id) }));
+
+    let messageNew = `<b>New fields:</b>\n`;
+    let haveNew;
+    let messageUpdate = `<b>Updated fields:</b>\n`;
+    let haveUpdate;
+
+    for (const [key, obj] of Object.entries(input)) {
+      if (obj && key != '_id') {
+        if (typeof obj == 'object') {
+          for (const [lang, value] of Object.entries(obj)) {
+            if (value != '') {
+              if (originalPerson[key][lang]) {
+                messageUpdate += `\t\t\t<i>${key}</i>\n\t\t\t\t\t\t${lang}: ${originalPerson[key][lang]} → ${value}\n\n`;
+                haveUpdate = true;
+              } else {
+                messageNew += `\t\t\t<i>${key}</i>\n\t\t\t\t\t\t${lang}: ${value}\n\n`;
+                haveNew = true;
+              }
+            }
+          }
+        } else {
+          messageUpdate += `\t\t\t<i>${key}</i>\n\t\t\t\t\t\t${originalPerson[key]} → ${obj}\n\n`;
+        }
+      }
+    }
 
     const person = await db.collection('persons').findOneAndUpdate(
       { _id: id },
@@ -99,6 +128,23 @@ const PersonMutations = {
         }),
       },
       { returnOriginal: false });
+
+    let fullMessage = '';
+
+    if (haveUpdate) {
+      fullMessage += messageUpdate;
+    }
+    if (haveNew) {
+      fullMessage += messageNew;
+    }
+
+    await axios({
+      method: 'post',
+      url: process.env.NOTIFY_URL,
+      data: 'message=' + '<b>Person has been updated! 👨</b>\n' + `Updated by <i>${currentUser.username}</i> (${user.id})\n` +
+        `See on <a href="${process.env.ADMIN_URL}${newId}">this page</a>\n\n` +
+        `${fullMessage}` + '&parse_mode=HTML',
+    });
 
     return {
       recordId: id,
