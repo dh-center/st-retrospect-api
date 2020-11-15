@@ -10,3 +10,10 @@
 1. Run `yarn install` for installing dependencies
 2. Run `yarn build` to build TypeScript code
 3. Run `node build/index.js` to run server
+
+## Database
+We use MongoDB as our primary database.
+To init necessary MongoDB indexes and collections you need to run `mongo-init.js` file with the following command:
+```
+docker-compose -f docker-compose.dev.yml exec mongodb mongo /docker-entrypoint-initdb.d/mongo-init.js
+```
