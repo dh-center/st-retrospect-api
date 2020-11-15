@@ -1,4 +1,8 @@
-// docker-compose -f docker-compose.dev.yml exec mongodb mongo /docker-entrypoint-initdb.d/mongo-init.js
+/**
+ * Initialises necessary MongoDB indexes
+ * See README.md#Database for more info
+ */
+
 db = db.getSiblingDB('db-interface');
 
 printjson(db.users.createIndex(
