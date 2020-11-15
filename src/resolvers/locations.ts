@@ -18,7 +18,7 @@ import { LocationAddress } from './address';
 /**
  * ID of relation type for architects
  */
-const ARCHITECT_RELATION_ID = '5d84ee80ff41d8a1ef3b3317';
+export const ARCHITECT_RELATION_ID = '5d84ee80ff41d8a1ef3b3317';
 
 /**
  * Location representation in DataBase
