@@ -97,7 +97,6 @@ function messageUpdating(
   original: Record<string, string | any>,
   message: string
 ): string {
-  console.log(input);
   const messagesArr = [`<b>Updated fields:</b>\n`, `<b>New fields:</b>\n`, `<b>Deleted fields:</b>\n`];
 
   const fullMessagesArr = messageUpdatingConstructor(input, original, '', '', '', []);
