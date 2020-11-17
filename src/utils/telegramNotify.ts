@@ -1,7 +1,9 @@
 import { AccessTokenData, NodeName } from '../types/graphql';
 import { toGlobalId } from './globalId';
 import { Db, ObjectId } from 'mongodb';
-import axios from 'axios';
+// import axios from 'axios';
+
+const axios = require('axios');
 
 /**
  * @param input - input object
@@ -143,7 +145,7 @@ export default async function sendNotify(
 
   if (actionType == 'create') {
     const message = `<b>New ${nodeName.toLowerCase()}! 🆕</b>\nCreated by <i>${currentUser.username}</i> (${user.id})\n` +
-        `See on <a href="${process.env.ADMIN_URL}${newId}">this page</a>\n\n<b>${nodeName}:</b>\n`;
+        `See on <a href="${process.env.ADMIN_URL}/${collection}/${newId}">this page</a>\n\n<b>${nodeName}:</b>\n`;
     const fullMessage = messageCreating(input, message);
 
     await sending(fullMessage);
@@ -152,13 +154,13 @@ export default async function sendNotify(
       _id: input._id,
     });
     const message = `<b>${nodeName} has been updated! 🆙</b>\nUpdated by <i>${currentUser.username}</i> (${user.id})\n` +
-        `See on <a href="${process.env.ADMIN_URL}${newId}">this page</a>\n\n`;
+        `See on <a href="${process.env.ADMIN_URL}/${collection}/${newId}">this page</a>\n\n`;
     const fullMessage = messageUpdating(input, original, message);
 
     await sending(fullMessage);
   } else if (actionType == 'delete') {
     const message = `<b>${nodeName} deleted! 🚮</b>\nDeleted by <i>${currentUser.username}</i> (${user.id})\n` +
-      `See on <a href="${process.env.ADMIN_URL}${newId}">this page</a>\n\n<b>${nodeName}:</b>\n` +
+      `See on <a href="${process.env.ADMIN_URL}/${collection}/${newId}">this page</a>\n\n<b>${nodeName}:</b>\n` +
       '\t'.repeat(3) + `<i>_id</i>\n` + '\t'.repeat(6) + `${input._id}\n\n`;
     const fullMessage = messageCreating(input, message);
 
