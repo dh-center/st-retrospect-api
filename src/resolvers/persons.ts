@@ -28,7 +28,7 @@ const PersonMutations = {
   ): Promise<CreateMutationPayload<PersonDBScheme>> {
     const person = (await db.collection<PersonDBScheme>('persons').insertOne(input)).ops[0];
 
-    await sendNotify('Person', db, user, 'create', input);
+    await sendNotify('Person', 'persons', db, user, 'create', input);
 
     return {
       recordId: person._id,
@@ -58,7 +58,7 @@ const PersonMutations = {
       _id: id,
     });
 
-    await sendNotify('Person', db, user, 'update', input, 'persons');
+    await sendNotify('Person', 'persons', db, user, 'update', input, 'persons');
 
     const person = await db.collection('persons').findOneAndUpdate(
       { _id: id },
@@ -99,7 +99,7 @@ const PersonMutations = {
       _id: id,
     });
 
-    await sendNotify('Person', db, user, 'delete', originalPerson);
+    await sendNotify('Person', 'persons', db, user, 'delete', originalPerson);
     await db.collection<PersonDBScheme>('persons').deleteOne({ _id: new ObjectId(id) });
 
     return {
