@@ -30,7 +30,7 @@ export default gql`
     """
     Person's professions
     """
-    professions: [MultilingualString]! @multilingual
+    professions: [MultilingualString] @multilingual
 
     """
     Person's description
@@ -179,7 +179,7 @@ export default gql`
     """
     Person's professions
     """
-    professions: [MultilingualString]! @multilingual
+    professions: [MultilingualString] @multilingual
 
     """
     Person's description
