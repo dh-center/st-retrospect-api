@@ -1,9 +1,7 @@
 import { AccessTokenData, NodeName } from '../types/graphql';
 import { toGlobalId } from './globalId';
 import { Db, ObjectId } from 'mongodb';
-// import axios from 'axios';
-
-const axios = require('axios');
+import axios from 'axios';
 
 /**
  * @param input - input object

@@ -1,10 +1,10 @@
 import {
-  AccessTokenData,
   CreateMutationPayload,
   DeleteMutationPayload,
+  ResolverContextBase,
   UpdateMutationPayload
 } from '../types/graphql';
-import { Db, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import mergeWith from 'lodash.mergewith';
 import sendNotify from '../utils/telegramNotify';
 
@@ -19,14 +19,12 @@ const PersonMutations = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param input - person object
    * @param db - MongoDB connection to make queries
-   * @param user - User's access token
    * @returns {object}
    */
   async create(
     parent: undefined,
     { input }: { input: PersonDBScheme },
-    db: Db,
-    user: AccessTokenData
+    { db, user }: ResolverContextBase
   ): Promise<CreateMutationPayload<PersonDBScheme>> {
     const person = (await db.collection<PersonDBScheme>('persons').insertOne(input)).ops[0];
 
@@ -44,14 +42,12 @@ const PersonMutations = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param input - person object
    * @param db - MongoDB connection to make queries
-   * @param user - User's access token
    * @returns {object}
    */
   async update(
     parent: undefined,
     { input }: { input: PersonDBScheme & {id: string} },
-    db: Db,
-    user: AccessTokenData
+    { db, user }: ResolverContextBase
   ): Promise<UpdateMutationPayload<PersonDBScheme>> {
     input._id = new ObjectId(input.id);
     const id = input._id;
@@ -92,14 +88,12 @@ const PersonMutations = {
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param id - object id
    * @param db - MongoDB connection to make queries
-   * @param user - User's access token
    * @returns {object}
    */
   async delete(
     parent: undefined,
     { id }: { id: string },
-    db: Db,
-    user: AccessTokenData
+    { db, user }: ResolverContextBase
   ): Promise<DeleteMutationPayload> {
     const originalPerson = await db.collection('persons').findOne({
       _id: id,
