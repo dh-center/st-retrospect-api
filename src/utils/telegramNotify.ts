@@ -1,8 +1,7 @@
 import { AccessTokenData, NodeName } from '../types/graphql';
 import { toGlobalId } from './globalId';
 import { Db, ObjectId } from 'mongodb';
-
-const axios = require('axios');
+import axios from 'axios';
 
 /**
  * @param input - input object
@@ -34,7 +33,15 @@ function messageCreating(input: Record<string, string | any>, message: string, d
  * @param fields - list of fields from higher levels
  * @param depth - the depth at which the function is called
  */
-function messageUpdatingConstructor(input: Record<string, string | any>, original: Record<string, string | any>, updatedFields: string, newFields: string, deletedFields: string, fields: string[], depth = 1): [string, string, string] {
+function messageUpdatingConstructor(
+  input: Record<string, string | any>,
+  original: Record<string, string | any>,
+  updatedFields: string,
+  newFields: string,
+  deletedFields: string,
+  fields: string[],
+  depth = 1
+): [string, string, string] {
   for (const [key, value] of Object.entries(input)) {
     if (depth == 1) {
       fields = [];
@@ -85,7 +92,11 @@ function messageUpdatingConstructor(input: Record<string, string | any>, origina
  * @param original - original object from DB
  * @param message - message to send
  */
-function messageUpdating(input: Record<string, string | any>, original: Record<string, string | any>, message: string): string {
+function messageUpdating(
+  input: Record<string, string | any>,
+  original: Record<string, string | any>,
+  message: string
+): string {
   console.log(input);
   const messagesArr = [`<b>Updated fields:</b>\n`, `<b>New fields:</b>\n`, `<b>Deleted fields:</b>\n`];
 
@@ -119,7 +130,14 @@ async function sending(message: string): Promise<void> {
  * @param input - input object
  * @param collection - collection name to make queries
  */
-export default async function sendNotify(nodeName: NodeName, db: Db, user: AccessTokenData, actionType: string, input: Record<string, string | any>, collection?: string): Promise<void> {
+export default async function sendNotify(
+  nodeName: NodeName,
+  db: Db,
+  user: AccessTokenData,
+  actionType: string,
+  input: Record<string, string | any>,
+  collection?: string
+): Promise<void> {
   const newId = toGlobalId(nodeName, input._id);
   const currentUser = (await db.collection('users').findOne({ _id: new ObjectId(user.id) }));
 
