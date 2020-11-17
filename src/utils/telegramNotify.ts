@@ -124,6 +124,7 @@ async function sending(message: string): Promise<void> {
 
 /**
  * @param nodeName - name of new/updated/deleted node
+ * @param nodeLink - part of link according node
  * @param db - MongoDB connection to make queries
  * @param user - User's access token
  * @param actionType - type of action (create/update/delete)
