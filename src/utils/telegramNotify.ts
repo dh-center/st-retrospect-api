@@ -135,19 +135,19 @@ export default async function sendNotify(
   collection?: string
 ): Promise<void> {
   let newId;
+
   if (nodeName == 'LocationInstance') {
     if (input.locationId) {
       newId = toGlobalId('Location', input.locationId);
     } else {
-      const location = (await db.collection('locations').findOne({ locationInstanceIds: new ObjectId(input._id)}));
+      const location = (await db.collection('locations').findOne({ locationInstanceIds: new ObjectId(input._id) }));
+
       newId = toGlobalId('Location', location._id);
     }
   } else {
     newId = toGlobalId(nodeName, input._id);
   }
   const currentUser = (await db.collection('users').findOne({ _id: new ObjectId(user.id) }));
-
-  // console.log('input', input);
 
   if (actionType == 'create') {
     const message = `<b>New ${nodeName.toLowerCase()}! 🆕</b>\nCreated by <i>${currentUser.username}</i> (${user.id})\n` +
