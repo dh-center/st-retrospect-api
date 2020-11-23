@@ -6,6 +6,7 @@ import {
 } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import mergeWith from 'lodash.mergewith';
+import sendNotify from '../utils/telegramNotify';
 
 export interface PersonDBScheme {
   _id: ObjectId;
@@ -23,9 +24,11 @@ const PersonMutations = {
   async create(
     parent: undefined,
     { input }: { input: PersonDBScheme },
-    { db }: ResolverContextBase
+    { db, user }: ResolverContextBase
   ): Promise<CreateMutationPayload<PersonDBScheme>> {
     const person = (await db.collection<PersonDBScheme>('persons').insertOne(input)).ops[0];
+
+    await sendNotify('Person', 'persons', db, user, 'create', input);
 
     return {
       recordId: person._id,
@@ -44,7 +47,7 @@ const PersonMutations = {
   async update(
     parent: undefined,
     { input }: { input: PersonDBScheme & {id: string} },
-    { db }: ResolverContextBase
+    { db, user }: ResolverContextBase
   ): Promise<UpdateMutationPayload<PersonDBScheme>> {
     input._id = new ObjectId(input.id);
     const id = input._id;
@@ -54,6 +57,8 @@ const PersonMutations = {
     const originalPerson = await db.collection('persons').findOne({
       _id: id,
     });
+
+    await sendNotify('Person', 'persons', db, user, 'update', input, 'persons');
 
     const person = await db.collection('persons').findOneAndUpdate(
       { _id: id },
@@ -88,8 +93,14 @@ const PersonMutations = {
   async delete(
     parent: undefined,
     { id }: { id: string },
-    { db }: ResolverContextBase
+    { db, user }: ResolverContextBase
   ): Promise<DeleteMutationPayload> {
+    const originalPerson = await db.collection('persons').findOne({
+      _id: id,
+    });
+
+    await sendNotify('Person', 'persons', db, user, 'delete', originalPerson);
+
     await db.collection<PersonDBScheme>('persons').deleteOne({ _id: new ObjectId(id) });
 
     return {

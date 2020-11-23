@@ -14,6 +14,7 @@ import emptyMutation from '../utils/emptyMutation';
 import { CreateLocationInput, UpdateLocationInput } from '../generated/graphql';
 import { WithoutId } from '../types/utils';
 import { LocationAddress } from './address';
+import sendNotify from '../utils/telegramNotify';
 
 /**
  * ID of relation type for architects
@@ -258,7 +259,7 @@ const LocationMutations = {
   async create(
     parent: undefined,
     { input }: { input: CreateLocationInput },
-    { collection }: ResolverContextBase
+    { db, user, collection }: ResolverContextBase
   ): Promise<CreateMutationPayload<LocationDBScheme>> {
     const location = (await collection('locations').insertOne({
       latitude: input.latitude,
@@ -284,6 +285,8 @@ const LocationMutations = {
 
     location.locationInstanceIds = Object.values(locationInstances.insertedIds);
 
+    await sendNotify('Location', 'locations', db, user, 'create', input);
+
     return {
       recordId: location._id,
       record: location,
@@ -300,7 +303,7 @@ const LocationMutations = {
   async update(
     parent: undefined,
     { input }: { input: UpdateLocationInput & {_id: ObjectId} },
-    { collection }: ResolverContextBase
+    { db, user, collection }: ResolverContextBase
   ): Promise<UpdateMutationPayload<LocationDBScheme>> {
     input._id = new ObjectId(input.id);
     const id = input._id;
@@ -314,6 +317,8 @@ const LocationMutations = {
     if (!originalLocation) {
       throw new UserInputError('There is no location with such id: ' + id);
     }
+
+    await sendNotify('Location', 'locations', db, user, 'update', input, 'locations');
 
     const location = await collection('locations').findOneAndUpdate(
       { _id: id },
@@ -345,13 +350,15 @@ const LocationMutations = {
   async delete(
     parent: undefined,
     { id }: { id: ObjectId },
-    { collection }: ResolverContextBase
+    { db, user, collection }: ResolverContextBase
   ): Promise<DeleteMutationPayload> {
     const location = (await collection('locations').findOneAndDelete({ _id: id })).value;
 
     if (!location) {
       throw new UserInputError('There is no location with such id: ' + id);
     }
+
+    await sendNotify('Location', 'locations', db, user, 'delete', location);
 
     const locationInstancesIds = location.locationInstanceIds;
 

@@ -10,6 +10,7 @@ import { CreateRelationTypeInput, Maybe, UpdateRelationTypeInput } from '../gene
 import emptyMutation from '../utils/emptyMutation';
 import { UserInputError } from 'apollo-server-express';
 import mergeWith from 'lodash.mergewith';
+import sendNotify from '../utils/telegramNotify';
 
 /**
  * Relation type DB representation
@@ -42,9 +43,11 @@ const RelationTypeMutations = {
   async create(
     parent: undefined,
     { input }: { input: CreateRelationTypeInput },
-    { collection }: ResolverContextBase
+    { db, user, collection }: ResolverContextBase
   ): Promise<CreateMutationPayload<RelationTypeDBScheme>> {
     const relationType = (await collection('relationtypes').insertOne(input)).ops[0];
+
+    await sendNotify('RelationType', 'relation-types', db, user, 'create', input);
 
     return {
       recordId: relationType._id,
@@ -62,7 +65,7 @@ const RelationTypeMutations = {
   async update(
     parent: undefined,
     { input }: { input: UpdateRelationTypeInput & {_id: ObjectId} },
-    { collection }: ResolverContextBase
+    { db, user, collection }: ResolverContextBase
   ): Promise<UpdateMutationPayload<RelationTypeDBScheme>> {
     input._id = new ObjectId(input.id);
     const id = input._id;
@@ -76,6 +79,8 @@ const RelationTypeMutations = {
     if (!originalRelationType) {
       throw new UserInputError('There is no relation type with such id: ' + id);
     }
+
+    await sendNotify('RelationType', 'relation-types', db, user, 'update', input, 'relationtypes');
 
     const relationType = await collection('relationtypes').findOneAndUpdate(
       { _id: id },
@@ -113,8 +118,14 @@ const RelationTypeMutations = {
   async delete(
     parent: undefined,
     { id }: { id: ObjectId },
-    { collection }: ResolverContextBase
+    { db, user, collection }: ResolverContextBase
   ): Promise<DeleteMutationPayload> {
+    const originalRelationtype = await db.collection('relationtypes').findOne({
+      _id: id,
+    });
+
+    await sendNotify('RelationType', 'relation-types', db, user, 'delete', originalRelationtype);
+
     await collection('relationtypes').deleteOne({ _id: id });
 
     return {
