@@ -61,6 +61,7 @@ router.post('/oauth/vk/callback', async (req, res) => {
 
     return res.json({ data: { accessToken } });
   }
+  res.sendStatus(400);
 });
 
 export default router;

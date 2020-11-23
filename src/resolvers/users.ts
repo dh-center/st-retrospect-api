@@ -79,6 +79,16 @@ export interface UserDBScheme {
        */
       id: number
     }
+
+    /**
+     * Info about user's Facebook account
+     */
+    facebook?: {
+      /**
+       * Facebook account id
+       */
+      id: number
+    }
   }
 }
 
