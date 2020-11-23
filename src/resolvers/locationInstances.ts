@@ -1,10 +1,11 @@
 import emptyMutation from '../utils/emptyMutation';
 import {
   AddArchitectInput,
-  CreateLocationInstanceInput, RemoveArchitectInput, RemoveArchitectPayload,
+  RemoveArchitectInput,
+  CreateLocationInstanceInput,
   UpdateLocationInstanceInput
 } from '../generated/graphql';
-import { CreateLocationInstanceInput, UpdateLocationInstanceInput } from '../generated/graphql';
+
 import {
   CreateMutationPayload,
   DeleteMutationPayload,
