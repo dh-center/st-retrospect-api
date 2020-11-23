@@ -4,6 +4,8 @@ import { Db, ObjectId } from 'mongodb';
 import axios from 'axios';
 
 /**
+ * Function that constructs messages on creating/deleting some node
+ *
  * @param input - input object
  * @param message - message to send
  * @param depth - the depth at which the function is called
@@ -25,6 +27,9 @@ function messageCreating(input: Record<string, string | any>, message: string, d
 }
 
 /**
+ * Function that constructs messages on updating some node
+ *
+ *
  * @param input - input object
  * @param original - original object from DB
  * @param updatedFields - part of the message with updated fields
@@ -83,6 +88,8 @@ function messageUpdatingConstructor(
 }
 
 /**
+ * Function that concat messages from messageUpdatingConstructor in one message
+ *
  * @param input - input object
  * @param original - original object from DB
  * @param message - message to send
@@ -106,6 +113,8 @@ function messageUpdating(
 }
 
 /**
+ * Function that send message
+ *
  * @param message - full message to send
  */
 async function sending(message: string): Promise<void> {
@@ -117,6 +126,8 @@ async function sending(message: string): Promise<void> {
 }
 
 /**
+ * Function that calls the desired message constructor
+ *
  * @param nodeName - name of new/updated/deleted node
  * @param nodeLink - part of link according node
  * @param db - MongoDB connection to make queries
