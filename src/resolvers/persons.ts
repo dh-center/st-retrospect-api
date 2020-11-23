@@ -100,6 +100,7 @@ const PersonMutations = {
     });
 
     await sendNotify('Person', 'persons', db, user, 'delete', originalPerson);
+
     await db.collection<PersonDBScheme>('persons').deleteOne({ _id: new ObjectId(id) });
 
     return {

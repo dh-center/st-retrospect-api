@@ -14,7 +14,7 @@ function messageCreating(input: Record<string, string | any>, message: string, d
       continue;
     }
     message += '\t'.repeat(depth * 3) + `<i>${key}</i>\n`;
-    if (typeof value == 'object') {
+    if (typeof value == 'object' && !(value instanceof ObjectId)) {
       message = messageCreating(value, message, depth + 1);
     } else {
       message += '\t'.repeat((depth + 1) * 3) + `${encodeURIComponent(value)}\n\n`;
@@ -46,10 +46,10 @@ function messageUpdatingConstructor(
     if (depth == 1) {
       fields = [];
     }
-    if (key == '_id') {
+    if (key == '_id' || value == original[key] || (Array.isArray(value) && value.length == 0 && Array.isArray(original[key]) && original[key].length == 0)) {
       continue;
     }
-    if (typeof value == 'object' && !Array.isArray(value)) {
+    if (typeof value == 'object' && !(value instanceof ObjectId) && !(value == null) && (!Array.isArray(value) || (Array.isArray(value) && value.length))) {
       fields.push(key);
       [updatedFields, newFields, deletedFields] = messageUpdatingConstructor(value, original[key], updatedFields, newFields, deletedFields, fields, depth + 1);
     } else {
@@ -63,12 +63,7 @@ function messageUpdatingConstructor(
           for (let i = 0; i < fields.length; i++) {
             newFields += '\t'.repeat((i + 1) * 3) + `<i>${fields[i]}</i>\n`;
           }
-          newFields += '\t'.repeat((fields.length + 1) * 3) + `<i>${key}</i>\n`;
-          if (Array.isArray(value)) {
-            newFields = messageCreating(value, deletedFields, fields.length + 2);
-          } else {
-            newFields += '\t'.repeat((fields.length + 2) * 3) + `${encodeURIComponent(value)}\n\n`;
-          }
+          newFields += '\t'.repeat((fields.length + 1) * 3) + `<i>${key}</i>\n` + '\t'.repeat((fields.length + 2) * 3) + `${encodeURIComponent(value)}\n\n`;
         }
       } else {
         for (let i = 0; i < fields.length; i++) {
@@ -139,8 +134,20 @@ export default async function sendNotify(
   input: Record<string, string | any>,
   collection?: string
 ): Promise<void> {
-  const newId = toGlobalId(nodeName, input._id);
+  let newId;
+  if (nodeName == 'LocationInstance') {
+    if (input.locationId) {
+      newId = toGlobalId('Location', input.locationId);
+    } else {
+      const location = (await db.collection('locations').findOne({ locationInstanceIds: new ObjectId(input._id)}));
+      newId = toGlobalId('Location', location._id);
+    }
+  } else {
+    newId = toGlobalId(nodeName, input._id);
+  }
   const currentUser = (await db.collection('users').findOne({ _id: new ObjectId(user.id) }));
+
+  // console.log('input', input);
 
   if (actionType == 'create') {
     const message = `<b>New ${nodeName.toLowerCase()}! 🆕</b>\nCreated by <i>${currentUser.username}</i> (${user.id})\n` +

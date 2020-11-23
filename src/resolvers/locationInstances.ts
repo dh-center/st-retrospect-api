@@ -10,6 +10,7 @@ import { LocationInstanceDBScheme } from './locations';
 import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
 import mergeWith from 'lodash.mergewith';
+import sendNotify from '../utils/telegramNotify';
 
 const LocationInstanceMutations = {
   /**
@@ -22,12 +23,14 @@ const LocationInstanceMutations = {
   async create(
     parent: undefined,
     { input }: { input: CreateLocationInstanceInput },
-    { collection }: ResolverContextBase
+    { db, user, collection }: ResolverContextBase
   ): Promise<CreateMutationPayload<LocationInstanceDBScheme>> {
     /**
      * Create instance in DB
      */
     const locationInstance = (await collection('location_instances').insertOne(input)).ops[0];
+
+    await sendNotify('LocationInstance', 'location', db, user, 'create', input);
 
     /**
      * Link instance to location
@@ -54,7 +57,7 @@ const LocationInstanceMutations = {
   async update(
     parent: undefined,
     { input }: { input: UpdateLocationInstanceInput & {_id: ObjectId} },
-    { collection }: ResolverContextBase
+    { db, user, collection }: ResolverContextBase
   ): Promise<UpdateMutationPayload<LocationInstanceDBScheme>> {
     input._id = new ObjectId(input.id);
     const id = input._id;
@@ -68,6 +71,8 @@ const LocationInstanceMutations = {
     if (!originalLocationInstance) {
       throw new UserInputError('There is no location instance with such id: ' + id);
     }
+
+    await sendNotify('LocationInstance', 'location', db, user, 'update', input, 'location_instances');
 
     const locationInstance = await collection('location_instances').findOneAndUpdate(
       { _id: id },
@@ -99,7 +104,7 @@ const LocationInstanceMutations = {
   async delete(
     parent: undefined,
     { id }: { id: ObjectId },
-    { collection }: ResolverContextBase
+    { db, user, collection }: ResolverContextBase
   ): Promise<DeleteMutationPayload> {
     const instance = (await collection('location_instances').findOneAndDelete({
       _id: id,
@@ -108,6 +113,8 @@ const LocationInstanceMutations = {
     if (!instance) {
       throw new UserInputError('There is no location instance with such id: ' + id);
     }
+
+    await sendNotify('LocationInstance', 'location', db, user, 'delete', instance);
 
     await collection('relations').deleteMany({
       locationInstanceId: id,

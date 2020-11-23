@@ -8,6 +8,7 @@ import { ObjectId } from 'mongodb';
 import { EditorData } from '../types/editorData';
 import mergeWith from 'lodash.mergewith';
 import emptyMutation from '../utils/emptyMutation';
+import sendNotify from "../utils/telegramNotify";
 
 /**
  * Scheme of quest in database
@@ -75,9 +76,11 @@ const QuestMutations = {
   async create(
     parent: undefined,
     { input }: { input: QuestDBScheme },
-    { db }: ResolverContextBase
+    { db, user }: ResolverContextBase
   ): Promise<CreateMutationPayload<QuestDBScheme>> {
     const quest = (await db.collection<QuestDBScheme>('quests').insertOne(input)).ops[0];
+
+    await sendNotify('Quest', 'quests', db, user, 'create', input);
 
     return {
       recordId: quest._id,
@@ -95,7 +98,7 @@ const QuestMutations = {
   async update(
     parent: undefined,
     { input }: { input: QuestDBScheme & {id: string} },
-    { db }: ResolverContextBase
+    { db, user }: ResolverContextBase
   ): Promise<UpdateMutationPayload<QuestDBScheme>> {
     input._id = new ObjectId(input.id);
     const id = input._id;
@@ -105,6 +108,8 @@ const QuestMutations = {
     const originalQuest = await db.collection('quests').findOne({
       _id: id,
     });
+
+    await sendNotify('Quest', 'quests', db, user, 'update', input, 'quests');
 
     const quest = await db.collection('quests').findOneAndUpdate(
       { _id: id },
@@ -132,8 +137,14 @@ const QuestMutations = {
   async delete(
     parent: undefined,
     { id }: { id: string },
-    { db }: ResolverContextBase
+    { db, user }: ResolverContextBase
   ): Promise<DeleteMutationPayload> {
+    const originalQuest = await db.collection('quests').findOne({
+      _id: id,
+    });
+
+    await sendNotify('Quest', 'quests', db, user, 'delete', originalQuest);
+
     await db.collection<QuestDBScheme>('quests').deleteOne({ _id: new ObjectId(id) });
 
     return {

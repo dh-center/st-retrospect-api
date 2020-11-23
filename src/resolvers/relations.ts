@@ -9,6 +9,7 @@ import mergeWith from 'lodash.mergewith';
 import emptyMutation from '../utils/emptyMutation';
 import { CreateRelationInput, UpdateRelationInput } from '../generated/graphql';
 import { UserInputError } from 'apollo-server-express';
+import sendNotify from '../utils/telegramNotify';
 
 /**
  * Relation's database scheme
@@ -51,9 +52,11 @@ const RelationMutations = {
   async create(
     parent: undefined,
     { input }: { input: CreateRelationInput },
-    { collection }: ResolverContextBase
+    { db, user, collection }: ResolverContextBase
   ): Promise<CreateMutationPayload<RelationDBScheme>> {
     const relation = (await collection('relations').insertOne(input)).ops[0];
+
+    await sendNotify('Relation', 'relations', db, user, 'create', input);
 
     return {
       recordId: relation._id,
@@ -71,7 +74,7 @@ const RelationMutations = {
   async update(
     parent: undefined,
     { input }: { input: UpdateRelationInput & {_id: ObjectId} },
-    { collection }: ResolverContextBase
+    { db, user, collection }: ResolverContextBase
   ): Promise<UpdateMutationPayload<RelationDBScheme>> {
     input._id = new ObjectId(input.id);
     const id = input._id;
@@ -85,6 +88,8 @@ const RelationMutations = {
     if (!originalRelation) {
       throw new UserInputError('There is no relation with such id: ' + id);
     }
+
+    await sendNotify('Relation', 'relations', db, user, 'update', input, 'relations');
 
     const relation = await collection('relations').findOneAndUpdate(
       { _id: id },
@@ -113,8 +118,14 @@ const RelationMutations = {
   async delete(
     parent: undefined,
     { id }: { id: ObjectId },
-    { collection }: ResolverContextBase
+    { db, user, collection }: ResolverContextBase
   ): Promise<DeleteMutationPayload> {
+    const originalRelation = await db.collection('relations').findOne({
+      _id: id,
+    });
+
+    await sendNotify('Relation', 'relations', db, user, 'delete', originalRelation);
+
     await collection('relations').deleteOne({ _id: id });
 
     return {
