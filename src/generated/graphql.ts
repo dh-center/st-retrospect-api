@@ -710,10 +710,42 @@ export type DeleteLocationInstancePayload = {
   recordId: Scalars['GlobalId'];
 };
 
+export type AddArchitectInput = {
+  /** Location instance id */
+  locationInstanceId: Scalars['GlobalId'];
+  /** Architect for adding */
+  architectId: Scalars['GlobalId'];
+};
+
+export type AddArchitectPayload = {
+  __typename?: 'AddArchitectPayload';
+  /** New relation id */
+  recordId: Scalars['GlobalId'];
+  /** New relation */
+  record: Relation;
+};
+
+export type RemoveArchitectInput = {
+  /** Location instance id */
+  locationInstanceId: Scalars['GlobalId'];
+  /** Architect for removing */
+  architectId: Scalars['GlobalId'];
+};
+
+export type RemoveArchitectPayload = {
+  __typename?: 'RemoveArchitectPayload';
+  /** Deleted relation id */
+  recordId: Scalars['GlobalId'];
+};
+
 export type LocationInstanceMutations = {
   __typename?: 'LocationInstanceMutations';
   /** Create location instance */
   create: CreateLocationInstancePayload;
+  /** Add architect to location instance */
+  addArchitect: AddArchitectPayload;
+  /** Remove architects from location instance */
+  removeArchitect: RemoveArchitectPayload;
   /** Update location instance */
   update: UpdateLocationInstancePayload;
   /** Delete location instance */
@@ -723,6 +755,16 @@ export type LocationInstanceMutations = {
 
 export type LocationInstanceMutationsCreateArgs = {
   input: CreateLocationInstanceInput;
+};
+
+
+export type LocationInstanceMutationsAddArchitectArgs = {
+  input: AddArchitectInput;
+};
+
+
+export type LocationInstanceMutationsRemoveArchitectArgs = {
+  input: RemoveArchitectInput;
 };
 
 
@@ -1249,6 +1291,10 @@ export type ResolversTypes = {
   UpdateLocationInstanceInput: UpdateLocationInstanceInput;
   UpdateLocationInstancePayload: ResolverTypeWrapper<UpdateLocationInstancePayload>;
   DeleteLocationInstancePayload: ResolverTypeWrapper<DeleteLocationInstancePayload>;
+  AddArchitectInput: AddArchitectInput;
+  AddArchitectPayload: ResolverTypeWrapper<AddArchitectPayload>;
+  RemoveArchitectInput: RemoveArchitectInput;
+  RemoveArchitectPayload: ResolverTypeWrapper<RemoveArchitectPayload>;
   LocationInstanceMutations: ResolverTypeWrapper<LocationInstanceMutations>;
   Relation: ResolverTypeWrapper<Relation>;
   RelationConnection: ResolverTypeWrapper<RelationConnection>;
@@ -1335,6 +1381,10 @@ export type ResolversParentTypes = {
   UpdateLocationInstanceInput: UpdateLocationInstanceInput;
   UpdateLocationInstancePayload: UpdateLocationInstancePayload;
   DeleteLocationInstancePayload: DeleteLocationInstancePayload;
+  AddArchitectInput: AddArchitectInput;
+  AddArchitectPayload: AddArchitectPayload;
+  RemoveArchitectInput: RemoveArchitectInput;
+  RemoveArchitectPayload: RemoveArchitectPayload;
   LocationInstanceMutations: LocationInstanceMutations;
   Relation: Relation;
   RelationConnection: RelationConnection;
@@ -1605,8 +1655,21 @@ export type DeleteLocationInstancePayloadResolvers<ContextType = any, ParentType
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
+export type AddArchitectPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddArchitectPayload'] = ResolversParentTypes['AddArchitectPayload']> = {
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
+  record?: Resolver<ResolversTypes['Relation'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type RemoveArchitectPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['RemoveArchitectPayload'] = ResolversParentTypes['RemoveArchitectPayload']> = {
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
 export type LocationInstanceMutationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationInstanceMutations'] = ResolversParentTypes['LocationInstanceMutations']> = {
   create?: Resolver<ResolversTypes['CreateLocationInstancePayload'], ParentType, ContextType, RequireFields<LocationInstanceMutationsCreateArgs, 'input'>>;
+  addArchitect?: Resolver<ResolversTypes['AddArchitectPayload'], ParentType, ContextType, RequireFields<LocationInstanceMutationsAddArchitectArgs, 'input'>>;
+  removeArchitect?: Resolver<ResolversTypes['RemoveArchitectPayload'], ParentType, ContextType, RequireFields<LocationInstanceMutationsRemoveArchitectArgs, 'input'>>;
   update?: Resolver<ResolversTypes['UpdateLocationInstancePayload'], ParentType, ContextType, RequireFields<LocationInstanceMutationsUpdateArgs, 'input'>>;
   delete?: Resolver<ResolversTypes['DeleteLocationInstancePayload'], ParentType, ContextType, RequireFields<LocationInstanceMutationsDeleteArgs, 'id'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
@@ -1818,6 +1881,8 @@ export type Resolvers<ContextType = any> = {
   CreateLocationInstancePayload?: CreateLocationInstancePayloadResolvers<ContextType>;
   UpdateLocationInstancePayload?: UpdateLocationInstancePayloadResolvers<ContextType>;
   DeleteLocationInstancePayload?: DeleteLocationInstancePayloadResolvers<ContextType>;
+  AddArchitectPayload?: AddArchitectPayloadResolvers<ContextType>;
+  RemoveArchitectPayload?: RemoveArchitectPayloadResolvers<ContextType>;
   LocationInstanceMutations?: LocationInstanceMutationsResolvers<ContextType>;
   Relation?: RelationResolvers<ContextType>;
   RelationConnection?: RelationConnectionResolvers<ContextType>;

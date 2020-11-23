@@ -1,4 +1,9 @@
 import emptyMutation from '../utils/emptyMutation';
+import {
+  AddArchitectInput,
+  CreateLocationInstanceInput, RemoveArchitectInput, RemoveArchitectPayload,
+  UpdateLocationInstanceInput
+} from '../generated/graphql';
 import { CreateLocationInstanceInput, UpdateLocationInstanceInput } from '../generated/graphql';
 import {
   CreateMutationPayload,
@@ -6,10 +11,11 @@ import {
   ResolverContextBase,
   UpdateMutationPayload
 } from '../types/graphql';
-import { LocationInstanceDBScheme } from './locations';
+import { ARCHITECT_RELATION_ID, LocationInstanceDBScheme } from './locations';
 import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
 import mergeWith from 'lodash.mergewith';
+import Relations, { RelationDBScheme } from './relations';
 import sendNotify from '../utils/telegramNotify';
 
 const LocationInstanceMutations = {
@@ -45,6 +51,60 @@ const LocationInstanceMutations = {
       recordId: locationInstance._id,
       record: locationInstance,
     };
+  },
+
+  /**
+   * Add new architect
+   *
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input - mutation input object
+   * @param contextBase - context with collections, db connection
+   */
+  async addArchitect(
+    parent: undefined,
+    { input }: { input: AddArchitectInput },
+    contextBase: ResolverContextBase
+  ): Promise<CreateMutationPayload<RelationDBScheme>> {
+    return Relations.RelationMutations.create(undefined, {
+      input: {
+        locationInstanceId: input.locationInstanceId,
+        personId: input.architectId,
+        relationId: new ObjectId(ARCHITECT_RELATION_ID),
+        quote: {
+          ru: '',
+          en: '',
+        },
+      },
+    },
+    contextBase);
+  },
+
+  /**
+   * Remove architect
+   *
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input - mutation input object
+   * @param contextBase - context with collections, db connection
+   */
+  async removeArchitect(
+    parent: undefined,
+    { input }: { input: RemoveArchitectInput },
+    contextBase: ResolverContextBase
+  ): Promise<DeleteMutationPayload> {
+    const relation = await contextBase.collection('relations').findOne({
+      locationInstanceId: input.locationInstanceId,
+      personId: input.architectId,
+      relationId: new ObjectId(ARCHITECT_RELATION_ID),
+    });
+
+    if (!relation || !relation._id) {
+      throw new UserInputError('Relation with such id didn\'t find');
+    }
+
+    return Relations.RelationMutations.delete(undefined, {
+      id: relation?._id,
+    },
+    contextBase);
   },
 
   /**
