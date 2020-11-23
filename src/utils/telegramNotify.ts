@@ -51,15 +51,25 @@ function messageUpdatingConstructor(
     if (depth == 1) {
       fields = [];
     }
-    if (key == '_id' || value == original[key] || (Array.isArray(value) && value.length == 0 && Array.isArray(original[key]) && original[key].length == 0)) {
+
+    // Continue when '_id' field or input value matches the original value (including the situation with two empty arrays)
+    const needContinue = (key == '_id' || value == original[key] || (Array.isArray(value) && value.length == 0 && Array.isArray(original[key]) && original[key].length == 0));
+    // Recursion when value - object, but not ObjectId, null or empty array
+    const needRecursion = (typeof value == 'object' && !(value instanceof ObjectId) && !(value == null) && (!Array.isArray(value) || (Array.isArray(value) && value.length)));
+    // Value is not equal to empty string or empty array
+    const valueNotEmpty = ((!Array.isArray(value) && value != '') || (Array.isArray(value) && value.length));
+    // Original value is not equal to empty string or empty array
+    const originalValueNotEmpty = ((!Array.isArray(original[key]) && original[key]) || (Array.isArray(original[key]) && original[key].length));
+
+    if (needContinue) {
       continue;
     }
-    if (typeof value == 'object' && !(value instanceof ObjectId) && !(value == null) && (!Array.isArray(value) || (Array.isArray(value) && value.length))) {
+    if (needRecursion) {
       fields.push(key);
       [updatedFields, newFields, deletedFields] = messageUpdatingConstructor(value, original[key], updatedFields, newFields, deletedFields, fields, depth + 1);
     } else {
-      if ((!Array.isArray(value) && value != '') || (Array.isArray(value) && value.length)) {
-        if ((!Array.isArray(original[key]) && original[key]) || (Array.isArray(original[key]) && original[key].length)) {
+      if (valueNotEmpty) {
+        if (originalValueNotEmpty) {
           for (let i = 0; i < fields.length; i++) {
             updatedFields += '\t'.repeat((i + 1) * 3) + `<i>${fields[i]}</i>\n`;
           }
