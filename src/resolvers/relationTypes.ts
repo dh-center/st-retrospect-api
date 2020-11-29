@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import {
   CreateMutationPayload,
-  DeleteMutationPayload,
+  DeleteMutationPayload, Languages,
   MultilingualString,
   ResolverContextBase,
   UpdateMutationPayload
@@ -11,6 +11,16 @@ import emptyMutation from '../utils/emptyMutation';
 import { UserInputError } from 'apollo-server-express';
 import mergeWith from 'lodash.mergewith';
 import sendNotify from '../utils/telegramNotify';
+
+/**
+ * Maps array of strings to array of multilingual strings
+ *
+ * @param inputSynonyms - array of synonyms
+ * @param lang - language to map for
+ */
+function mapSynonymsInput(inputSynonyms: string[], lang: Languages[]): MultilingualString[] {
+  return inputSynonyms.map(syn => ({ [lang[0].toLowerCase()]: syn }));
+}
 
 /**
  * Relation type DB representation
@@ -42,12 +52,17 @@ const RelationTypeMutations = {
    */
   async create(
     parent: undefined,
-    { input }: { input: CreateRelationTypeInput },
-    { db, user, collection }: ResolverContextBase
+    { input }: { input: CreateRelationTypeInput & {synonyms: string[]} },
+    { db, user, collection, languages }: ResolverContextBase
   ): Promise<CreateMutationPayload<RelationTypeDBScheme>> {
-    const relationType = (await collection('relationtypes').insertOne(input)).ops[0];
+    const newInput = {
+      ...input,
+      synonyms: mapSynonymsInput(input.synonyms, languages),
+    };
 
-    await sendNotify('RelationType', 'relation-types', db, user, 'create', input);
+    const relationType = (await collection('relationtypes').insertOne(newInput)).ops[0];
+
+    await sendNotify('RelationType', 'relation-types', db, user, 'create', newInput);
 
     return {
       recordId: relationType._id,
@@ -64,8 +79,8 @@ const RelationTypeMutations = {
    */
   async update(
     parent: undefined,
-    { input }: { input: UpdateRelationTypeInput & {_id: ObjectId} },
-    { db, user, collection }: ResolverContextBase
+    { input }: { input: UpdateRelationTypeInput & {_id: ObjectId; synonyms: string[]} },
+    { db, user, collection, languages }: ResolverContextBase
   ): Promise<UpdateMutationPayload<RelationTypeDBScheme>> {
     input._id = new ObjectId(input.id);
     const id = input._id;
@@ -80,21 +95,29 @@ const RelationTypeMutations = {
       throw new UserInputError('There is no relation type with such id: ' + id);
     }
 
-    await sendNotify('RelationType', 'relation-types', db, user, 'update', input, 'relationtypes');
+    const newInput = {
+      ...input,
+      synonyms: mapSynonymsInput(input.synonyms, languages),
+    };
+
+    await sendNotify('RelationType', 'relation-types', db, user, 'update', newInput, 'relationtypes');
 
     const relationType = await collection('relationtypes').findOneAndUpdate(
       { _id: id },
       {
-        $set: mergeWith(originalRelationType, input, (original, inp) => {
-          if (inp === null) {
-            return original;
-          }
-          if (Array.isArray(original)) {
-            return inp;
-          }
+        $set: mergeWith(
+          originalRelationType,
+          newInput,
+          (original, inp) => {
+            if (inp === null) {
+              return original;
+            }
+            if (Array.isArray(original)) {
+              return inp;
+            }
 
-          return undefined;
-        }),
+            return undefined;
+          }),
       },
       { returnOriginal: false });
 
@@ -120,11 +143,11 @@ const RelationTypeMutations = {
     { id }: { id: ObjectId },
     { db, user, collection }: ResolverContextBase
   ): Promise<DeleteMutationPayload> {
-    const originalRelationtype = await db.collection('relationtypes').findOne({
+    const originalRelationType = await db.collection('relationtypes').findOne({
       _id: id,
     });
 
-    await sendNotify('RelationType', 'relation-types', db, user, 'delete', originalRelationtype);
+    await sendNotify('RelationType', 'relation-types', db, user, 'delete', originalRelationType);
 
     await collection('relationtypes').deleteOne({ _id: id });
 
