@@ -15,7 +15,7 @@ export interface Collections {
   users: UserDBScheme;
   persons: PersonDBScheme;
   locations: LocationDBScheme;
-  // eslint-disable-next-line @typescript-eslint/naming-convention,camelcase
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   location_instances: LocationInstanceDBScheme;
   relations: RelationDBScheme;
   quests: QuestDBScheme;
