@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import {
   CreateMutationPayload,
-  DeleteMutationPayload, Languages,
+  DeleteMutationPayload,
   MultilingualString,
   ResolverContextBase,
   UpdateMutationPayload
@@ -11,16 +11,7 @@ import emptyMutation from '../utils/emptyMutation';
 import { UserInputError } from 'apollo-server-express';
 import mergeWith from 'lodash.mergewith';
 import sendNotify from '../utils/telegramNotify';
-
-/**
- * Maps array of strings to array of multilingual strings
- *
- * @param inputSynonyms - array of synonyms
- * @param lang - language to map for
- */
-function mapSynonymsInput(inputSynonyms: string[], lang: Languages[]): MultilingualString[] {
-  return inputSynonyms.map(syn => ({ [lang[0].toLowerCase()]: syn }));
-}
+import mapArrayInputToMultilingual from '../utils/mapStringsArrayToMultilingual';
 
 /**
  * Relation type DB representation
@@ -57,7 +48,7 @@ const RelationTypeMutations = {
   ): Promise<CreateMutationPayload<RelationTypeDBScheme>> {
     const newInput = {
       ...input,
-      synonyms: mapSynonymsInput(input.synonyms, languages),
+      synonyms: mapArrayInputToMultilingual(input.synonyms || [], languages),
     };
 
     const relationType = (await collection('relationtypes').insertOne(newInput)).ops[0];
@@ -79,15 +70,15 @@ const RelationTypeMutations = {
    */
   async update(
     parent: undefined,
-    { input }: { input: UpdateRelationTypeInput & {synonyms: string[]} },
+    { input }: { input: UpdateRelationTypeInput },
     { db, user, collection, languages }: ResolverContextBase
   ): Promise<UpdateMutationPayload<RelationTypeDBScheme>> {
     const newInput = {
       _id: new ObjectId(input.id),
       ...input,
       id: undefined,
-      synonyms: mapSynonymsInput(input.synonyms, languages),
-    };
+      synonyms: mapArrayInputToMultilingual(input.synonyms || [], languages),
+    } as RelationTypeDBScheme;
 
     const originalRelationType = await collection('relationtypes').findOne({
       _id: newInput._id,

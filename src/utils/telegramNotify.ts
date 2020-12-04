@@ -41,26 +41,29 @@ function messageCreating(input: Record<string, string | any>, message: string, d
  */
 function messageUpdatingConstructor(
   input: Record<string, string | any>,
-  original: Record<string, string | any>,
+  original: any,
   updatedFields: string,
   newFields: string,
   deletedFields: string,
   fields: string[],
   depth = 1
 ): [string, string, string] {
+  console.log(input);
+  console.log(original);
   for (const [key, value] of Object.entries(input)) {
     if (depth == 1) {
       fields = [];
     }
+    console.log(key, value);
 
     // Continue when '_id' field or input value matches the original value (including the situation with two empty arrays)
-    const needContinue = (key == '_id' || value == original[key] || (Array.isArray(value) && value.length == 0 && Array.isArray(original[key]) && original[key].length == 0));
+    const needContinue = (key == '_id' || value == (original && original[key]) || (Array.isArray(value) && value.length == 0 && Array.isArray(original[key]) && original[key].length == 0));
     // Recursion when value - object, but not ObjectId, null or empty array
     const needRecursion = (typeof value == 'object' && !(value instanceof ObjectId) && !(value == null) && (!Array.isArray(value) || (Array.isArray(value) && value.length)));
     // Value is not equal to empty string or empty array
     const valueNotEmpty = ((!Array.isArray(value) && value != '') || (Array.isArray(value) && value.length));
     // Original value is not equal to empty string or empty array
-    const originalValueNotEmpty = ((!Array.isArray(original[key]) && original[key]) || (Array.isArray(original[key]) && original[key].length));
+    const originalValueNotEmpty = !!original && (Array.isArray(original[key]) ? original[key].length : original[key]);
 
     if (needContinue) {
       continue;

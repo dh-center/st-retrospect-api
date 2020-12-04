@@ -25,6 +25,8 @@ import { express as voyagerMiddleware } from 'graphql-voyager/middleware';
 import globalIdResolver from './globalIdResolver';
 import toGlobalIdDirective from './directives/toGlobalId';
 
+console.log('⚡️ Server starting');
+
 Sentry.init({ dsn: process.env.SENTRY_DSN });
 
 (async (): Promise<void> => {
