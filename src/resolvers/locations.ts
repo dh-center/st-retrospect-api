@@ -134,7 +134,9 @@ const Query = {
    * Returns specific location
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id.id
    * @param id - location id
+   * @param db.db
    * @param db - MongoDB connection to make queries
    * @returns {object}
    */
@@ -154,7 +156,9 @@ const Query = {
    * Returns specific locationInstance
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id.id
    * @param id - locationInstance id
+   * @param db.db
    * @param db - MongoDB connection to make queries
    * @returns {object}
    */
@@ -175,6 +179,7 @@ const Query = {
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param data - empty arg
+   * @param db.db
    * @param db - MongoDB connection to make queries
    * @returns {object[]}
    */
@@ -188,6 +193,7 @@ const Query = {
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
    * @param data - empty arg
+   * @param db.db
    * @param db - MongoDB connection to make queries
    */
   async locationTypes(parent: undefined, data: undefined, { db }: ResolverContextBase): Promise<LocationTypeDBScheme[]> {
@@ -199,9 +205,12 @@ const Query = {
    * Get relations on user request
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param searchString.searchString
    * @param searchString - the string on the basis of which the request will be made
+   * @param db.db
    * @param db - MongoDB connection to make queries
    * @param dataLoaders - DataLoaders for fetching data
+   * @param db.dataLoaders
    */
   async search(parent: undefined, { searchString }: { searchString: string }, { db, dataLoaders }: ResolverContextBase): Promise<RelationDBScheme[]> {
     searchString = searchString.trim();
@@ -227,8 +236,10 @@ const LocationInstance = {
   /**
    * Return all architects
    *
+   * @param _id._id
    * @param _id - location id that returned from the resolver on the parent field
    * @param _args - empty list of args
+   * @param dataLoaders.dataLoaders
    * @param dataLoaders - DataLoaders for fetching data
    */
   async architects({ _id }: LocationDBScheme, _args: undefined, { dataLoaders }: ResolverContextBase): Promise<PersonDBScheme[]> {
@@ -253,8 +264,12 @@ const LocationMutations = {
    * Create new location
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input.input
    * @param input - mutation input object
+   * @param collection.db
    * @param collection - method for accessing to database collections
+   * @param collection.user
+   * @param collection.collection
    */
   async create(
     parent: undefined,
@@ -297,8 +312,12 @@ const LocationMutations = {
    * Update location
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input.input
    * @param input - mutation input object
+   * @param collection.db
    * @param collection - method for accessing to database collections
+   * @param collection.user
+   * @param collection.collection
    */
   async update(
     parent: undefined,
@@ -344,8 +363,12 @@ const LocationMutations = {
    * Delete location
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id.id
    * @param id - object id
+   * @param collection.db
    * @param collection - method for accessing to database collections
+   * @param collection.user
+   * @param collection.collection
    */
   async delete(
     parent: undefined,

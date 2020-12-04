@@ -70,7 +70,9 @@ const Query = {
    * Returns specific route
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id.id
    * @param id - route id
+   * @param db.db
    * @param db - MongoDB connection to make queries
    * @returns {object}
    */
@@ -90,7 +92,9 @@ const Query = {
    * Returns all routes
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param filter.filter
    * @param filter - search filter
+   * @param db.db
    * @param db - MongoDB connection to make queries
    * @returns {object[]}
    */
@@ -112,10 +116,14 @@ const Query = {
    * Returns nearest routes
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param center.center
    * @param center - center coordinates
    * @param radius - search radius
    * @param filter - search filter
+   * @param center.radius
    * @param db - MongoDB connection to make queries
+   * @param center.filter
+   * @param radius.db
    */
   async nearestRoutes(
     parent: undefined,

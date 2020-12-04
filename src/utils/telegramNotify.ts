@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AccessTokenData, NodeName } from '../types/graphql';
 import { toGlobalId } from './globalId';
 import { Db, ObjectId } from 'mongodb';

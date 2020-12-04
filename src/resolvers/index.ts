@@ -27,6 +27,7 @@ const indexResolver = {
      *
      * @param parent - top-level resolver result
      * @param args - resolver args
+     * @param dataLoaders.dataLoaders
      * @param dataLoaders - dataloader for data-fetching
      */
     async node(parent: undefined, args: QueryNodeArgs, { dataLoaders }: ResolverContextBase): Promise<unknown> {

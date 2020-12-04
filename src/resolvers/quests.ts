@@ -8,7 +8,7 @@ import { ObjectId } from 'mongodb';
 import { EditorData } from '../types/editorData';
 import mergeWith from 'lodash.mergewith';
 import emptyMutation from '../utils/emptyMutation';
-import sendNotify from "../utils/telegramNotify";
+import sendNotify from '../utils/telegramNotify';
 
 /**
  * Scheme of quest in database
@@ -50,8 +50,10 @@ const Query = {
    * Returns specific quest
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id.id
    * @param id - quest id
    * @param db - MongoDB connection to make queries
+   * @param db.dataLoaders
    * @param dataLoaders - Data loaders in context
    */
   async quest(parent: undefined, { id }: { id: string }, { dataLoaders }: ResolverContextBase): Promise<QuestDBScheme | null> {
@@ -70,8 +72,11 @@ const QuestMutations = {
    * Create new quest
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input.input
    * @param input - mutation input object
+   * @param db.db
    * @param db - MongoDB connection to make queries
+   * @param db.user
    */
   async create(
     parent: undefined,
@@ -92,8 +97,11 @@ const QuestMutations = {
    * Update quest
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input.input
    * @param input - mutation input object
+   * @param db.db
    * @param db - MongoDB connection to make queries
+   * @param db.user
    */
   async update(
     parent: undefined,
@@ -131,8 +139,11 @@ const QuestMutations = {
    * Delete quest
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id.id
    * @param id - object id
+   * @param db.db
    * @param db - MongoDB connection to make queries
+   * @param db.user
    */
   async delete(
     parent: undefined,

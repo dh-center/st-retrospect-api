@@ -47,8 +47,13 @@ const RelationTypeMutations = {
    * Creates new relation type
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input.input
    * @param input - relation type object
+   * @param collection.db
    * @param collection - collection in MongoDB for queries
+   * @param collection.user
+   * @param collection.collection
+   * @param collection.languages
    */
   async create(
     parent: undefined,
@@ -74,8 +79,13 @@ const RelationTypeMutations = {
    * Update relation type
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input.input
    * @param input - relation type object
+   * @param collection.db
    * @param collection - collection in MongoDB for queries
+   * @param collection.user
+   * @param collection.collection
+   * @param collection.languages
    */
   async update(
     parent: undefined,
@@ -135,8 +145,12 @@ const RelationTypeMutations = {
    * Delete relation type
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id.id
    * @param id - relation type id
+   * @param collection.db
    * @param collection - collection in MongoDB for queries
+   * @param collection.user
+   * @param collection.collection
    */
   async delete(
     parent: undefined,

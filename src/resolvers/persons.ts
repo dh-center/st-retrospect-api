@@ -17,8 +17,11 @@ const PersonMutations = {
    * Create new person
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input.input
    * @param input - person object
+   * @param db.db
    * @param db - MongoDB connection to make queries
+   * @param db.user
    * @returns {object}
    */
   async create(
@@ -40,8 +43,11 @@ const PersonMutations = {
    * Update person
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input.input
    * @param input - person object
+   * @param db.db
    * @param db - MongoDB connection to make queries
+   * @param db.user
    * @returns {object}
    */
   async update(
@@ -86,8 +92,11 @@ const PersonMutations = {
    * Delete person
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id.id
    * @param id - object id
+   * @param db.db
    * @param db - MongoDB connection to make queries
+   * @param db.user
    * @returns {object}
    */
   async delete(

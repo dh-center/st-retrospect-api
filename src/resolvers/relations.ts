@@ -46,8 +46,12 @@ const RelationMutations = {
    * Create new relation
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input.input
    * @param input - relation object
+   * @param collection.db
    * @param collection - collection in MongoDB for queries
+   * @param collection.user
+   * @param collection.collection
    */
   async create(
     parent: undefined,
@@ -68,8 +72,12 @@ const RelationMutations = {
    * Update relation
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input.input
    * @param input - relation object
+   * @param collection.db
    * @param collection - collection in MongoDB for queries
+   * @param collection.user
+   * @param collection.collection
    */
   async update(
     parent: undefined,
@@ -112,8 +120,12 @@ const RelationMutations = {
    * Delete relation
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id.id
    * @param id - relation id
+   * @param collection.db
    * @param collection - collection in MongoDB for queries
+   * @param collection.user
+   * @param collection.collection
    */
   async delete(
     parent: undefined,

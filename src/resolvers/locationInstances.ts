@@ -24,8 +24,12 @@ const LocationInstanceMutations = {
    * Create new location location instance
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input.input
    * @param input - mutation input object
+   * @param collection.db
    * @param collection - method for accessing to database collections
+   * @param collection.user
+   * @param collection.collection
    */
   async create(
     parent: undefined,
@@ -58,6 +62,7 @@ const LocationInstanceMutations = {
    * Add new architect
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input.input
    * @param input - mutation input object
    * @param contextBase - context with collections, db connection
    */
@@ -84,6 +89,7 @@ const LocationInstanceMutations = {
    * Remove architect
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input.input
    * @param input - mutation input object
    * @param contextBase - context with collections, db connection
    */
@@ -112,45 +118,50 @@ const LocationInstanceMutations = {
    * Update location instance
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param input.input
    * @param input - mutation input object
+   * @param collection.db
    * @param collection - method for accessing to database collections
+   * @param collection.user
+   * @param collection.collection
    */
   async update(
     parent: undefined,
-    { input }: { input: UpdateLocationInstanceInput & {_id: ObjectId} },
+    { input }: { input: UpdateLocationInstanceInput },
     { db, user, collection }: ResolverContextBase
   ): Promise<UpdateMutationPayload<LocationInstanceDBScheme>> {
-    input._id = new ObjectId(input.id);
-    const id = input._id;
-
-    delete input.id;
+    const newInput = {
+      _id: new ObjectId(input.id),
+      ...input,
+      id: undefined,
+    };
 
     const originalLocationInstance = await collection('location_instances').findOne({
-      _id: id,
+      _id: newInput._id,
     });
 
     if (!originalLocationInstance) {
-      throw new UserInputError('There is no location instance with such id: ' + id);
+      throw new UserInputError('There is no location instance with such id: ' + newInput._id);
     }
 
-    await sendNotify('LocationInstance', 'location', db, user, 'update', input, 'location_instances');
+    await sendNotify('LocationInstance', 'location', db, user, 'update', newInput, 'location_instances');
 
     const locationInstance = await collection('location_instances').findOneAndUpdate(
-      { _id: id },
+      { _id: newInput._id },
       {
         $set: {
-          ...mergeWith(originalLocationInstance, input, (original, inp) => inp === null ? original : undefined),
+          ...mergeWith(originalLocationInstance, newInput, (original, inp) => inp === null ? original : undefined),
         },
       },
       { returnOriginal: false }
     );
 
     if (!locationInstance.value) {
-      throw new UserInputError('There is no location instance with such id: ' + id);
+      throw new UserInputError('There is no location instance with such id: ' + newInput._id);
     }
 
     return {
-      recordId: id,
+      recordId: newInput._id,
       record: locationInstance.value,
     };
   },
@@ -159,8 +170,12 @@ const LocationInstanceMutations = {
    * Delete location instance
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param id.id
    * @param id - object id
+   * @param collection.db
    * @param collection - method for accessing to database collections
+   * @param collection.user
+   * @param collection.collection
    */
   async delete(
     parent: undefined,
