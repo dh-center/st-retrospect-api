@@ -9,6 +9,7 @@ import { EditorData } from '../types/editorData';
 import mergeWith from 'lodash.mergewith';
 import emptyMutation from '../utils/emptyMutation';
 import sendNotify from '../utils/telegramNotify';
+import { UpdateQuestInput } from '../generated/graphql';
 
 /**
  * Scheme of quest in database
@@ -50,11 +51,8 @@ const Query = {
    * Returns specific quest
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param id.id
    * @param id - quest id
    * @param db - MongoDB connection to make queries
-   * @param db.dataLoaders
-   * @param dataLoaders - Data loaders in context
    */
   async quest(parent: undefined, { id }: { id: string }, { dataLoaders }: ResolverContextBase): Promise<QuestDBScheme | null> {
     const quest = dataLoaders.questById.load(id);
@@ -72,11 +70,8 @@ const QuestMutations = {
    * Create new quest
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input.input
    * @param input - mutation input object
-   * @param db.db
    * @param db - MongoDB connection to make queries
-   * @param db.user
    */
   async create(
     parent: undefined,
@@ -97,40 +92,38 @@ const QuestMutations = {
    * Update quest
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input.input
    * @param input - mutation input object
-   * @param db.db
-   * @param db - MongoDB connection to make queries
-   * @param db.user
+   * @param context - resolver context
    */
   async update(
     parent: undefined,
-    { input }: { input: QuestDBScheme & {id: string} },
+    { input }: { input: UpdateQuestInput },
     { db, user }: ResolverContextBase
   ): Promise<UpdateMutationPayload<QuestDBScheme>> {
-    input._id = new ObjectId(input.id);
-    const id = input._id;
-
-    delete input._id;
+    const newInput = {
+      _id: new ObjectId(input.id),
+      ...input,
+      id: undefined,
+    };
 
     const originalQuest = await db.collection('quests').findOne({
-      _id: id,
+      _id: newInput._id,
     });
 
-    await sendNotify('Quest', 'quests', db, user, 'update', input, 'quests');
+    await sendNotify('Quest', 'quests', db, user, 'update', newInput, 'quests');
 
     const quest = await db.collection('quests').findOneAndUpdate(
-      { _id: id },
+      { _id: newInput._id },
       {
         $set: {
-          ...mergeWith(originalQuest, input, (original, inp) => inp === null ? original : undefined),
-          ...(input.data ? { data: input.data } : {}),
+          ...mergeWith(originalQuest, newInput, (original, inp) => inp === null ? original : undefined),
+          ...(newInput.data ? { data: newInput.data } : {}),
         },
       },
       { returnOriginal: false });
 
     return {
-      recordId: id,
+      recordId: newInput._id,
       record: quest.value,
     };
   },
@@ -139,11 +132,8 @@ const QuestMutations = {
    * Delete quest
    *
    * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param id.id
    * @param id - object id
-   * @param db.db
    * @param db - MongoDB connection to make queries
-   * @param db.user
    */
   async delete(
     parent: undefined,

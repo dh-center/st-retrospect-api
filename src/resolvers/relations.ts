@@ -45,13 +45,9 @@ const RelationMutations = {
   /**
    * Create new relation
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input.input
-   * @param input - relation object
-   * @param collection.db
-   * @param collection - collection in MongoDB for queries
-   * @param collection.user
-   * @param collection.collection
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async create(
     parent: undefined,
@@ -71,47 +67,44 @@ const RelationMutations = {
   /**
    * Update relation
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input.input
-   * @param input - relation object
-   * @param collection.db
-   * @param collection - collection in MongoDB for queries
-   * @param collection.user
-   * @param collection.collection
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async update(
     parent: undefined,
-    { input }: { input: UpdateRelationInput & {_id: ObjectId} },
+    { input }: { input: UpdateRelationInput },
     { db, user, collection }: ResolverContextBase
   ): Promise<UpdateMutationPayload<RelationDBScheme>> {
-    input._id = new ObjectId(input.id);
-    const id = input._id;
-
-    delete input.id;
+    const newInput = {
+      _id: new ObjectId(input.id),
+      ...input,
+      id: undefined,
+    };
 
     const originalRelation = await collection('relations').findOne({
-      _id: id,
+      _id: newInput._id,
     });
 
     if (!originalRelation) {
-      throw new UserInputError('There is no relation with such id: ' + id);
+      throw new UserInputError('There is no relation with such id: ' + newInput._id);
     }
 
-    await sendNotify('Relation', 'relations', db, user, 'update', input, 'relations');
+    await sendNotify('Relation', 'relations', db, user, 'update', newInput, 'relations');
 
     const relation = await collection('relations').findOneAndUpdate(
-      { _id: id },
+      { _id: newInput._id },
       {
-        $set: mergeWith(originalRelation, input, (original, inp) => inp === null ? original : undefined),
+        $set: mergeWith(originalRelation, newInput, (original, inp) => inp === null ? original : undefined),
       },
       { returnOriginal: false });
 
     if (!relation.value) {
-      throw new UserInputError('Can\'t update relation with such id: ' + id);
+      throw new UserInputError('Can\'t update relation with such id: ' + newInput._id);
     }
 
     return {
-      recordId: id,
+      recordId: newInput._id,
       record: relation.value,
     };
   },
@@ -119,13 +112,9 @@ const RelationMutations = {
   /**
    * Delete relation
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param id.id
-   * @param id - relation id
-   * @param collection.db
-   * @param collection - collection in MongoDB for queries
-   * @param collection.user
-   * @param collection.collection
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async delete(
     parent: undefined,

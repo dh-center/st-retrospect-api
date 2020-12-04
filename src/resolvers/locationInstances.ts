@@ -23,13 +23,9 @@ const LocationInstanceMutations = {
   /**
    * Create new location location instance
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input.input
-   * @param input - mutation input object
-   * @param collection.db
-   * @param collection - method for accessing to database collections
-   * @param collection.user
-   * @param collection.collection
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async create(
     parent: undefined,
@@ -61,15 +57,14 @@ const LocationInstanceMutations = {
   /**
    * Add new architect
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input.input
-   * @param input - mutation input object
-   * @param contextBase - context with collections, db connection
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async addArchitect(
     parent: undefined,
     { input }: { input: AddArchitectInput },
-    contextBase: ResolverContextBase
+    context: ResolverContextBase
   ): Promise<CreateMutationPayload<RelationDBScheme>> {
     return Relations.RelationMutations.create(undefined, {
       input: {
@@ -82,23 +77,22 @@ const LocationInstanceMutations = {
         },
       },
     },
-    contextBase);
+    context);
   },
 
   /**
    * Remove architect
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input.input
-   * @param input - mutation input object
-   * @param contextBase - context with collections, db connection
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async removeArchitect(
     parent: undefined,
     { input }: { input: RemoveArchitectInput },
-    contextBase: ResolverContextBase
+    context: ResolverContextBase
   ): Promise<DeleteMutationPayload> {
-    const relation = await contextBase.collection('relations').findOne({
+    const relation = await context.collection('relations').findOne({
       locationInstanceId: input.locationInstanceId,
       personId: input.architectId,
       relationId: new ObjectId(ARCHITECT_RELATION_ID),
@@ -111,19 +105,15 @@ const LocationInstanceMutations = {
     return Relations.RelationMutations.delete(undefined, {
       id: relation?._id,
     },
-    contextBase);
+    context);
   },
 
   /**
    * Update location instance
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input.input
-   * @param input - mutation input object
-   * @param collection.db
-   * @param collection - method for accessing to database collections
-   * @param collection.user
-   * @param collection.collection
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async update(
     parent: undefined,
@@ -169,13 +159,9 @@ const LocationInstanceMutations = {
   /**
    * Delete location instance
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param id.id
-   * @param id - object id
-   * @param collection.db
-   * @param collection - method for accessing to database collections
-   * @param collection.user
-   * @param collection.collection
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async delete(
     parent: undefined,

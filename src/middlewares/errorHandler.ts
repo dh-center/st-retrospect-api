@@ -13,7 +13,7 @@ export default function (
   error: Error,
   req: Request,
   res: Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line
   next: NextFunction
 ): Response {
   if (error instanceof ApiError) {

@@ -22,7 +22,7 @@ export interface Collections {
   relationtypes: RelationTypeDBScheme;
 }
 
-export type CollectionAccessFunction = <T extends keyof Collections>(name: T) => Collection<Collections[T]>
+export type CollectionAccessFunction = <T extends keyof Collections>(name: T) => Collection<Collections[T]>;
 
 /**
  * User access token

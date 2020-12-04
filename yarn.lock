@@ -3758,9 +3758,10 @@ escodegen@^1.14.1:
   optionalDependencies:
     source-map "~0.6.1"
 
-"eslint-config-codex@github:codex-team/eslint-config#fix-ts":
-  version "1.4.0"
-  resolved "https://codeload.github.com/codex-team/eslint-config/tar.gz/59c66f9a168a4ff3be63d745601965a8ed3f03a7"
+eslint-config-codex@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/eslint-config-codex/-/eslint-config-codex-1.5.2.tgz#2e28920c876f26837a202b33d1b1f83c521d9b97"
+  integrity sha512-/qFx4MkT4WGoutPAFWlyHLY6JW4B1UvSefk4lGfkIZExGjoiwyiNRMPiTBLzTn1JEf37foDAMAT59BBn1Oz+eg==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^4.6.1"
     "@typescript-eslint/parser" "^4.6.1"

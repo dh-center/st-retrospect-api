@@ -1,7 +1,7 @@
 import {
   defaultFieldResolver,
   GraphQLSchema,
-  InputValueDefinitionNode, ListTypeNode,
+  InputValueDefinitionNode,
   NamedTypeNode,
   NonNullTypeNode
 } from 'graphql';
