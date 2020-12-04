@@ -41,7 +41,7 @@ export default function isWithMultilingualArgs(
       /**
        * @todo add support for list types
        */
-      case 'ListType':
+      default:
         return false;
     }
   });

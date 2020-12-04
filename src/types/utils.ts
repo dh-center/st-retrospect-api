@@ -5,4 +5,4 @@ export interface ObjectMap<T> {
   [key: string]: T;
 }
 
-export type WithoutId<T> = Omit<T, '_id' | 'id'>
+export type WithoutId<T> = Omit<T, '_id' | 'id'>;

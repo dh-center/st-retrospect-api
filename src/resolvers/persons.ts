@@ -7,6 +7,7 @@ import {
 import { ObjectId } from 'mongodb';
 import mergeWith from 'lodash.mergewith';
 import sendNotify from '../utils/telegramNotify';
+import { UpdatePersonInput } from '../generated/graphql';
 
 export interface PersonDBScheme {
   _id: ObjectId;
@@ -16,10 +17,9 @@ const PersonMutations = {
   /**
    * Create new person
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input - person object
-   * @param db - MongoDB connection to make queries
-   * @returns {object}
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async create(
     parent: undefined,
@@ -39,31 +39,31 @@ const PersonMutations = {
   /**
    * Update person
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input - person object
-   * @param db - MongoDB connection to make queries
-   * @returns {object}
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async update(
     parent: undefined,
-    { input }: { input: PersonDBScheme & {id: string} },
+    { input }: { input: UpdatePersonInput },
     { db, user }: ResolverContextBase
   ): Promise<UpdateMutationPayload<PersonDBScheme>> {
-    input._id = new ObjectId(input.id);
-    const id = input._id;
-
-    delete input.id;
+    const newInput = {
+      _id: new ObjectId(input.id),
+      ...input,
+      id: undefined,
+    };
 
     const originalPerson = await db.collection('persons').findOne({
-      _id: id,
+      _id: newInput._id,
     });
 
-    await sendNotify('Person', 'persons', db, user, 'update', input, 'persons');
+    await sendNotify('Person', 'persons', db, user, 'update', newInput, 'persons');
 
     const person = await db.collection('persons').findOneAndUpdate(
-      { _id: id },
+      { _id: newInput._id },
       {
-        $set: mergeWith(originalPerson, input, (original, inp) => {
+        $set: mergeWith(originalPerson, newInput, (original, inp) => {
           if (inp === null) {
             return original;
           }
@@ -77,7 +77,7 @@ const PersonMutations = {
       { returnOriginal: false });
 
     return {
-      recordId: id,
+      recordId: newInput._id,
       record: person.value,
     };
   },
@@ -85,10 +85,9 @@ const PersonMutations = {
   /**
    * Delete person
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param id - object id
-   * @param db - MongoDB connection to make queries
-   * @returns {object}
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async delete(
     parent: undefined,

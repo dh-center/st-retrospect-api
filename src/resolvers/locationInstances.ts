@@ -23,9 +23,9 @@ const LocationInstanceMutations = {
   /**
    * Create new location location instance
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input - mutation input object
-   * @param collection - method for accessing to database collections
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async create(
     parent: undefined,
@@ -57,14 +57,14 @@ const LocationInstanceMutations = {
   /**
    * Add new architect
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input - mutation input object
-   * @param contextBase - context with collections, db connection
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async addArchitect(
     parent: undefined,
     { input }: { input: AddArchitectInput },
-    contextBase: ResolverContextBase
+    context: ResolverContextBase
   ): Promise<CreateMutationPayload<RelationDBScheme>> {
     return Relations.RelationMutations.create(undefined, {
       input: {
@@ -77,22 +77,22 @@ const LocationInstanceMutations = {
         },
       },
     },
-    contextBase);
+    context);
   },
 
   /**
    * Remove architect
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input - mutation input object
-   * @param contextBase - context with collections, db connection
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async removeArchitect(
     parent: undefined,
     { input }: { input: RemoveArchitectInput },
-    contextBase: ResolverContextBase
+    context: ResolverContextBase
   ): Promise<DeleteMutationPayload> {
-    const relation = await contextBase.collection('relations').findOne({
+    const relation = await context.collection('relations').findOne({
       locationInstanceId: input.locationInstanceId,
       personId: input.architectId,
       relationId: new ObjectId(ARCHITECT_RELATION_ID),
@@ -105,52 +105,53 @@ const LocationInstanceMutations = {
     return Relations.RelationMutations.delete(undefined, {
       id: relation?._id,
     },
-    contextBase);
+    context);
   },
 
   /**
    * Update location instance
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input - mutation input object
-   * @param collection - method for accessing to database collections
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async update(
     parent: undefined,
-    { input }: { input: UpdateLocationInstanceInput & {_id: ObjectId} },
+    { input }: { input: UpdateLocationInstanceInput },
     { db, user, collection }: ResolverContextBase
   ): Promise<UpdateMutationPayload<LocationInstanceDBScheme>> {
-    input._id = new ObjectId(input.id);
-    const id = input._id;
-
-    delete input.id;
+    const newInput = {
+      _id: new ObjectId(input.id),
+      ...input,
+      id: undefined,
+    };
 
     const originalLocationInstance = await collection('location_instances').findOne({
-      _id: id,
+      _id: newInput._id,
     });
 
     if (!originalLocationInstance) {
-      throw new UserInputError('There is no location instance with such id: ' + id);
+      throw new UserInputError('There is no location instance with such id: ' + newInput._id);
     }
 
-    await sendNotify('LocationInstance', 'location', db, user, 'update', input, 'location_instances');
+    await sendNotify('LocationInstance', 'location', db, user, 'update', newInput, 'location_instances');
 
     const locationInstance = await collection('location_instances').findOneAndUpdate(
-      { _id: id },
+      { _id: newInput._id },
       {
         $set: {
-          ...mergeWith(originalLocationInstance, input, (original, inp) => inp === null ? original : undefined),
+          ...mergeWith(originalLocationInstance, newInput, (original, inp) => inp === null ? original : undefined),
         },
       },
       { returnOriginal: false }
     );
 
     if (!locationInstance.value) {
-      throw new UserInputError('There is no location instance with such id: ' + id);
+      throw new UserInputError('There is no location instance with such id: ' + newInput._id);
     }
 
     return {
-      recordId: id,
+      recordId: newInput._id,
       record: locationInstance.value,
     };
   },
@@ -158,9 +159,9 @@ const LocationInstanceMutations = {
   /**
    * Delete location instance
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param id - object id
-   * @param collection - method for accessing to database collections
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async delete(
     parent: undefined,

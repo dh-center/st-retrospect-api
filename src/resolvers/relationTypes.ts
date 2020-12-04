@@ -46,9 +46,9 @@ const RelationTypeMutations = {
   /**
    * Creates new relation type
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input - relation type object
-   * @param collection - collection in MongoDB for queries
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async create(
     parent: undefined,
@@ -73,37 +73,34 @@ const RelationTypeMutations = {
   /**
    * Update relation type
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input - relation type object
-   * @param collection - collection in MongoDB for queries
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async update(
     parent: undefined,
-    { input }: { input: UpdateRelationTypeInput & {_id: ObjectId; synonyms: string[]} },
+    { input }: { input: UpdateRelationTypeInput & {synonyms: string[]} },
     { db, user, collection, languages }: ResolverContextBase
   ): Promise<UpdateMutationPayload<RelationTypeDBScheme>> {
-    input._id = new ObjectId(input.id);
-    const id = input._id;
-
-    delete input.id;
+    const newInput = {
+      _id: new ObjectId(input.id),
+      ...input,
+      id: undefined,
+      synonyms: mapSynonymsInput(input.synonyms, languages),
+    };
 
     const originalRelationType = await collection('relationtypes').findOne({
-      _id: id,
+      _id: newInput._id,
     });
 
     if (!originalRelationType) {
-      throw new UserInputError('There is no relation type with such id: ' + id);
+      throw new UserInputError('There is no relation type with such id: ' + newInput._id);
     }
-
-    const newInput = {
-      ...input,
-      synonyms: mapSynonymsInput(input.synonyms, languages),
-    };
 
     await sendNotify('RelationType', 'relation-types', db, user, 'update', newInput, 'relationtypes');
 
     const relationType = await collection('relationtypes').findOneAndUpdate(
-      { _id: id },
+      { _id: newInput._id },
       {
         $set: mergeWith(
           originalRelationType,
@@ -122,11 +119,11 @@ const RelationTypeMutations = {
       { returnOriginal: false });
 
     if (!relationType.value) {
-      throw new UserInputError('Can\'t update relation type with such id: ' + id);
+      throw new UserInputError('Can\'t update relation type with such id: ' + newInput._id);
     }
 
     return {
-      recordId: id,
+      recordId: newInput._id,
       record: relationType.value,
     };
   },
@@ -134,9 +131,9 @@ const RelationTypeMutations = {
   /**
    * Delete relation type
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param id - relation type id
-   * @param collection - collection in MongoDB for queries
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async delete(
     parent: undefined,

@@ -69,10 +69,9 @@ const Query = {
   /**
    * Returns specific route
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param id - route id
-   * @param db - MongoDB connection to make queries
-   * @returns {object}
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async route(parent: undefined, { id }: { id: string }, { db }: ResolverContextBase): Promise<RouteDBScheme | null> {
     const route = await db.collection<RouteDBScheme>('routes').findOne({
@@ -89,10 +88,9 @@ const Query = {
   /**
    * Returns all routes
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param filter - search filter
-   * @param db - MongoDB connection to make queries
-   * @returns {object[]}
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async routes(parent: undefined, { filter }: { filter?: RoutesFilter }, { db }: ResolverContextBase): Promise<RouteWithLocations[]> {
     const aggregationPipeline: Record<string, unknown>[] = [
@@ -111,11 +109,9 @@ const Query = {
   /**
    * Returns nearest routes
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param center - center coordinates
-   * @param radius - search radius
-   * @param filter - search filter
-   * @param db - MongoDB connection to make queries
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async nearestRoutes(
     parent: undefined,
