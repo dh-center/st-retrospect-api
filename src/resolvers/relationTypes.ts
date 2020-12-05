@@ -73,12 +73,13 @@ const RelationTypeMutations = {
     { input }: { input: UpdateRelationTypeInput },
     { db, user, collection, languages }: ResolverContextBase
   ): Promise<UpdateMutationPayload<RelationTypeDBScheme>> {
+    const { id, ...rest } = input;
     const newInput = {
-      _id: new ObjectId(input.id),
-      ...input,
-      id: undefined,
+      _id: new ObjectId(id),
+      ...rest,
       synonyms: mapArrayInputToMultilingual(input.synonyms || [], languages),
-    } as RelationTypeDBScheme;
+
+    };
 
     const originalRelationType = await collection('relationtypes').findOne({
       _id: newInput._id,

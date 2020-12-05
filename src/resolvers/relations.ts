@@ -76,10 +76,10 @@ const RelationMutations = {
     { input }: { input: UpdateRelationInput },
     { db, user, collection }: ResolverContextBase
   ): Promise<UpdateMutationPayload<RelationDBScheme>> {
+    const { id, ...rest } = input;
     const newInput = {
-      _id: new ObjectId(input.id),
-      ...input,
-      id: undefined,
+      _id: new ObjectId(id),
+      ...rest,
     };
 
     const originalRelation = await collection('relations').findOne({

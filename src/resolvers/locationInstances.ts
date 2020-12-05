@@ -120,10 +120,10 @@ const LocationInstanceMutations = {
     { input }: { input: UpdateLocationInstanceInput },
     { db, user, collection }: ResolverContextBase
   ): Promise<UpdateMutationPayload<LocationInstanceDBScheme>> {
+    const { id, ...rest } = input;
     const newInput = {
-      _id: new ObjectId(input.id),
-      ...input,
-      id: undefined,
+      _id: new ObjectId(id),
+      ...rest,
     };
 
     const originalLocationInstance = await collection('location_instances').findOne({
