@@ -97,10 +97,10 @@ const PersonMutations = {
     { input }: { input: UpdatePersonInput },
     { db, user, languages }: ResolverContextBase
   ): Promise<UpdateMutationPayload<PersonDBScheme>> {
+    const { id, ...rest } = input;
     const newInput = {
-      _id: new ObjectId(input.id),
-      ...input,
-      id: undefined,
+      _id: new ObjectId(id),
+      ...rest,
       professions: mapArrayInputToMultilingual(input.professions || [], languages),
     } as PersonDBScheme;
 
