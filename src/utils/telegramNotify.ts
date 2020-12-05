@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AccessTokenData, MultilingualString, NodeName } from '../types/graphql';
 import { toGlobalId } from './globalId';
 import { Db, ObjectId } from 'mongodb';
@@ -104,7 +103,7 @@ function constructUpdateMessage(
     // Original value is not equal to empty string or empty array
     const originalValueNotEmpty = !!original && (Array.isArray(originalValue) ? originalValue.length : originalValue);
     const encodedOriginalValue = Array.isArray(originalValue) ? JSON.stringify(originalValue) : encodeURIComponent(originalValue as SimpleType);
-    const encodedInputValue = Array.isArray(inputValue) ? JSON.stringify(originalValue) : encodeURIComponent(inputValue as SimpleType);
+    const encodedInputValue = Array.isArray(inputValue) ? JSON.stringify(inputValue) : encodeURIComponent(inputValue as SimpleType);
 
     if (inputValue) {
       if (originalValueNotEmpty) {
@@ -248,7 +247,8 @@ async function sendNotify<T extends {_id: ObjectId}>(
 
       try {
         fullMessage = stringifyValue(input, message);
-      } catch {
+      } catch (e) {
+        console.error(e);
         fullMessage = message + `Can't print changes due to error`;
       }
       break;
@@ -264,7 +264,8 @@ async function sendNotify<T extends {_id: ObjectId}>(
 
       try {
         fullMessage = generateUpdateMessage(input, original, message);
-      } catch {
+      } catch (e) {
+        console.error(e);
         fullMessage = message + `Can't print changes due to error`;
       }
       break;
@@ -277,7 +278,8 @@ async function sendNotify<T extends {_id: ObjectId}>(
 
       try {
         fullMessage = stringifyValue(input, message);
-      } catch {
+      } catch (e) {
+        console.error(e);
         fullMessage = message + `Can't print changes due to error`;
       }
       fullMessage = stringifyValue(input, message);
