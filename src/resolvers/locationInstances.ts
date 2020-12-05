@@ -37,7 +37,7 @@ const LocationInstanceMutations = {
      */
     const locationInstance = (await collection('location_instances').insertOne(input)).ops[0];
 
-    await sendNotify('LocationInstance', 'location', db, user, 'create', input);
+    await sendNotify('LocationInstance', 'location', db, user, 'create', locationInstance);
 
     /**
      * Link instance to location

@@ -15,22 +15,22 @@ export interface PersonDBScheme {
   /**
    * Person's last name
    */
-  lastName?: string;
+  lastName?: string | null;
 
   /**
    * Person's first name
    */
-  firstName?: string;
+  firstName?: string | null;
 
   /**
    * Person's patronymic
    */
-  patronymic?: string;
+  patronymic?: string | null;
 
   /**
    * Person's pseudonym
    */
-  pseudonym?: string;
+  pseudonym?: string | null;
 
   /**
    * Person's professions
@@ -40,22 +40,22 @@ export interface PersonDBScheme {
   /**
    * Person's description
    */
-  description?: string;
+  description?: string | null;
 
   /**
    * Person's birth date
    */
-  birthDate?: string;
+  birthDate?: string | null;
 
   /**
    * Person's death date
    */
-  deathDate?: string;
+  deathDate?: string | null;
 
   /**
    * Person's info link
    */
-  wikiLink?: string;
+  wikiLink?: string | null;
 }
 
 const PersonMutations = {
@@ -74,10 +74,10 @@ const PersonMutations = {
     const newInput = {
       ...input,
       professions: mapArrayInputToMultilingual(input.professions || [], languages),
-    } as PersonDBScheme;
+    };
     const person = (await collection('persons').insertOne(newInput)).ops[0];
 
-    await sendNotify('Person', 'persons', db, user, 'create', input);
+    await sendNotify('Person', 'persons', db, user, 'create', person);
 
     return {
       recordId: person._id,

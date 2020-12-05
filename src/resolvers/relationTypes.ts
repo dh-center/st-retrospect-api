@@ -53,7 +53,7 @@ const RelationTypeMutations = {
 
     const relationType = (await collection('relationtypes').insertOne(newInput)).ops[0];
 
-    await sendNotify('RelationType', 'relation-types', db, user, 'create', newInput);
+    await sendNotify('RelationType', 'relation-types', db, user, 'create', relationType);
 
     return {
       recordId: relationType._id,

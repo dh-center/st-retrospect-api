@@ -56,7 +56,7 @@ const RelationMutations = {
   ): Promise<CreateMutationPayload<RelationDBScheme>> {
     const relation = (await collection('relations').insertOne(input)).ops[0];
 
-    await sendNotify('Relation', 'relations', db, user, 'create', input);
+    await sendNotify('Relation', 'relations', db, user, 'create', relation);
 
     return {
       recordId: relation._id,

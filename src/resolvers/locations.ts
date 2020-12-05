@@ -281,7 +281,7 @@ const LocationMutations = {
 
     location.locationInstanceIds = Object.values(locationInstances.insertedIds);
 
-    await sendNotify('Location', 'locations', db, user, 'create', input);
+    await sendNotify('Location', 'locations', db, user, 'create', location);
 
     return {
       recordId: location._id,

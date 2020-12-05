@@ -3,6 +3,7 @@ import { AccessTokenData, NodeName } from '../types/graphql';
 import { toGlobalId } from './globalId';
 import { Db, ObjectId } from 'mongodb';
 import axios from 'axios';
+import { UserDBScheme } from '../resolvers/users';
 
 /**
  * Function that constructs messages on creating/deleting some node
@@ -131,13 +132,32 @@ function messageUpdating(
  *
  * @param message - full message to send
  */
-async function sending(message: string): Promise<void> {
+async function sendMessage(message: string): Promise<void> {
   await axios({
     method: 'post',
     url: process.env.NOTIFY_URL,
     data: 'message=' + message + '&parse_mode=HTML',
   });
 }
+
+async function sendNotify<T extends {_id: ObjectId}>(
+  nodeName: NodeName,
+  nodeLink: string,
+  db: Db,
+  user: AccessTokenData,
+  actionType: 'create' | 'delete',
+  input: T,
+): Promise<void>;
+
+async function sendNotify<T extends {_id: ObjectId}>(
+  nodeName: NodeName,
+  nodeLink: string,
+  db: Db,
+  user: AccessTokenData,
+  actionType: 'update',
+  input: T,
+  collection: string
+): Promise<void>;
 
 /**
  * Function that calls the desired message constructor
@@ -148,53 +168,54 @@ async function sending(message: string): Promise<void> {
  * @param user - User's access token
  * @param actionType - type of action (create/update/delete)
  * @param input - input object
- * @param collection - collection name to make queries
+ * @param collectionName - collection name to make queries
  */
-export default async function sendNotify(
+async function sendNotify<T extends {_id: ObjectId}>(
   nodeName: NodeName,
   nodeLink: string,
   db: Db,
   user: AccessTokenData,
-  actionType: string,
-  input: Record<string, string | any>,
-  collection?: string
+  actionType: 'create' | 'delete' | 'update',
+  input: T,
+  collectionName?: string
 ): Promise<void> {
-  let newId;
+  const globalId = toGlobalId(nodeName, input._id);
 
-  if (nodeName == 'LocationInstance') {
-    if (input.locationId) {
-      newId = toGlobalId('Location', input.locationId);
-    } else {
-      const location = (await db.collection('locations').findOne({ locationInstanceIds: new ObjectId(input._id) }));
+  const currentUser = (await db.collection('users').findOne({ _id: new ObjectId(user.id) })) as UserDBScheme;
 
-      newId = toGlobalId('Location', location._id);
+  let fullMessage: string;
+
+  switch (actionType) {
+    case 'create': {
+      const message = `<b>New ${nodeName.toLowerCase()}! 🆕</b>\nCreated by <i>${currentUser.username}</i> (${user.id})\n` +
+        `See on <a href="${process.env.ADMIN_URL}/${nodeLink}/${globalId}">this page</a>\n\n<b>${nodeName}:</b>\n`;
+
+      fullMessage = messageCreating(input, message);
+      break;
     }
-  } else {
-    newId = toGlobalId(nodeName, input._id);
+
+    case 'update': {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const original = await db.collection(collectionName!).findOne({
+        _id: input._id,
+      });
+      const message = `<b>${nodeName} has been updated! 🆙</b>\nUpdated by <i>${currentUser.username}</i> (${user.id})\n` +
+        `See on <a href="${process.env.ADMIN_URL}/${nodeLink}/${globalId}">this page</a>\n\n`;
+
+      fullMessage = messageUpdating(input, original, message);
+      break;
+    }
+
+    case 'delete': {
+      const message = `<b>${nodeName} deleted! 🚮</b>\nDeleted by <i>${currentUser.username}</i> (${user.id})\n` +
+        `See on <a href="${process.env.ADMIN_URL}/${nodeLink}/${globalId}">this page</a>\n\n<b>${nodeName}:</b>\n` +
+        '\t'.repeat(3) + `<i>_id</i>\n` + '\t'.repeat(6) + `${input._id}\n\n`;
+
+      fullMessage = messageCreating(input, message);
+    }
   }
-  const currentUser = (await db.collection('users').findOne({ _id: new ObjectId(user.id) }));
 
-  if (actionType == 'create') {
-    const message = `<b>New ${nodeName.toLowerCase()}! 🆕</b>\nCreated by <i>${currentUser.username}</i> (${user.id})\n` +
-        `See on <a href="${process.env.ADMIN_URL}/${nodeLink}/${newId}">this page</a>\n\n<b>${nodeName}:</b>\n`;
-    const fullMessage = messageCreating(input, message);
-
-    await sending(fullMessage);
-  } else if (actionType == 'update' && collection) {
-    const original = await db.collection(collection).findOne({
-      _id: input._id,
-    });
-    const message = `<b>${nodeName} has been updated! 🆙</b>\nUpdated by <i>${currentUser.username}</i> (${user.id})\n` +
-        `See on <a href="${process.env.ADMIN_URL}/${nodeLink}/${newId}">this page</a>\n\n`;
-    const fullMessage = messageUpdating(input, original, message);
-
-    await sending(fullMessage);
-  } else if (actionType == 'delete') {
-    const message = `<b>${nodeName} deleted! 🚮</b>\nDeleted by <i>${currentUser.username}</i> (${user.id})\n` +
-      `See on <a href="${process.env.ADMIN_URL}/${nodeLink}/${newId}">this page</a>\n\n<b>${nodeName}:</b>\n` +
-      '\t'.repeat(3) + `<i>_id</i>\n` + '\t'.repeat(6) + `${input._id}\n\n`;
-    const fullMessage = messageCreating(input, message);
-
-    await sending(fullMessage);
-  }
+  await sendMessage(fullMessage);
 }
+
+export default sendNotify;
