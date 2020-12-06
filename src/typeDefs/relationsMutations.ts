@@ -25,7 +25,7 @@ export default gql`
     """
     Link to quote
     """
-    link: MultilingualString @multilingual
+    link: MultilingualString! @multilingual
   }
 
   input UpdateRelationInput {
