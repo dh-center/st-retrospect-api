@@ -75,6 +75,10 @@ const LocationInstanceMutations = {
           ru: '',
           en: '',
         },
+        link: {
+          ru: '',
+          en: '',
+        },
       },
     },
     context);

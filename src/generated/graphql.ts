@@ -791,7 +791,9 @@ export type Relation = Node & {
   /** Relation type */
   relationType?: Maybe<RelationType>;
   /** Relation's quote */
-  quote?: Maybe<Scalars['String']>;
+  quote?: Maybe<Scalars['MultilingualString']>;
+  /** Link to quote */
+  link?: Maybe<Scalars['MultilingualString']>;
 };
 
 /** Model for representing list of relations */
@@ -823,6 +825,8 @@ export type CreateRelationInput = {
   relationId: Scalars['GlobalId'];
   /** Quote about relation */
   quote: Scalars['MultilingualString'];
+  /** Link to quote */
+  link: Scalars['MultilingualString'];
 };
 
 export type UpdateRelationInput = {
@@ -836,6 +840,8 @@ export type UpdateRelationInput = {
   relationId?: Maybe<Scalars['GlobalId']>;
   /** Quote about relation */
   quote?: Maybe<Scalars['MultilingualString']>;
+  /** Link to quote */
+  link?: Maybe<Scalars['MultilingualString']>;
 };
 
 export type CreateRelationPayload = {
@@ -1682,7 +1688,8 @@ export type RelationResolvers<ContextType = any, ParentType extends ResolversPar
   person?: Resolver<Maybe<ResolversTypes['Person']>, ParentType, ContextType>;
   locationInstance?: Resolver<Maybe<ResolversTypes['LocationInstance']>, ParentType, ContextType>;
   relationType?: Resolver<Maybe<ResolversTypes['RelationType']>, ParentType, ContextType>;
-  quote?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  quote?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  link?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

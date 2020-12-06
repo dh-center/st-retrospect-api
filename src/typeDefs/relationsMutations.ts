@@ -21,6 +21,11 @@ export default gql`
     Quote about relation
     """
     quote: MultilingualString! @multilingual
+
+    """
+    Link to quote
+    """
+    link: MultilingualString! @multilingual
   }
 
   input UpdateRelationInput {
@@ -48,6 +53,11 @@ export default gql`
     Quote about relation
     """
     quote: MultilingualString @multilingual
+
+    """
+    Link to quote
+    """
+    link: MultilingualString @multilingual
   }
 
   type CreateRelationPayload {
