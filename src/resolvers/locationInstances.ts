@@ -15,9 +15,9 @@ import {
 import { ARCHITECT_RELATION_ID, LocationInstanceDBScheme } from './locations';
 import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
-import mergeWith from 'lodash.mergewith';
 import Relations, { RelationDBScheme } from './relations';
 import sendNotify from '../utils/telegramNotify';
+import mergeWithCustomizer from '../utils/mergeWithCustomizer';
 
 const LocationInstanceMutations = {
   /**
@@ -125,7 +125,7 @@ const LocationInstanceMutations = {
     { db, user, collection }: ResolverContextBase
   ): Promise<UpdateMutationPayload<LocationInstanceDBScheme>> {
     const { id, ...rest } = input;
-    const newInput = {
+    const newInput: Omit<LocationInstanceDBScheme, 'locationId'> = {
       _id: new ObjectId(id),
       ...rest,
     };
@@ -143,9 +143,7 @@ const LocationInstanceMutations = {
     const locationInstance = await collection('location_instances').findOneAndUpdate(
       { _id: newInput._id },
       {
-        $set: {
-          ...mergeWith(originalLocationInstance, newInput, (original, inp) => inp === null ? original : undefined),
-        },
+        $set: mergeWithCustomizer(originalLocationInstance, newInput),
       },
       { returnOriginal: false }
     );

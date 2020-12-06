@@ -5,13 +5,20 @@ import {
   UpdateMutationPayload
 } from '../types/graphql';
 import { ObjectId } from 'mongodb';
-import mergeWith from 'lodash.mergewith';
 import sendNotify from '../utils/telegramNotify';
 import { CreatePersonInput, UpdatePersonInput } from '../generated/graphql';
 import mapArrayInputToMultilingual from '../utils/mapStringsArrayToMultilingual';
+import mergeWithCustomizer from '../utils/mergeWithCustomizer';
 
+/**
+ * Person representation in DataBase
+ */
 export interface PersonDBScheme {
+  /**
+   * Person id
+   */
   _id: ObjectId;
+
   /**
    * Person's last name
    */
@@ -113,16 +120,7 @@ const PersonMutations = {
     const person = await db.collection('persons').findOneAndUpdate(
       { _id: newInput._id },
       {
-        $set: mergeWith(originalPerson, newInput, (original, inp) => {
-          if (inp === null) {
-            return original;
-          }
-          if (Array.isArray(original)) {
-            return inp;
-          }
-
-          return undefined;
-        }),
+        $set: mergeWithCustomizer(originalPerson, newInput),
       },
       { returnOriginal: false });
 

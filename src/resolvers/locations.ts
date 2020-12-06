@@ -9,12 +9,12 @@ import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
 import { PersonDBScheme } from './persons';
 import { RelationDBScheme } from './relations';
-import mergeWith from 'lodash.mergewith';
 import emptyMutation from '../utils/emptyMutation';
 import { CreateLocationInput, UpdateLocationInput } from '../generated/graphql';
 import { WithoutId } from '../types/utils';
 import { LocationAddress } from './address';
 import sendNotify from '../utils/telegramNotify';
+import mergeWithCustomizer from '../utils/mergeWithCustomizer';
 
 /**
  * ID of relation type for architects
@@ -33,17 +33,17 @@ export interface LocationDBScheme {
   /**
    * Location position longitude
    */
-  longitude: number;
+  longitude?: number | null;
 
   /**
    * Location position latitude
    */
-  latitude: number;
+  latitude?: number | null;
 
   /**
    * Array of addresses ids
    */
-  addresses?: LocationAddress[];
+  addresses?: LocationAddress[] | null;
 
   /**
    * Array with location instances ids
@@ -321,7 +321,7 @@ const LocationMutations = {
       { _id: newInput._id },
       {
         $set: {
-          ...mergeWith(originalLocation, newInput, (original, inp) => inp === null ? original : undefined),
+          ...mergeWithCustomizer(originalLocation, newInput),
         },
       },
       { returnOriginal: false }

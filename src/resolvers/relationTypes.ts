@@ -9,9 +9,9 @@ import {
 import { CreateRelationTypeInput, Maybe, UpdateRelationTypeInput } from '../generated/graphql';
 import emptyMutation from '../utils/emptyMutation';
 import { UserInputError } from 'apollo-server-express';
-import mergeWith from 'lodash.mergewith';
 import sendNotify from '../utils/telegramNotify';
 import mapArrayInputToMultilingual from '../utils/mapStringsArrayToMultilingual';
+import mergeWithCustomizer from '../utils/mergeWithCustomizer';
 
 /**
  * Relation type DB representation
@@ -25,7 +25,7 @@ export interface RelationTypeDBScheme {
   /**
    * Relation type name
    */
-  name: MultilingualString;
+  name?: MultilingualString | null;
 
   /**
    * Relation type synonym
@@ -74,7 +74,7 @@ const RelationTypeMutations = {
     { db, user, collection, languages }: ResolverContextBase
   ): Promise<UpdateMutationPayload<RelationTypeDBScheme>> {
     const { id, ...rest } = input;
-    const newInput = {
+    const newInput: RelationTypeDBScheme = {
       _id: new ObjectId(id),
       ...rest,
       synonyms: mapArrayInputToMultilingual(input.synonyms || [], languages),
@@ -94,19 +94,7 @@ const RelationTypeMutations = {
     const relationType = await collection('relationtypes').findOneAndUpdate(
       { _id: newInput._id },
       {
-        $set: mergeWith(
-          originalRelationType,
-          newInput,
-          (original, inp) => {
-            if (inp === null) {
-              return original;
-            }
-            if (Array.isArray(original)) {
-              return inp;
-            }
-
-            return undefined;
-          }),
+        $set: mergeWithCustomizer(originalRelationType, newInput),
       },
       { returnOriginal: false });
 
