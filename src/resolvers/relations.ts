@@ -40,6 +40,11 @@ export interface RelationDBScheme {
    * Relation quote
    */
   quote?: MultilingualString | null;
+
+  /**
+   * Link to quote source
+   */
+  link?: MultilingualString | null;
 }
 
 const RelationMutations = {

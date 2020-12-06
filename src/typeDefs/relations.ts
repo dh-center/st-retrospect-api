@@ -31,7 +31,7 @@ export default gql`
     quote: MultilingualString @multilingual
 
     """
-    Link to quote
+    Link to quote source
     """
     link: MultilingualString @multilingual
   }
