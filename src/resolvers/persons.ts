@@ -15,22 +15,22 @@ export interface PersonDBScheme {
   /**
    * Person's last name
    */
-  lastName?: string | null;
+  lastName?: MultilingualString | null;
 
   /**
    * Person's first name
    */
-  firstName?: string | null;
+  firstName?: MultilingualString | null;
 
   /**
    * Person's patronymic
    */
-  patronymic?: string | null;
+  patronymic?: MultilingualString | null;
 
   /**
    * Person's pseudonym
    */
-  pseudonym?: string | null;
+  pseudonym?: MultilingualString | null;
 
   /**
    * Person's professions
@@ -40,7 +40,7 @@ export interface PersonDBScheme {
   /**
    * Person's description
    */
-  description?: string | null;
+  description?: MultilingualString | null;
 
   /**
    * Person's birth date

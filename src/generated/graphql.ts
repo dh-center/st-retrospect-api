@@ -247,17 +247,17 @@ export type Person = Node & {
   /** Person's id */
   id: Scalars['ID'];
   /** Person's first name */
-  firstName?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['MultilingualString']>;
   /** Person's last name */
-  lastName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['MultilingualString']>;
   /** Person's patronymic */
-  patronymic?: Maybe<Scalars['String']>;
+  patronymic?: Maybe<Scalars['MultilingualString']>;
   /** Person's pseudonym */
-  pseudonym?: Maybe<Scalars['String']>;
+  pseudonym?: Maybe<Scalars['MultilingualString']>;
   /** Person's professions */
   professions?: Maybe<Array<Maybe<Scalars['MultilingualString']>>>;
   /** Person's description */
-  description?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['MultilingualString']>;
   /** Person's birth date */
   birthDate?: Maybe<Scalars['String']>;
   /** Person's death date */
@@ -307,17 +307,17 @@ export type PageInfo = {
 
 export type CreatePersonInput = {
   /** Person's last name */
-  lastName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['MultilingualString']>;
   /** Person's first name */
-  firstName?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['MultilingualString']>;
   /** Person's patronymic */
-  patronymic?: Maybe<Scalars['String']>;
+  patronymic?: Maybe<Scalars['MultilingualString']>;
   /** Person's pseudonym */
-  pseudonym?: Maybe<Scalars['String']>;
+  pseudonym?: Maybe<Scalars['MultilingualString']>;
   /** Person's professions */
   professions?: Maybe<Array<Scalars['String']>>;
   /** Person's description */
-  description?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['MultilingualString']>;
   /** Person's birth date */
   birthDate?: Maybe<Scalars['String']>;
   /** Person's death date */
@@ -920,7 +920,7 @@ export type CreateRelationTypeInput = {
   /** Relation type name */
   name: Scalars['MultilingualString'];
   /** Relation type synonyms */
-  synonyms: Array<Maybe<Scalars['String']>>;
+  synonyms?: Maybe<Array<Scalars['String']>>;
 };
 
 export type UpdateRelationTypeInput = {
@@ -1485,12 +1485,12 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type PersonResolvers<ContextType = any, ParentType extends ResolversParentTypes['Person'] = ResolversParentTypes['Person']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  patronymic?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  pseudonym?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  firstName?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  lastName?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  patronymic?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  pseudonym?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   professions?: Resolver<Maybe<Array<Maybe<ResolversTypes['MultilingualString']>>>, ParentType, ContextType>;
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   birthDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   deathDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   relations?: Resolver<Array<ResolversTypes['Relation']>, ParentType, ContextType>;

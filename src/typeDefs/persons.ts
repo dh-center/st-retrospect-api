@@ -10,22 +10,22 @@ export default gql`
     """
     Person's first name
     """
-    firstName: String @multilingual
+    firstName: MultilingualString @multilingual
 
     """
     Person's last name
     """
-    lastName: String @multilingual
+    lastName: MultilingualString @multilingual
 
     """
     Person's patronymic
     """
-    patronymic: String @multilingual
+    patronymic: MultilingualString @multilingual
 
     """
     Person's pseudonym
     """
-    pseudonym: String @multilingual
+    pseudonym: MultilingualString @multilingual
 
     """
     Person's professions
@@ -35,7 +35,7 @@ export default gql`
     """
     Person's description
     """
-    description: String @multilingual
+    description: MultilingualString @multilingual
 
     """
     Person's birth date
@@ -159,22 +159,22 @@ export default gql`
     """
     Person's last name
     """
-    lastName: String @multilingual
+    lastName: MultilingualString @multilingual
 
     """
     Person's first name
     """
-    firstName: String @multilingual
+    firstName: MultilingualString @multilingual
 
     """
     Person's patronymic
     """
-    patronymic: String @multilingual
+    patronymic: MultilingualString @multilingual
 
     """
     Person's pseudonym
     """
-    pseudonym: String @multilingual
+    pseudonym: MultilingualString @multilingual
 
     """
     Person's professions
@@ -184,7 +184,7 @@ export default gql`
     """
     Person's description
     """
-    description: String @multilingual
+    description: MultilingualString @multilingual
 
     """
     Person's birth date
