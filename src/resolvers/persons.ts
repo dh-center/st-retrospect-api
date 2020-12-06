@@ -1,16 +1,61 @@
 import {
   CreateMutationPayload,
-  DeleteMutationPayload,
+  DeleteMutationPayload, MultilingualString,
   ResolverContextBase,
   UpdateMutationPayload
 } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import mergeWith from 'lodash.mergewith';
 import sendNotify from '../utils/telegramNotify';
-import { UpdatePersonInput } from '../generated/graphql';
+import { CreatePersonInput, UpdatePersonInput } from '../generated/graphql';
+import mapArrayInputToMultilingual from '../utils/mapStringsArrayToMultilingual';
 
 export interface PersonDBScheme {
   _id: ObjectId;
+  /**
+   * Person's last name
+   */
+  lastName?: MultilingualString | null;
+
+  /**
+   * Person's first name
+   */
+  firstName?: MultilingualString | null;
+
+  /**
+   * Person's patronymic
+   */
+  patronymic?: MultilingualString | null;
+
+  /**
+   * Person's pseudonym
+   */
+  pseudonym?: MultilingualString | null;
+
+  /**
+   * Person's professions
+   */
+  professions?: MultilingualString[];
+
+  /**
+   * Person's description
+   */
+  description?: MultilingualString | null;
+
+  /**
+   * Person's birth date
+   */
+  birthDate?: string | null;
+
+  /**
+   * Person's death date
+   */
+  deathDate?: string | null;
+
+  /**
+   * Person's info link
+   */
+  wikiLink?: string | null;
 }
 
 const PersonMutations = {
@@ -23,12 +68,16 @@ const PersonMutations = {
    */
   async create(
     parent: undefined,
-    { input }: { input: PersonDBScheme },
-    { db, user }: ResolverContextBase
+    { input }: { input: CreatePersonInput },
+    { collection, db, user, languages }: ResolverContextBase
   ): Promise<CreateMutationPayload<PersonDBScheme>> {
-    const person = (await db.collection<PersonDBScheme>('persons').insertOne(input)).ops[0];
+    const newInput = {
+      ...input,
+      professions: mapArrayInputToMultilingual(input.professions || [], languages),
+    };
+    const person = (await collection('persons').insertOne(newInput)).ops[0];
 
-    await sendNotify('Person', 'persons', db, user, 'create', input);
+    await sendNotify('Person', 'persons', db, user, 'create', person);
 
     return {
       recordId: person._id,
@@ -46,13 +95,14 @@ const PersonMutations = {
   async update(
     parent: undefined,
     { input }: { input: UpdatePersonInput },
-    { db, user }: ResolverContextBase
+    { db, user, languages }: ResolverContextBase
   ): Promise<UpdateMutationPayload<PersonDBScheme>> {
+    const { id, ...rest } = input;
     const newInput = {
-      _id: new ObjectId(input.id),
-      ...input,
-      id: undefined,
-    };
+      _id: new ObjectId(id),
+      ...rest,
+      professions: mapArrayInputToMultilingual(input.professions || [], languages),
+    } as PersonDBScheme;
 
     const originalPerson = await db.collection('persons').findOne({
       _id: newInput._id,

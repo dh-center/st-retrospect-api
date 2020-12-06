@@ -281,7 +281,7 @@ const LocationMutations = {
 
     location.locationInstanceIds = Object.values(locationInstances.insertedIds);
 
-    await sendNotify('Location', 'locations', db, user, 'create', input);
+    await sendNotify('Location', 'locations', db, user, 'create', location);
 
     return {
       recordId: location._id,
@@ -301,10 +301,10 @@ const LocationMutations = {
     { input }: { input: UpdateLocationInput },
     { db, user, collection }: ResolverContextBase
   ): Promise<UpdateMutationPayload<LocationDBScheme>> {
+    const { id, ...rest } = input;
     const newInput = {
-      _id: new ObjectId(input.id),
-      ...input,
-      id: undefined,
+      _id: new ObjectId(id),
+      ...rest,
     };
 
     const originalLocation = await collection('locations').findOne({

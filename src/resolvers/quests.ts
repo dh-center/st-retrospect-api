@@ -100,10 +100,10 @@ const QuestMutations = {
     { input }: { input: UpdateQuestInput },
     { db, user }: ResolverContextBase
   ): Promise<UpdateMutationPayload<QuestDBScheme>> {
+    const { id, ...rest } = input;
     const newInput = {
-      _id: new ObjectId(input.id),
-      ...input,
-      id: undefined,
+      _id: new ObjectId(id),
+      ...rest,
     };
 
     const originalQuest = await db.collection('quests').findOne({
