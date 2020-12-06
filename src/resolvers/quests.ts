@@ -10,6 +10,7 @@ import mergeWith from 'lodash.mergewith';
 import emptyMutation from '../utils/emptyMutation';
 import sendNotify from '../utils/telegramNotify';
 import { UpdateQuestInput } from '../generated/graphql';
+import mergeWithCustomizer from "../utils/mergeWithCustomizer";
 
 /**
  * Scheme of quest in database
@@ -116,7 +117,7 @@ const QuestMutations = {
       { _id: newInput._id },
       {
         $set: {
-          ...mergeWith(originalQuest, newInput, (original, inp) => inp === null ? original : undefined),
+          ...mergeWithCustomizer(originalQuest, newInput),
           ...(newInput.data ? { data: newInput.data } : {}),
         },
       },

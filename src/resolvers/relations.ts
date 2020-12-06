@@ -10,6 +10,7 @@ import emptyMutation from '../utils/emptyMutation';
 import { CreateRelationInput, UpdateRelationInput } from '../generated/graphql';
 import { UserInputError } from 'apollo-server-express';
 import sendNotify from '../utils/telegramNotify';
+import mergeWithCustomizer from "../utils/mergeWithCustomizer";
 
 /**
  * Relation's database scheme
@@ -23,22 +24,22 @@ export interface RelationDBScheme {
   /**
    * Location id
    */
-  locationInstanceId: ObjectId | null;
+  locationInstanceId?: ObjectId | null;
 
   /**
    * Person id
    */
-  personId: ObjectId | null;
+  personId?: ObjectId | null;
 
   /**
    * Relation type id
    */
-  relationId: ObjectId | null;
+  relationId?: ObjectId | null;
 
   /**
    * Relation quote
    */
-  quote: MultilingualString;
+  quote?: MultilingualString | null;
 }
 
 const RelationMutations = {
@@ -77,7 +78,7 @@ const RelationMutations = {
     { db, user, collection }: ResolverContextBase
   ): Promise<UpdateMutationPayload<RelationDBScheme>> {
     const { id, ...rest } = input;
-    const newInput = {
+    const newInput: RelationDBScheme = {
       _id: new ObjectId(id),
       ...rest,
     };
@@ -95,7 +96,7 @@ const RelationMutations = {
     const relation = await collection('relations').findOneAndUpdate(
       { _id: newInput._id },
       {
-        $set: mergeWith(originalRelation, newInput, (original, inp) => inp === null ? original : undefined),
+        $set: mergeWithCustomizer(originalRelation, newInput),
       },
       { returnOriginal: false });
 
