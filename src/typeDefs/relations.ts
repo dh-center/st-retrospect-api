@@ -29,6 +29,11 @@ export default gql`
     Relation's quote
     """
     quote: String @multilingual
+
+    """
+    Link to quote
+    """
+    link: String @multilingual
   }
 
   """
