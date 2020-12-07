@@ -5,12 +5,11 @@ import {
   MultilingualString,
   ResolverContextBase, UpdateMutationPayload
 } from '../types/graphql';
-import mergeWith from 'lodash.mergewith';
 import emptyMutation from '../utils/emptyMutation';
 import { CreateRelationInput, UpdateRelationInput } from '../generated/graphql';
 import { UserInputError } from 'apollo-server-express';
 import sendNotify from '../utils/telegramNotify';
-import mergeWithCustomizer from "../utils/mergeWithCustomizer";
+import mergeWithCustomizer from '../utils/mergeWithCustomizer';
 
 /**
  * Relation's database scheme

@@ -69,11 +69,16 @@ export interface ResolverContextBase {
 }
 
 /**
+ * Object storing something in different languages
+ */
+export interface Multilingual<T> {
+  [key: string]: T
+}
+
+/**
  * Object storing strings in different languages
  */
-export interface MultilingualString {
-  [key: string]: string;
-}
+export type MultilingualString = Multilingual<string>;
 
 /**
  * Point coordinates

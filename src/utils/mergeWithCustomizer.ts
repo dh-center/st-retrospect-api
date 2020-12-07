@@ -12,6 +12,10 @@ export default function mergeWithCustomizer<T, I>(original: T, input: I): T & I 
       return orig;
     }
 
+    if (Array.isArray(inp)) {
+      return inp;
+    }
+
     return undefined;
   });
 }

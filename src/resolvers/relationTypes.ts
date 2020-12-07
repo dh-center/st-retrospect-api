@@ -2,21 +2,33 @@ import { ObjectId } from 'mongodb';
 import {
   CreateMutationPayload,
   DeleteMutationPayload,
+  Multilingual,
   MultilingualString,
   ResolverContextBase,
   UpdateMutationPayload
 } from '../types/graphql';
-import { CreateRelationTypeInput, Maybe, UpdateRelationTypeInput } from '../generated/graphql';
+import { CreateRelationTypeInput, UpdateRelationTypeInput } from '../generated/graphql';
 import emptyMutation from '../utils/emptyMutation';
 import { UserInputError } from 'apollo-server-express';
 import sendNotify from '../utils/telegramNotify';
-import mapArrayInputToMultilingual from '../utils/mapStringsArrayToMultilingual';
 import mergeWithCustomizer from '../utils/mergeWithCustomizer';
+
+/**
+ * Part of the relation type with synonyms
+ *
+ * @todo remove when @multilingual directive can generate multilingual fields
+ */
+interface WithSynonyms {
+  /**
+   * Relation type synonym
+   */
+  synonyms: Multilingual<string[]>;
+}
 
 /**
  * Relation type DB representation
  */
-export interface RelationTypeDBScheme {
+export interface RelationTypeDBScheme extends WithSynonyms{
   /**
    * Relation type id
    */
@@ -26,11 +38,6 @@ export interface RelationTypeDBScheme {
    * Relation type name
    */
   name?: MultilingualString | null;
-
-  /**
-   * Relation type synonym
-   */
-  synonyms: Maybe<MultilingualString>[];
 }
 
 const RelationTypeMutations = {
@@ -43,12 +50,11 @@ const RelationTypeMutations = {
    */
   async create(
     parent: undefined,
-    { input }: { input: CreateRelationTypeInput & {synonyms: string[]} },
-    { db, user, collection, languages }: ResolverContextBase
+    { input }: { input: CreateRelationTypeInput & WithSynonyms },
+    { db, user, collection }: ResolverContextBase
   ): Promise<CreateMutationPayload<RelationTypeDBScheme>> {
     const newInput = {
       ...input,
-      synonyms: mapArrayInputToMultilingual(input.synonyms || [], languages),
     };
 
     const relationType = (await collection('relationtypes').insertOne(newInput)).ops[0];
@@ -70,15 +76,13 @@ const RelationTypeMutations = {
    */
   async update(
     parent: undefined,
-    { input }: { input: UpdateRelationTypeInput },
-    { db, user, collection, languages }: ResolverContextBase
+    { input }: { input: UpdateRelationTypeInput & WithSynonyms },
+    { db, user, collection }: ResolverContextBase
   ): Promise<UpdateMutationPayload<RelationTypeDBScheme>> {
     const { id, ...rest } = input;
     const newInput: RelationTypeDBScheme = {
       _id: new ObjectId(id),
       ...rest,
-      synonyms: mapArrayInputToMultilingual(input.synonyms || [], languages),
-
     };
 
     const originalRelationType = await collection('relationtypes').findOne({

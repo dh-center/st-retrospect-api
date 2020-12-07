@@ -255,7 +255,7 @@ export type Person = Node & {
   /** Person's pseudonym */
   pseudonym?: Maybe<Scalars['MultilingualString']>;
   /** Person's professions */
-  professions?: Maybe<Array<Maybe<Scalars['MultilingualString']>>>;
+  professions?: Maybe<Array<Maybe<Scalars['String']>>>;
   /** Person's description */
   description?: Maybe<Scalars['MultilingualString']>;
   /** Person's birth date */
@@ -792,7 +792,7 @@ export type Relation = Node & {
   relationType?: Maybe<RelationType>;
   /** Relation's quote */
   quote?: Maybe<Scalars['MultilingualString']>;
-  /** Link to quote */
+  /** Link to quote source */
   link?: Maybe<Scalars['MultilingualString']>;
 };
 
@@ -899,7 +899,7 @@ export type RelationType = Node & {
   /** Relation type name */
   name: Scalars['MultilingualString'];
   /** Relation type synonyms */
-  synonyms: Array<Maybe<Scalars['MultilingualString']>>;
+  synonyms: Array<Scalars['MultilingualString']>;
 };
 
 /** Information about specific relation type in connection */
@@ -1495,7 +1495,7 @@ export type PersonResolvers<ContextType = any, ParentType extends ResolversParen
   lastName?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   patronymic?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   pseudonym?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
-  professions?: Resolver<Maybe<Array<Maybe<ResolversTypes['MultilingualString']>>>, ParentType, ContextType>;
+  professions?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   birthDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   deathDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1733,7 +1733,7 @@ export type RelationMutationsResolvers<ContextType = any, ParentType extends Res
 export type RelationTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RelationType'] = ResolversParentTypes['RelationType']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['MultilingualString'], ParentType, ContextType>;
-  synonyms?: Resolver<Array<Maybe<ResolversTypes['MultilingualString']>>, ParentType, ContextType>;
+  synonyms?: Resolver<Array<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
