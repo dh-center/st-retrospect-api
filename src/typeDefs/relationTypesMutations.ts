@@ -10,7 +10,7 @@ export default gql`
     """
     Relation type synonyms
     """
-    synonyms: [String!]
+    synonyms: [String!] @multilingual
   }
 
   input UpdateRelationTypeInput {
@@ -27,7 +27,7 @@ export default gql`
     """
     Relation type synonyms
     """
-    synonyms: [String!]
+    synonyms: [String!] @multilingual
   }
 
   type CreateRelationTypePayload {
