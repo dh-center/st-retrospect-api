@@ -8,8 +8,8 @@ module.exports = {
     await asyncForEach(persons, async (person) => {
       console.log(`\tprocess person with id ${person._id}`);
       const professions = person.professions || [];
-      const professionsRu = professions.map(profession => profession.ru)
-      const professionsEn = professions.map(profession => profession.en)
+      const professionsRu = professions.map(profession => profession.ru).filter(Boolean)
+      const professionsEn = professions.map(profession => profession.en).filter(Boolean)
       const newProfessions = {
         ru: professionsRu,
         en: professionsEn

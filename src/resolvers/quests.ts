@@ -6,11 +6,10 @@ import {
 } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import { EditorData } from '../types/editorData';
-import mergeWith from 'lodash.mergewith';
 import emptyMutation from '../utils/emptyMutation';
 import sendNotify from '../utils/telegramNotify';
 import { UpdateQuestInput } from '../generated/graphql';
-import mergeWithCustomizer from "../utils/mergeWithCustomizer";
+import mergeWithCustomizer from '../utils/mergeWithCustomizer';
 
 /**
  * Scheme of quest in database
