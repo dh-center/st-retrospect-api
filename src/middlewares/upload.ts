@@ -86,4 +86,9 @@ router.post('/upload/location', getUploadMiddleware('locations').single('image')
  */
 router.post('/upload/route', getUploadMiddleware('routes').single('image'), filesProcessMiddleware);
 
+/**
+ * Upload images for quest data
+ */
+router.post('/upload/quest/data', getUploadMiddleware('quests/data').single('image'), filesProcessMiddleware);
+
 export default router;
