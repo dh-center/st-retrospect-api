@@ -8,7 +8,37 @@ import { QuestDBScheme } from '../resolvers/quests';
 import { RelationTypeDBScheme } from '../resolvers/relationTypes';
 import { UserDBScheme } from '../resolvers/users';
 
-export type CollectionAccessFunction = <T extends keyof Collections>(name: T) => Collection<Collections[T]>
+/**
+ * Map with collection name and its type
+ */
+export interface Collections {
+  users: UserDBScheme;
+  persons: PersonDBScheme;
+  locations: LocationDBScheme;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  location_instances: LocationInstanceDBScheme;
+  relations: RelationDBScheme;
+  quests: QuestDBScheme;
+  relationtypes: RelationTypeDBScheme;
+}
+
+export type CollectionAccessFunction = <T extends keyof Collections>(name: T) => Collection<Collections[T]>;
+
+/**
+ * User access token
+ */
+export interface AccessTokenData {
+  id: string;
+  isAdmin: boolean;
+}
+
+/**
+ * Supported languages for data
+ */
+export enum Languages {
+  RU = 'RU',
+  EN = 'EN'
+}
 
 /**
  * Resolver's Context argument
@@ -39,33 +69,16 @@ export interface ResolverContextBase {
 }
 
 /**
- * Map with collection name and its type
+ * Object storing something in different languages
  */
-export interface Collections {
-  users: UserDBScheme;
-  persons: PersonDBScheme;
-  locations: LocationDBScheme;
-  // eslint-disable-next-line camelcase
-  location_instances: LocationInstanceDBScheme;
-  relations: RelationDBScheme;
-  quests: QuestDBScheme;
-  relationtypes: RelationTypeDBScheme;
+export interface Multilingual<T> {
+  [key: string]: T
 }
 
 /**
  * Object storing strings in different languages
  */
-export interface MultilingualString {
-  [key: string]: string;
-}
-
-/**
- * Supported languages for data
- */
-export enum Languages {
-  RU = 'RU',
-  EN = 'EN'
-}
+export type MultilingualString = Multilingual<string>;
 
 /**
  * Point coordinates
@@ -113,14 +126,6 @@ export interface DeleteMutationPayload {
    * Id of deleted record
    */
   recordId: ObjectId;
-}
-
-/**
- * User access token
- */
-export interface AccessTokenData {
-  id: string;
-  isAdmin: boolean;
 }
 
 /**

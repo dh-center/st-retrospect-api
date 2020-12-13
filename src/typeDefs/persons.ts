@@ -10,32 +10,32 @@ export default gql`
     """
     Person's first name
     """
-    firstName: String @multilingual
+    firstName: MultilingualString @multilingual
 
     """
     Person's last name
     """
-    lastName: String @multilingual
+    lastName: MultilingualString @multilingual
 
     """
     Person's patronymic
     """
-    patronymic: String @multilingual
+    patronymic: MultilingualString @multilingual
 
     """
     Person's pseudonym
     """
-    pseudonym: String @multilingual
+    pseudonym: MultilingualString @multilingual
 
     """
     Person's professions
     """
-    professions: [MultilingualString]! @multilingual
+    professions: [String] @multilingual
 
     """
     Person's description
     """
-    description: String @multilingual
+    description: MultilingualString @multilingual
 
     """
     Person's birth date
@@ -157,34 +157,34 @@ export default gql`
 
   input CreatePersonInput {
     """
-    Person's first name
-    """
-    firstName: String @multilingual
-
-    """
     Person's last name
     """
-    lastName: String @multilingual
+    lastName: MultilingualString @multilingual
+
+    """
+    Person's first name
+    """
+    firstName: MultilingualString @multilingual
 
     """
     Person's patronymic
     """
-    patronymic: String @multilingual
+    patronymic: MultilingualString @multilingual
 
     """
     Person's pseudonym
     """
-    pseudonym: String @multilingual
+    pseudonym: MultilingualString @multilingual
 
     """
     Person's professions
     """
-    professions: [MultilingualString]! @multilingual
+    professions: [String!] @multilingual
 
     """
     Person's description
     """
-    description: String @multilingual
+    description: MultilingualString @multilingual
 
     """
     Person's birth date
@@ -221,14 +221,14 @@ export default gql`
     id: GlobalId!
 
     """
-    Person's first name
-    """
-    firstName: String @multilingual
-
-    """
     Person's last name
     """
     lastName: String @multilingual
+
+    """
+    Person's first name
+    """
+    firstName: String @multilingual
 
     """
     Person's patronymic
@@ -243,7 +243,7 @@ export default gql`
     """
     Person's professions
     """
-    professions: [MultilingualString] @multilingual
+    professions: [String!] @multilingual
 
     """
     Person's description

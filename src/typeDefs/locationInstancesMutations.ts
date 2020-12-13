@@ -136,11 +136,64 @@ export default gql`
     recordId: GlobalId! @toGlobalId(type: "LocationInstance")
   }
 
+  input AddArchitectInput {
+    """
+    Location instance id
+    """
+    locationInstanceId: GlobalId!
+
+    """
+    Architect for adding
+    """
+    architectId: GlobalId!
+  }
+
+  type AddArchitectPayload {
+    """
+    New relation id
+    """
+    recordId: GlobalId! @toGlobalId(type: "Relation")
+
+    """
+    New relation
+    """
+    record: Relation!
+  }
+
+  input RemoveArchitectInput {
+    """
+    Location instance id
+    """
+    locationInstanceId: GlobalId!
+
+    """
+    Architect for removing
+    """
+    architectId: GlobalId!
+  }
+
+  type RemoveArchitectPayload {
+    """
+    Deleted relation id
+    """
+    recordId: GlobalId! @toGlobalId(type: "Relation")
+  }
+
   type LocationInstanceMutations {
     """
     Create location instance
     """
     create(input: CreateLocationInstanceInput!): CreateLocationInstancePayload! @adminCheck
+
+    """
+    Add architect to location instance
+    """
+    addArchitect(input: AddArchitectInput!): AddArchitectPayload! @adminCheck
+
+    """
+    Remove architects from location instance
+    """
+    removeArchitect(input: RemoveArchitectInput!): RemoveArchitectPayload! @adminCheck
 
     """
     Update location instance

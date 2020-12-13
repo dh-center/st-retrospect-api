@@ -1,19 +1,18 @@
-import { Db, MongoClient, MongoClientOptions, Logger, Collection } from 'mongodb';
-import { CollectionAccessFunction, Collections } from './types/graphql';
+import type { Db, MongoClientOptions, Collection } from 'mongodb';
+import { MongoClient, Logger } from 'mongodb';
+import type { Collections } from './types/graphql';
 
 const connectionConfig: MongoClientOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
 
-let connection: Db;
+let connection: Db | undefined;
 
 let logCount = 0;
 
 /**
  * Setups connections to the database
- *
- * @returns {Promise<Db>}
  */
 export default async function getConnection(): Promise<Db> {
   if (!connection) {

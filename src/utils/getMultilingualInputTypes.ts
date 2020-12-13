@@ -121,7 +121,7 @@ export default function getMultilingualInputTypes(schema: GraphQLSchema): [Multi
     },
   });
 
-  Object.values(inputTypesWithConfig).map((fieldConfig) => {
+  Object.values(inputTypesWithConfig).forEach((fieldConfig) => {
     Object.values(fieldConfig.getFields()).forEach(field => {
       const isOnType = isFieldMultilingual(schema, field, inputTypesWithConfig);
 

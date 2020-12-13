@@ -1,13 +1,14 @@
 import DataLoader from 'dataloader';
-import { Db, ObjectId } from 'mongodb';
-import { RelationDBScheme } from './resolvers/relations';
-import { PersonDBScheme } from './resolvers/persons';
-import { ObjectMap } from './types/utils';
-import { LocationDBScheme, LocationTypeDBScheme } from './resolvers/locations';
-import { RouteDBScheme } from './resolvers/routes';
-import { QuestDBScheme } from './resolvers/quests';
+import type { Db } from 'mongodb';
+import { ObjectId } from 'mongodb';
+import type { RelationDBScheme } from './resolvers/relations';
+import type { PersonDBScheme } from './resolvers/persons';
+import type { ObjectMap } from './types/utils';
+import type { LocationDBScheme, LocationTypeDBScheme } from './resolvers/locations';
+import type { RouteDBScheme } from './resolvers/routes';
+import type { QuestDBScheme } from './resolvers/quests';
 import { countries, regions } from './resolvers/address';
-import { RelationTypeDBScheme } from './resolvers/relationTypes';
+import type { RelationTypeDBScheme } from './resolvers/relationTypes';
 
 /**
  * Class for setting up data loaders
@@ -17,7 +18,7 @@ export default class DataLoaders {
    * Loader for fetching relations by persons ids
    */
   public relationByPersonId = new DataLoader(
-    (personIds: string[]) => this.batchRelationsByPersonIds(personIds),
+    async (personIds: readonly string[]) => this.batchRelationsByPersonIds(personIds),
     { cache: false }
   );
 
@@ -25,7 +26,7 @@ export default class DataLoaders {
    * Loader for fetching relations by their ids
    */
   public relationById = new DataLoader(
-    (relationIds: string[]) => this.batchByIds<RelationDBScheme>('relations', relationIds),
+    async (relationIds: readonly string[]) => this.batchByIds<RelationDBScheme>('relations', relationIds),
     { cache: false }
   );
 
@@ -33,7 +34,7 @@ export default class DataLoaders {
    * Loader for fetching relations by locations ids
    */
   public relationByLocationInstanceId = new DataLoader(
-    (locationInstanceIds: string[]) => this.batchRelationsByLocationInstanceIds(locationInstanceIds),
+    async (locationInstanceIds: readonly string[]) => this.batchRelationsByLocationInstanceIds(locationInstanceIds),
     { cache: false }
   );
 
@@ -41,7 +42,7 @@ export default class DataLoaders {
    * Loader for fetching persons by their ids
    */
   public personById = new DataLoader(
-    (personIds: string[]) => this.batchByIds<PersonDBScheme>('persons', personIds),
+    async (personIds: readonly string[]) => this.batchByIds<PersonDBScheme>('persons', personIds),
     { cache: false }
   );
 
@@ -49,7 +50,7 @@ export default class DataLoaders {
    * Loader for fetching routes by their ids
    */
   public routesById = new DataLoader(
-    (routeIds: string[]) => this.batchByIds<RouteDBScheme>('routes', routeIds),
+    async (routeIds: readonly string[]) => this.batchByIds<RouteDBScheme>('routes', routeIds),
     { cache: false }
   );
 
@@ -57,7 +58,7 @@ export default class DataLoaders {
    * Loader for fetching relation types by their ids
    */
   public relationTypeById = new DataLoader(
-    (relationTypesIds: string[]) => this.batchByIds<RelationTypeDBScheme>('relationtypes', relationTypesIds),
+    async (relationTypesIds: readonly string[]) => this.batchByIds<RelationTypeDBScheme>('relationtypes', relationTypesIds),
     { cache: false }
   );
 
@@ -65,23 +66,23 @@ export default class DataLoaders {
    * Loader for fetching locations types by their ids
    */
   public locationTypeById = new DataLoader(
-    (locationTypesIds: string[]) => this.batchByIds<LocationTypeDBScheme>('locationtypes', locationTypesIds),
+    async (locationTypesIds: readonly string[]) => this.batchByIds<LocationTypeDBScheme>('locationtypes', locationTypesIds),
     { cache: false }
   );
 
   public countryById = new DataLoader(
-    async (codes: string[]) => codes.map((code) => countries[code])
-  )
+    async (codes: readonly string[]) => codes.map((code) => countries[code])
+  );
 
   public regionById = new DataLoader(
-    async (codes: string[]) => codes.map((code) => regions[code])
-  )
+    async (codes: readonly string[]) => codes.map((code) => regions[code])
+  );
 
   /**
    * Loader for fetching locationInstance by their ids
    */
   public locationInstanceById = new DataLoader(
-    (locationInstanceIds: string[]) => this.batchByIds<LocationDBScheme>('location_instances', locationInstanceIds),
+    async (locationInstanceIds: readonly string[]) => this.batchByIds<LocationDBScheme>('location_instances', locationInstanceIds),
     { cache: false }
   );
 
@@ -89,7 +90,7 @@ export default class DataLoaders {
    * Loader for fetching location by their ids
    */
   public locationById = new DataLoader(
-    (locationIds: string[]) => this.batchByIds<LocationDBScheme>('locations', locationIds),
+    async (locationIds: readonly string[]) => this.batchByIds<LocationDBScheme>('locations', locationIds),
     { cache: false }
   );
 
@@ -97,14 +98,14 @@ export default class DataLoaders {
    * Loader for fetching quests by their ids
    */
   public questById = new DataLoader(
-    (questIds: string[]) => this.batchByIds<QuestDBScheme>('quests', questIds),
+    async (questIds: readonly string[]) => this.batchByIds<QuestDBScheme>('quests', questIds),
     { cache: false }
   );
 
   /**
    * MongoDB connection to make queries
    */
-  private dbConnection: Db;
+  private readonly dbConnection: Db;
 
   /**
    * Creates DataLoaders instance
@@ -120,24 +121,28 @@ export default class DataLoaders {
    *
    * @param personIds - persons ids for resolving
    */
-  private async batchRelationsByPersonIds(personIds: string[]): Promise<RelationDBScheme[][]> {
+  private async batchRelationsByPersonIds(personIds: readonly string[]): Promise<RelationDBScheme[][]> {
     const queryResult = await this.dbConnection.collection<RelationDBScheme>('relations')
       .find({ personId: { $in: personIds.map(id => new ObjectId(id)) } })
       .toArray();
 
-    const relationsMap: ObjectMap<RelationDBScheme[]> = {};
+    const relationsMap: ObjectMap<RelationDBScheme[] | undefined> = {};
 
     queryResult.forEach((relation) => {
       if (!relation.personId) {
         return;
       }
-      if (!relationsMap[relation.personId.toString()]) {
+
+      const relationInMap = relationsMap[relation.personId.toString()];
+
+      if (!relationInMap) {
         relationsMap[relation.personId.toString()] = [];
+      } else {
+        relationInMap.push(relation);
       }
-      relationsMap[relation.personId.toString()].push(relation);
     });
 
-    return personIds.map((personId) => relationsMap[personId] || []);
+    return personIds.map((personId) => relationsMap[personId] ?? []);
   }
 
   /**
@@ -145,24 +150,28 @@ export default class DataLoaders {
    *
    * @param locationInstanceIds - location instances ids for resolving
    */
-  private async batchRelationsByLocationInstanceIds(locationInstanceIds: string[]): Promise<RelationDBScheme[][]> {
+  private async batchRelationsByLocationInstanceIds(locationInstanceIds: readonly string[]): Promise<RelationDBScheme[][]> {
     const queryResult = await this.dbConnection.collection<RelationDBScheme>('relations')
       .find({ locationInstanceId: { $in: locationInstanceIds.map(id => new ObjectId(id)) } })
       .toArray();
 
-    const relationsMap: ObjectMap<RelationDBScheme[]> = {};
+    const relationsMap: ObjectMap<RelationDBScheme[] | undefined> = {};
 
     queryResult.forEach((relation) => {
       if (!relation.locationInstanceId) {
         return;
       }
-      if (!relationsMap[relation.locationInstanceId.toString()]) {
+
+      const relationInMap = relationsMap[relation.locationInstanceId.toString()];
+
+      if (!relationInMap) {
         relationsMap[relation.locationInstanceId.toString()] = [];
+      } else {
+        relationInMap.push(relation);
       }
-      relationsMap[relation.locationInstanceId.toString()].push(relation);
     });
 
-    return locationInstanceIds.map((locationInstanceId) => relationsMap[locationInstanceId] || []);
+    return locationInstanceIds.map((locationInstanceId) => relationsMap[locationInstanceId] ?? []);
   }
 
   /**
@@ -171,20 +180,20 @@ export default class DataLoaders {
    * @param collectionName - collection name to fetch data
    * @param ids - ids for resolving
    */
-  private async batchByIds<T extends {_id: ObjectId}>(collectionName: string, ids: string[]): Promise<(T| null)[]> {
+  private async batchByIds<T extends {_id: ObjectId}>(collectionName: string, ids: readonly string[]): Promise<(T| null)[]> {
     const queryResult = await this.dbConnection.collection(collectionName)
       .find({
         _id: { $in: ids.map(id => new ObjectId(id)) },
       })
       .toArray();
 
-    const personsMap: ObjectMap<T> = {};
+    const personsMap: ObjectMap<T | undefined> = {};
 
     queryResult.forEach((entity: T) => {
       personsMap[entity._id.toString()] = entity;
     }, {});
 
-    return ids.map((entityId) => personsMap[entityId] as T || null);
+    return ids.map((entityId) => personsMap[entityId] ?? null);
   }
 }
 
@@ -193,4 +202,4 @@ export default class DataLoaders {
  */
 export type FieldsWithDataLoader = {
   [Key in keyof DataLoaders]: DataLoader<never, never> extends DataLoaders[Key] ? Key : never;
-}[keyof DataLoaders]
+}[keyof DataLoaders];

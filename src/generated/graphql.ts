@@ -2,6 +2,8 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -245,17 +247,17 @@ export type Person = Node & {
   /** Person's id */
   id: Scalars['ID'];
   /** Person's first name */
-  firstName?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['MultilingualString']>;
   /** Person's last name */
-  lastName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['MultilingualString']>;
   /** Person's patronymic */
-  patronymic?: Maybe<Scalars['String']>;
+  patronymic?: Maybe<Scalars['MultilingualString']>;
   /** Person's pseudonym */
-  pseudonym?: Maybe<Scalars['String']>;
+  pseudonym?: Maybe<Scalars['MultilingualString']>;
   /** Person's professions */
-  professions: Array<Maybe<Scalars['MultilingualString']>>;
+  professions?: Maybe<Array<Maybe<Scalars['String']>>>;
   /** Person's description */
-  description?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['MultilingualString']>;
   /** Person's birth date */
   birthDate?: Maybe<Scalars['String']>;
   /** Person's death date */
@@ -304,18 +306,18 @@ export type PageInfo = {
 };
 
 export type CreatePersonInput = {
-  /** Person's first name */
-  firstName?: Maybe<Scalars['String']>;
   /** Person's last name */
-  lastName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['MultilingualString']>;
+  /** Person's first name */
+  firstName?: Maybe<Scalars['MultilingualString']>;
   /** Person's patronymic */
-  patronymic?: Maybe<Scalars['String']>;
+  patronymic?: Maybe<Scalars['MultilingualString']>;
   /** Person's pseudonym */
-  pseudonym?: Maybe<Scalars['String']>;
+  pseudonym?: Maybe<Scalars['MultilingualString']>;
   /** Person's professions */
-  professions: Array<Maybe<Scalars['MultilingualString']>>;
+  professions?: Maybe<Array<Scalars['String']>>;
   /** Person's description */
-  description?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['MultilingualString']>;
   /** Person's birth date */
   birthDate?: Maybe<Scalars['String']>;
   /** Person's death date */
@@ -335,16 +337,16 @@ export type CreatePersonPayload = {
 export type UpdatePersonInput = {
   /** ID of person for updating */
   id: Scalars['GlobalId'];
-  /** Person's first name */
-  firstName?: Maybe<Scalars['String']>;
   /** Person's last name */
   lastName?: Maybe<Scalars['String']>;
+  /** Person's first name */
+  firstName?: Maybe<Scalars['String']>;
   /** Person's patronymic */
   patronymic?: Maybe<Scalars['String']>;
   /** Person's pseudonym */
   pseudonym?: Maybe<Scalars['String']>;
   /** Person's professions */
-  professions?: Maybe<Array<Maybe<Scalars['MultilingualString']>>>;
+  professions?: Maybe<Array<Scalars['String']>>;
   /** Person's description */
   description?: Maybe<Scalars['String']>;
   /** Person's birth date */
@@ -710,10 +712,42 @@ export type DeleteLocationInstancePayload = {
   recordId: Scalars['GlobalId'];
 };
 
+export type AddArchitectInput = {
+  /** Location instance id */
+  locationInstanceId: Scalars['GlobalId'];
+  /** Architect for adding */
+  architectId: Scalars['GlobalId'];
+};
+
+export type AddArchitectPayload = {
+  __typename?: 'AddArchitectPayload';
+  /** New relation id */
+  recordId: Scalars['GlobalId'];
+  /** New relation */
+  record: Relation;
+};
+
+export type RemoveArchitectInput = {
+  /** Location instance id */
+  locationInstanceId: Scalars['GlobalId'];
+  /** Architect for removing */
+  architectId: Scalars['GlobalId'];
+};
+
+export type RemoveArchitectPayload = {
+  __typename?: 'RemoveArchitectPayload';
+  /** Deleted relation id */
+  recordId: Scalars['GlobalId'];
+};
+
 export type LocationInstanceMutations = {
   __typename?: 'LocationInstanceMutations';
   /** Create location instance */
   create: CreateLocationInstancePayload;
+  /** Add architect to location instance */
+  addArchitect: AddArchitectPayload;
+  /** Remove architects from location instance */
+  removeArchitect: RemoveArchitectPayload;
   /** Update location instance */
   update: UpdateLocationInstancePayload;
   /** Delete location instance */
@@ -723,6 +757,16 @@ export type LocationInstanceMutations = {
 
 export type LocationInstanceMutationsCreateArgs = {
   input: CreateLocationInstanceInput;
+};
+
+
+export type LocationInstanceMutationsAddArchitectArgs = {
+  input: AddArchitectInput;
+};
+
+
+export type LocationInstanceMutationsRemoveArchitectArgs = {
+  input: RemoveArchitectInput;
 };
 
 
@@ -747,7 +791,9 @@ export type Relation = Node & {
   /** Relation type */
   relationType?: Maybe<RelationType>;
   /** Relation's quote */
-  quote?: Maybe<Scalars['String']>;
+  quote?: Maybe<Scalars['MultilingualString']>;
+  /** Link to quote source */
+  link?: Maybe<Scalars['MultilingualString']>;
 };
 
 /** Model for representing list of relations */
@@ -779,6 +825,8 @@ export type CreateRelationInput = {
   relationId: Scalars['GlobalId'];
   /** Quote about relation */
   quote: Scalars['MultilingualString'];
+  /** Link to quote */
+  link: Scalars['MultilingualString'];
 };
 
 export type UpdateRelationInput = {
@@ -792,6 +840,8 @@ export type UpdateRelationInput = {
   relationId?: Maybe<Scalars['GlobalId']>;
   /** Quote about relation */
   quote?: Maybe<Scalars['MultilingualString']>;
+  /** Link to quote */
+  link?: Maybe<Scalars['MultilingualString']>;
 };
 
 export type CreateRelationPayload = {
@@ -849,7 +899,7 @@ export type RelationType = Node & {
   /** Relation type name */
   name: Scalars['MultilingualString'];
   /** Relation type synonyms */
-  synonyms: Array<Maybe<Scalars['MultilingualString']>>;
+  synonyms: Array<Scalars['MultilingualString']>;
 };
 
 /** Information about specific relation type in connection */
@@ -876,7 +926,7 @@ export type CreateRelationTypeInput = {
   /** Relation type name */
   name: Scalars['MultilingualString'];
   /** Relation type synonyms */
-  synonyms: Array<Maybe<Scalars['MultilingualString']>>;
+  synonyms?: Maybe<Array<Scalars['String']>>;
 };
 
 export type UpdateRelationTypeInput = {
@@ -885,7 +935,7 @@ export type UpdateRelationTypeInput = {
   /** Relation type name */
   name?: Maybe<Scalars['MultilingualString']>;
   /** Relation type synonyms */
-  synonyms?: Maybe<Array<Maybe<Scalars['MultilingualString']>>>;
+  synonyms?: Maybe<Array<Scalars['String']>>;
 };
 
 export type CreateRelationTypePayload = {
@@ -1056,7 +1106,7 @@ export type CreateQuestInput = {
   /** Quest photo */
   photo?: Maybe<Scalars['String']>;
   /** Quest type (quiz, route, etc.) */
-  type: TaskTypes;
+  type?: TaskTypes;
   /** Quest data */
   data: EditorDataInput;
 };
@@ -1190,7 +1240,7 @@ export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
   info: GraphQLResolveInfo
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type IsTypeOfResolverFn<T = {}> = (obj: T, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
+export type IsTypeOfResolverFn<T = {}, TContext = {}> = (obj: T, context: TContext, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
 
@@ -1249,6 +1299,10 @@ export type ResolversTypes = {
   UpdateLocationInstanceInput: UpdateLocationInstanceInput;
   UpdateLocationInstancePayload: ResolverTypeWrapper<UpdateLocationInstancePayload>;
   DeleteLocationInstancePayload: ResolverTypeWrapper<DeleteLocationInstancePayload>;
+  AddArchitectInput: AddArchitectInput;
+  AddArchitectPayload: ResolverTypeWrapper<AddArchitectPayload>;
+  RemoveArchitectInput: RemoveArchitectInput;
+  RemoveArchitectPayload: ResolverTypeWrapper<RemoveArchitectPayload>;
   LocationInstanceMutations: ResolverTypeWrapper<LocationInstanceMutations>;
   Relation: ResolverTypeWrapper<Relation>;
   RelationConnection: ResolverTypeWrapper<RelationConnection>;
@@ -1335,6 +1389,10 @@ export type ResolversParentTypes = {
   UpdateLocationInstanceInput: UpdateLocationInstanceInput;
   UpdateLocationInstancePayload: UpdateLocationInstancePayload;
   DeleteLocationInstancePayload: DeleteLocationInstancePayload;
+  AddArchitectInput: AddArchitectInput;
+  AddArchitectPayload: AddArchitectPayload;
+  RemoveArchitectInput: RemoveArchitectInput;
+  RemoveArchitectPayload: RemoveArchitectPayload;
   LocationInstanceMutations: LocationInstanceMutations;
   Relation: Relation;
   RelationConnection: RelationConnection;
@@ -1433,32 +1491,32 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type PersonResolvers<ContextType = any, ParentType extends ResolversParentTypes['Person'] = ResolversParentTypes['Person']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  patronymic?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  pseudonym?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  professions?: Resolver<Array<Maybe<ResolversTypes['MultilingualString']>>, ParentType, ContextType>;
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  firstName?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  lastName?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  patronymic?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  pseudonym?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  professions?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   birthDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   deathDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   relations?: Resolver<Array<ResolversTypes['Relation']>, ParentType, ContextType>;
   wikiLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   mainPhotoLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   photoLinks?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PersonConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['PersonConnection'] = ResolversParentTypes['PersonConnection']> = {
   edges?: Resolver<Array<ResolversTypes['PersonEdge']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PersonEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['PersonEdge'] = ResolversParentTypes['PersonEdge']> = {
   cursor?: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['Person'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PageInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = {
@@ -1466,51 +1524,51 @@ export type PageInfoResolvers<ContextType = any, ParentType extends ResolversPar
   hasPreviousPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   startCursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
   endCursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CreatePersonPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreatePersonPayload'] = ResolversParentTypes['CreatePersonPayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['Person'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UpdatePersonPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdatePersonPayload'] = ResolversParentTypes['UpdatePersonPayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['Person'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type DeletePersonPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeletePersonPayload'] = ResolversParentTypes['DeletePersonPayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PersonMutationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['PersonMutations'] = ResolversParentTypes['PersonMutations']> = {
   create?: Resolver<ResolversTypes['CreatePersonPayload'], ParentType, ContextType, RequireFields<PersonMutationsCreateArgs, 'input'>>;
   update?: Resolver<ResolversTypes['UpdatePersonPayload'], ParentType, ContextType, RequireFields<PersonMutationsUpdateArgs, 'input'>>;
   delete?: Resolver<ResolversTypes['DeletePersonPayload'], ParentType, ContextType, RequireFields<PersonMutationsDeleteArgs, 'id'>>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type LocationTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationType'] = ResolversParentTypes['LocationType']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CountryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Country'] = ResolversParentTypes['Country']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['MultilingualString'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RegionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Region'] = ResolversParentTypes['Region']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['MultilingualString'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type AddressResolvers<ContextType = any, ParentType extends ResolversParentTypes['Address'] = ResolversParentTypes['Address']> = {
@@ -1521,7 +1579,7 @@ export type AddressResolvers<ContextType = any, ParentType extends ResolversPare
   address?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   address2?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   postcode?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type LocationInstanceResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationInstance'] = ResolversParentTypes['LocationInstance']> = {
@@ -1539,7 +1597,7 @@ export type LocationInstanceResolvers<ContextType = any, ParentType extends Reso
   endDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   relations?: Resolver<Array<ResolversTypes['Relation']>, ParentType, ContextType>;
   architects?: Resolver<Maybe<Array<Maybe<ResolversTypes['Person']>>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type LocationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Location'] = ResolversParentTypes['Location']> = {
@@ -1548,68 +1606,81 @@ export type LocationResolvers<ContextType = any, ParentType extends ResolversPar
   longitude?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   addresses?: Resolver<Maybe<Array<ResolversTypes['Address']>>, ParentType, ContextType>;
   instances?: Resolver<Array<ResolversTypes['LocationInstance']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type LocationConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationConnection'] = ResolversParentTypes['LocationConnection']> = {
   edges?: Resolver<Array<ResolversTypes['LocationEdge']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type LocationEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationEdge'] = ResolversParentTypes['LocationEdge']> = {
   cursor?: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['Location'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CreateLocationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateLocationPayload'] = ResolversParentTypes['CreateLocationPayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['Location'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UpdateLocationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateLocationPayload'] = ResolversParentTypes['UpdateLocationPayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['Location'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type DeleteLocationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteLocationPayload'] = ResolversParentTypes['DeleteLocationPayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type LocationMutationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationMutations'] = ResolversParentTypes['LocationMutations']> = {
   create?: Resolver<ResolversTypes['CreateLocationPayload'], ParentType, ContextType, RequireFields<LocationMutationsCreateArgs, 'input'>>;
   update?: Resolver<ResolversTypes['UpdateLocationPayload'], ParentType, ContextType, RequireFields<LocationMutationsUpdateArgs, 'input'>>;
   delete?: Resolver<ResolversTypes['DeleteLocationPayload'], ParentType, ContextType, RequireFields<LocationMutationsDeleteArgs, 'id'>>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CreateLocationInstancePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateLocationInstancePayload'] = ResolversParentTypes['CreateLocationInstancePayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['LocationInstance'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UpdateLocationInstancePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateLocationInstancePayload'] = ResolversParentTypes['UpdateLocationInstancePayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['LocationInstance'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type DeleteLocationInstancePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteLocationInstancePayload'] = ResolversParentTypes['DeleteLocationInstancePayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AddArchitectPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddArchitectPayload'] = ResolversParentTypes['AddArchitectPayload']> = {
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
+  record?: Resolver<ResolversTypes['Relation'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RemoveArchitectPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['RemoveArchitectPayload'] = ResolversParentTypes['RemoveArchitectPayload']> = {
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type LocationInstanceMutationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationInstanceMutations'] = ResolversParentTypes['LocationInstanceMutations']> = {
   create?: Resolver<ResolversTypes['CreateLocationInstancePayload'], ParentType, ContextType, RequireFields<LocationInstanceMutationsCreateArgs, 'input'>>;
+  addArchitect?: Resolver<ResolversTypes['AddArchitectPayload'], ParentType, ContextType, RequireFields<LocationInstanceMutationsAddArchitectArgs, 'input'>>;
+  removeArchitect?: Resolver<ResolversTypes['RemoveArchitectPayload'], ParentType, ContextType, RequireFields<LocationInstanceMutationsRemoveArchitectArgs, 'input'>>;
   update?: Resolver<ResolversTypes['UpdateLocationInstancePayload'], ParentType, ContextType, RequireFields<LocationInstanceMutationsUpdateArgs, 'input'>>;
   delete?: Resolver<ResolversTypes['DeleteLocationInstancePayload'], ParentType, ContextType, RequireFields<LocationInstanceMutationsDeleteArgs, 'id'>>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RelationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Relation'] = ResolversParentTypes['Relation']> = {
@@ -1617,89 +1688,90 @@ export type RelationResolvers<ContextType = any, ParentType extends ResolversPar
   person?: Resolver<Maybe<ResolversTypes['Person']>, ParentType, ContextType>;
   locationInstance?: Resolver<Maybe<ResolversTypes['LocationInstance']>, ParentType, ContextType>;
   relationType?: Resolver<Maybe<ResolversTypes['RelationType']>, ParentType, ContextType>;
-  quote?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  quote?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  link?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RelationConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['RelationConnection'] = ResolversParentTypes['RelationConnection']> = {
   edges?: Resolver<Array<ResolversTypes['RelationEdge']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RelationEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RelationEdge'] = ResolversParentTypes['RelationEdge']> = {
   cursor?: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['Relation'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CreateRelationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateRelationPayload'] = ResolversParentTypes['CreateRelationPayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['Relation'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UpdateRelationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateRelationPayload'] = ResolversParentTypes['UpdateRelationPayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['Relation'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type DeleteRelationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteRelationPayload'] = ResolversParentTypes['DeleteRelationPayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RelationMutationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['RelationMutations'] = ResolversParentTypes['RelationMutations']> = {
   create?: Resolver<ResolversTypes['CreateRelationPayload'], ParentType, ContextType, RequireFields<RelationMutationsCreateArgs, 'input'>>;
   update?: Resolver<ResolversTypes['UpdateRelationPayload'], ParentType, ContextType, RequireFields<RelationMutationsUpdateArgs, 'input'>>;
   delete?: Resolver<ResolversTypes['DeleteRelationPayload'], ParentType, ContextType, RequireFields<RelationMutationsDeleteArgs, 'id'>>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RelationTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RelationType'] = ResolversParentTypes['RelationType']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['MultilingualString'], ParentType, ContextType>;
-  synonyms?: Resolver<Array<Maybe<ResolversTypes['MultilingualString']>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  synonyms?: Resolver<Array<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RelationTypeEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RelationTypeEdge'] = ResolversParentTypes['RelationTypeEdge']> = {
   cursor?: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['RelationType'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RelationTypeConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['RelationTypeConnection'] = ResolversParentTypes['RelationTypeConnection']> = {
   edges?: Resolver<Array<ResolversTypes['RelationTypeEdge']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CreateRelationTypePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateRelationTypePayload'] = ResolversParentTypes['CreateRelationTypePayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['RelationType'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UpdateRelationTypePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateRelationTypePayload'] = ResolversParentTypes['UpdateRelationTypePayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['RelationType'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type DeleteRelationTypePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteRelationTypePayload'] = ResolversParentTypes['DeleteRelationTypePayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RelationTypeMutationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['RelationTypeMutations'] = ResolversParentTypes['RelationTypeMutations']> = {
   create?: Resolver<ResolversTypes['CreateRelationTypePayload'], ParentType, ContextType, RequireFields<RelationTypeMutationsCreateArgs, 'input'>>;
   update?: Resolver<ResolversTypes['UpdateRelationTypePayload'], ParentType, ContextType, RequireFields<RelationTypeMutationsUpdateArgs, 'input'>>;
   delete?: Resolver<ResolversTypes['DeleteRelationTypePayload'], ParentType, ContextType, RequireFields<RelationTypeMutationsDeleteArgs, 'id'>>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RouteResolvers<ContextType = any, ParentType extends ResolversParentTypes['Route'] = ResolversParentTypes['Route']> = {
@@ -1708,7 +1780,7 @@ export type RouteResolvers<ContextType = any, ParentType extends ResolversParent
   locationsInstance?: Resolver<Array<Maybe<ResolversTypes['LocationInstance']>>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   photoLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -1716,14 +1788,14 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   savedRoutes?: Resolver<Array<ResolversTypes['Route']>, ParentType, ContextType>;
   likedRoutes?: Resolver<Array<ResolversTypes['Route']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type EditorDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['EditorData'] = ResolversParentTypes['EditorData']> = {
   time?: Resolver<Maybe<ResolversTypes['Timestamp']>, ParentType, ContextType>;
   blocks?: Resolver<Array<ResolversTypes['JSON']>, ParentType, ContextType>;
   version?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type QuestResolvers<ContextType = any, ParentType extends ResolversParentTypes['Quest'] = ResolversParentTypes['Quest']> = {
@@ -1735,44 +1807,44 @@ export type QuestResolvers<ContextType = any, ParentType extends ResolversParent
   task?: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
   data?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;
   rewards?: Resolver<Array<ResolversTypes['JSON']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type QuestConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['QuestConnection'] = ResolversParentTypes['QuestConnection']> = {
   edges?: Resolver<Array<ResolversTypes['QuestEdge']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type QuestEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['QuestEdge'] = ResolversParentTypes['QuestEdge']> = {
   cursor?: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['Quest'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CreateQuestPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateQuestPayload'] = ResolversParentTypes['CreateQuestPayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['Quest'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UpdateQuestPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateQuestPayload'] = ResolversParentTypes['UpdateQuestPayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['Quest'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type DeleteQuestPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteQuestPayload'] = ResolversParentTypes['DeleteQuestPayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type QuestMutationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['QuestMutations'] = ResolversParentTypes['QuestMutations']> = {
   create?: Resolver<ResolversTypes['CreateQuestPayload'], ParentType, ContextType, RequireFields<QuestMutationsCreateArgs, 'input'>>;
   update?: Resolver<ResolversTypes['UpdateQuestPayload'], ParentType, ContextType, RequireFields<QuestMutationsUpdateArgs, 'input'>>;
   delete?: Resolver<ResolversTypes['DeleteQuestPayload'], ParentType, ContextType, RequireFields<QuestMutationsDeleteArgs, 'id'>>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export interface LongScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Long'], any> {
@@ -1818,6 +1890,8 @@ export type Resolvers<ContextType = any> = {
   CreateLocationInstancePayload?: CreateLocationInstancePayloadResolvers<ContextType>;
   UpdateLocationInstancePayload?: UpdateLocationInstancePayloadResolvers<ContextType>;
   DeleteLocationInstancePayload?: DeleteLocationInstancePayloadResolvers<ContextType>;
+  AddArchitectPayload?: AddArchitectPayloadResolvers<ContextType>;
+  RemoveArchitectPayload?: RemoveArchitectPayloadResolvers<ContextType>;
   LocationInstanceMutations?: LocationInstanceMutationsResolvers<ContextType>;
   Relation?: RelationResolvers<ContextType>;
   RelationConnection?: RelationConnectionResolvers<ContextType>;

@@ -9,16 +9,17 @@ import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
 import { PersonDBScheme } from './persons';
 import { RelationDBScheme } from './relations';
-import mergeWith from 'lodash.mergewith';
 import emptyMutation from '../utils/emptyMutation';
 import { CreateLocationInput, UpdateLocationInput } from '../generated/graphql';
 import { WithoutId } from '../types/utils';
 import { LocationAddress } from './address';
+import sendNotify from '../utils/telegramNotify';
+import mergeWithCustomizer from '../utils/mergeWithCustomizer';
 
 /**
  * ID of relation type for architects
  */
-const ARCHITECT_RELATION_ID = '5d84ee80ff41d8a1ef3b3317';
+export const ARCHITECT_RELATION_ID = '5d84ee80ff41d8a1ef3b3317';
 
 /**
  * Location representation in DataBase
@@ -32,17 +33,17 @@ export interface LocationDBScheme {
   /**
    * Location position longitude
    */
-  longitude: number;
+  longitude?: number | null;
 
   /**
    * Location position latitude
    */
-  latitude: number;
+  latitude?: number | null;
 
   /**
    * Array of addresses ids
    */
-  addresses?: LocationAddress[];
+  addresses?: LocationAddress[] | null;
 
   /**
    * Array with location instances ids
@@ -132,10 +133,9 @@ const Query = {
   /**
    * Returns specific location
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param id - location id
-   * @param db - MongoDB connection to make queries
-   * @returns {object}
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async location(parent: undefined, { id }: { id: string }, { db }: ResolverContextBase): Promise<LocationDBScheme | null> {
     const location = await db.collection('locations').findOne({
@@ -152,10 +152,9 @@ const Query = {
   /**
    * Returns specific locationInstance
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param id - locationInstance id
-   * @param db - MongoDB connection to make queries
-   * @returns {object}
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async locationInstance(parent: undefined, { id }: { id: string }, { db }: ResolverContextBase): Promise<LocationInstanceDBScheme | null> {
     const locationInstance = await db.collection('location_instances').findOne({
@@ -172,12 +171,11 @@ const Query = {
   /**
    * Returns all locationInstances
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param data - empty arg
-   * @param db - MongoDB connection to make queries
-   * @returns {object[]}
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
-  async locationInstances(parent: undefined, data: undefined, { db }: ResolverContextBase): Promise<LocationInstanceDBScheme[]> {
+  async locationInstances(parent: undefined, args: undefined, { db }: ResolverContextBase): Promise<LocationInstanceDBScheme[]> {
     return db.collection('location_instances').find({})
       .toArray();
   },
@@ -185,11 +183,11 @@ const Query = {
   /**
    * Returns list of all location types
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param data - empty arg
-   * @param db - MongoDB connection to make queries
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
-  async locationTypes(parent: undefined, data: undefined, { db }: ResolverContextBase): Promise<LocationTypeDBScheme[]> {
+  async locationTypes(parent: undefined, args: undefined, { db }: ResolverContextBase): Promise<LocationTypeDBScheme[]> {
     return db.collection<LocationTypeDBScheme>('locationtypes').find()
       .toArray();
   },
@@ -197,10 +195,9 @@ const Query = {
   /**
    * Get relations on user request
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param searchString - the string on the basis of which the request will be made
-   * @param db - MongoDB connection to make queries
-   * @param dataLoaders - DataLoaders for fetching data
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async search(parent: undefined, { searchString }: { searchString: string }, { db, dataLoaders }: ResolverContextBase): Promise<RelationDBScheme[]> {
     searchString = searchString.trim();
@@ -226,11 +223,11 @@ const LocationInstance = {
   /**
    * Return all architects
    *
-   * @param _id - location id that returned from the resolver on the parent field
-   * @param _args - empty list of args
-   * @param dataLoaders - DataLoaders for fetching data
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
-  async architects({ _id }: LocationDBScheme, _args: undefined, { dataLoaders }: ResolverContextBase): Promise<PersonDBScheme[]> {
+  async architects({ _id }: LocationDBScheme, args: undefined, { dataLoaders }: ResolverContextBase): Promise<PersonDBScheme[]> {
     const relations = await dataLoaders.relationByLocationInstanceId.load(_id.toString());
     const personIds: string[] = [];
 
@@ -251,14 +248,14 @@ const LocationMutations = {
   /**
    * Create new location
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input - mutation input object
-   * @param collection - method for accessing to database collections
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async create(
     parent: undefined,
     { input }: { input: CreateLocationInput },
-    { collection }: ResolverContextBase
+    { db, user, collection }: ResolverContextBase
   ): Promise<CreateMutationPayload<LocationDBScheme>> {
     const location = (await collection('locations').insertOne({
       latitude: input.latitude,
@@ -284,6 +281,8 @@ const LocationMutations = {
 
     location.locationInstanceIds = Object.values(locationInstances.insertedIds);
 
+    await sendNotify('Location', 'locations', db, user, 'create', location);
+
     return {
       recordId: location._id,
       record: location,
@@ -293,44 +292,47 @@ const LocationMutations = {
   /**
    * Update location
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param input - mutation input object
-   * @param collection - method for accessing to database collections
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async update(
     parent: undefined,
-    { input }: { input: UpdateLocationInput & {_id: ObjectId} },
-    { collection }: ResolverContextBase
+    { input }: { input: UpdateLocationInput },
+    { db, user, collection }: ResolverContextBase
   ): Promise<UpdateMutationPayload<LocationDBScheme>> {
-    input._id = new ObjectId(input.id);
-    const id = input._id;
-
-    delete input.id;
+    const { id, ...rest } = input;
+    const newInput = {
+      _id: new ObjectId(id),
+      ...rest,
+    };
 
     const originalLocation = await collection('locations').findOne({
-      _id: id,
+      _id: newInput._id,
     });
 
     if (!originalLocation) {
-      throw new UserInputError('There is no location with such id: ' + id);
+      throw new UserInputError('There is no location with such id: ' + newInput._id);
     }
 
+    await sendNotify('Location', 'locations', db, user, 'update', newInput, 'locations');
+
     const location = await collection('locations').findOneAndUpdate(
-      { _id: id },
+      { _id: newInput._id },
       {
         $set: {
-          ...mergeWith(originalLocation, input, (original, inp) => inp === null ? original : undefined),
+          ...mergeWithCustomizer(originalLocation, newInput),
         },
       },
       { returnOriginal: false }
     );
 
     if (!location.value) {
-      throw new UserInputError('There is no location with such id: ' + id);
+      throw new UserInputError('There is no location with such id: ' + newInput._id);
     }
 
     return {
-      recordId: id,
+      recordId: newInput._id,
       record: location.value,
     };
   },
@@ -338,20 +340,22 @@ const LocationMutations = {
   /**
    * Delete location
    *
-   * @param parent - the object that contains the result returned from the resolver on the parent field
-   * @param id - object id
-   * @param collection - method for accessing to database collections
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async delete(
     parent: undefined,
     { id }: { id: ObjectId },
-    { collection }: ResolverContextBase
+    { db, user, collection }: ResolverContextBase
   ): Promise<DeleteMutationPayload> {
     const location = (await collection('locations').findOneAndDelete({ _id: id })).value;
 
     if (!location) {
       throw new UserInputError('There is no location with such id: ' + id);
     }
+
+    await sendNotify('Location', 'locations', db, user, 'delete', location);
 
     const locationInstancesIds = location.locationInstanceIds;
 

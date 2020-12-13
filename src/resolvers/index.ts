@@ -25,9 +25,9 @@ const indexResolver = {
     /**
      * Node resolver according to Global Object Identification (https://graphql.org/learn/global-object-identification/)
      *
-     * @param parent - top-level resolver result
-     * @param args - resolver args
-     * @param dataLoaders - dataloader for data-fetching
+     * @param parent - this is the return value of the resolver for this field's parent
+     * @param args - contains all GraphQL arguments provided for this field
+     * @param context - this object is shared across all resolvers that execute for a particular operation
      */
     async node(parent: undefined, args: QueryNodeArgs, { dataLoaders }: ResolverContextBase): Promise<unknown> {
       const { type, id } = fromGlobalId(args.id);
