@@ -31,7 +31,6 @@ router.post('/oauth/vk/callback', async (req, res, next) => {
 
   try {
     authData = VkAuthDataScheme.parse(req.query);
-    console.log(authData);
   } catch (e) {
     return next(new WrongAuthData());
   }
