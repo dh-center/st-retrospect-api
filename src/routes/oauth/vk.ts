@@ -2,23 +2,44 @@ import { Router } from 'express';
 import { API } from 'vk-io';
 import { getCollection } from '../../db';
 import { generateUserToken } from '../../utils/jwt';
+import * as z from 'zod';
+import { nanoid } from 'nanoid';
+import { WrongAuthData } from '../../errorTypes';
 
+/**
+ * VK API instance
+ */
 const api = new API({
   token: process.env.VK_API_TOKEN as string,
 });
 
+/**
+ * Util for validating callback input for authorization via VK
+ */
+const VkAuthDataScheme = z
+  .object({
+    accessToken: z.string(),
+    userId: z.string(),
+    firstName: z.string(),
+    lastName: z.string(),
+  });
+
 const router = Router();
 
-router.post('/oauth/vk/callback', async (req, res) => {
-  // @todo create JSON Schema for fields validation
-  if (!req.query.access_token || !req.query.user_id || !req.query.email) {
-    return res.sendStatus(400);
+router.post('/oauth/vk/callback', async (req, res, next) => {
+  let authData;
+
+  try {
+    authData = VkAuthDataScheme.parse(req.query);
+    console.log(authData);
+  } catch (e) {
+    return next(new WrongAuthData());
   }
 
-  const users = await api.secure.checkToken({ token: req.query.access_token as string });
+  const tokenCheckResult = await api.secure.checkToken({ token: authData.accessToken });
 
-  if (+req.query.user_id !== users.user_id) {
-    return res.sendStatus(400);
+  if (+authData.userId !== tokenCheckResult.user_id) {
+    return next(new WrongAuthData());
   }
 
   const collection = await getCollection('users');
@@ -26,42 +47,34 @@ router.post('/oauth/vk/callback', async (req, res) => {
   const existedUser = await collection.findOne({
     $or: [
       {
-        email: req.query.email as string,
-      },
-      {
-        'auth.vk.id': +req.query.user_id as number,
+        'auth.vk.id': +authData.userId,
       },
     ],
   });
+
+  let accessToken;
 
   if (!existedUser) {
     /**
      * Create new user in database
      */
     const newUser = (await collection.insertOne({
-      firstName: req.query.first_name as string,
-      lastName: req.query.last_name as string,
-      email: req.query.email as string,
-      username: req.query.email as string, // @todo think about username uniques
+      firstName: authData.firstName,
+      lastName: authData.lastName,
+      username: nanoid(10),
       auth: {
         vk: {
-          id: users.user_id,
+          id: tokenCheckResult.user_id,
         },
       },
     })).ops[0];
 
-    const accessToken = generateUserToken(newUser);
-
-    return res.json({ data: { accessToken } });
+    accessToken = generateUserToken(newUser);
+  } else {
+    accessToken = generateUserToken(existedUser);
   }
 
-  // @todo think about this closure
-  if (existedUser.email === req.query.email && existedUser.auth?.vk?.id === users.user_id) {
-    const accessToken = generateUserToken(existedUser);
-
-    return res.json({ data: { accessToken } });
-  }
-  res.sendStatus(400);
+  return res.json({ data: { accessToken } });
 });
 
 export default router;

@@ -67,3 +67,18 @@ export class UsernameDuplicationError extends ApiError {
     this.code = 'USERNAME_DUPLICATION';
   }
 }
+
+/**
+ * Throws when client sends auth data in wrong format
+ */
+export class WrongAuthData extends ApiError {
+  /**
+   * Creates error instance
+   *
+   * @param httpCode - http code to send to user
+   */
+  constructor(httpCode = 400) {
+    super(httpCode);
+    this.code = 'WRONG_AUTH_DATA';
+  }
+}
