@@ -68,6 +68,26 @@ export interface UserDBScheme {
        * Google id of the user
        */
       id: string;
+    };
+
+    /**
+     * Info about user's vk account
+     */
+    vk?: {
+      /**
+       * Vk account id
+       */
+      id: number
+    }
+
+    /**
+     * Info about user's Facebook account
+     */
+    facebook?: {
+      /**
+       * Facebook account id
+       */
+      id: number
     }
   }
 }
