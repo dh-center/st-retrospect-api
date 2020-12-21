@@ -171,6 +171,11 @@ export default gql`
     Array of architects
     """
     architects: [Person]
+
+    """
+    Source of information about location instance
+    """
+    source: MultilingualString @multilingual
   }
 
   """

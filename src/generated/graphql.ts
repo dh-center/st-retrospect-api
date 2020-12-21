@@ -480,6 +480,8 @@ export type LocationInstance = Node & {
   relations: Array<Relation>;
   /** Array of architects */
   architects?: Maybe<Array<Maybe<Person>>>;
+  /** Source of information about location instance */
+  source?: Maybe<Scalars['MultilingualString']>;
 };
 
 /** Location for displaying on map and making relations with persons */
@@ -665,6 +667,8 @@ export type CreateLocationInstanceInput = {
   endDate?: Maybe<Scalars['String']>;
   /** Location id to which this instance below */
   locationId: Scalars['GlobalId'];
+  /** Source of information about location instance */
+  source: Scalars['MultilingualString'];
 };
 
 export type CreateLocationInstancePayload = {
@@ -696,6 +700,8 @@ export type UpdateLocationInstanceInput = {
   startDate?: Maybe<Scalars['String']>;
   /** End of period */
   endDate?: Maybe<Scalars['String']>;
+  /** Source of information about location instance */
+  source: Scalars['MultilingualString'];
 };
 
 export type UpdateLocationInstancePayload = {
@@ -1609,6 +1615,7 @@ export type LocationInstanceResolvers<ContextType = any, ParentType extends Reso
   endDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   relations?: Resolver<Array<ResolversTypes['Relation']>, ParentType, ContextType>;
   architects?: Resolver<Maybe<Array<Maybe<ResolversTypes['Person']>>>, ParentType, ContextType>;
+  source?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

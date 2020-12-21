@@ -51,6 +51,11 @@ export default gql`
     Location id to which this instance below
     """
     locationId: GlobalId!
+
+    """
+    Source of information about location instance
+    """
+    source: MultilingualString! @multilingual
   }
 
   type CreateLocationInstancePayload {
@@ -115,6 +120,11 @@ export default gql`
     End of period
     """
     endDate: String
+
+    """
+    Source of information about location instance
+    """
+    source: MultilingualString! @multilingual
   }
 
   type UpdateLocationInstancePayload {
