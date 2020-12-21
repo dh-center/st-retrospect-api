@@ -79,6 +79,8 @@ const LocationInstanceMutations = {
           ru: '',
           en: '',
         },
+        startDate: '',
+        endDate: '',
       },
     },
     context);
