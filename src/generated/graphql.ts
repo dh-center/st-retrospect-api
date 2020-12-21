@@ -794,6 +794,10 @@ export type Relation = Node & {
   quote?: Maybe<Scalars['MultilingualString']>;
   /** Link to quote source */
   link?: Maybe<Scalars['MultilingualString']>;
+  /** Date of relation start */
+  startDate?: Maybe<Scalars['String']>;
+  /** Date of relation end */
+  endDate?: Maybe<Scalars['String']>;
 };
 
 /** Model for representing list of relations */
@@ -827,6 +831,10 @@ export type CreateRelationInput = {
   quote: Scalars['MultilingualString'];
   /** Link to quote */
   link: Scalars['MultilingualString'];
+  /** Date of relation start */
+  startDate: Scalars['String'];
+  /** Date of relation end */
+  endDate: Scalars['String'];
 };
 
 export type UpdateRelationInput = {
@@ -842,6 +850,10 @@ export type UpdateRelationInput = {
   quote?: Maybe<Scalars['MultilingualString']>;
   /** Link to quote */
   link?: Maybe<Scalars['MultilingualString']>;
+  /** Date of relation start */
+  startDate?: Maybe<Scalars['String']>;
+  /** Date of relation end */
+  endDate?: Maybe<Scalars['String']>;
 };
 
 export type CreateRelationPayload = {
@@ -899,7 +911,7 @@ export type RelationType = Node & {
   /** Relation type name */
   name: Scalars['MultilingualString'];
   /** Relation type synonyms */
-  synonyms: Array<Scalars['MultilingualString']>;
+  synonyms: Array<Scalars['String']>;
 };
 
 /** Information about specific relation type in connection */
@@ -1690,6 +1702,8 @@ export type RelationResolvers<ContextType = any, ParentType extends ResolversPar
   relationType?: Resolver<Maybe<ResolversTypes['RelationType']>, ParentType, ContextType>;
   quote?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   link?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  startDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  endDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1733,7 +1747,7 @@ export type RelationMutationsResolvers<ContextType = any, ParentType extends Res
 export type RelationTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RelationType'] = ResolversParentTypes['RelationType']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['MultilingualString'], ParentType, ContextType>;
-  synonyms?: Resolver<Array<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  synonyms?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

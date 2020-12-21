@@ -44,6 +44,16 @@ export interface RelationDBScheme {
    * Link to quote source
    */
   link?: MultilingualString | null;
+
+  /**
+   * Date of relation start
+   */
+  startDate?: string | null;
+
+  /**
+   * Date of relation end
+   */
+  endDate?: string | null;
 }
 
 const RelationMutations = {

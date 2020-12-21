@@ -34,6 +34,16 @@ export default gql`
     Link to quote source
     """
     link: MultilingualString @multilingual
+
+    """
+    Date of relation start
+    """
+    startDate: String
+
+    """
+    Date of relation end
+    """
+    endDate: String
   }
 
   """
