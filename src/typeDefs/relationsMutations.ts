@@ -26,6 +26,16 @@ export default gql`
     Link to quote
     """
     link: MultilingualString! @multilingual
+
+    """
+    Date of relation start
+    """
+    startDate: String!
+
+    """
+    Date of relation end
+    """
+    endDate: String!
   }
 
   input UpdateRelationInput {
@@ -58,6 +68,16 @@ export default gql`
     Link to quote
     """
     link: MultilingualString @multilingual
+
+    """
+    Date of relation start
+    """
+    startDate: String
+
+    """
+    Date of relation end
+    """
+    endDate: String
   }
 
   type CreateRelationPayload {
