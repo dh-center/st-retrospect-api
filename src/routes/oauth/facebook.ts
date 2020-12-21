@@ -72,6 +72,7 @@ router.post('/oauth/facebook/callback', async (req, res, next) => {
       lastName: userData.last_name,
       email: userData.email,
       username: userData.email,
+      photo: userData.picture.data.url,
       auth: {
         facebook: {
           id: +userData.id,
@@ -82,6 +83,19 @@ router.post('/oauth/facebook/callback', async (req, res, next) => {
     accessToken = generateUserToken(newUser);
   } else {
     accessToken = generateUserToken(existedUser);
+
+    if (!existedUser.photo && userData.picture.data.url) {
+      await collection.updateOne(
+        {
+          _id: existedUser._id,
+        },
+        {
+          $set: {
+            photo: userData.picture.data.url,
+          },
+        }
+      );
+    }
   }
 
   return res.json({ data: { accessToken } });

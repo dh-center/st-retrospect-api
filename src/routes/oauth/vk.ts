@@ -74,8 +74,6 @@ router.post('/oauth/vk/callback', async (req, res, next) => {
   } else {
     accessToken = generateUserToken(existedUser);
 
-    console.log(existedUser.photo);
-    console.log(authData.photo);
     if (!existedUser.photo && authData.photo) {
       await collection.updateOne(
         {

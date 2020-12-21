@@ -82,40 +82,54 @@ router.post('/oauth/google/callback', async (req, res) => {
     'auth.google.id': userId,
   });
 
+  let accessToken;
+  const defaultPhoto = userInfo.photos?.find(p => p.default)?.url;
+  const photo = defaultPhoto ? defaultPhoto + '?sz=1000' : undefined;
+
   /**
    * Authorize user if already signed up
    */
-  if (existedUser) {
-    const accessToken = generateUserToken(existedUser);
+  if (!existedUser) {
+    const name = userInfo.names[0];
+    const email = userInfo.emailAddresses[0].value;
 
-    return res.json({ data: { accessToken } });
-  }
+    if (!email) {
+      return res.sendStatus(500);
+    }
 
-  const name = userInfo.names[0];
-  const email = userInfo.emailAddresses[0].value;
-  const photo = userInfo.photos?.find(p => p.default)?.url;
-
-  if (!email) {
-    return res.sendStatus(500);
-  }
-
-  /**
-   * Create new user in database
-   */
-  const newUser = (await collection.insertOne({
-    firstName: name.givenName,
-    lastName: name.familyName,
-    email,
-    photo: photo && photo + '?sz=1000',
-    username: email,
-    auth: {
-      google: {
-        id: userId,
+    /**
+     * Create new user in database
+     */
+    const newUser = (await collection.insertOne({
+      firstName: name.givenName,
+      lastName: name.familyName,
+      email,
+      photo: photo,
+      username: email,
+      auth: {
+        google: {
+          id: userId,
+        },
       },
-    },
-  })).ops[0];
+    })).ops[0];
 
-  const accessToken = generateUserToken(newUser);
+    accessToken = generateUserToken(newUser);
+  } else {
+    accessToken = generateUserToken(existedUser);
+
+    if (!existedUser.photo && photo) {
+      await collection.updateOne(
+        {
+          _id: existedUser._id,
+        },
+        {
+          $set: {
+            photo: photo,
+          },
+        }
+      );
+    }
+  }
 
   return res.json({ data: { accessToken } });
 });
