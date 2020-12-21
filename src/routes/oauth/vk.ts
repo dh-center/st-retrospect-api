@@ -22,7 +22,10 @@ const VkAuthDataScheme = z
     userId: z.string(),
     firstName: z.string(),
     lastName: z.string(),
-    photo: z.string().optional(),
+    photo: z
+      .string()
+      .optional()
+      .nullable(),
   });
 
 const router = Router();
