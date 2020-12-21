@@ -83,7 +83,7 @@ router.post('/oauth/google/callback', async (req, res) => {
   });
 
   let accessToken;
-  const defaultPhoto = userInfo.photos?.find(p => p.metadata?.primary)?.url;
+  const defaultPhoto = userInfo.photos?.find(p => p.metadata?.primary && !p.default)?.url;
   const photo = defaultPhoto ? defaultPhoto + '?sz=1000' : undefined;
 
   /**
