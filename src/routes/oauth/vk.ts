@@ -22,6 +22,10 @@ const VkAuthDataScheme = z
     userId: z.string(),
     firstName: z.string(),
     lastName: z.string(),
+    photo: z
+      .string()
+      .optional()
+      .nullable(),
   });
 
 const router = Router();
@@ -61,6 +65,7 @@ router.post('/oauth/vk/callback', async (req, res, next) => {
       firstName: authData.firstName,
       lastName: authData.lastName,
       username: nanoid(10),
+      photo: authData.photo || null,
       auth: {
         vk: {
           id: tokenCheckResult.user_id,
@@ -71,6 +76,19 @@ router.post('/oauth/vk/callback', async (req, res, next) => {
     accessToken = generateUserToken(newUser);
   } else {
     accessToken = generateUserToken(existedUser);
+
+    if (!existedUser.photo && authData.photo) {
+      await collection.updateOne(
+        {
+          _id: existedUser._id,
+        },
+        {
+          $set: {
+            photo: authData.photo,
+          },
+        }
+      );
+    }
   }
 
   return res.json({ data: { accessToken } });

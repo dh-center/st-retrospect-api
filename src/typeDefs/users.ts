@@ -21,13 +21,28 @@ export default gql`
     User liked routes
     """
     likedRoutes: [Route!]!
+
+    """
+    User profile photo url
+    """
+    photo: String
+
+    """
+    User first name
+    """
+    firstName: String
+
+    """
+    User last name
+    """
+    lastName: String
   }
 
   extend type Query {
     """
     Get info about user
     """
-    me: User!
+    me: User! @authCheck
   }
 
   extend type Mutation {

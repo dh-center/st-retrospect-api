@@ -26,6 +26,7 @@ const FacebookUserData = z.object({ /* eslint-disable @typescript-eslint/naming-
   picture: z.object({
     data: z.object({
       url: z.string(),
+      is_silhouette: z.boolean(),
     }),
   }),
 });
@@ -62,6 +63,7 @@ router.post('/oauth/facebook/callback', async (req, res, next) => {
   });
 
   let accessToken;
+  const photo = !userData.picture.data.is_silhouette ? userData.picture.data.url : null;
 
   if (!existedUser) {
     /**
@@ -72,6 +74,7 @@ router.post('/oauth/facebook/callback', async (req, res, next) => {
       lastName: userData.last_name,
       email: userData.email,
       username: userData.email,
+      photo,
       auth: {
         facebook: {
           id: +userData.id,
@@ -82,6 +85,19 @@ router.post('/oauth/facebook/callback', async (req, res, next) => {
     accessToken = generateUserToken(newUser);
   } else {
     accessToken = generateUserToken(existedUser);
+
+    if (!existedUser.photo && photo) {
+      await collection.updateOne(
+        {
+          _id: existedUser._id,
+        },
+        {
+          $set: {
+            photo: userData.picture.data.url,
+          },
+        }
+      );
+    }
   }
 
   return res.json({ data: { accessToken } });
