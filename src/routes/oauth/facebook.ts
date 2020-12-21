@@ -26,6 +26,7 @@ const FacebookUserData = z.object({ /* eslint-disable @typescript-eslint/naming-
   picture: z.object({
     data: z.object({
       url: z.string(),
+      is_silhouette: z.boolean(),
     }),
   }),
 });
@@ -72,7 +73,7 @@ router.post('/oauth/facebook/callback', async (req, res, next) => {
       lastName: userData.last_name,
       email: userData.email,
       username: userData.email,
-      photo: userData.picture.data.url,
+      photo: userData.picture.data.is_silhouette ? userData.picture.data.url : null,
       auth: {
         facebook: {
           id: +userData.id,
