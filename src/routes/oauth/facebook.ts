@@ -63,6 +63,7 @@ router.post('/oauth/facebook/callback', async (req, res, next) => {
   });
 
   let accessToken;
+  const photo = !userData.picture.data.is_silhouette ? userData.picture.data.url : null;
 
   if (!existedUser) {
     /**
@@ -73,7 +74,7 @@ router.post('/oauth/facebook/callback', async (req, res, next) => {
       lastName: userData.last_name,
       email: userData.email,
       username: userData.email,
-      photo: !userData.picture.data.is_silhouette ? userData.picture.data.url : null,
+      photo,
       auth: {
         facebook: {
           id: +userData.id,
@@ -85,7 +86,7 @@ router.post('/oauth/facebook/callback', async (req, res, next) => {
   } else {
     accessToken = generateUserToken(existedUser);
 
-    if (!existedUser.photo && userData.picture.data.url) {
+    if (!existedUser.photo && photo) {
       await collection.updateOne(
         {
           _id: existedUser._id,
