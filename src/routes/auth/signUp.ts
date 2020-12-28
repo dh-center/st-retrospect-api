@@ -1,5 +1,5 @@
 import express from 'express';
-import { UsernameDuplicationError } from '../../errorTypes';
+import { UsernameDuplicationError, WrongAuthData } from '../../errorTypes';
 import getConnection from '../../db';
 import argon2 from 'argon2';
 const router = express.Router();
@@ -9,10 +9,24 @@ router.post('/sign-up', async (req, res, next) => {
     const db = await getConnection();
     const hashedPassword = await argon2.hash(req.body.password);
 
-    await db.collection('users').insertOne({
-      username: req.body.username,
-      hashedPassword,
-    });
+    /**
+     * Sign up user with email
+     */
+    if (req.body.email) {
+      if (!/\S+@\S+\.\S+/.test(req.body.email)) {
+        throw new WrongAuthData();
+      }
+
+      await db.collection('users').insertOne({
+        email: req.body.email,
+        hashedPassword,
+      });
+    } else {
+      await db.collection('users').insertOne({
+        username: req.body.username,
+        hashedPassword,
+      });
+    }
 
     res.sendStatus(201);
   } catch (error) {
