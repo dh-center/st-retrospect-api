@@ -10,7 +10,16 @@ const router = express.Router();
 
 router.get('/login', async (req, res, next) => {
   const db = await getConnection();
-  const user = await db.collection('users').findOne({ username: req.query.username });
+  let user;
+
+  /**
+   * First we search user by email, if we haven't email, we search by username
+   */
+  if (req.query.email) {
+    user = await db.collection('users').findOne({ email: req.query.email });
+  } else if (req.query.username) {
+    user = await db.collection('users').findOne({ username: req.query.username });
+  }
 
   if (!user) {
     return next(new NoUserWithSuchUsernameError());
