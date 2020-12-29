@@ -17,7 +17,7 @@ printjson(db.users.createIndex(
   { username: 1 },
   {
     unique: true,
-    partialFilterExpression: { email: { $type: 'string' } },
+    partialFilterExpression: { username: { $type: 'string' } },
   })
 );
 
