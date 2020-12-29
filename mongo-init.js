@@ -5,6 +5,10 @@
 
 db = db.getSiblingDB('db-interface');
 
+db.getCollectionNames().forEach(function(collName) {
+  db.runCommand({dropIndexes: collName, index: "*"});
+});
+
 printjson(db.users.createIndex(
   { email: 1 },
   {
