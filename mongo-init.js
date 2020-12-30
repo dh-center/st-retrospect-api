@@ -5,6 +5,10 @@
 
 db = db.getSiblingDB('db-interface');
 
+db.getCollectionNames().forEach(function(collName) {
+  db.runCommand({dropIndexes: collName, index: "*"});
+});
+
 printjson(db.users.createIndex(
   { email: 1 },
   {
@@ -17,7 +21,7 @@ printjson(db.users.createIndex(
   { username: 1 },
   {
     unique: true,
-    partialFilterExpression: { email: { $type: 'string' } },
+    partialFilterExpression: { username: { $type: 'string' } },
   })
 );
 
