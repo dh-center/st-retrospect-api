@@ -2,6 +2,7 @@ import express from 'express';
 import { UsernameDuplicationError, WrongAuthData } from '../../errorTypes';
 import getConnection from '../../db';
 import argon2 from 'argon2';
+import { nanoid } from 'nanoid';
 const router = express.Router();
 
 router.post('/sign-up', async (req, res, next) => {
@@ -19,6 +20,7 @@ router.post('/sign-up', async (req, res, next) => {
 
       await db.collection('users').insertOne({
         email: req.body.email,
+        username: nanoid(10),
         hashedPassword,
       });
     } else {
