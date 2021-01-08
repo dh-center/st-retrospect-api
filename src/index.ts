@@ -76,7 +76,15 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
   const apolloServer = new ApolloServer({
     schema,
     formatError: (error: GraphQLError): GraphQLError => {
-      if (!(error instanceof ValidationError) && !(error.originalError instanceof AuthenticationError)) {
+      if (error.originalError instanceof ApiError && error.extensions) {
+        error.extensions.code = error.originalError.code;
+      }
+
+      const errorsWhitelist = [ValidationError, AuthenticationError, ApiError];
+
+      const isCaptureNeeded = !errorsWhitelist.some(ErrorType => error.originalError instanceof ErrorType);
+
+      if (isCaptureNeeded) {
         Sentry.captureException(error);
       }
 
@@ -139,4 +147,4 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
   app.listen({ port: process.env.PORT }, () =>
     console.log(`🚀 Server ready at http://localhost:${process.env.PORT}${apolloServer.graphqlPath}`)
   );
-})();
+})().catch(e => console.error('Error during server starting: ', e));
