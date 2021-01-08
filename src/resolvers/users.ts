@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { ResolverContextBase } from '../types/graphql';
 import { RouteDBScheme } from './routes';
+import { InvalidAccessToken } from '../errorTypes';
 
 /**
  * Information about user in database
@@ -94,14 +95,20 @@ export interface UserDBScheme {
 
 const Query = {
   /**
-   * Returns saved routes
+   * Returns returns the data of the user who makes the request
    *
    * @param parent - this is the return value of the resolver for this field's parent
    * @param args - contains all GraphQL arguments provided for this field
    * @param context - this object is shared across all resolvers that execute for a particular operation
    */
-  async me(parent: undefined, args: undefined, { db, user }: ResolverContextBase): Promise<UserDBScheme| null> {
-    return db.collection<UserDBScheme>('users').findOne({ _id: new ObjectId(user.id) });
+  async me(parent: undefined, args: undefined, { db, user }: ResolverContextBase): Promise<UserDBScheme | null> {
+    const currentUser = await db.collection<UserDBScheme>('users').findOne({ _id: new ObjectId(user.id) });
+
+    if (!currentUser) {
+      throw new InvalidAccessToken();
+    }
+
+    return currentUser;
   },
 };
 
