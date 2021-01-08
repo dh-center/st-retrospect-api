@@ -89,12 +89,21 @@ export class WrongAuthData extends ApiError {
  */
 export class InvalidAccessToken extends ApiError {
   /**
+   * Text error code
+   */
+  public code = 'INVALID_ACCESS_TOKEN';
+
+  /**
+   * Error message (short description)
+   */
+  public message = 'Invalid access token';
+
+  /**
    * Creates error instance
    *
    * @param httpCode - http code to send to user
    */
   constructor(httpCode = 400) {
     super(httpCode);
-    this.code = 'INVALID_ACCESS_TOKEN';
   }
 }
