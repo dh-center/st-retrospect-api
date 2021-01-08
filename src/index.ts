@@ -84,26 +84,27 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
     },
     playground: true,
     async context({ req }): Promise<ResolverContextBase> {
-      let languages: Languages[];
+      let languages = [ Languages.RU ];
 
-      if (req.headers['accept-language']) {
-        languages = languageParser.parse(req.headers['accept-language'] ? req.headers['accept-language'].toString() : '').map((language) => {
+      const languageHeader = req.headers['accept-language'];
+
+      if (languageHeader) {
+        languages = languageParser.parse(languageHeader ? languageHeader.toString() : '').map((language) => {
           return language.code.toUpperCase() as Languages;
         });
-      } else {
-        languages = [ Languages.RU ];
       }
 
-      let jsonToken = '';
       let user: AccessTokenData = {
         id: '',
         isAdmin: false,
       };
 
       if (req.headers.authorization) {
-        jsonToken = req.headers.authorization;
-        if (/^Bearer [a-z0-9-_+/=]+\.[a-z0-9-_+/=]+\.[a-z0-9-_+/=]+$/i.test(jsonToken)) {
-          jsonToken = jsonToken.slice(7);
+        const authorizationHeader = req.headers.authorization;
+
+        if (/^Bearer [a-z0-9-_+/=]+\.[a-z0-9-_+/=]+\.[a-z0-9-_+/=]+$/i.test(authorizationHeader)) {
+          const jsonToken = authorizationHeader.slice(7);
+
           user = await jwt.verify(jsonToken, process.env.JWT_SECRET_STRING || 'secret_string') as AccessTokenData;
         }
       }
