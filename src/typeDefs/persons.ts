@@ -177,6 +177,11 @@ export default gql`
     pseudonym: MultilingualString @multilingual
 
     """
+    Link with main photo
+    """
+    mainPhotoLink: String
+
+    """
     Person's professions
     """
     professions: [String!] @multilingual
@@ -195,6 +200,11 @@ export default gql`
     Person's death date
     """
     deathDate: String
+
+    """
+    Contains links with person's photos
+    """
+    photoLinks: [String!]
 
     """
     Person's info link
@@ -241,6 +251,11 @@ export default gql`
     pseudonym: String @multilingual
 
     """
+    Link with main photo
+    """
+    mainPhotoLink: String
+
+    """
     Person's professions
     """
     professions: [String!] @multilingual
@@ -259,6 +274,11 @@ export default gql`
     Person's death date
     """
     deathDate: String
+
+    """
+    Contains links with person's photos
+    """
+    photoLinks: [String!]
 
     """
     Person's info link
