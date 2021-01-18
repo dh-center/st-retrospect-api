@@ -314,6 +314,8 @@ export type CreatePersonInput = {
   patronymic?: Maybe<Scalars['MultilingualString']>;
   /** Person's pseudonym */
   pseudonym?: Maybe<Scalars['MultilingualString']>;
+  /** Link with main photo */
+  mainPhotoLink?: Maybe<Scalars['String']>;
   /** Person's professions */
   professions?: Maybe<Array<Scalars['String']>>;
   /** Person's description */
@@ -322,6 +324,8 @@ export type CreatePersonInput = {
   birthDate?: Maybe<Scalars['String']>;
   /** Person's death date */
   deathDate?: Maybe<Scalars['String']>;
+  /** Contains links with person's photos */
+  photoLinks?: Maybe<Array<Scalars['String']>>;
   /** Person's info link */
   wikiLink?: Maybe<Scalars['String']>;
 };
@@ -345,6 +349,8 @@ export type UpdatePersonInput = {
   patronymic?: Maybe<Scalars['String']>;
   /** Person's pseudonym */
   pseudonym?: Maybe<Scalars['String']>;
+  /** Link with main photo */
+  mainPhotoLink?: Maybe<Scalars['String']>;
   /** Person's professions */
   professions?: Maybe<Array<Scalars['String']>>;
   /** Person's description */
@@ -353,6 +359,8 @@ export type UpdatePersonInput = {
   birthDate?: Maybe<Scalars['String']>;
   /** Person's death date */
   deathDate?: Maybe<Scalars['String']>;
+  /** Contains links with person's photos */
+  photoLinks?: Maybe<Array<Scalars['String']>>;
   /** Person's info link */
   wikiLink?: Maybe<Scalars['String']>;
 };
@@ -1039,6 +1047,12 @@ export type User = Node & {
   savedRoutes: Array<Route>;
   /** User liked routes */
   likedRoutes: Array<Route>;
+  /** User profile photo url */
+  photo?: Maybe<Scalars['String']>;
+  /** User first name */
+  firstName?: Maybe<Scalars['String']>;
+  /** User last name */
+  lastName?: Maybe<Scalars['String']>;
 };
 
 /**
@@ -1809,6 +1823,9 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   savedRoutes?: Resolver<Array<ResolversTypes['Route']>, ParentType, ContextType>;
   likedRoutes?: Resolver<Array<ResolversTypes['Route']>, ParentType, ContextType>;
+  photo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
