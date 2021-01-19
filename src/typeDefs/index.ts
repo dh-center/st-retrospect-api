@@ -13,6 +13,7 @@ import locationsMutations from './locationsMutations';
 import locationInstancesMutations from './locationInstancesMutations';
 import relationsMutations from './relationsMutations';
 import relationTypesMutations from './relationTypesMutations';
+import locationStyles from './locationStyles';
 
 const rootSchema = gql`
   """
@@ -130,6 +131,7 @@ export default concatenateTypeDefs(
     rootSchema,
     persons,
     locations,
+    locationStyles,
     locationsMutations,
     locationInstancesMutations,
     relations,

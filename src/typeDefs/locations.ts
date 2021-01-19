@@ -133,6 +133,11 @@ export default gql`
     locationTypes: [LocationType] @dataLoader(dataLoaderName: "locationTypeById", fieldName: "locationTypesId")
 
     """
+    Location style
+    """
+    locationStyle: LocationStyle @dataLoader(dataLoaderName: "locationStyleById", fieldName: "locationStyleId")
+
+    """
     Contains links with location's photos
     """
     photoLinks: [String!]
@@ -294,5 +299,10 @@ export default gql`
     Returns list of all location types
     """
     locationTypes: [LocationType!]!
+
+    """
+    Returns list of all location styles
+    """
+    locationStyles: [LocationStyle!]!
   }
 `;

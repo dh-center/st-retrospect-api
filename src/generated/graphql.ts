@@ -62,6 +62,8 @@ export type Query = {
   search: Array<Relation>;
   /** Returns list of all location types */
   locationTypes: Array<LocationType>;
+  /** Returns list of all location styles */
+  locationStyles: Array<LocationStyle>;
   /** Get specific relation */
   relation?: Maybe<Relation>;
   /** Get all relations */
@@ -203,6 +205,7 @@ export type Mutation = {
   /** Unused field to let extend this type */
   _?: Maybe<Scalars['Boolean']>;
   person?: Maybe<PersonMutations>;
+  locationStyles: LocationStyleMutations;
   location: LocationMutations;
   locationInstances: LocationInstanceMutations;
   relation: RelationMutations;
@@ -472,6 +475,8 @@ export type LocationInstance = Node & {
   wikiLink?: Maybe<Scalars['String']>;
   /** Array of location's types */
   locationTypes?: Maybe<Array<Maybe<LocationType>>>;
+  /** Location style */
+  locationStyle?: Maybe<LocationStyle>;
   /** Contains links with location's photos */
   photoLinks?: Maybe<Array<Scalars['String']>>;
   /** Link with main photo */
@@ -525,6 +530,39 @@ export type LocationEdge = {
   cursor: Scalars['Cursor'];
   /** Location info */
   node: Location;
+};
+
+/** Location style */
+export type LocationStyle = Node & {
+  __typename?: 'LocationStyle';
+  /** LoactionStyle ID */
+  id: Scalars['ID'];
+  /** LocationStyle name */
+  name?: Maybe<Scalars['String']>;
+};
+
+/** Input for create mutation */
+export type CreateLocationStyleInput = {
+  name: Scalars['MultilingualString'];
+};
+
+/** Payload of create mutation response */
+export type CreateLocationStylePayload = {
+  __typename?: 'CreateLocationStylePayload';
+  /** New record id */
+  recordId: Scalars['GlobalId'];
+  /** Location style object */
+  record: LocationStyle;
+};
+
+export type LocationStyleMutations = {
+  __typename?: 'LocationStyleMutations';
+  create: CreateLocationStylePayload;
+};
+
+
+export type LocationStyleMutationsCreateArgs = {
+  input: CreateLocationStyleInput;
 };
 
 /** Input type for updating address in location */
@@ -659,6 +697,8 @@ export type CreateLocationInstanceInput = {
   name: Scalars['MultilingualString'];
   /** Location's description */
   description: Scalars['MultilingualString'];
+  /** Location style id */
+  locationStyleId?: Maybe<Scalars['GlobalId']>;
   /** Link for location info */
   wikiLink?: Maybe<Scalars['String']>;
   /** Contains links with location's photos */
@@ -694,6 +734,8 @@ export type UpdateLocationInstanceInput = {
   name: Scalars['MultilingualString'];
   /** Location's description */
   description: Scalars['MultilingualString'];
+  /** Location style id */
+  locationStyleId?: Maybe<Scalars['GlobalId']>;
   /** Link for location info */
   wikiLink?: Maybe<Scalars['String']>;
   /** Contains links with location's photos */
@@ -1286,7 +1328,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  Node: ResolversTypes['Person'] | ResolversTypes['LocationType'] | ResolversTypes['Country'] | ResolversTypes['Region'] | ResolversTypes['LocationInstance'] | ResolversTypes['Location'] | ResolversTypes['Relation'] | ResolversTypes['RelationType'] | ResolversTypes['Route'] | ResolversTypes['User'] | ResolversTypes['Quest'];
+  Node: ResolversTypes['Person'] | ResolversTypes['LocationType'] | ResolversTypes['Country'] | ResolversTypes['Region'] | ResolversTypes['LocationInstance'] | ResolversTypes['Location'] | ResolversTypes['LocationStyle'] | ResolversTypes['Relation'] | ResolversTypes['RelationType'] | ResolversTypes['Route'] | ResolversTypes['User'] | ResolversTypes['Quest'];
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   ObjectId: ResolverTypeWrapper<Scalars['ObjectId']>;
@@ -1317,6 +1359,10 @@ export type ResolversTypes = {
   Location: ResolverTypeWrapper<Location>;
   LocationConnection: ResolverTypeWrapper<LocationConnection>;
   LocationEdge: ResolverTypeWrapper<LocationEdge>;
+  LocationStyle: ResolverTypeWrapper<LocationStyle>;
+  CreateLocationStyleInput: CreateLocationStyleInput;
+  CreateLocationStylePayload: ResolverTypeWrapper<CreateLocationStylePayload>;
+  LocationStyleMutations: ResolverTypeWrapper<LocationStyleMutations>;
   UpdateAddressInput: UpdateAddressInput;
   CreateAddressInput: CreateAddressInput;
   CreateLocationInput: CreateLocationInput;
@@ -1377,7 +1423,7 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Node: ResolversParentTypes['Person'] | ResolversParentTypes['LocationType'] | ResolversParentTypes['Country'] | ResolversParentTypes['Region'] | ResolversParentTypes['LocationInstance'] | ResolversParentTypes['Location'] | ResolversParentTypes['Relation'] | ResolversParentTypes['RelationType'] | ResolversParentTypes['Route'] | ResolversParentTypes['User'] | ResolversParentTypes['Quest'];
+  Node: ResolversParentTypes['Person'] | ResolversParentTypes['LocationType'] | ResolversParentTypes['Country'] | ResolversParentTypes['Region'] | ResolversParentTypes['LocationInstance'] | ResolversParentTypes['Location'] | ResolversParentTypes['LocationStyle'] | ResolversParentTypes['Relation'] | ResolversParentTypes['RelationType'] | ResolversParentTypes['Route'] | ResolversParentTypes['User'] | ResolversParentTypes['Quest'];
   ID: Scalars['ID'];
   Cursor: Scalars['Cursor'];
   ObjectId: Scalars['ObjectId'];
@@ -1407,6 +1453,10 @@ export type ResolversParentTypes = {
   Location: Location;
   LocationConnection: LocationConnection;
   LocationEdge: LocationEdge;
+  LocationStyle: LocationStyle;
+  CreateLocationStyleInput: CreateLocationStyleInput;
+  CreateLocationStylePayload: CreateLocationStylePayload;
+  LocationStyleMutations: LocationStyleMutations;
   UpdateAddressInput: UpdateAddressInput;
   CreateAddressInput: CreateAddressInput;
   CreateLocationInput: CreateLocationInput;
@@ -1465,7 +1515,7 @@ export type ResolversParentTypes = {
 };
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'Person' | 'LocationType' | 'Country' | 'Region' | 'LocationInstance' | 'Location' | 'Relation' | 'RelationType' | 'Route' | 'User' | 'Quest', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Person' | 'LocationType' | 'Country' | 'Region' | 'LocationInstance' | 'Location' | 'LocationStyle' | 'Relation' | 'RelationType' | 'Route' | 'User' | 'Quest', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -1495,6 +1545,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   locationInstances?: Resolver<Array<ResolversTypes['LocationInstance']>, ParentType, ContextType>;
   search?: Resolver<Array<ResolversTypes['Relation']>, ParentType, ContextType, RequireFields<QuerySearchArgs, 'searchString'>>;
   locationTypes?: Resolver<Array<ResolversTypes['LocationType']>, ParentType, ContextType>;
+  locationStyles?: Resolver<Array<ResolversTypes['LocationStyle']>, ParentType, ContextType>;
   relation?: Resolver<Maybe<ResolversTypes['Relation']>, ParentType, ContextType, RequireFields<QueryRelationArgs, 'id'>>;
   relations?: Resolver<ResolversTypes['RelationConnection'], ParentType, ContextType, RequireFields<QueryRelationsArgs, never>>;
   relationType?: Resolver<Maybe<ResolversTypes['RelationType']>, ParentType, ContextType, RequireFields<QueryRelationTypeArgs, 'id'>>;
@@ -1510,6 +1561,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   _?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   person?: Resolver<Maybe<ResolversTypes['PersonMutations']>, ParentType, ContextType>;
+  locationStyles?: Resolver<ResolversTypes['LocationStyleMutations'], ParentType, ContextType>;
   location?: Resolver<ResolversTypes['LocationMutations'], ParentType, ContextType>;
   locationInstances?: Resolver<ResolversTypes['LocationInstanceMutations'], ParentType, ContextType>;
   relation?: Resolver<ResolversTypes['RelationMutations'], ParentType, ContextType>;
@@ -1621,6 +1673,7 @@ export type LocationInstanceResolvers<ContextType = any, ParentType extends Reso
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   wikiLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   locationTypes?: Resolver<Maybe<Array<Maybe<ResolversTypes['LocationType']>>>, ParentType, ContextType>;
+  locationStyle?: Resolver<Maybe<ResolversTypes['LocationStyle']>, ParentType, ContextType>;
   photoLinks?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   mainPhotoLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   constructionDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1652,6 +1705,23 @@ export type LocationConnectionResolvers<ContextType = any, ParentType extends Re
 export type LocationEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationEdge'] = ResolversParentTypes['LocationEdge']> = {
   cursor?: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['Location'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LocationStyleResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationStyle'] = ResolversParentTypes['LocationStyle']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateLocationStylePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateLocationStylePayload'] = ResolversParentTypes['CreateLocationStylePayload']> = {
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
+  record?: Resolver<ResolversTypes['LocationStyle'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LocationStyleMutationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationStyleMutations'] = ResolversParentTypes['LocationStyleMutations']> = {
+  create?: Resolver<ResolversTypes['CreateLocationStylePayload'], ParentType, ContextType, RequireFields<LocationStyleMutationsCreateArgs, 'input'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1921,6 +1991,9 @@ export type Resolvers<ContextType = any> = {
   Location?: LocationResolvers<ContextType>;
   LocationConnection?: LocationConnectionResolvers<ContextType>;
   LocationEdge?: LocationEdgeResolvers<ContextType>;
+  LocationStyle?: LocationStyleResolvers<ContextType>;
+  CreateLocationStylePayload?: CreateLocationStylePayloadResolvers<ContextType>;
+  LocationStyleMutations?: LocationStyleMutationsResolvers<ContextType>;
   CreateLocationPayload?: CreateLocationPayloadResolvers<ContextType>;
   UpdateLocationPayload?: UpdateLocationPayloadResolvers<ContextType>;
   DeleteLocationPayload?: DeleteLocationPayloadResolvers<ContextType>;
