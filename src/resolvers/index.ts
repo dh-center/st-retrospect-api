@@ -16,6 +16,7 @@ import { fromGlobalId } from '../utils/globalId';
 import { QueryNodeArgs } from '../generated/graphql';
 import camelCase from 'lodash.camelcase';
 import { FieldsWithDataLoader } from '../dataLoaders';
+import locationStyles from './locationStyles';
 
 /**
  * See all types and fields here {@link '../typeDefs/schema.graphql'}
@@ -51,6 +52,7 @@ export default merge(
   indexResolver,
   persons,
   locations,
+  locationStyles,
   locationInstances,
   routes,
   users,

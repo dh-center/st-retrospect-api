@@ -2,7 +2,7 @@ import { Collection, Db, ObjectId } from 'mongodb';
 import { GraphQLSchema } from 'graphql';
 import DataLoaders from '../dataLoaders';
 import { PersonDBScheme } from '../resolvers/persons';
-import { LocationDBScheme, LocationInstanceDBScheme } from '../resolvers/locations';
+import {LocationDBScheme, LocationInstanceDBScheme, LocationStyleDBScheme} from '../resolvers/locations';
 import { RelationDBScheme } from '../resolvers/relations';
 import { QuestDBScheme } from '../resolvers/quests';
 import { RelationTypeDBScheme } from '../resolvers/relationTypes';
@@ -20,6 +20,7 @@ export interface Collections {
   relations: RelationDBScheme;
   quests: QuestDBScheme;
   relationtypes: RelationTypeDBScheme;
+  locationstyles: LocationStyleDBScheme;
 }
 
 export type CollectionAccessFunction = <T extends keyof Collections>(name: T) => Collection<Collections[T]>;

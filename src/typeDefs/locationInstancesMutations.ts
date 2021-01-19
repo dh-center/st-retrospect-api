@@ -13,6 +13,11 @@ export default gql`
     description: MultilingualString! @multilingual
 
     """
+    Location style id
+    """
+    locationStyleId: GlobalId
+
+    """
     Link for location info
     """
     wikiLink: String
@@ -85,6 +90,11 @@ export default gql`
     Location's description
     """
     description: MultilingualString! @multilingual
+
+    """
+    Location style id
+    """
+    locationStyleId: GlobalId
 
     """
     Link for location info

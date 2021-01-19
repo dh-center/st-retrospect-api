@@ -4,7 +4,7 @@ import { ObjectId } from 'mongodb';
 import type { RelationDBScheme } from './resolvers/relations';
 import type { PersonDBScheme } from './resolvers/persons';
 import type { ObjectMap } from './types/utils';
-import type { LocationDBScheme, LocationTypeDBScheme } from './resolvers/locations';
+import type { LocationDBScheme, LocationStyleDBScheme, LocationTypeDBScheme } from './resolvers/locations';
 import type { RouteDBScheme } from './resolvers/routes';
 import type { QuestDBScheme } from './resolvers/quests';
 import { countries, regions } from './resolvers/address';
@@ -67,6 +67,14 @@ export default class DataLoaders {
    */
   public locationTypeById = new DataLoader(
     async (locationTypesIds: readonly string[]) => this.batchByIds<LocationTypeDBScheme>('locationtypes', locationTypesIds),
+    { cache: false }
+  );
+
+  /**
+   * Loader for fetching locations styles by their ids
+   */
+  public locationStyleById = new DataLoader(
+    async (locationStyleIds: readonly string[]) => this.batchByIds<LocationStyleDBScheme>('locationstyles', locationStyleIds),
     { cache: false }
   );
 

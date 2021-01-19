@@ -84,6 +84,11 @@ export interface LocationInstanceDBScheme {
   locationTypesId?: (ObjectId | null)[];
 
   /**
+   * Location style id
+   */
+  locationStyleId?: ObjectId | null;
+
+  /**
    * Location instance photo links
    */
   photoLinks?: string[] | null;
@@ -125,6 +130,21 @@ export interface LocationTypeDBScheme {
 
   /**
    * Name of locationType
+   */
+  name: MultilingualString;
+}
+
+/**
+ * Location style database scheme
+ */
+export interface LocationStyleDBScheme {
+  /**
+   * Id of location style
+   */
+  _id: ObjectId;
+
+  /**
+   * Name of location style
    */
   name: MultilingualString;
 }
@@ -189,6 +209,18 @@ const Query = {
    */
   async locationTypes(parent: undefined, args: undefined, { db }: ResolverContextBase): Promise<LocationTypeDBScheme[]> {
     return db.collection<LocationTypeDBScheme>('locationtypes').find()
+      .toArray();
+  },
+
+  /**
+   * Returns list of all location styles
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async locationStyles(parent: undefined, args: undefined, { db }: ResolverContextBase): Promise<LocationStyleDBScheme[]> {
+    return db.collection<LocationStyleDBScheme>('locationstyles').find()
       .toArray();
   },
 
