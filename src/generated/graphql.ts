@@ -555,14 +555,57 @@ export type CreateLocationStylePayload = {
   record: LocationStyle;
 };
 
+/** Input for update mutation */
+export type UpdateLocationStyleInput = {
+  /** Location style id */
+  id: Scalars['GlobalId'];
+  /** Location style name */
+  name: Scalars['MultilingualString'];
+};
+
+/** Payload of update mutation */
+export type UpdateLocationStylePayload = {
+  __typename?: 'UpdateLocationStylePayload';
+  /** Updated record id */
+  recordId: Scalars['GlobalId'];
+  /** Location style object */
+  record: LocationStyle;
+};
+
+/** Payload of delete mutation */
+export type DeleteLocationStylePayload = {
+  __typename?: 'DeleteLocationStylePayload';
+  /** Deleted record id */
+  recordId: Scalars['GlobalId'];
+};
+
+/** Location style mutations */
 export type LocationStyleMutations = {
   __typename?: 'LocationStyleMutations';
+  /** Creates new location style */
   create: CreateLocationStylePayload;
+  /** Updates existed location style */
+  update: UpdateLocationStylePayload;
+  /** Deletes location style by id */
+  delete: DeleteLocationStylePayload;
 };
 
 
+/** Location style mutations */
 export type LocationStyleMutationsCreateArgs = {
   input: CreateLocationStyleInput;
+};
+
+
+/** Location style mutations */
+export type LocationStyleMutationsUpdateArgs = {
+  input: UpdateLocationStyleInput;
+};
+
+
+/** Location style mutations */
+export type LocationStyleMutationsDeleteArgs = {
+  id: Scalars['GlobalId'];
 };
 
 /** Input type for updating address in location */
@@ -1362,6 +1405,9 @@ export type ResolversTypes = {
   LocationStyle: ResolverTypeWrapper<LocationStyle>;
   CreateLocationStyleInput: CreateLocationStyleInput;
   CreateLocationStylePayload: ResolverTypeWrapper<CreateLocationStylePayload>;
+  UpdateLocationStyleInput: UpdateLocationStyleInput;
+  UpdateLocationStylePayload: ResolverTypeWrapper<UpdateLocationStylePayload>;
+  DeleteLocationStylePayload: ResolverTypeWrapper<DeleteLocationStylePayload>;
   LocationStyleMutations: ResolverTypeWrapper<LocationStyleMutations>;
   UpdateAddressInput: UpdateAddressInput;
   CreateAddressInput: CreateAddressInput;
@@ -1456,6 +1502,9 @@ export type ResolversParentTypes = {
   LocationStyle: LocationStyle;
   CreateLocationStyleInput: CreateLocationStyleInput;
   CreateLocationStylePayload: CreateLocationStylePayload;
+  UpdateLocationStyleInput: UpdateLocationStyleInput;
+  UpdateLocationStylePayload: UpdateLocationStylePayload;
+  DeleteLocationStylePayload: DeleteLocationStylePayload;
   LocationStyleMutations: LocationStyleMutations;
   UpdateAddressInput: UpdateAddressInput;
   CreateAddressInput: CreateAddressInput;
@@ -1720,8 +1769,21 @@ export type CreateLocationStylePayloadResolvers<ContextType = any, ParentType ex
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateLocationStylePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateLocationStylePayload'] = ResolversParentTypes['UpdateLocationStylePayload']> = {
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
+  record?: Resolver<ResolversTypes['LocationStyle'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteLocationStylePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteLocationStylePayload'] = ResolversParentTypes['DeleteLocationStylePayload']> = {
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type LocationStyleMutationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationStyleMutations'] = ResolversParentTypes['LocationStyleMutations']> = {
   create?: Resolver<ResolversTypes['CreateLocationStylePayload'], ParentType, ContextType, RequireFields<LocationStyleMutationsCreateArgs, 'input'>>;
+  update?: Resolver<ResolversTypes['UpdateLocationStylePayload'], ParentType, ContextType, RequireFields<LocationStyleMutationsUpdateArgs, 'input'>>;
+  delete?: Resolver<ResolversTypes['DeleteLocationStylePayload'], ParentType, ContextType, RequireFields<LocationStyleMutationsDeleteArgs, 'id'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1993,6 +2055,8 @@ export type Resolvers<ContextType = any> = {
   LocationEdge?: LocationEdgeResolvers<ContextType>;
   LocationStyle?: LocationStyleResolvers<ContextType>;
   CreateLocationStylePayload?: CreateLocationStylePayloadResolvers<ContextType>;
+  UpdateLocationStylePayload?: UpdateLocationStylePayloadResolvers<ContextType>;
+  DeleteLocationStylePayload?: DeleteLocationStylePayloadResolvers<ContextType>;
   LocationStyleMutations?: LocationStyleMutationsResolvers<ContextType>;
   CreateLocationPayload?: CreateLocationPayloadResolvers<ContextType>;
   UpdateLocationPayload?: UpdateLocationPayloadResolvers<ContextType>;
