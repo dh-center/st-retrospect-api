@@ -2,7 +2,12 @@ import {
   CreateLocationStyleInput,
   UpdateLocationStyleInput
 } from '../generated/graphql';
-import { CreateMutationPayload, ResolverContextBase, UpdateMutationPayload } from '../types/graphql';
+import {
+  CreateMutationPayload,
+  DeleteMutationPayload,
+  ResolverContextBase,
+  UpdateMutationPayload
+} from '../types/graphql';
 import { LocationStyleDBScheme } from './locations';
 import emptyMutation from '../utils/emptyMutation';
 import { ObjectId } from 'mongodb';
@@ -73,6 +78,36 @@ const LocationStyleMutations = {
     return {
       recordId: newInput._id,
       record: locationStyle.value,
+    };
+  },
+
+  /**
+   * Delete location style
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async delete(
+    parent: undefined,
+    { id }: { id: ObjectId },
+    { collection }: ResolverContextBase
+  ): Promise<DeleteMutationPayload> {
+    await collection('locationstyles').deleteOne({ _id: id });
+
+    /**
+     * Removes deleted location style in location instances
+     */
+    await collection('location_instances').updateMany({
+      locationStyleId: id,
+    }, {
+      $unset: {
+        locationStyleId: '',
+      },
+    });
+
+    return {
+      recordId: id,
     };
   },
 };
