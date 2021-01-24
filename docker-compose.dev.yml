@@ -1,4 +1,5 @@
-version: "3.2"
+version: "3.4"
+
 services:
   app-dev:
     build:
@@ -17,16 +18,63 @@ services:
     tty: true
 
   mongodb:
-    image: mongo
+    image: mongo:4.4.3
+    hostname: mongodb
     volumes:
       - mongodata:/data/db
       - mongo-config:/data/configdb
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./docker/mongodb/scripts:/scripts:ro
     ports:
       - 27017:27017
+    env_file:
+      - .env
     environment:
       MONGO_INITDB_DATABASE: ${MONGODB_DATABASE}
+      MONGO_REPLICA_SET_NAME: ${MONGO_REPLICA_SET_NAME}
+    healthcheck:
+      test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo --quiet) -eq 1
+      interval: 10s
+      start_period: 30s
+    command: ["--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all"]
+
+
+  elastic-search:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    restart: always
+    environment:
+      discovery.type: single-node
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    ports:
+      - 9200:9200
+    volumes:
+      - elastic-search-data:/usr/share/elasticsearch/data
+      - ./docker/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.2
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://elastic-search:9200
+      ELASTICSEARCH_HOSTS: http://elastic-search:9200
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elastic-search
+    volumes:
+      - ./docker/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+
+  monstache:
+    image: rwynn/monstache:6.7.3
+    working_dir: /app
+    command: -f ./monstache.config.toml
+    volumes:
+      - ./docker/monstache.config.toml:/app/monstache.config.toml
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
 volumes:
   mongodata:
   mongo-config:
   app-deps:
+  elastic-search-data:
