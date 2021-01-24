@@ -4,7 +4,6 @@ import persons from './persons';
 import locations from './locations';
 import relations from './relations';
 import relationTypes from './relationTypes';
-import routes from './routes';
 import users from './users';
 import quests from './quests';
 import graphqlScalars from './graphqlScalars';
@@ -138,7 +137,6 @@ export default concatenateTypeDefs(
     relationsMutations,
     relationTypes,
     relationTypesMutations,
-    routes,
     users,
     quests,
     questsMutations,

@@ -2,7 +2,7 @@ import { Collection, Db, ObjectId } from 'mongodb';
 import { GraphQLSchema } from 'graphql';
 import DataLoaders from '../dataLoaders';
 import { PersonDBScheme } from '../resolvers/persons';
-import {LocationDBScheme, LocationInstanceDBScheme, LocationStyleDBScheme} from '../resolvers/locations';
+import { LocationDBScheme, LocationInstanceDBScheme, LocationStyleDBScheme } from '../resolvers/locations';
 import { RelationDBScheme } from '../resolvers/relations';
 import { QuestDBScheme } from '../resolvers/quests';
 import { RelationTypeDBScheme } from '../resolvers/relationTypes';
@@ -147,6 +147,5 @@ export type NodeName =
   'LocationType' |
   'Address' |
   'RelationType' |
-  'Route' |
   'Country' |
   'Region';

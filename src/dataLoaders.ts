@@ -5,7 +5,6 @@ import type { RelationDBScheme } from './resolvers/relations';
 import type { PersonDBScheme } from './resolvers/persons';
 import type { ObjectMap } from './types/utils';
 import type { LocationDBScheme, LocationStyleDBScheme, LocationTypeDBScheme } from './resolvers/locations';
-import type { RouteDBScheme } from './resolvers/routes';
 import type { QuestDBScheme } from './resolvers/quests';
 import { countries, regions } from './resolvers/address';
 import type { RelationTypeDBScheme } from './resolvers/relationTypes';
@@ -43,14 +42,6 @@ export default class DataLoaders {
    */
   public personById = new DataLoader(
     async (personIds: readonly string[]) => this.batchByIds<PersonDBScheme>('persons', personIds),
-    { cache: false }
-  );
-
-  /**
-   * Loader for fetching routes by their ids
-   */
-  public routesById = new DataLoader(
-    async (routeIds: readonly string[]) => this.batchByIds<RouteDBScheme>('routes', routeIds),
     { cache: false }
   );
 
