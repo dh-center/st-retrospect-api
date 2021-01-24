@@ -72,12 +72,6 @@ export type Query = {
   relationType?: Maybe<RelationType>;
   /** List of available relation types */
   relationTypes: RelationTypeConnection;
-  /** Get all routes */
-  routes: Array<Route>;
-  /** Get nearest routes */
-  nearestRoutes: Array<Route>;
-  /** Get specific route by id */
-  route?: Maybe<Route>;
   /** Get info about user */
   me: User;
   /** Get specific Quest */
@@ -166,26 +160,6 @@ export type QueryRelationTypesArgs = {
 
 
 /** API queries */
-export type QueryRoutesArgs = {
-  filter?: Maybe<RoutesFilter>;
-};
-
-
-/** API queries */
-export type QueryNearestRoutesArgs = {
-  center: Coordinates;
-  radius?: Maybe<Scalars['Float']>;
-  filter?: Maybe<RoutesFilter>;
-};
-
-
-/** API queries */
-export type QueryRouteArgs = {
-  id: Scalars['GlobalId'];
-};
-
-
-/** API queries */
 export type QueryQuestArgs = {
   id: Scalars['GlobalId'];
 };
@@ -210,39 +184,7 @@ export type Mutation = {
   locationInstances: LocationInstanceMutations;
   relation: RelationMutations;
   relationType: RelationTypeMutations;
-  /** Save route to user */
-  saveRoute: User;
-  /** Unsave route from user */
-  deleteRouteFromSaved: User;
-  /** Add route to user liked routes */
-  likeRoute: User;
-  /** Dislike route */
-  dislikeRoute: User;
   quest: QuestMutations;
-};
-
-
-/** API mutations */
-export type MutationSaveRouteArgs = {
-  routeId: Scalars['String'];
-};
-
-
-/** API mutations */
-export type MutationDeleteRouteFromSavedArgs = {
-  routeId: Scalars['String'];
-};
-
-
-/** API mutations */
-export type MutationLikeRouteArgs = {
-  routeId: Scalars['String'];
-};
-
-
-/** API mutations */
-export type MutationDislikeRouteArgs = {
-  routeId: Scalars['String'];
 };
 
 export type Person = Node & {
@@ -1096,42 +1038,12 @@ export type RelationTypeMutationsDeleteArgs = {
   id: Scalars['GlobalId'];
 };
 
-/** Input to search routes */
-export type RoutesFilter = {
-  /** String for searching in all languages */
-  contains: Scalars['String'];
-};
-
-/** Route between locations */
-export type Route = Node & {
-  __typename?: 'Route';
-  /** Route id */
-  id: Scalars['ID'];
-  /** Route name */
-  name?: Maybe<Scalars['String']>;
-  /** Route locations */
-  locationsInstance: Array<Maybe<LocationInstance>>;
-  /** Route description */
-  description?: Maybe<Scalars['String']>;
-  /** Route photo */
-  photoLink?: Maybe<Scalars['String']>;
-};
-
-export type Coordinates = {
-  longitude: Scalars['Float'];
-  latitude: Scalars['Float'];
-};
-
 export type User = Node & {
   __typename?: 'User';
   /** User's ID */
   id: Scalars['ID'];
   /** Username */
   username: Scalars['String'];
-  /** User saved routes */
-  savedRoutes: Array<Route>;
-  /** User liked routes */
-  likedRoutes: Array<Route>;
   /** User profile photo url */
   photo?: Maybe<Scalars['String']>;
   /** User first name */
@@ -1371,7 +1283,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  Node: ResolversTypes['Person'] | ResolversTypes['LocationType'] | ResolversTypes['Country'] | ResolversTypes['Region'] | ResolversTypes['LocationInstance'] | ResolversTypes['Location'] | ResolversTypes['LocationStyle'] | ResolversTypes['Relation'] | ResolversTypes['RelationType'] | ResolversTypes['Route'] | ResolversTypes['User'] | ResolversTypes['Quest'];
+  Node: ResolversTypes['Person'] | ResolversTypes['LocationType'] | ResolversTypes['Country'] | ResolversTypes['Region'] | ResolversTypes['LocationInstance'] | ResolversTypes['Location'] | ResolversTypes['LocationStyle'] | ResolversTypes['Relation'] | ResolversTypes['RelationType'] | ResolversTypes['User'] | ResolversTypes['Quest'];
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   ObjectId: ResolverTypeWrapper<Scalars['ObjectId']>;
@@ -1381,7 +1293,6 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   String: ResolverTypeWrapper<Scalars['String']>;
-  Float: ResolverTypeWrapper<Scalars['Float']>;
   Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Person: ResolverTypeWrapper<Person>;
@@ -1400,6 +1311,7 @@ export type ResolversTypes = {
   Address: ResolverTypeWrapper<Address>;
   LocationInstance: ResolverTypeWrapper<LocationInstance>;
   Location: ResolverTypeWrapper<Location>;
+  Float: ResolverTypeWrapper<Scalars['Float']>;
   LocationConnection: ResolverTypeWrapper<LocationConnection>;
   LocationEdge: ResolverTypeWrapper<LocationEdge>;
   LocationStyle: ResolverTypeWrapper<LocationStyle>;
@@ -1446,9 +1358,6 @@ export type ResolversTypes = {
   UpdateRelationTypePayload: ResolverTypeWrapper<UpdateRelationTypePayload>;
   DeleteRelationTypePayload: ResolverTypeWrapper<DeleteRelationTypePayload>;
   RelationTypeMutations: ResolverTypeWrapper<RelationTypeMutations>;
-  RoutesFilter: RoutesFilter;
-  Route: ResolverTypeWrapper<Route>;
-  Coordinates: Coordinates;
   User: ResolverTypeWrapper<User>;
   EditorData: ResolverTypeWrapper<EditorData>;
   EditorDataInput: EditorDataInput;
@@ -1469,7 +1378,7 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Node: ResolversParentTypes['Person'] | ResolversParentTypes['LocationType'] | ResolversParentTypes['Country'] | ResolversParentTypes['Region'] | ResolversParentTypes['LocationInstance'] | ResolversParentTypes['Location'] | ResolversParentTypes['LocationStyle'] | ResolversParentTypes['Relation'] | ResolversParentTypes['RelationType'] | ResolversParentTypes['Route'] | ResolversParentTypes['User'] | ResolversParentTypes['Quest'];
+  Node: ResolversParentTypes['Person'] | ResolversParentTypes['LocationType'] | ResolversParentTypes['Country'] | ResolversParentTypes['Region'] | ResolversParentTypes['LocationInstance'] | ResolversParentTypes['Location'] | ResolversParentTypes['LocationStyle'] | ResolversParentTypes['Relation'] | ResolversParentTypes['RelationType'] | ResolversParentTypes['User'] | ResolversParentTypes['Quest'];
   ID: Scalars['ID'];
   Cursor: Scalars['Cursor'];
   ObjectId: Scalars['ObjectId'];
@@ -1478,7 +1387,6 @@ export type ResolversParentTypes = {
   Query: {};
   Int: Scalars['Int'];
   String: Scalars['String'];
-  Float: Scalars['Float'];
   Mutation: {};
   Boolean: Scalars['Boolean'];
   Person: Person;
@@ -1497,6 +1405,7 @@ export type ResolversParentTypes = {
   Address: Address;
   LocationInstance: LocationInstance;
   Location: Location;
+  Float: Scalars['Float'];
   LocationConnection: LocationConnection;
   LocationEdge: LocationEdge;
   LocationStyle: LocationStyle;
@@ -1543,9 +1452,6 @@ export type ResolversParentTypes = {
   UpdateRelationTypePayload: UpdateRelationTypePayload;
   DeleteRelationTypePayload: DeleteRelationTypePayload;
   RelationTypeMutations: RelationTypeMutations;
-  RoutesFilter: RoutesFilter;
-  Route: Route;
-  Coordinates: Coordinates;
   User: User;
   EditorData: EditorData;
   EditorDataInput: EditorDataInput;
@@ -1564,7 +1470,7 @@ export type ResolversParentTypes = {
 };
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'Person' | 'LocationType' | 'Country' | 'Region' | 'LocationInstance' | 'Location' | 'LocationStyle' | 'Relation' | 'RelationType' | 'Route' | 'User' | 'Quest', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Person' | 'LocationType' | 'Country' | 'Region' | 'LocationInstance' | 'Location' | 'LocationStyle' | 'Relation' | 'RelationType' | 'User' | 'Quest', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -1599,9 +1505,6 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   relations?: Resolver<ResolversTypes['RelationConnection'], ParentType, ContextType, RequireFields<QueryRelationsArgs, never>>;
   relationType?: Resolver<Maybe<ResolversTypes['RelationType']>, ParentType, ContextType, RequireFields<QueryRelationTypeArgs, 'id'>>;
   relationTypes?: Resolver<ResolversTypes['RelationTypeConnection'], ParentType, ContextType, RequireFields<QueryRelationTypesArgs, never>>;
-  routes?: Resolver<Array<ResolversTypes['Route']>, ParentType, ContextType, RequireFields<QueryRoutesArgs, never>>;
-  nearestRoutes?: Resolver<Array<ResolversTypes['Route']>, ParentType, ContextType, RequireFields<QueryNearestRoutesArgs, 'center' | 'radius'>>;
-  route?: Resolver<Maybe<ResolversTypes['Route']>, ParentType, ContextType, RequireFields<QueryRouteArgs, 'id'>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   quest?: Resolver<Maybe<ResolversTypes['Quest']>, ParentType, ContextType, RequireFields<QueryQuestArgs, 'id'>>;
   quests?: Resolver<ResolversTypes['QuestConnection'], ParentType, ContextType, RequireFields<QueryQuestsArgs, never>>;
@@ -1615,10 +1518,6 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   locationInstances?: Resolver<ResolversTypes['LocationInstanceMutations'], ParentType, ContextType>;
   relation?: Resolver<ResolversTypes['RelationMutations'], ParentType, ContextType>;
   relationType?: Resolver<ResolversTypes['RelationTypeMutations'], ParentType, ContextType>;
-  saveRoute?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationSaveRouteArgs, 'routeId'>>;
-  deleteRouteFromSaved?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationDeleteRouteFromSavedArgs, 'routeId'>>;
-  likeRoute?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationLikeRouteArgs, 'routeId'>>;
-  dislikeRoute?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationDislikeRouteArgs, 'routeId'>>;
   quest?: Resolver<ResolversTypes['QuestMutations'], ParentType, ContextType>;
 };
 
@@ -1941,20 +1840,9 @@ export type RelationTypeMutationsResolvers<ContextType = any, ParentType extends
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RouteResolvers<ContextType = any, ParentType extends ResolversParentTypes['Route'] = ResolversParentTypes['Route']> = {
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  locationsInstance?: Resolver<Array<Maybe<ResolversTypes['LocationInstance']>>, ParentType, ContextType>;
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  photoLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  savedRoutes?: Resolver<Array<ResolversTypes['Route']>, ParentType, ContextType>;
-  likedRoutes?: Resolver<Array<ResolversTypes['Route']>, ParentType, ContextType>;
   photo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -2082,7 +1970,6 @@ export type Resolvers<ContextType = any> = {
   UpdateRelationTypePayload?: UpdateRelationTypePayloadResolvers<ContextType>;
   DeleteRelationTypePayload?: DeleteRelationTypePayloadResolvers<ContextType>;
   RelationTypeMutations?: RelationTypeMutationsResolvers<ContextType>;
-  Route?: RouteResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   EditorData?: EditorDataResolvers<ContextType>;
   Quest?: QuestResolvers<ContextType>;
