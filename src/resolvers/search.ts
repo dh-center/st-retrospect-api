@@ -1,0 +1,5 @@
+const Query = {
+  search() {
+    return []
+  }
+}

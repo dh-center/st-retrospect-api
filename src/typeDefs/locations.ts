@@ -288,14 +288,6 @@ export default gql`
     locationInstances: [LocationInstance!]!
 
     """
-    Get relations on user request
-    """
-    search(
-      "The string on the basis of which the request will be made"
-      searchString: String!
-    ): [Relation!]!
-
-    """
     Returns list of all location types
     """
     locationTypes: [LocationType!]!
