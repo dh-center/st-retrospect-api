@@ -21,7 +21,6 @@ import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
 import DataLoaders from './dataLoaders';
-import { express as voyagerMiddleware } from 'graphql-voyager/middleware';
 import globalIdResolver from './globalIdResolver';
 import toGlobalIdDirective from './directives/toGlobalId';
 
@@ -128,7 +127,6 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
   });
 
   apolloServer.applyMiddleware({ app });
-  app.use('/voyager', voyagerMiddleware({ endpointUrl: '/graphql' }));
 
   /**
    * Setup sentry error handler
