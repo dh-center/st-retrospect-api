@@ -41,6 +41,11 @@ export interface QuestDBScheme {
   type: string;
 
   /**
+   * Quest progress states
+   */
+  questProgressState: string;
+
+  /**
    * Quest data
    */
   data?: EditorData;
@@ -154,6 +159,17 @@ const QuestMutations = {
   },
 };
 
+const Quest = {
+  /**
+   * Return quest progress state
+   */
+  questProgressState(): string {
+    const states = ['PASSED', 'AVAILABLE', 'LOCKED'];
+
+    return states[Math.floor(Math.random() * 3)];
+  },
+};
+
 const Mutation = {
   quest: emptyMutation,
 };
@@ -162,4 +178,5 @@ export default {
   Query,
   Mutation,
   QuestMutations,
+  Quest,
 };

@@ -84,6 +84,11 @@ export default gql`
     Quest rewards
     """
     rewards: [JSON!]!
+
+    """
+    Quest progress states (passed, available, blocked)
+    """
+    questProgressState: QuestUserProgressStates!
   }
 
   """
@@ -134,6 +139,26 @@ export default gql`
     Task type route
     """
     ROUTE
+  }
+
+  """
+  Possible quest states
+  """
+  enum QuestUserProgressStates {
+    """
+    Quest is passed
+    """
+    PASSED
+
+    """
+    Quest is available
+    """
+    AVAILABLE
+
+    """
+    Quest is locked
+    """
+    LOCKED
   }
 
   extend type Query {
