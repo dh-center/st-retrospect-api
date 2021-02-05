@@ -8,7 +8,7 @@ import { ObjectId } from 'mongodb';
 import { EditorData } from '../types/editorData';
 import emptyMutation from '../utils/emptyMutation';
 import sendNotify from '../utils/telegramNotify';
-import { UpdateQuestInput } from '../generated/graphql';
+import { QuestUserProgressStates, TaskTypes, UpdateQuestInput } from '../generated/graphql';
 import mergeWithCustomizer from '../utils/mergeWithCustomizer';
 
 /**
@@ -38,7 +38,12 @@ export interface QuestDBScheme {
   /**
    * Quest type
    */
-  type: string;
+  type: TaskTypes;
+
+  /**
+   * Quest progress states
+   */
+  questProgressState: QuestUserProgressStates;
 
   /**
    * Quest data
@@ -154,6 +159,17 @@ const QuestMutations = {
   },
 };
 
+const Quest = {
+  /**
+   * Return quest progress state
+   */
+  questProgressState(): string {
+    const states = ['PASSED', 'AVAILABLE', 'LOCKED'];
+
+    return states[Math.floor(Math.random() * 3)];
+  },
+};
+
 const Mutation = {
   quest: emptyMutation,
 };
@@ -162,4 +178,5 @@ export default {
   Query,
   Mutation,
   QuestMutations,
+  Quest,
 };
