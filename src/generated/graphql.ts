@@ -1097,6 +1097,8 @@ export type Quest = Node & {
   data?: Maybe<EditorData>;
   /** Quest rewards */
   rewards: Array<Scalars['JSON']>;
+  /** Quest progress states (passed, available, blocked) */
+  questProgressState: QuestUserProgressStates;
 };
 
 /** Model for representing list of quests */
@@ -1125,6 +1127,16 @@ export enum TaskTypes {
   Quiz = 'QUIZ',
   /** Task type route */
   Route = 'ROUTE'
+}
+
+/** Possible quest states */
+export enum QuestUserProgressStates {
+  /** Quest is passed */
+  Passed = 'PASSED',
+  /** Quest is available */
+  Available = 'AVAILABLE',
+  /** Quest is locked */
+  Locked = 'LOCKED'
 }
 
 export type CreateQuestInput = {
@@ -1365,6 +1377,7 @@ export type ResolversTypes = {
   QuestConnection: ResolverTypeWrapper<QuestConnection>;
   QuestEdge: ResolverTypeWrapper<QuestEdge>;
   TaskTypes: TaskTypes;
+  QuestUserProgressStates: QuestUserProgressStates;
   CreateQuestInput: CreateQuestInput;
   CreateQuestPayload: ResolverTypeWrapper<CreateQuestPayload>;
   UpdateQuestInput: UpdateQuestInput;
@@ -1865,6 +1878,7 @@ export type QuestResolvers<ContextType = any, ParentType extends ResolversParent
   task?: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
   data?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;
   rewards?: Resolver<Array<ResolversTypes['JSON']>, ParentType, ContextType>;
+  questProgressState?: Resolver<ResolversTypes['QuestUserProgressStates'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
