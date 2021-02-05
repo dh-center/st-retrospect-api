@@ -8,7 +8,7 @@ import { ObjectId } from 'mongodb';
 import { EditorData } from '../types/editorData';
 import emptyMutation from '../utils/emptyMutation';
 import sendNotify from '../utils/telegramNotify';
-import { UpdateQuestInput } from '../generated/graphql';
+import { QuestUserProgressStates, TaskTypes, UpdateQuestInput } from '../generated/graphql';
 import mergeWithCustomizer from '../utils/mergeWithCustomizer';
 
 /**
@@ -38,12 +38,12 @@ export interface QuestDBScheme {
   /**
    * Quest type
    */
-  type: string;
+  type: TaskTypes;
 
   /**
    * Quest progress states
    */
-  questProgressState: string;
+  questProgressState: QuestUserProgressStates;
 
   /**
    * Quest data
