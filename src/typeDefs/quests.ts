@@ -86,6 +86,11 @@ export default gql`
     rewards: [JSON!]!
 
     """
+    The minimum level required by the user to complete this quest
+    """
+    minLevel: Int!
+
+    """
     Quest progress states (passed, available, blocked)
     """
     questProgressState: QuestUserProgressStates!
