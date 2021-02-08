@@ -23,6 +23,11 @@ export default gql`
     type: TaskTypes! = ROUTE
 
     """
+    The minimum level required by the user to complete this quest
+    """
+    minLevel: Int!
+
+    """
     Quest data
     """
     data: EditorDataInput!
@@ -65,6 +70,11 @@ export default gql`
     Quest type (quiz, route, etc.)
     """
     type: TaskTypes
+
+    """
+    The minimum level required by the user to complete this quest
+    """
+    minLevel: Int
 
     """
     Quest data
