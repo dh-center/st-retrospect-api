@@ -1097,6 +1097,8 @@ export type Quest = Node & {
   data?: Maybe<EditorData>;
   /** Quest rewards */
   rewards: Array<Scalars['JSON']>;
+  /** The minimum level required by the user to complete this quest */
+  minLevel: Scalars['Int'];
   /** Quest progress states (passed, available, blocked) */
   questProgressState: QuestUserProgressStates;
 };
@@ -1878,6 +1880,7 @@ export type QuestResolvers<ContextType = any, ParentType extends ResolversParent
   task?: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
   data?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;
   rewards?: Resolver<Array<ResolversTypes['JSON']>, ParentType, ContextType>;
+  minLevel?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   questProgressState?: Resolver<ResolversTypes['QuestUserProgressStates'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

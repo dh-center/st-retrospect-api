@@ -46,6 +46,11 @@ export interface QuestDBScheme {
   questProgressState: QuestUserProgressStates;
 
   /**
+   * The minimum level required by the user to complete this quest
+   */
+  minLevel: number;
+
+  /**
    * Quest data
    */
   data?: EditorData;
