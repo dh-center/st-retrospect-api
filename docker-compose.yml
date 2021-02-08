@@ -49,6 +49,7 @@ services:
     volumes:
       - elastic-search-data:/usr/share/elasticsearch/data
       - ./docker/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./docker/elasticsearch/init.sh:/scripts/init.sh:ro
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.10.2
