@@ -1150,6 +1150,8 @@ export type CreateQuestInput = {
   photo?: Maybe<Scalars['String']>;
   /** Quest type (quiz, route, etc.) */
   type?: TaskTypes;
+  /** The minimum level required by the user to complete this quest */
+  minLevel: Scalars['Int'];
   /** Quest data */
   data: EditorDataInput;
 };
@@ -1173,6 +1175,8 @@ export type UpdateQuestInput = {
   photo?: Maybe<Scalars['String']>;
   /** Quest type (quiz, route, etc.) */
   type?: Maybe<TaskTypes>;
+  /** The minimum level required by the user to complete this quest */
+  minLevel?: Maybe<Scalars['Int']>;
   /** Quest data */
   data?: Maybe<EditorDataInput>;
 };
