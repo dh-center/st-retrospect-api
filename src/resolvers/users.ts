@@ -49,6 +49,11 @@ export interface UserDBScheme {
   lastName?: string | null;
 
   /**
+   * Quests that user complete
+   */
+  completedQuestsIds?: ObjectId[];
+
+  /**
    * User experience
    */
   exp: number;
@@ -127,22 +132,34 @@ const UserMutations = {
    */
   async completeQuest(
     parent: undefined,
-    { questId }: { questId: string },
+    { questId }: { questId: ObjectId },
     { collection, user }: ResolverContextBase
   ): Promise<UpdateMutationPayload<UserDBScheme>> {
-    console.log('questId');
-
-    const completedQuest = await collection('quests').findOne({ _id: new ObjectId(questId) });
+    const completedQuest = await collection('quests').findOne({ _id: questId });
+    const currentUser = await collection('users').findOne({ _id: new ObjectId(user.id) });
 
     if (!completedQuest) {
       throw new UserInputError('There is no quest with such id: ' + questId);
     }
+    if (!currentUser) {
+      throw new InvalidAccessToken();
+    }
+
+    if (currentUser.completedQuestsIds?.some(id => id.toString() === questId.toString())) {
+      return {
+        recordId: currentUser._id,
+        record: currentUser,
+      };
+    }
 
     const updatedUser = await collection('users').findOneAndUpdate(
-      { _id: new ObjectId(user.id) },
+      { _id: currentUser._id },
       {
         $inc: {
           exp: completedQuest?.earnedExp,
+        },
+        $addToSet: {
+          completedQuestsIds: new ObjectId(questId),
         },
       },
       { returnOriginal: false });
@@ -152,7 +169,7 @@ const UserMutations = {
     }
 
     return {
-      recordId: new ObjectId(user.id),
+      recordId: currentUser._id,
       record: updatedUser.value,
     };
   },

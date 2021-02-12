@@ -28,6 +28,11 @@ export default gql`
     lastName: String
 
     """
+    Quests that user complete
+    """
+    completedQuests: [Quest]!  @dataLoader(dataLoaderName: "questById", fieldName: "completedQuestsIds")
+
+    """
     User experience
     """
     exp: Int!
