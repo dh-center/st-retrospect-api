@@ -47,6 +47,16 @@ export interface UserDBScheme {
   lastName?: string | null;
 
   /**
+   * User experience
+   */
+  exp: number;
+
+  /**
+   * User level
+   */
+  level: number;
+
+  /**
    * Information about auth providers
    */
   auth?: {
@@ -101,6 +111,20 @@ const Query = {
   },
 };
 
+const User = {
+  /**
+   * Return user level based on user exp
+   *
+   * @param parent - user from parent resolver
+   */
+  async level(parent: UserDBScheme): Promise<number> {
+    const userExp = parent.exp;
+
+    return Math.trunc(userExp / 100);
+  },
+};
+
 export default {
   Query,
+  User,
 };

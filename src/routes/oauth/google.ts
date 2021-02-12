@@ -106,6 +106,8 @@ router.post('/oauth/google/callback', async (req, res) => {
       email,
       photo: photo,
       username: email,
+      exp: 0,
+      level: 0,
       auth: {
         google: {
           id: userId,

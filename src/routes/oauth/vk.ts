@@ -66,6 +66,8 @@ router.post('/oauth/vk/callback', async (req, res, next) => {
       lastName: authData.lastName,
       username: nanoid(10),
       photo: authData.photo || null,
+      exp: 0,
+      level: 0,
       auth: {
         vk: {
           id: tokenCheckResult.user_id,
