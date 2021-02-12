@@ -145,7 +145,9 @@ const UserMutations = {
       throw new InvalidAccessToken();
     }
 
-    if (currentUser.completedQuestsIds?.some(id => id.toString() === questId.toString())) {
+    const isAlreadyCompleted = currentUser.completedQuestsIds?.some(id => id.toString() === questId.toString());
+
+    if (isAlreadyCompleted) {
       return {
         recordId: currentUser._id,
         record: currentUser,
