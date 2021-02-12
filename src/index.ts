@@ -23,6 +23,7 @@ import jwt from 'jsonwebtoken';
 import DataLoaders from './dataLoaders';
 import globalIdResolver from './globalIdResolver';
 import toGlobalIdDirective from './directives/toGlobalId';
+import createDirectiveDefault from '@codexteam/graphql-directive-default';
 
 console.log('⚡️ Server starting');
 
@@ -69,6 +70,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
       authCheckDirective('authCheck'),
       adminCheckDirective('adminCheck'),
       dataLoaderDirective('dataLoader'),
+      createDirectiveDefault().schemaTransformer,
     ],
   });
 

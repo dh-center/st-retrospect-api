@@ -27,6 +27,11 @@ const rootSchema = gql`
   }
 
   """
+  Directive for applying default values to nullable fields
+  """
+  directive @default(value: String!) on FIELD_DEFINITION
+
+  """
   Converts MongoDB ObjectId value to the Global Unique ID
   """
   directive @toGlobalId(type: String!) on FIELD_DEFINITION
