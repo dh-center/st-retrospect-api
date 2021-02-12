@@ -91,6 +91,11 @@ export default gql`
     minLevel: Int!
 
     """
+    The experience that the user will receive by completing this quest
+    """
+    earnedExp: Int!
+
+    """
     Quest progress states (passed, available, blocked)
     """
     questProgressState: QuestUserProgressStates!

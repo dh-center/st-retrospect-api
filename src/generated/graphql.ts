@@ -1099,6 +1099,8 @@ export type Quest = Node & {
   rewards: Array<Scalars['JSON']>;
   /** The minimum level required by the user to complete this quest */
   minLevel: Scalars['Int'];
+  /** The experience that the user will receive by completing this quest */
+  earnedExp: Scalars['Int'];
   /** Quest progress states (passed, available, blocked) */
   questProgressState: QuestUserProgressStates;
 };
@@ -1152,6 +1154,8 @@ export type CreateQuestInput = {
   type?: TaskTypes;
   /** The minimum level required by the user to complete this quest */
   minLevel: Scalars['Int'];
+  /** The experience that the user will receive by completing this quest */
+  earnedExp: Scalars['Int'];
   /** Quest data */
   data: EditorDataInput;
 };
@@ -1177,6 +1181,8 @@ export type UpdateQuestInput = {
   type?: Maybe<TaskTypes>;
   /** The minimum level required by the user to complete this quest */
   minLevel?: Maybe<Scalars['Int']>;
+  /** The experience that the user will receive by completing this quest */
+  earnedExp?: Maybe<Scalars['Int']>;
   /** Quest data */
   data?: Maybe<EditorDataInput>;
 };
@@ -1885,6 +1891,7 @@ export type QuestResolvers<ContextType = any, ParentType extends ResolversParent
   data?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;
   rewards?: Resolver<Array<ResolversTypes['JSON']>, ParentType, ContextType>;
   minLevel?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  earnedExp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   questProgressState?: Resolver<ResolversTypes['QuestUserProgressStates'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

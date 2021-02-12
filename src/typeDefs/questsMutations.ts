@@ -28,6 +28,11 @@ export default gql`
     minLevel: Int!
 
     """
+    The experience that the user will receive by completing this quest
+    """
+    earnedExp: Int!
+
+    """
     Quest data
     """
     data: EditorDataInput!
@@ -75,6 +80,11 @@ export default gql`
     The minimum level required by the user to complete this quest
     """
     minLevel: Int
+
+    """
+    The experience that the user will receive by completing this quest
+    """
+    earnedExp: Int
 
     """
     Quest data

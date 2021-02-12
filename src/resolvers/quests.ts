@@ -51,6 +51,11 @@ export interface QuestDBScheme {
   minLevel: number;
 
   /**
+   * The experience that the user will receive by completing this quest
+   */
+  earnedExp: number;
+
+  /**
    * Quest data
    */
   data?: EditorData;
