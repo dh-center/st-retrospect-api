@@ -26,6 +26,16 @@ export default gql`
     User last name
     """
     lastName: String
+
+    """
+    User experience
+    """
+    exp: Int!
+
+    """
+    User level
+    """
+    level: Int!
   }
 
   extend type Query {
