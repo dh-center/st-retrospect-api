@@ -1051,6 +1051,8 @@ export type User = Node & {
   firstName?: Maybe<Scalars['String']>;
   /** User last name */
   lastName?: Maybe<Scalars['String']>;
+  /** Quests that user complete */
+  completedQuests: Array<Maybe<Quest>>;
   /** User experience */
   exp: Scalars['Int'];
   /** User level */
@@ -1900,6 +1902,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   photo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  completedQuests?: Resolver<Array<Maybe<ResolversTypes['Quest']>>, ParentType, ContextType>;
   exp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   level?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

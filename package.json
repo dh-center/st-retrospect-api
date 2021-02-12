@@ -15,6 +15,7 @@
   },
   "license": "Unlicense",
   "dependencies": {
+    "@codexteam/graphql-directive-default": "^0.0.1",
     "@graphql-tools/schema": "^7.1.2",
     "@graphql-tools/utils": "^7.1.4",
     "@sentry/node": "5.29.0",
@@ -45,7 +46,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "googleapis": "^66.0.0",
-    "graphql": "^15.4.0",
+    "graphql": "^15.5.0",
     "graphql-scalars": "^1.6.1",
     "jsonwebtoken": "^8.5.1",
     "lodash.camelcase": "^4.3.0",
