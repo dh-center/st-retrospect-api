@@ -75,6 +75,8 @@ router.post('/oauth/facebook/callback', async (req, res, next) => {
       email: userData.email,
       username: userData.email,
       photo,
+      exp: 0,
+      level: 0,
       auth: {
         facebook: {
           id: +userData.id,
