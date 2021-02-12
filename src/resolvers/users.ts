@@ -115,7 +115,7 @@ const User = {
   /**
    * Return user level based on user exp
    *
-   * @param parent - user
+   * @param parent - user from parent resolver
    */
   async level(parent: UserDBScheme): Promise<number> {
     const userExp = parent.exp;
