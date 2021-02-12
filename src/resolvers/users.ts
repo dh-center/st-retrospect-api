@@ -1,6 +1,8 @@
 import { ObjectId } from 'mongodb';
-import { ResolverContextBase } from '../types/graphql';
+import { ResolverContextBase, UpdateMutationPayload } from '../types/graphql';
 import { InvalidAccessToken } from '../errorTypes';
+import { UserInputError } from 'apollo-server-express';
+import emptyMutation from '../utils/emptyMutation';
 
 /**
  * Information about user in database
@@ -94,20 +96,65 @@ export interface UserDBScheme {
 
 const Query = {
   /**
-   * Returns returns the data of the user who makes the request
+   * Returns the data of the user who makes the request
    *
    * @param parent - this is the return value of the resolver for this field's parent
    * @param args - contains all GraphQL arguments provided for this field
    * @param context - this object is shared across all resolvers that execute for a particular operation
    */
-  async me(parent: undefined, args: undefined, { db, user }: ResolverContextBase): Promise<UserDBScheme | null> {
-    const currentUser = await db.collection<UserDBScheme>('users').findOne({ _id: new ObjectId(user.id) });
+  async me(parent: undefined, args: undefined, {
+    db,
+    user,
+  }: ResolverContextBase): Promise<UserDBScheme | null> {
+    const currentUser = await db.collection<UserDBScheme>('users')
+      .findOne({ _id: new ObjectId(user.id) });
 
     if (!currentUser) {
       throw new InvalidAccessToken();
     }
 
     return currentUser;
+  },
+};
+
+const UserMutations = {
+  /**
+   * Gives the user the experience of the completed quest
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async completeQuest(
+    parent: undefined,
+    { questId }: { questId: string },
+    { collection, user }: ResolverContextBase
+  ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    console.log('questId');
+
+    const completedQuest = await collection('quests').findOne({ _id: new ObjectId(questId) });
+
+    if (!completedQuest) {
+      throw new UserInputError('There is no quest with such id: ' + questId);
+    }
+
+    const updatedUser = await collection('users').findOneAndUpdate(
+      { _id: new ObjectId(user.id) },
+      {
+        $inc: {
+          exp: completedQuest?.earnedExp,
+        },
+      },
+      { returnOriginal: false });
+
+    if (!updatedUser.value) {
+      throw new InvalidAccessToken();
+    }
+
+    return {
+      recordId: new ObjectId(user.id),
+      record: updatedUser.value,
+    };
   },
 };
 
@@ -124,7 +171,13 @@ const User = {
   },
 };
 
+const Mutation = {
+  user: emptyMutation,
+};
+
 export default {
   Query,
+  UserMutations,
   User,
+  Mutation,
 };
