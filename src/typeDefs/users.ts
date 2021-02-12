@@ -30,7 +30,7 @@ export default gql`
     """
     Quests that user complete
     """
-    completedQuests: [Quest]! @dataLoader(dataLoaderName: "questById", fieldName: "completedQuestsIds") @default(value: "[]")
+    completedQuests: [Quest!]! @dataLoader(dataLoaderName: "questById", fieldName: "completedQuestsIds") @default(value: "[]")
 
     """
     User experience
