@@ -185,6 +185,7 @@ export type Mutation = {
   relation: RelationMutations;
   relationType: RelationTypeMutations;
   quest: QuestMutations;
+  user: UserMutations;
 };
 
 export type Person = Node & {
@@ -1233,6 +1234,25 @@ export type QuestMutationsDeleteArgs = {
 
 
 
+export type UserCompleteQuestPayload = {
+  __typename?: 'UserCompleteQuestPayload';
+  /** User id */
+  recordId: Scalars['GlobalId'];
+  /** User completed quest */
+  record: User;
+};
+
+export type UserMutations = {
+  __typename?: 'UserMutations';
+  /** Complete quest */
+  completeQuest: UserCompleteQuestPayload;
+};
+
+
+export type UserMutationsCompleteQuestArgs = {
+  questId: Scalars['GlobalId'];
+};
+
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -1403,6 +1423,8 @@ export type ResolversTypes = {
   Long: ResolverTypeWrapper<Scalars['Long']>;
   JSON: ResolverTypeWrapper<Scalars['JSON']>;
   Timestamp: ResolverTypeWrapper<Scalars['Timestamp']>;
+  UserCompleteQuestPayload: ResolverTypeWrapper<UserCompleteQuestPayload>;
+  UserMutations: ResolverTypeWrapper<UserMutations>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -1496,6 +1518,8 @@ export type ResolversParentTypes = {
   Long: Scalars['Long'];
   JSON: Scalars['JSON'];
   Timestamp: Scalars['Timestamp'];
+  UserCompleteQuestPayload: UserCompleteQuestPayload;
+  UserMutations: UserMutations;
 };
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
@@ -1548,6 +1572,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   relation?: Resolver<ResolversTypes['RelationMutations'], ParentType, ContextType>;
   relationType?: Resolver<ResolversTypes['RelationTypeMutations'], ParentType, ContextType>;
   quest?: Resolver<ResolversTypes['QuestMutations'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['UserMutations'], ParentType, ContextType>;
 };
 
 export type PersonResolvers<ContextType = any, ParentType extends ResolversParentTypes['Person'] = ResolversParentTypes['Person']> = {
@@ -1951,6 +1976,17 @@ export interface TimestampScalarConfig extends GraphQLScalarTypeConfig<Resolvers
   name: 'Timestamp';
 }
 
+export type UserCompleteQuestPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserCompleteQuestPayload'] = ResolversParentTypes['UserCompleteQuestPayload']> = {
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
+  record?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserMutationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserMutations'] = ResolversParentTypes['UserMutations']> = {
+  completeQuest?: Resolver<ResolversTypes['UserCompleteQuestPayload'], ParentType, ContextType, RequireFields<UserMutationsCompleteQuestArgs, 'questId'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Node?: NodeResolvers<ContextType>;
   Cursor?: GraphQLScalarType;
@@ -2016,6 +2052,8 @@ export type Resolvers<ContextType = any> = {
   Long?: GraphQLScalarType;
   JSON?: GraphQLScalarType;
   Timestamp?: GraphQLScalarType;
+  UserCompleteQuestPayload?: UserCompleteQuestPayloadResolvers<ContextType>;
+  UserMutations?: UserMutationsResolvers<ContextType>;
 };
 
 
