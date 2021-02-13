@@ -186,7 +186,7 @@ const User = {
   async level(parent: UserDBScheme): Promise<number> {
     const userExp = parent.exp;
 
-    return Math.trunc(userExp / 100);
+    return userExp ? Math.trunc(userExp / 100) : 0;
   },
 };
 

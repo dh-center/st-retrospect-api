@@ -88,12 +88,12 @@ export default gql`
     """
     The minimum level required by the user to complete this quest
     """
-    minLevel: Int!
+    minLevel: Int! @default(value: "0")
 
     """
     The experience that the user will receive by completing this quest
     """
-    earnedExp: Int!
+    earnedExp: Int! @default(value: "0")
 
     """
     Quest progress states (passed, available, blocked)
