@@ -35,7 +35,7 @@ export default gql`
     """
     User experience
     """
-    exp: Int!
+    exp: Int! @default(value: "0")
 
     """
     User level
