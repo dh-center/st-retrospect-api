@@ -199,7 +199,9 @@ const Quest = {
     if (isAlreadyCompleted) {
       return QuestUserProgressStates.Passed;
     } else {
-      return currentUser.level < quest.minLevel ? QuestUserProgressStates.Locked : QuestUserProgressStates.Available;
+      const userLevel = currentUser.exp ? currentUser.exp / 100 : 0;
+
+      return userLevel < quest.minLevel ? QuestUserProgressStates.Locked : QuestUserProgressStates.Available;
     }
   },
 };
