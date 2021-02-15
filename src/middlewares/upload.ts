@@ -18,6 +18,7 @@ const s3 = new AWS.S3({
  * @param {object} file - file info to upload
  * @param {Function} cb - callback function
  */
+// eslint-disable-next-line no-undef
 function fileFilter(req: Request, file: Express.Multer.File, cb: FileFilterCallback): void {
   if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
     cb(null, true);
