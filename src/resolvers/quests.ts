@@ -183,7 +183,7 @@ const Quest = {
     parent: QuestDBScheme,
     args: undefined,
     { collection, user }: ResolverContextBase
-  ): Promise<string> {
+  ): Promise<QuestUserProgressStates> {
     const currentUser = await collection('users').findOne({ _id: new ObjectId(user.id) });
     const quest = await collection('quests').findOne({ _id: parent._id });
 
@@ -197,9 +197,9 @@ const Quest = {
     const isAlreadyCompleted = currentUser.completedQuestsIds?.some(id => id.toString() === parent._id.toString());
 
     if (isAlreadyCompleted) {
-      return 'PASSED';
+      return QuestUserProgressStates.Passed;
     } else {
-      return currentUser.level < quest.minLevel ? 'LOCKED' : 'AVAILABLE';
+      return currentUser.level < quest.minLevel ? QuestUserProgressStates.Locked : QuestUserProgressStates.Available;
     }
   },
 };
