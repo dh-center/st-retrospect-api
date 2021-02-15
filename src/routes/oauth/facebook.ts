@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import axios from 'axios';
-import { generateUserToken } from '../../utils/jwt';
+import { generateUserTokens } from '../../utils/jwt';
 import { getCollection } from '../../db';
 import * as z from 'zod';
 import { WrongAuthData } from '../../errorTypes';
@@ -84,9 +84,9 @@ router.post('/oauth/facebook/callback', async (req, res, next) => {
       },
     })).ops[0];
 
-    accessToken = generateUserToken(newUser);
+    accessToken = generateUserTokens(newUser);
   } else {
-    accessToken = generateUserToken(existedUser);
+    accessToken = generateUserTokens(existedUser);
 
     if (!existedUser.photo && photo) {
       await collection.updateOne(

@@ -107,3 +107,27 @@ export class InvalidAccessToken extends ApiError {
     super(httpCode);
   }
 }
+
+/**
+ * Throws when client sends invalid access token
+ */
+export class InvalidRefreshToken extends ApiError {
+  /**
+   * Text error code
+   */
+  public code = 'INVALID_REFRESH_TOKEN';
+
+  /**
+   * Error message (short description)
+   */
+  public message = 'Invalid refresh token';
+
+  /**
+   * Creates error instance
+   *
+   * @param httpCode - http code to send to user
+   */
+  constructor(httpCode = 400) {
+    super(httpCode);
+  }
+}

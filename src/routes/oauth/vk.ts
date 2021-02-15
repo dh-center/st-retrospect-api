@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { API } from 'vk-io';
 import { getCollection } from '../../db';
-import { generateUserToken } from '../../utils/jwt';
+import { generateUserTokens } from '../../utils/jwt';
 import * as z from 'zod';
 import { nanoid } from 'nanoid';
 import { WrongAuthData } from '../../errorTypes';
@@ -75,9 +75,9 @@ router.post('/oauth/vk/callback', async (req, res, next) => {
       },
     })).ops[0];
 
-    accessToken = generateUserToken(newUser);
+    accessToken = generateUserTokens(newUser);
   } else {
-    accessToken = generateUserToken(existedUser);
+    accessToken = generateUserTokens(existedUser);
 
     if (!existedUser.photo && authData.photo) {
       await collection.updateOne(

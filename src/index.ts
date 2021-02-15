@@ -114,7 +114,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
         if (/^Bearer [a-z0-9-_+/=]+\.[a-z0-9-_+/=]+\.[a-z0-9-_+/=]+$/i.test(authorizationHeader)) {
           const jsonToken = authorizationHeader.slice(7);
 
-          user = await jwt.verify(jsonToken, process.env.JWT_SECRET_STRING || 'secret_string') as AccessTokenData;
+          user = await jwt.verify(jsonToken, process.env.JWT_ACCESS_TOKEN_SECRET || 'secret_string') as AccessTokenData;
         }
       }
 

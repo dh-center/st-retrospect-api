@@ -8,7 +8,7 @@ import type { LocationDBScheme, LocationStyleDBScheme, LocationTypeDBScheme } fr
 import type { QuestDBScheme } from './resolvers/quests';
 import { countries, regions } from './resolvers/address';
 import type { RelationTypeDBScheme } from './resolvers/relationTypes';
-import {UserDBScheme} from "./resolvers/users";
+import { UserDBScheme } from './resolvers/users';
 
 /**
  * Class for setting up data loaders
