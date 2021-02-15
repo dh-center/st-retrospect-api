@@ -12,6 +12,7 @@ import { QuestUserProgressStates, TaskTypes, UpdateQuestInput } from '../generat
 import mergeWithCustomizer from '../utils/mergeWithCustomizer';
 import { UserInputError } from 'apollo-server-express';
 import { InvalidAccessToken } from '../errorTypes';
+import getUserLevel from '../utils/getUserLevel';
 
 /**
  * Scheme of quest in database
@@ -199,7 +200,7 @@ const Quest = {
     if (isAlreadyCompleted) {
       return QuestUserProgressStates.Passed;
     } else {
-      return currentUser.level < quest.minLevel ? QuestUserProgressStates.Locked : QuestUserProgressStates.Available;
+      return getUserLevel(currentUser.exp) < quest.minLevel ? QuestUserProgressStates.Locked : QuestUserProgressStates.Available;
     }
   },
 };
