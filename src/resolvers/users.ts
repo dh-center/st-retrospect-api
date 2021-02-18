@@ -147,8 +147,9 @@ const UserMutations = {
     }
 
     const isAlreadyCompleted = currentUser.completedQuestsIds?.some(id => id.toString() === questId.toString());
+    const isAvailable = getUserLevel(currentUser.exp) >= completedQuest.minLevel;
 
-    if (isAlreadyCompleted) {
+    if (isAlreadyCompleted || !isAvailable) {
       return {
         recordId: currentUser._id,
         record: currentUser,
