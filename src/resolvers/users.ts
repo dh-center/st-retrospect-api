@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { ResolverContextBase, UpdateMutationPayload } from '../types/graphql';
-import { InvalidAccessToken } from '../errorTypes';
+import { ForbiddenAction, InvalidAccessToken } from '../errorTypes';
 import { UserInputError } from 'apollo-server-express';
 import emptyMutation from '../utils/emptyMutation';
 import getUserLevel from '../utils/getUserLevel';
@@ -147,7 +147,11 @@ const UserMutations = {
     }
 
     const isAlreadyCompleted = currentUser.completedQuestsIds?.some(id => id.toString() === questId.toString());
+    const isAvailable = getUserLevel(currentUser.exp) >= completedQuest.minLevel;
 
+    if (!isAvailable) {
+      throw new ForbiddenAction();
+    }
     if (isAlreadyCompleted) {
       return {
         recordId: currentUser._id,
