@@ -45,7 +45,7 @@ export default gql`
     """
     Array of user permission
     """
-    permissions: [String!]!
+    permissions: [String!]! @default(value: "[]")
   }
 
   """
