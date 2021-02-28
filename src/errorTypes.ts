@@ -109,6 +109,31 @@ export class InvalidAccessToken extends ApiError {
 }
 
 /**
+ * Throws when client's access token is expired
+ */
+export class ExpiredAccessToken extends ApiError {
+  /**
+   * Text error code
+   */
+  public code = 'EXPIRED_ACCESS_TOKEN';
+
+  /**
+   * Error message (short description)
+   */
+  public message = 'Expired access token';
+
+  /**
+   * Creates error instance
+   *
+   * @param httpCode - http code to send to user
+   */
+  constructor(httpCode = 400) {
+    super(httpCode);
+  }
+}
+
+
+/**
  * Throws when client sends invalid access token
  */
 export class InvalidRefreshToken extends ApiError {

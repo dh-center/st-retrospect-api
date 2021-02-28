@@ -5,7 +5,7 @@ import resolvers from './resolvers';
 import express from 'express';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import getDbConnection from './db';
-import { AccessTokenData, CollectionAccessFunction, Languages, ResolverContextBase } from './types/graphql';
+import { CollectionAccessFunction, Languages, ResolverContextBase } from './types/graphql';
 import languageParser from 'accept-language-parser';
 import bodyParser from 'body-parser';
 import router from './router';
@@ -19,7 +19,7 @@ import adminCheckDirective from './directives/adminCheck';
 import dataLoaderDirective from './directives/dataloaders';
 import * as Sentry from '@sentry/node';
 import { GraphQLError } from 'graphql';
-import jwt from 'jsonwebtoken';
+import jwtHelper from './utils/jwt';
 import DataLoaders from './dataLoaders';
 import globalIdResolver from './globalIdResolver';
 import toGlobalIdDirective from './directives/toGlobalId';
@@ -103,25 +103,12 @@ Sentry.init({ dsn: process.env.SENTRY_DSN });
         });
       }
 
-      let user: AccessTokenData = {
-        id: '',
-        isAdmin: false,
-      };
-
-      if (req.headers.authorization) {
-        const authorizationHeader = req.headers.authorization;
-
-        if (/^Bearer [a-z0-9-_+/=]+\.[a-z0-9-_+/=]+\.[a-z0-9-_+/=]+$/i.test(authorizationHeader)) {
-          const jsonToken = authorizationHeader.slice(7);
-
-          user = await jwt.verify(jsonToken, process.env.JWT_ACCESS_TOKEN_SECRET || 'secret_string') as AccessTokenData;
-        }
-      }
+      const tokenData = jwtHelper.getDataFromHeader(req.headers.authorization);
 
       return {
         db: dbConnection,
         languages,
-        user,
+        tokenData,
         dataLoaders,
         collection: (name => dbConnection.collection(name)) as CollectionAccessFunction,
       };
