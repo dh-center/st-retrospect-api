@@ -105,7 +105,7 @@ class JwtHelper {
           accessTokenPayload,
           this.accessTokenSecret,
           {
-            expiresIn: '10s',
+            expiresIn: '10m',
           }
         ),
       refreshToken:
