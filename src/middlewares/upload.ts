@@ -61,6 +61,7 @@ function getUploadMiddleware(folder: string): multer.Multer {
 function filesProcessMiddleware(req: Request, res: Response): void {
   const requestForImage = {
     bucket: 'st-retrospect-images',
+    // eslint-disable-next-line no-undef
     key: (req.file as Express.MulterS3.File).key,
   };
 
