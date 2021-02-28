@@ -1,20 +1,17 @@
 import express from 'express';
 import {
   InvalidRefreshToken,
-  NoUserWithSuchUsernameError,
-  WrongUserPasswordError
+  NoUserWithSuchUsernameError
 } from '../../errorTypes';
 import getConnection from '../../db';
-import argon2 from 'argon2';
-const router = express.Router();
-
 import { ObjectId } from 'mongodb';
 import jwtHelper from '../../utils/jwt';
 
+const router = express.Router();
 
 router.post('/refresh', async (req, res, next) => {
   const db = await getConnection();
-  const refreshToken = req.body;
+  const refreshToken = req.body.refreshToken;
 
   if (!refreshToken) {
     return next(new NoUserWithSuchUsernameError());
@@ -36,15 +33,9 @@ router.post('/refresh', async (req, res, next) => {
     return next(new InvalidRefreshToken());
   }
 
-  const compareResult = await argon2.verify(user.hashedPassword, req.query.password as string);
+  const tokens = jwtHelper.generateUserTokens(user);
 
-  if (compareResult) {
-    const accessToken = jwtHelper.generateUserTokens(user);
-
-    res.json({ data: { accessToken } });
-  } else {
-    return next(new WrongUserPasswordError());
-  }
+  res.json({ data: tokens });
 });
 
 export default router;
