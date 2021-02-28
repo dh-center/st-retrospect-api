@@ -67,11 +67,11 @@ const RelationMutations = {
   async create(
     parent: undefined,
     { input }: { input: CreateRelationInput },
-    { db, user, collection }: ResolverContextBase
+    { db, tokenData, collection }: ResolverContextBase<true>
   ): Promise<CreateMutationPayload<RelationDBScheme>> {
     const relation = (await collection('relations').insertOne(input)).ops[0];
 
-    await sendNotify('Relation', 'relations', db, user, 'create', relation);
+    await sendNotify('Relation', 'relations', db, tokenData, 'create', relation);
 
     return {
       recordId: relation._id,
@@ -89,7 +89,7 @@ const RelationMutations = {
   async update(
     parent: undefined,
     { input }: { input: UpdateRelationInput },
-    { db, user, collection }: ResolverContextBase
+    { db, tokenData, collection }: ResolverContextBase<true>
   ): Promise<UpdateMutationPayload<RelationDBScheme>> {
     const { id, ...rest } = input;
     const newInput: RelationDBScheme = {
@@ -105,7 +105,7 @@ const RelationMutations = {
       throw new UserInputError('There is no relation with such id: ' + newInput._id);
     }
 
-    await sendNotify('Relation', 'relations', db, user, 'update', newInput, 'relations');
+    await sendNotify('Relation', 'relations', db, tokenData, 'update', newInput, 'relations');
 
     const relation = await collection('relations').findOneAndUpdate(
       { _id: newInput._id },
@@ -134,13 +134,13 @@ const RelationMutations = {
   async delete(
     parent: undefined,
     { id }: { id: ObjectId },
-    { db, user, collection }: ResolverContextBase
+    { db, tokenData, collection }: ResolverContextBase<true>
   ): Promise<DeleteMutationPayload> {
     const originalRelation = await db.collection('relations').findOne({
       _id: id,
     });
 
-    await sendNotify('Relation', 'relations', db, user, 'delete', originalRelation);
+    await sendNotify('Relation', 'relations', db, tokenData, 'delete', originalRelation);
 
     await collection('relations').deleteOne({ _id: id });
 

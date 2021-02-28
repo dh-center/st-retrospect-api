@@ -287,7 +287,7 @@ const LocationMutations = {
   async create(
     parent: undefined,
     { input }: { input: CreateLocationInput },
-    { db, user, collection }: ResolverContextBase
+    { db, tokenData, collection }: ResolverContextBase<true>
   ): Promise<CreateMutationPayload<LocationDBScheme>> {
     const location = (await collection('locations').insertOne({
       latitude: input.latitude,
@@ -313,7 +313,7 @@ const LocationMutations = {
 
     location.locationInstanceIds = Object.values(locationInstances.insertedIds);
 
-    await sendNotify('Location', 'locations', db, user, 'create', location);
+    await sendNotify('Location', 'locations', db, tokenData, 'create', location);
 
     return {
       recordId: location._id,
@@ -331,7 +331,7 @@ const LocationMutations = {
   async update(
     parent: undefined,
     { input }: { input: UpdateLocationInput },
-    { db, user, collection }: ResolverContextBase
+    { db, tokenData, collection }: ResolverContextBase<true>
   ): Promise<UpdateMutationPayload<LocationDBScheme>> {
     const { id, ...rest } = input;
     const newInput = {
@@ -347,7 +347,7 @@ const LocationMutations = {
       throw new UserInputError('There is no location with such id: ' + newInput._id);
     }
 
-    await sendNotify('Location', 'locations', db, user, 'update', newInput, 'locations');
+    await sendNotify('Location', 'locations', db, tokenData, 'update', newInput, 'locations');
 
     const location = await collection('locations').findOneAndUpdate(
       { _id: newInput._id },
@@ -379,7 +379,7 @@ const LocationMutations = {
   async delete(
     parent: undefined,
     { id }: { id: ObjectId },
-    { db, user, collection }: ResolverContextBase
+    { db, tokenData, collection }: ResolverContextBase<true>
   ): Promise<DeleteMutationPayload> {
     const location = (await collection('locations').findOneAndDelete({ _id: id })).value;
 
@@ -387,7 +387,7 @@ const LocationMutations = {
       throw new UserInputError('There is no location with such id: ' + id);
     }
 
-    await sendNotify('Location', 'locations', db, user, 'delete', location);
+    await sendNotify('Location', 'locations', db, tokenData, 'delete', location);
 
     const locationInstancesIds = location.locationInstanceIds;
 

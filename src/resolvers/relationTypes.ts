@@ -51,7 +51,7 @@ const RelationTypeMutations = {
   async create(
     parent: undefined,
     { input }: { input: CreateRelationTypeInput & WithSynonyms },
-    { db, user, collection }: ResolverContextBase
+    { db, tokenData, collection }: ResolverContextBase<true>
   ): Promise<CreateMutationPayload<RelationTypeDBScheme>> {
     const newInput = {
       ...input,
@@ -59,7 +59,7 @@ const RelationTypeMutations = {
 
     const relationType = (await collection('relationtypes').insertOne(newInput)).ops[0];
 
-    await sendNotify('RelationType', 'relation-types', db, user, 'create', relationType);
+    await sendNotify('RelationType', 'relation-types', db, tokenData, 'create', relationType);
 
     return {
       recordId: relationType._id,
@@ -77,7 +77,7 @@ const RelationTypeMutations = {
   async update(
     parent: undefined,
     { input }: { input: UpdateRelationTypeInput & WithSynonyms },
-    { db, user, collection }: ResolverContextBase
+    { db, tokenData, collection }: ResolverContextBase<true>
   ): Promise<UpdateMutationPayload<RelationTypeDBScheme>> {
     const { id, ...rest } = input;
     const newInput: RelationTypeDBScheme = {
@@ -93,7 +93,7 @@ const RelationTypeMutations = {
       throw new UserInputError('There is no relation type with such id: ' + newInput._id);
     }
 
-    await sendNotify('RelationType', 'relation-types', db, user, 'update', newInput, 'relationtypes');
+    await sendNotify('RelationType', 'relation-types', db, tokenData, 'update', newInput, 'relationtypes');
 
     const relationType = await collection('relationtypes').findOneAndUpdate(
       { _id: newInput._id },
@@ -122,13 +122,13 @@ const RelationTypeMutations = {
   async delete(
     parent: undefined,
     { id }: { id: ObjectId },
-    { db, user, collection }: ResolverContextBase
+    { db, tokenData, collection }: ResolverContextBase<true>
   ): Promise<DeleteMutationPayload> {
     const originalRelationType = await db.collection('relationtypes').findOne({
       _id: id,
     });
 
-    await sendNotify('RelationType', 'relation-types', db, user, 'delete', originalRelationType);
+    await sendNotify('RelationType', 'relation-types', db, tokenData, 'delete', originalRelationType);
 
     await collection('relationtypes').deleteOne({ _id: id });
 
