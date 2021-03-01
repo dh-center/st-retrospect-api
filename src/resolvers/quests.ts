@@ -62,6 +62,11 @@ export interface QuestDBScheme {
    * Quest data
    */
   data?: EditorData;
+
+  /**
+   * Information about quest authors
+   */
+  credits?: EditorData;
 }
 
 const Query = {
@@ -136,6 +141,7 @@ const QuestMutations = {
         $set: {
           ...mergeWithCustomizer(originalQuest, newInput),
           ...(newInput.data ? { data: newInput.data } : {}),
+          ...(newInput.credits ? { data: newInput.credits } : {}),
         },
       },
       { returnOriginal: false });

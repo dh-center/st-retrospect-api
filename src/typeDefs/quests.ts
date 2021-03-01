@@ -81,6 +81,11 @@ export default gql`
     data: EditorData
 
     """
+    Information about quest authors
+    """
+    credits: EditorData
+
+    """
     Quest rewards
     """
     rewards: [JSON!]!
