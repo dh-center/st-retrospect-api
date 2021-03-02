@@ -189,9 +189,9 @@ const Quest = {
   async questProgressState(
     parent: QuestDBScheme,
     args: undefined,
-    { collection, user }: ResolverContextBase
+    { collection, tokenData }: ResolverContextBase<true>
   ): Promise<QuestUserProgressStates> {
-    const currentUser = await collection('users').findOne({ _id: new ObjectId(user.id) });
+    const currentUser = await collection('users').findOne({ _id: new ObjectId(tokenData.userId) });
     const quest = await collection('quests').findOne({ _id: parent._id });
 
     if (!quest) {
