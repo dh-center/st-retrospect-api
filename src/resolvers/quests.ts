@@ -141,7 +141,7 @@ const QuestMutations = {
         $set: {
           ...mergeWithCustomizer(originalQuest, newInput),
           ...(newInput.data ? { data: newInput.data } : {}),
-          ...(newInput.credits ? { data: newInput.credits } : {}),
+          ...(newInput.credits ? { credits: newInput.credits } : {}),
         },
       },
       { returnOriginal: false });
