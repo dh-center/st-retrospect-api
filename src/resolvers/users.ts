@@ -40,6 +40,11 @@ export interface UserDBScheme {
   isAdmin?: boolean;
 
   /**
+   * User permissions
+   */
+  permissions?: string[];
+
+  /**
    * User first name
    */
   firstName?: string | null;
@@ -110,10 +115,10 @@ const Query = {
    */
   async me(parent: undefined, args: undefined, {
     db,
-    user,
-  }: ResolverContextBase): Promise<UserDBScheme | null> {
+    tokenData,
+  }: ResolverContextBase<true>): Promise<UserDBScheme | null> {
     const currentUser = await db.collection<UserDBScheme>('users')
-      .findOne({ _id: new ObjectId(user.id) });
+      .findOne({ _id: new ObjectId(tokenData.userId) });
 
     if (!currentUser) {
       throw new InvalidAccessToken();
@@ -134,10 +139,10 @@ const UserMutations = {
   async completeQuest(
     parent: undefined,
     { questId }: { questId: ObjectId },
-    { collection, user }: ResolverContextBase
+    { collection, tokenData }: ResolverContextBase<true>
   ): Promise<UpdateMutationPayload<UserDBScheme>> {
     const completedQuest = await collection('quests').findOne({ _id: questId });
-    const currentUser = await collection('users').findOne({ _id: new ObjectId(user.id) });
+    const currentUser = await collection('users').findOne({ _id: new ObjectId(tokenData.userId) });
 
     if (!completedQuest) {
       throw new UserInputError('There is no quest with such id: ' + questId);

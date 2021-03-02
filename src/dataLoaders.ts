@@ -8,6 +8,7 @@ import type { LocationDBScheme, LocationStyleDBScheme, LocationTypeDBScheme } fr
 import type { QuestDBScheme } from './resolvers/quests';
 import { countries, regions } from './resolvers/address';
 import type { RelationTypeDBScheme } from './resolvers/relationTypes';
+import { UserDBScheme } from './resolvers/users';
 
 /**
  * Class for setting up data loaders
@@ -18,6 +19,14 @@ export default class DataLoaders {
    */
   public relationByPersonId = new DataLoader(
     async (personIds: readonly string[]) => this.batchRelationsByPersonIds(personIds),
+    { cache: false }
+  );
+
+  /**
+   * Loader for fetching relations by persons ids
+   */
+  public userById = new DataLoader(
+    async (userIds: readonly string[]) => this.batchByIds<UserDBScheme>('users', userIds),
     { cache: false }
   );
 

@@ -30,14 +30,14 @@ const LocationInstanceMutations = {
   async create(
     parent: undefined,
     { input }: { input: CreateLocationInstanceInput },
-    { db, user, collection }: ResolverContextBase
+    { db, tokenData, collection }: ResolverContextBase<true>
   ): Promise<CreateMutationPayload<LocationInstanceDBScheme>> {
     /**
      * Create instance in DB
      */
     const locationInstance = (await collection('location_instances').insertOne(input)).ops[0];
 
-    await sendNotify('LocationInstance', 'location', db, user, 'create', locationInstance);
+    await sendNotify('LocationInstance', 'location', db, tokenData, 'create', locationInstance);
 
     /**
      * Link instance to location
@@ -64,7 +64,7 @@ const LocationInstanceMutations = {
   async addArchitect(
     parent: undefined,
     { input }: { input: AddArchitectInput },
-    context: ResolverContextBase
+    context: ResolverContextBase<true>
   ): Promise<CreateMutationPayload<RelationDBScheme>> {
     return Relations.RelationMutations.create(undefined, {
       input: {
@@ -96,7 +96,7 @@ const LocationInstanceMutations = {
   async removeArchitect(
     parent: undefined,
     { input }: { input: RemoveArchitectInput },
-    context: ResolverContextBase
+    context: ResolverContextBase<true>
   ): Promise<DeleteMutationPayload> {
     const relation = await context.collection('relations').findOne({
       locationInstanceId: input.locationInstanceId,
@@ -124,7 +124,7 @@ const LocationInstanceMutations = {
   async update(
     parent: undefined,
     { input }: { input: UpdateLocationInstanceInput },
-    { db, user, collection }: ResolverContextBase
+    { db, tokenData, collection }: ResolverContextBase<true>
   ): Promise<UpdateMutationPayload<LocationInstanceDBScheme>> {
     const { id, ...rest } = input;
     const newInput: Omit<LocationInstanceDBScheme, 'locationId'> = {
@@ -140,7 +140,7 @@ const LocationInstanceMutations = {
       throw new UserInputError('There is no location instance with such id: ' + newInput._id);
     }
 
-    await sendNotify('LocationInstance', 'location', db, user, 'update', newInput, 'location_instances');
+    await sendNotify('LocationInstance', 'location', db, tokenData, 'update', newInput, 'location_instances');
 
     const locationInstance = await collection('location_instances').findOneAndUpdate(
       { _id: newInput._id },
@@ -170,7 +170,7 @@ const LocationInstanceMutations = {
   async delete(
     parent: undefined,
     { id }: { id: ObjectId },
-    { db, user, collection }: ResolverContextBase
+    { db, tokenData, collection }: ResolverContextBase<true>
   ): Promise<DeleteMutationPayload> {
     const instance = (await collection('location_instances').findOneAndDelete({
       _id: id,
@@ -180,7 +180,7 @@ const LocationInstanceMutations = {
       throw new UserInputError('There is no location instance with such id: ' + id);
     }
 
-    await sendNotify('LocationInstance', 'location', db, user, 'delete', instance);
+    await sendNotify('LocationInstance', 'location', db, tokenData, 'delete', instance);
 
     await collection('relations').deleteMany({
       locationInstanceId: id,

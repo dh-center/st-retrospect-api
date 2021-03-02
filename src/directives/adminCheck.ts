@@ -2,6 +2,7 @@ import { defaultFieldResolver, GraphQLSchema } from 'graphql';
 import { DirectiveTransformer, ResolverContextBase } from '../types/graphql';
 import { mapSchema, getDirectives, MapperKind } from '@graphql-tools/utils';
 import { AuthenticationError } from 'apollo-server-express';
+import { checkAuth } from './authСheck';
 
 /**
  * Checks admin permission before resolver call
@@ -18,10 +19,14 @@ export default function adminCheckDirective(directiveName: string): DirectiveTra
         const { resolve = defaultFieldResolver } = fieldConfig;
 
         fieldConfig.resolve = async (parent, args, context: ResolverContextBase, info): Promise<unknown> => {
-          if (!context.user.isAdmin) {
-            throw new AuthenticationError(
-              'This action is available to administrators only.'
-            );
+          const tokenData = context.tokenData;
+
+          if (checkAuth(tokenData)) {
+            if (!tokenData.permissions.some(perm => perm === 'admin')) {
+              throw new AuthenticationError(
+                'This action is available to administrators only.'
+              );
+            }
           }
 
           return resolve(parent, args, context, info);

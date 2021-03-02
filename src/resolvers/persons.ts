@@ -84,7 +84,7 @@ const PersonMutations = {
   async create(
     parent: undefined,
     { input }: { input: CreatePersonInput & WithProfessions },
-    { collection, db, user }: ResolverContextBase
+    { collection, db, tokenData }: ResolverContextBase<true>
   ): Promise<CreateMutationPayload<PersonDBScheme>> {
     const newInput = {
       ...input,
@@ -92,7 +92,7 @@ const PersonMutations = {
 
     const person = (await collection('persons').insertOne(newInput)).ops[0];
 
-    await sendNotify('Person', 'persons', db, user, 'create', person);
+    await sendNotify('Person', 'persons', db, tokenData, 'create', person);
 
     return {
       recordId: person._id,
@@ -110,7 +110,7 @@ const PersonMutations = {
   async update(
     parent: undefined,
     { input }: { input: UpdatePersonInput & WithProfessions },
-    { db, user }: ResolverContextBase
+    { db, tokenData }: ResolverContextBase<true>
   ): Promise<UpdateMutationPayload<PersonDBScheme>> {
     const { id, ...rest } = input;
     const newInput = {
@@ -122,7 +122,7 @@ const PersonMutations = {
       _id: newInput._id,
     });
 
-    await sendNotify('Person', 'persons', db, user, 'update', newInput, 'persons');
+    await sendNotify('Person', 'persons', db, tokenData, 'update', newInput, 'persons');
 
     const person = await db.collection('persons').findOneAndUpdate(
       { _id: newInput._id },
@@ -147,13 +147,13 @@ const PersonMutations = {
   async delete(
     parent: undefined,
     { id }: { id: string },
-    { db, user }: ResolverContextBase
+    { db, tokenData }: ResolverContextBase<true>
   ): Promise<DeleteMutationPayload> {
     const originalPerson = await db.collection('persons').findOne({
       _id: id,
     });
 
-    await sendNotify('Person', 'persons', db, user, 'delete', originalPerson);
+    await sendNotify('Person', 'persons', db, tokenData, 'delete', originalPerson);
 
     await db.collection<PersonDBScheme>('persons').deleteOne({ _id: new ObjectId(id) });
 

@@ -7,6 +7,7 @@ import { RelationDBScheme } from '../resolvers/relations';
 import { QuestDBScheme } from '../resolvers/quests';
 import { RelationTypeDBScheme } from '../resolvers/relationTypes';
 import { UserDBScheme } from '../resolvers/users';
+import { AccessTokenPayload, AccessTokenError } from '../utils/jwt';
 
 /**
  * Map with collection name and its type
@@ -26,14 +27,6 @@ export interface Collections {
 export type CollectionAccessFunction = <T extends keyof Collections>(name: T) => Collection<Collections[T]>;
 
 /**
- * User access token
- */
-export interface AccessTokenData {
-  id: string;
-  isAdmin: boolean;
-}
-
-/**
  * Supported languages for data
  */
 export enum Languages {
@@ -43,20 +36,23 @@ export enum Languages {
 
 /**
  * Resolver's Context argument
+ * If IsAuthed generic params is passed, then it it is assumed that the user is authorized
  */
-export interface ResolverContextBase {
+export interface ResolverContextBase<IsAuthed extends boolean = false> {
   /**
    * MongoDB connection to make queries
    */
   readonly db: Db;
+
   /**
    * Accept languages
    */
   readonly languages: Languages[];
+
   /**
    * User's access token
    */
-  readonly user: AccessTokenData;
+  readonly tokenData: IsAuthed extends true ? AccessTokenPayload : AccessTokenPayload | AccessTokenError | null;
 
   /**
    * DataLoaders for data fetching

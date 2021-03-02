@@ -99,11 +99,11 @@ const QuestMutations = {
   async create(
     parent: undefined,
     { input }: { input: QuestDBScheme },
-    { db, user }: ResolverContextBase
+    { db, tokenData }: ResolverContextBase<true>
   ): Promise<CreateMutationPayload<QuestDBScheme>> {
     const quest = (await db.collection<QuestDBScheme>('quests').insertOne(input)).ops[0];
 
-    await sendNotify('Quest', 'quests', db, user, 'create', input);
+    await sendNotify('Quest', 'quests', db, tokenData, 'create', input);
 
     return {
       recordId: quest._id,
@@ -121,7 +121,7 @@ const QuestMutations = {
   async update(
     parent: undefined,
     { input }: { input: UpdateQuestInput },
-    { db, user }: ResolverContextBase
+    { db, tokenData }: ResolverContextBase<true>
   ): Promise<UpdateMutationPayload<QuestDBScheme>> {
     const { id, ...rest } = input;
     const newInput = {
@@ -133,7 +133,7 @@ const QuestMutations = {
       _id: newInput._id,
     });
 
-    await sendNotify('Quest', 'quests', db, user, 'update', newInput, 'quests');
+    await sendNotify('Quest', 'quests', db, tokenData, 'update', newInput, 'quests');
 
     const quest = await db.collection('quests').findOneAndUpdate(
       { _id: newInput._id },
@@ -162,13 +162,13 @@ const QuestMutations = {
   async delete(
     parent: undefined,
     { id }: { id: string },
-    { db, user }: ResolverContextBase
+    { db, tokenData }: ResolverContextBase<true>
   ): Promise<DeleteMutationPayload> {
     const originalQuest = await db.collection('quests').findOne({
       _id: id,
     });
 
-    await sendNotify('Quest', 'quests', db, user, 'delete', originalQuest);
+    await sendNotify('Quest', 'quests', db, tokenData, 'delete', originalQuest);
 
     await db.collection<QuestDBScheme>('quests').deleteOne({ _id: new ObjectId(id) });
 
@@ -189,9 +189,9 @@ const Quest = {
   async questProgressState(
     parent: QuestDBScheme,
     args: undefined,
-    { collection, user }: ResolverContextBase
+    { collection, tokenData }: ResolverContextBase<true>
   ): Promise<QuestUserProgressStates> {
-    const currentUser = await collection('users').findOne({ _id: new ObjectId(user.id) });
+    const currentUser = await collection('users').findOne({ _id: new ObjectId(tokenData.userId) });
     const quest = await collection('quests').findOne({ _id: parent._id });
 
     if (!quest) {

@@ -6,6 +6,8 @@ import uploadRoutes from './middlewares/upload';
  */
 import signUpRoute from './routes/auth/signUp';
 import loginRoute from './routes/auth/login';
+import refreshRoute from './routes/auth/refresh';
+
 import googleOauth from './routes/oauth/google';
 import vkOauth from './routes/oauth/vk';
 import facebookOauth from './routes/oauth/facebook';
@@ -14,6 +16,7 @@ const router = express.Router();
 
 router.use(signUpRoute);
 router.use(loginRoute);
+router.use(refreshRoute);
 router.use(uploadRoutes);
 router.use(googleOauth);
 router.use(vkOauth);

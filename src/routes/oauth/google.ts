@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { google, people_v1 } from 'googleapis';
 import { OAuth2Client } from 'google-auth-library';
 import { getCollection } from '../../db';
-import { generateUserToken } from '../../utils/jwt';
+import jwtHelper from '../../utils/jwt';
 
 const router = Router();
 
@@ -115,9 +115,9 @@ router.post('/oauth/google/callback', async (req, res) => {
       },
     })).ops[0];
 
-    accessToken = generateUserToken(newUser);
+    accessToken = jwtHelper.generateUserTokens(newUser);
   } else {
-    accessToken = generateUserToken(existedUser);
+    accessToken = jwtHelper.generateUserTokens(existedUser);
 
     if (!existedUser.photo && photo) {
       await collection.updateOne(

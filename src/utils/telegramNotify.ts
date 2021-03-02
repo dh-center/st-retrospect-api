@@ -1,8 +1,9 @@
-import { AccessTokenData, MultilingualString, NodeName } from '../types/graphql';
+import { MultilingualString, NodeName } from '../types/graphql';
 import { toGlobalId } from './globalId';
 import { Db, ObjectId } from 'mongodb';
 import axios from 'axios';
 import { UserDBScheme } from '../resolvers/users';
+import { AccessTokenPayload } from './jwt';
 
 type ComplexType = Record<string, unknown> | unknown[];
 type SimpleType = string | number | boolean;
@@ -187,7 +188,7 @@ async function sendNotify<T extends {_id: ObjectId}>(
   nodeName: NodeName,
   nodeLink: string,
   db: Db,
-  user: AccessTokenData,
+  user: AccessTokenPayload,
   actionType: 'create' | 'delete',
   input: T,
 ): Promise<void>;
@@ -208,7 +209,7 @@ async function sendNotify<T extends {_id: ObjectId}>(
   nodeName: NodeName,
   nodeLink: string,
   db: Db,
-  user: AccessTokenData,
+  user: AccessTokenPayload,
   actionType: 'update',
   input: T,
   collectionName: string
@@ -229,20 +230,20 @@ async function sendNotify<T extends {_id: ObjectId}>(
   nodeName: NodeName,
   nodeLink: string,
   db: Db,
-  user: AccessTokenData,
+  user: AccessTokenPayload,
   actionType: 'create' | 'delete' | 'update',
   input: T,
   collectionName?: string
 ): Promise<void> {
   const globalId = toGlobalId(nodeName, input._id);
 
-  const currentUser = (await db.collection('users').findOne({ _id: new ObjectId(user.id) })) as UserDBScheme;
+  const currentUser = (await db.collection('users').findOne({ _id: new ObjectId(user.userId) })) as UserDBScheme;
 
   let fullMessage: string;
 
   switch (actionType) {
     case 'create': {
-      const message = `<b>New ${nodeName.toLowerCase()}! 🆕</b>\nCreated by <i>${currentUser.username}</i> (${user.id})\n` +
+      const message = `<b>New ${nodeName.toLowerCase()}! 🆕</b>\nCreated by <i>${currentUser.username}</i> (${user.userId})\n` +
         `See on <a href="${process.env.ADMIN_URL}/${nodeLink}/${globalId}">this page</a>\n\n<b>${nodeName}:</b>\n`;
 
       try {
@@ -259,7 +260,7 @@ async function sendNotify<T extends {_id: ObjectId}>(
       const original = await db.collection(collectionName!).findOne({
         _id: input._id,
       });
-      const message = `<b>${nodeName} has been updated! 🆙</b>\nUpdated by <i>${currentUser.username}</i> (${user.id})\n` +
+      const message = `<b>${nodeName} has been updated! 🆙</b>\nUpdated by <i>${currentUser.username}</i> (${user.userId})\n` +
         `See on <a href="${process.env.ADMIN_URL}/${nodeLink}/${globalId}">this page</a>\n\n`;
 
       try {
@@ -272,7 +273,7 @@ async function sendNotify<T extends {_id: ObjectId}>(
     }
 
     case 'delete': {
-      const message = `<b>${nodeName} deleted! 🚮</b>\nDeleted by <i>${currentUser.username}</i> (${user.id})\n` +
+      const message = `<b>${nodeName} deleted! 🚮</b>\nDeleted by <i>${currentUser.username}</i> (${user.userId})\n` +
         `See on <a href="${process.env.ADMIN_URL}/${nodeLink}/${globalId}">this page</a>\n\n<b>${nodeName}:</b>\n` +
         '\t'.repeat(3) + `<i>_id</i>\n` + '\t'.repeat(6) + `${input._id}\n\n`;
 
