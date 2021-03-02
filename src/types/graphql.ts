@@ -36,6 +36,7 @@ export enum Languages {
 
 /**
  * Resolver's Context argument
+ * If IsAuthed generic params is passed, then it it is assumed that the user is authorized
  */
 export interface ResolverContextBase<IsAuthed extends boolean = false> {
   /**
