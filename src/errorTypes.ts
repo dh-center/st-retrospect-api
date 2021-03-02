@@ -85,6 +85,21 @@ export class WrongAuthData extends ApiError {
 }
 
 /**
+ * Issued when a client tries to perform actions that he can't
+ */
+export class ForbiddenAction extends ApiError {
+  /**
+   * Creates error instance
+   *
+   * @param httpCode - http code to send to user
+   */
+  constructor(httpCode = 403) {
+    super(httpCode);
+    this.code = 'FORBIDDEN';
+  }
+}
+
+/**
  * Throws when client sends invalid access token
  */
 export class InvalidAccessToken extends ApiError {

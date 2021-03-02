@@ -36,6 +36,11 @@ export default gql`
     Quest data
     """
     data: EditorDataInput!
+
+    """
+    Information about quest authors
+    """
+    credits: EditorDataInput!
   }
 
   type CreateQuestPayload {
@@ -90,6 +95,11 @@ export default gql`
     Quest data
     """
     data: EditorDataInput
+
+    """
+    Information about quest authors
+    """
+    credits: EditorDataInput
   }
 
   type UpdateQuestPayload {

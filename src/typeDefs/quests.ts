@@ -81,6 +81,11 @@ export default gql`
     data: EditorData
 
     """
+    Information about quest authors
+    """
+    credits: EditorData
+
+    """
     Quest rewards
     """
     rewards: [JSON!]!
@@ -98,7 +103,7 @@ export default gql`
     """
     Quest progress states (passed, available, blocked)
     """
-    questProgressState: QuestUserProgressStates!
+    questProgressState: QuestUserProgressStates! @authCheck
   }
 
   """

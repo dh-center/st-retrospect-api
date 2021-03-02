@@ -26,6 +26,14 @@ export type Scalars = {
   Timestamp: any;
 };
 
+
+
+
+
+
+
+
+
 /** An object with a Globally Unique ID */
 export type Node = {
   /** The ID of the object. */
@@ -1052,7 +1060,7 @@ export type User = Node & {
   /** User last name */
   lastName?: Maybe<Scalars['String']>;
   /** Quests that user complete */
-  completedQuests: Array<Maybe<Quest>>;
+  completedQuests: Array<Quest>;
   /** User experience */
   exp: Scalars['Int'];
   /** User level */
@@ -1102,6 +1110,8 @@ export type Quest = Node & {
   task: Scalars['JSON'];
   /** Quest data */
   data?: Maybe<EditorData>;
+  /** Information about quest authors */
+  credits?: Maybe<EditorData>;
   /** Quest rewards */
   rewards: Array<Scalars['JSON']>;
   /** The minimum level required by the user to complete this quest */
@@ -1165,6 +1175,8 @@ export type CreateQuestInput = {
   earnedExp: Scalars['Int'];
   /** Quest data */
   data: EditorDataInput;
+  /** Information about quest authors */
+  credits: EditorDataInput;
 };
 
 export type CreateQuestPayload = {
@@ -1192,6 +1204,8 @@ export type UpdateQuestInput = {
   earnedExp?: Maybe<Scalars['Int']>;
   /** Quest data */
   data?: Maybe<EditorDataInput>;
+  /** Information about quest authors */
+  credits?: Maybe<EditorDataInput>;
 };
 
 export type UpdateQuestPayload = {
@@ -1523,6 +1537,40 @@ export type ResolversParentTypes = {
   UserCompleteQuestPayload: UserCompleteQuestPayload;
   UserMutations: UserMutations;
 };
+
+export type DefaultDirectiveArgs = {   value: Scalars['String']; };
+
+export type DefaultDirectiveResolver<Result, Parent, ContextType = any, Args = DefaultDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type ToGlobalIdDirectiveArgs = {   type: Scalars['String']; };
+
+export type ToGlobalIdDirectiveResolver<Result, Parent, ContextType = any, Args = ToGlobalIdDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type FromFieldDirectiveArgs = {   name: Scalars['String']; };
+
+export type FromFieldDirectiveResolver<Result, Parent, ContextType = any, Args = FromFieldDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type MultilingualDirectiveArgs = {  };
+
+export type MultilingualDirectiveResolver<Result, Parent, ContextType = any, Args = MultilingualDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type DataLoaderDirectiveArgs = {   dataLoaderName: Scalars['String'];
+  fieldName?: Maybe<Scalars['String']>;
+  argName?: Maybe<Scalars['String']>; };
+
+export type DataLoaderDirectiveResolver<Result, Parent, ContextType = any, Args = DataLoaderDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type PaginationDirectiveArgs = {   collectionName: Scalars['String']; };
+
+export type PaginationDirectiveResolver<Result, Parent, ContextType = any, Args = PaginationDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type AuthCheckDirectiveArgs = {  };
+
+export type AuthCheckDirectiveResolver<Result, Parent, ContextType = any, Args = AuthCheckDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type AdminCheckDirectiveArgs = {  };
+
+export type AdminCheckDirectiveResolver<Result, Parent, ContextType = any, Args = AdminCheckDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
   __resolveType: TypeResolveFn<'Person' | 'LocationType' | 'Country' | 'Region' | 'LocationInstance' | 'Location' | 'LocationStyle' | 'Relation' | 'RelationType' | 'User' | 'Quest', ParentType, ContextType>;
@@ -1902,7 +1950,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   photo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  completedQuests?: Resolver<Array<Maybe<ResolversTypes['Quest']>>, ParentType, ContextType>;
+  completedQuests?: Resolver<Array<ResolversTypes['Quest']>, ParentType, ContextType>;
   exp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   level?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1923,6 +1971,7 @@ export type QuestResolvers<ContextType = any, ParentType extends ResolversParent
   type?: Resolver<ResolversTypes['TaskTypes'], ParentType, ContextType>;
   task?: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
   data?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;
+  credits?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;
   rewards?: Resolver<Array<ResolversTypes['JSON']>, ParentType, ContextType>;
   minLevel?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   earnedExp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -2065,3 +2114,20 @@ export type Resolvers<ContextType = any> = {
  * Use "Resolvers" root object instead. If you wish to get "IResolvers", add "typesPrefix: I" to your config.
  */
 export type IResolvers<ContextType = any> = Resolvers<ContextType>;
+export type DirectiveResolvers<ContextType = any> = {
+  default?: DefaultDirectiveResolver<any, any, ContextType>;
+  toGlobalId?: ToGlobalIdDirectiveResolver<any, any, ContextType>;
+  fromField?: FromFieldDirectiveResolver<any, any, ContextType>;
+  multilingual?: MultilingualDirectiveResolver<any, any, ContextType>;
+  dataLoader?: DataLoaderDirectiveResolver<any, any, ContextType>;
+  pagination?: PaginationDirectiveResolver<any, any, ContextType>;
+  authCheck?: AuthCheckDirectiveResolver<any, any, ContextType>;
+  adminCheck?: AdminCheckDirectiveResolver<any, any, ContextType>;
+};
+
+
+/**
+ * @deprecated
+ * Use "DirectiveResolvers" root object instead. If you wish to get "IDirectiveResolvers", add "typesPrefix: I" to your config.
+ */
+export type IDirectiveResolvers<ContextType = any> = DirectiveResolvers<ContextType>;

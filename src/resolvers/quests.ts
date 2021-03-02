@@ -10,6 +10,9 @@ import emptyMutation from '../utils/emptyMutation';
 import sendNotify from '../utils/telegramNotify';
 import { QuestUserProgressStates, TaskTypes, UpdateQuestInput } from '../generated/graphql';
 import mergeWithCustomizer from '../utils/mergeWithCustomizer';
+import { UserInputError } from 'apollo-server-express';
+import { InvalidAccessToken } from '../errorTypes';
+import getUserLevel from '../utils/getUserLevel';
 
 /**
  * Scheme of quest in database
@@ -59,6 +62,11 @@ export interface QuestDBScheme {
    * Quest data
    */
   data?: EditorData;
+
+  /**
+   * Information about quest authors
+   */
+  credits?: EditorData;
 }
 
 const Query = {
@@ -133,6 +141,7 @@ const QuestMutations = {
         $set: {
           ...mergeWithCustomizer(originalQuest, newInput),
           ...(newInput.data ? { data: newInput.data } : {}),
+          ...(newInput.credits ? { credits: newInput.credits } : {}),
         },
       },
       { returnOriginal: false });
@@ -172,11 +181,33 @@ const QuestMutations = {
 const Quest = {
   /**
    * Return quest progress state
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
-  questProgressState(): string {
-    const states = ['PASSED', 'AVAILABLE', 'LOCKED'];
+  async questProgressState(
+    parent: QuestDBScheme,
+    args: undefined,
+    { collection, user }: ResolverContextBase
+  ): Promise<QuestUserProgressStates> {
+    const currentUser = await collection('users').findOne({ _id: new ObjectId(user.id) });
+    const quest = await collection('quests').findOne({ _id: parent._id });
 
-    return states[Math.floor(Math.random() * 3)];
+    if (!quest) {
+      throw new UserInputError('There is no quest with such id: ' + parent._id);
+    }
+    if (!currentUser) {
+      throw new InvalidAccessToken();
+    }
+
+    const isAlreadyCompleted = currentUser.completedQuestsIds?.some(id => id.toString() === parent._id.toString());
+
+    if (isAlreadyCompleted) {
+      return QuestUserProgressStates.Passed;
+    } else {
+      return getUserLevel(currentUser.exp) < quest.minLevel ? QuestUserProgressStates.Locked : QuestUserProgressStates.Available;
+    }
   },
 };
 
