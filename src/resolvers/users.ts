@@ -116,7 +116,6 @@ const Query = {
     db,
     tokenData,
   }: ResolverContextBase<true>): Promise<UserDBScheme | null> {
-    console.log(tokenData);
     const currentUser = await db.collection<UserDBScheme>('users')
       .findOne({ _id: new ObjectId(tokenData.userId) });
 
