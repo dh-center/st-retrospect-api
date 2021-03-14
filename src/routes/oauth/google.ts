@@ -82,7 +82,7 @@ router.post('/oauth/google/callback', async (req, res) => {
     'auth.google.id': userId,
   });
 
-  let accessToken;
+  let tokens;
   const defaultPhoto = userInfo.photos?.find(p => p.metadata?.primary && !p.default)?.url;
   const photo = defaultPhoto ? defaultPhoto + '?sz=1000' : undefined;
 
@@ -115,9 +115,9 @@ router.post('/oauth/google/callback', async (req, res) => {
       },
     })).ops[0];
 
-    accessToken = jwtHelper.generateUserTokens(newUser);
+    tokens = jwtHelper.generateUserTokens(newUser);
   } else {
-    accessToken = jwtHelper.generateUserTokens(existedUser);
+    tokens = jwtHelper.generateUserTokens(existedUser);
 
     if (!existedUser.photo && photo) {
       await collection.updateOne(
@@ -133,7 +133,7 @@ router.post('/oauth/google/callback', async (req, res) => {
     }
   }
 
-  return res.json({ data: { accessToken } });
+  return res.json({ data: tokens });
 });
 
 export default router;
