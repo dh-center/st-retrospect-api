@@ -9,6 +9,7 @@ import type { QuestDBScheme } from './resolvers/quests';
 import { countries, regions } from './resolvers/address';
 import type { RelationTypeDBScheme } from './resolvers/relationTypes';
 import { UserDBScheme } from './resolvers/users';
+import { TagDBScheme } from './resolvers/tags';
 
 /**
  * Class for setting up data loaders
@@ -107,6 +108,14 @@ export default class DataLoaders {
    */
   public questById = new DataLoader(
     async (questIds: readonly string[]) => this.batchByIds<QuestDBScheme>('quests', questIds),
+    { cache: false }
+  );
+
+  /**
+   * Loader for fetching tags by their ids
+   */
+  public tagById = new DataLoader(
+    async (tagIds: readonly string[]) => this.batchByIds<TagDBScheme>('tags', tagIds),
     { cache: false }
   );
 
