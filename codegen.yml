@@ -1,12 +1,12 @@
 overwrite: true
 require:
   - ts-node/register
-schema: "./codegen.ts"
+schema: "./codegenSchema.ts"
 generates:
   src/generated/graphql.ts:
     plugins:
-      - "typescript"
-      - "typescript-resolvers"
+      - typescript
+      - typescript-resolvers
       - add:
           content: "/* eslint-disable */"
 
