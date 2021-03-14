@@ -87,6 +87,10 @@ export type Query = {
   quest?: Maybe<Quest>;
   /** Get all quests */
   quests: QuestConnection;
+  /** Get specific tag */
+  tag?: Maybe<Tag>;
+  /** List of available tags */
+  tags: TagConnection;
 };
 
 
@@ -191,6 +195,21 @@ export type QueryQuestsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
+/** API queries */
+export type QueryTagArgs = {
+  id: Scalars['GlobalId'];
+};
+
+
+/** API queries */
+export type QueryTagsArgs = {
+  after?: Maybe<Scalars['Cursor']>;
+  before?: Maybe<Scalars['Cursor']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
 /** API mutations */
 export type Mutation = {
   __typename?: 'Mutation';
@@ -204,6 +223,7 @@ export type Mutation = {
   relationType: RelationTypeMutations;
   quest: QuestMutations;
   user: UserMutations;
+  tag: TagMutations;
 };
 
 export type Person = Node & {
@@ -1301,6 +1321,97 @@ export type UserMutationsCompleteQuestArgs = {
   questId: Scalars['GlobalId'];
 };
 
+/** Tag of person or location instance */
+export type Tag = Node & {
+  __typename?: 'Tag';
+  /** Tag id */
+  id: Scalars['ID'];
+  /**
+   * Tag value
+   * Can be multilingual
+   */
+  value: Scalars['MultilingualString'];
+};
+
+/** Information about specific tag in connection */
+export type TagEdge = {
+  __typename?: 'TagEdge';
+  /** Cursor of current tag */
+  cursor: Scalars['Cursor'];
+  /** Tag object */
+  node: Tag;
+};
+
+/** Model for representing page of tags */
+export type TagConnection = {
+  __typename?: 'TagConnection';
+  /** List of tags on current page */
+  edges: Array<TagEdge>;
+  /** Information about current page */
+  pageInfo: PageInfo;
+  /** Number of available edges on current page */
+  totalCount: Scalars['Int'];
+};
+
+export type CreateTagInput = {
+  /** Value of tag */
+  value: Scalars['MultilingualString'];
+};
+
+export type CreateTagPayload = {
+  __typename?: 'CreateTagPayload';
+  /** Created tag id */
+  recordId: Scalars['GlobalId'];
+  /** Created tag object */
+  record: Tag;
+};
+
+export type UpdateTagInput = {
+  /** Tag id for updating */
+  id: Scalars['GlobalId'];
+  /** New tag value */
+  value: Scalars['MultilingualString'];
+};
+
+export type UpdateTagPayload = {
+  __typename?: 'UpdateTagPayload';
+  /** Updated tag id */
+  recordId: Scalars['GlobalId'];
+  /** Updated tag object */
+  record: Tag;
+};
+
+export type DeleteTagPayload = {
+  __typename?: 'DeleteTagPayload';
+  /** Deleted tag id */
+  recordId: Scalars['GlobalId'];
+};
+
+export type TagMutations = {
+  __typename?: 'TagMutations';
+  /** Creates tag */
+  create: CreateTagPayload;
+  /** Updates existing tag */
+  update: UpdateTagPayload;
+  /** Deletes existing tag */
+  delete: DeleteTagPayload;
+};
+
+
+export type TagMutationsCreateArgs = {
+  input: CreateTagInput;
+};
+
+
+export type TagMutationsUpdateArgs = {
+  input: UpdateTagInput;
+};
+
+
+export type TagMutationsDeleteArgs = {
+  id: Scalars['GlobalId'];
+};
+
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -1379,7 +1490,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  Node: ResolversTypes['Person'] | ResolversTypes['LocationType'] | ResolversTypes['Country'] | ResolversTypes['Region'] | ResolversTypes['LocationInstance'] | ResolversTypes['Location'] | ResolversTypes['LocationStyle'] | ResolversTypes['Relation'] | ResolversTypes['RelationType'] | ResolversTypes['User'] | ResolversTypes['Quest'];
+  Node: ResolversTypes['Person'] | ResolversTypes['LocationType'] | ResolversTypes['Country'] | ResolversTypes['Region'] | ResolversTypes['LocationInstance'] | ResolversTypes['Location'] | ResolversTypes['LocationStyle'] | ResolversTypes['Relation'] | ResolversTypes['RelationType'] | ResolversTypes['User'] | ResolversTypes['Quest'] | ResolversTypes['Tag'];
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   ObjectId: ResolverTypeWrapper<Scalars['ObjectId']>;
@@ -1475,11 +1586,20 @@ export type ResolversTypes = {
   Timestamp: ResolverTypeWrapper<Scalars['Timestamp']>;
   UserCompleteQuestPayload: ResolverTypeWrapper<UserCompleteQuestPayload>;
   UserMutations: ResolverTypeWrapper<UserMutations>;
+  Tag: ResolverTypeWrapper<Tag>;
+  TagEdge: ResolverTypeWrapper<TagEdge>;
+  TagConnection: ResolverTypeWrapper<TagConnection>;
+  CreateTagInput: CreateTagInput;
+  CreateTagPayload: ResolverTypeWrapper<CreateTagPayload>;
+  UpdateTagInput: UpdateTagInput;
+  UpdateTagPayload: ResolverTypeWrapper<UpdateTagPayload>;
+  DeleteTagPayload: ResolverTypeWrapper<DeleteTagPayload>;
+  TagMutations: ResolverTypeWrapper<TagMutations>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Node: ResolversParentTypes['Person'] | ResolversParentTypes['LocationType'] | ResolversParentTypes['Country'] | ResolversParentTypes['Region'] | ResolversParentTypes['LocationInstance'] | ResolversParentTypes['Location'] | ResolversParentTypes['LocationStyle'] | ResolversParentTypes['Relation'] | ResolversParentTypes['RelationType'] | ResolversParentTypes['User'] | ResolversParentTypes['Quest'];
+  Node: ResolversParentTypes['Person'] | ResolversParentTypes['LocationType'] | ResolversParentTypes['Country'] | ResolversParentTypes['Region'] | ResolversParentTypes['LocationInstance'] | ResolversParentTypes['Location'] | ResolversParentTypes['LocationStyle'] | ResolversParentTypes['Relation'] | ResolversParentTypes['RelationType'] | ResolversParentTypes['User'] | ResolversParentTypes['Quest'] | ResolversParentTypes['Tag'];
   ID: Scalars['ID'];
   Cursor: Scalars['Cursor'];
   ObjectId: Scalars['ObjectId'];
@@ -1572,6 +1692,15 @@ export type ResolversParentTypes = {
   Timestamp: Scalars['Timestamp'];
   UserCompleteQuestPayload: UserCompleteQuestPayload;
   UserMutations: UserMutations;
+  Tag: Tag;
+  TagEdge: TagEdge;
+  TagConnection: TagConnection;
+  CreateTagInput: CreateTagInput;
+  CreateTagPayload: CreateTagPayload;
+  UpdateTagInput: UpdateTagInput;
+  UpdateTagPayload: UpdateTagPayload;
+  DeleteTagPayload: DeleteTagPayload;
+  TagMutations: TagMutations;
 };
 
 export type DefaultDirectiveArgs = {   value: Scalars['String']; };
@@ -1609,7 +1738,7 @@ export type AdminCheckDirectiveArgs = {  };
 export type AdminCheckDirectiveResolver<Result, Parent, ContextType = any, Args = AdminCheckDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'Person' | 'LocationType' | 'Country' | 'Region' | 'LocationInstance' | 'Location' | 'LocationStyle' | 'Relation' | 'RelationType' | 'User' | 'Quest', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Person' | 'LocationType' | 'Country' | 'Region' | 'LocationInstance' | 'Location' | 'LocationStyle' | 'Relation' | 'RelationType' | 'User' | 'Quest' | 'Tag', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -1648,6 +1777,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   users?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<QueryUsersArgs, never>>;
   quest?: Resolver<Maybe<ResolversTypes['Quest']>, ParentType, ContextType, RequireFields<QueryQuestArgs, 'id'>>;
   quests?: Resolver<ResolversTypes['QuestConnection'], ParentType, ContextType, RequireFields<QueryQuestsArgs, never>>;
+  tag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagArgs, 'id'>>;
+  tags?: Resolver<ResolversTypes['TagConnection'], ParentType, ContextType, RequireFields<QueryTagsArgs, never>>;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
@@ -1660,6 +1791,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   relationType?: Resolver<ResolversTypes['RelationTypeMutations'], ParentType, ContextType>;
   quest?: Resolver<ResolversTypes['QuestMutations'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['UserMutations'], ParentType, ContextType>;
+  tag?: Resolver<ResolversTypes['TagMutations'], ParentType, ContextType>;
 };
 
 export type PersonResolvers<ContextType = any, ParentType extends ResolversParentTypes['Person'] = ResolversParentTypes['Person']> = {
@@ -2090,6 +2222,49 @@ export type UserMutationsResolvers<ContextType = any, ParentType extends Resolve
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TagResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tag'] = ResolversParentTypes['Tag']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  value?: Resolver<ResolversTypes['MultilingualString'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TagEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagEdge'] = ResolversParentTypes['TagEdge']> = {
+  cursor?: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Tag'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TagConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagConnection'] = ResolversParentTypes['TagConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['TagEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateTagPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateTagPayload'] = ResolversParentTypes['CreateTagPayload']> = {
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
+  record?: Resolver<ResolversTypes['Tag'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpdateTagPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateTagPayload'] = ResolversParentTypes['UpdateTagPayload']> = {
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
+  record?: Resolver<ResolversTypes['Tag'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteTagPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteTagPayload'] = ResolversParentTypes['DeleteTagPayload']> = {
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TagMutationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagMutations'] = ResolversParentTypes['TagMutations']> = {
+  create?: Resolver<ResolversTypes['CreateTagPayload'], ParentType, ContextType, RequireFields<TagMutationsCreateArgs, 'input'>>;
+  update?: Resolver<ResolversTypes['UpdateTagPayload'], ParentType, ContextType, RequireFields<TagMutationsUpdateArgs, 'input'>>;
+  delete?: Resolver<ResolversTypes['DeleteTagPayload'], ParentType, ContextType, RequireFields<TagMutationsDeleteArgs, 'id'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Node?: NodeResolvers<ContextType>;
   Cursor?: GraphQLScalarType;
@@ -2159,6 +2334,13 @@ export type Resolvers<ContextType = any> = {
   Timestamp?: GraphQLScalarType;
   UserCompleteQuestPayload?: UserCompleteQuestPayloadResolvers<ContextType>;
   UserMutations?: UserMutationsResolvers<ContextType>;
+  Tag?: TagResolvers<ContextType>;
+  TagEdge?: TagEdgeResolvers<ContextType>;
+  TagConnection?: TagConnectionResolvers<ContextType>;
+  CreateTagPayload?: CreateTagPayloadResolvers<ContextType>;
+  UpdateTagPayload?: UpdateTagPayloadResolvers<ContextType>;
+  DeleteTagPayload?: DeleteTagPayloadResolvers<ContextType>;
+  TagMutations?: TagMutationsResolvers<ContextType>;
 };
 
 
