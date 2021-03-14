@@ -20,11 +20,52 @@ export default gql`
     record: Tag!
   }
 
+  input UpdateTagInput {
+    """
+    Tag id for updating
+    """
+    id: GlobalId!
+
+    """
+    New tag value
+    """
+    value: MultilingualString! @multilingual
+  }
+
+  type UpdateTagPayload {
+    """
+    Updated tag id
+    """
+    recordId: GlobalId! @toGlobalId(type: "Tag")
+
+    """
+    Updated tag object
+    """
+    record: Tag!
+  }
+
+  type DeleteTagPayload {
+    """
+    Deleted tag id
+    """
+    recordId: GlobalId! @toGlobalId(type: "Tag")
+  }
+
   type TagMutations {
     """
     Creates tag
     """
     create(input: CreateTagInput!): CreateTagPayload! @adminCheck
+
+    """
+    Updates existing tag
+    """
+    update(input: UpdateTagInput!): UpdateTagPayload! @adminCheck
+
+    """
+    Deletes existing tag
+    """
+    delete(id: GlobalId!): DeleteTagPayload! @adminCheck
   }
 
   extend type Mutation {
