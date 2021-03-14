@@ -1,6 +1,7 @@
 overwrite: true
-schema: "http://localhost:4000/graphql"
-documents: null
+require:
+  - ts-node/register
+schema: "./codegen.ts"
 generates:
   src/generated/graphql.ts:
     plugins:
