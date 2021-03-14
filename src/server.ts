@@ -31,6 +31,8 @@ export default class Server {
   private readonly dataLoaders: DataLoaders;
 
   /**
+   * Creates server instance
+   *
    * @param dbConnection - db connection to make queries
    * @param dataLoaders - dataLoaders for fetching data
    */
