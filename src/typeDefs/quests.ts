@@ -103,7 +103,7 @@ export default gql`
     """
     Quest progress states (passed, available, blocked)
     """
-    questProgressState: QuestUserProgressStates! @authCheck
+    questProgressState: QuestUserProgressStates!
   }
 
   """

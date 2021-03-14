@@ -10,8 +10,8 @@ import emptyMutation from '../utils/emptyMutation';
 import sendNotify from '../utils/telegramNotify';
 import { QuestUserProgressStates, TaskTypes, UpdateQuestInput } from '../generated/graphql';
 import mergeWithCustomizer from '../utils/mergeWithCustomizer';
-import { UserInputError } from 'apollo-server-express';
-import { InvalidAccessToken } from '../errorTypes';
+import { AuthenticationError, UserInputError } from 'apollo-server-express';
+import { ExpiredAccessToken, InvalidAccessToken } from '../errorTypes';
 import getUserLevel from '../utils/getUserLevel';
 
 /**
@@ -191,6 +191,14 @@ const Quest = {
     args: undefined,
     { collection, tokenData }: ResolverContextBase<true>
   ): Promise<QuestUserProgressStates> {
+    if (!tokenData) {
+      return QuestUserProgressStates.Locked;
+    }
+
+    if ('errorName' in tokenData) {
+      throw new ExpiredAccessToken();
+    }
+
     const currentUser = await collection('users').findOne({ _id: new ObjectId(tokenData.userId) });
     const quest = await collection('quests').findOne({ _id: parent._id });
 
