@@ -14,7 +14,7 @@ export default gql`
     Tag value
     Can be multilingual
     """
-    value: MultilingualString! @multilingual
+    value: MultilingualString! @multilingual @default(value: "")
   }
 
   """
