@@ -12,17 +12,16 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** Type for representing connections cursors */
   Cursor: string;
-  /** A field whose value conforms with the standard mongodb object ID as described here: https://docs.mongodb.com/manual/reference/method/ObjectId/#ObjectId. Example: 5e5677d71bdc2ae76344968c */
+  /** MongoDB ObjectId type */
   ObjectId: import('mongodb').ObjectId;
-  /** The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text. */
+  /** Represents data that can be accessed in many languages */
   MultilingualString: import('../types/graphql').MultilingualString;
+  /** Unique global entity ID */
   GlobalId: import('mongodb').ObjectId;
-  /** The `BigInt` scalar type represents non-fractional signed whole numeric values. */
   Long: any;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any;
-  /** The javascript `Date` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch. */
   Timestamp: any;
 };
 
@@ -82,6 +81,8 @@ export type Query = {
   relationTypes: RelationTypeConnection;
   /** Get info about user */
   me: User;
+  /** Returns connection with all users */
+  users: UserConnection;
   /** Get specific Quest */
   quest?: Maybe<Quest>;
   /** Get all quests */
@@ -160,6 +161,15 @@ export type QueryRelationTypeArgs = {
 
 /** API queries */
 export type QueryRelationTypesArgs = {
+  after?: Maybe<Scalars['Cursor']>;
+  before?: Maybe<Scalars['Cursor']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+
+/** API queries */
+export type QueryUsersArgs = {
   after?: Maybe<Scalars['Cursor']>;
   before?: Maybe<Scalars['Cursor']>;
   first?: Maybe<Scalars['Int']>;
@@ -1065,6 +1075,28 @@ export type User = Node & {
   exp: Scalars['Int'];
   /** User level */
   level: Scalars['Int'];
+  /** Array of user permission */
+  permissions: Array<Scalars['String']>;
+};
+
+/** Model for representing list of persons */
+export type UserConnection = {
+  __typename?: 'UserConnection';
+  /** List of persons edges */
+  edges: Array<UserEdge>;
+  /** Information about this page */
+  pageInfo: PageInfo;
+  /** Number of available edges */
+  totalCount: Scalars['Int'];
+};
+
+/** Information about specific person in connection */
+export type UserEdge = {
+  __typename?: 'UserEdge';
+  /** Cursor of this person */
+  cursor: Scalars['Cursor'];
+  /** Person info */
+  node: User;
 };
 
 /**
@@ -1423,6 +1455,8 @@ export type ResolversTypes = {
   DeleteRelationTypePayload: ResolverTypeWrapper<DeleteRelationTypePayload>;
   RelationTypeMutations: ResolverTypeWrapper<RelationTypeMutations>;
   User: ResolverTypeWrapper<User>;
+  UserConnection: ResolverTypeWrapper<UserConnection>;
+  UserEdge: ResolverTypeWrapper<UserEdge>;
   EditorData: ResolverTypeWrapper<EditorData>;
   EditorDataInput: EditorDataInput;
   Quest: ResolverTypeWrapper<Quest>;
@@ -1520,6 +1554,8 @@ export type ResolversParentTypes = {
   DeleteRelationTypePayload: DeleteRelationTypePayload;
   RelationTypeMutations: RelationTypeMutations;
   User: User;
+  UserConnection: UserConnection;
+  UserEdge: UserEdge;
   EditorData: EditorData;
   EditorDataInput: EditorDataInput;
   Quest: Quest;
@@ -1609,6 +1645,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   relationType?: Resolver<Maybe<ResolversTypes['RelationType']>, ParentType, ContextType, RequireFields<QueryRelationTypeArgs, 'id'>>;
   relationTypes?: Resolver<ResolversTypes['RelationTypeConnection'], ParentType, ContextType, RequireFields<QueryRelationTypesArgs, never>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  users?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<QueryUsersArgs, never>>;
   quest?: Resolver<Maybe<ResolversTypes['Quest']>, ParentType, ContextType, RequireFields<QueryQuestArgs, 'id'>>;
   quests?: Resolver<ResolversTypes['QuestConnection'], ParentType, ContextType, RequireFields<QueryQuestsArgs, never>>;
 };
@@ -1953,6 +1990,20 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   completedQuests?: Resolver<Array<ResolversTypes['Quest']>, ParentType, ContextType>;
   exp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   level?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  permissions?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserConnection'] = ResolversParentTypes['UserConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['UserEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserEdge'] = ResolversParentTypes['UserEdge']> = {
+  cursor?: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2093,6 +2144,8 @@ export type Resolvers<ContextType = any> = {
   DeleteRelationTypePayload?: DeleteRelationTypePayloadResolvers<ContextType>;
   RelationTypeMutations?: RelationTypeMutationsResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  UserConnection?: UserConnectionResolvers<ContextType>;
+  UserEdge?: UserEdgeResolvers<ContextType>;
   EditorData?: EditorDataResolvers<ContextType>;
   Quest?: QuestResolvers<ContextType>;
   QuestConnection?: QuestConnectionResolvers<ContextType>;

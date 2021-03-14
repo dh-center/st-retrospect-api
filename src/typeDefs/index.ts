@@ -131,7 +131,7 @@ const rootSchema = gql`
   }
 `;
 
-export default concatenateTypeDefs(
+const schemaString =  concatenateTypeDefs(
   [
     rootSchema,
     persons,
@@ -150,3 +150,5 @@ export default concatenateTypeDefs(
     usersMutations,
   ]
 );
+
+export default schemaString;
