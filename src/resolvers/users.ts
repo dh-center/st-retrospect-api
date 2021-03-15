@@ -152,7 +152,7 @@ const UserMutations = {
     }
 
     const isAlreadyCompleted = currentUser.completedQuestsIds?.some(id => id.toString() === questId.toString());
-    const isAvailable = getUserLevel(currentUser.exp) >= completedQuest.minLevel;
+    const isAvailable = getUserLevel(currentUser.exp) >= completedQuest.minLevel || !completedQuest.minLevel;
 
     if (!isAvailable) {
       throw new ForbiddenAction();
@@ -168,7 +168,7 @@ const UserMutations = {
       { _id: currentUser._id },
       {
         $inc: {
-          exp: completedQuest?.earnedExp,
+          exp: completedQuest?.earnedExp || 0,
         },
         $addToSet: {
           completedQuestsIds: new ObjectId(questId),
