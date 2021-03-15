@@ -62,7 +62,7 @@ router.post('/oauth/facebook/callback', async (req, res, next) => {
     ],
   });
 
-  let accessToken;
+  let tokens;
   const photo = !userData.picture.data.is_silhouette ? userData.picture.data.url : null;
 
   if (!existedUser) {
@@ -84,9 +84,9 @@ router.post('/oauth/facebook/callback', async (req, res, next) => {
       },
     })).ops[0];
 
-    accessToken = jwtHelper.generateUserTokens(newUser);
+    tokens = jwtHelper.generateUserTokens(newUser);
   } else {
-    accessToken = jwtHelper.generateUserTokens(existedUser);
+    tokens = jwtHelper.generateUserTokens(existedUser);
 
     if (!existedUser.photo && photo) {
       await collection.updateOne(
@@ -102,7 +102,7 @@ router.post('/oauth/facebook/callback', async (req, res, next) => {
     }
   }
 
-  return res.json({ data: { accessToken } });
+  return res.json({ data: tokens });
 });
 
 export default router;

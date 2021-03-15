@@ -55,7 +55,7 @@ router.post('/oauth/vk/callback', async (req, res, next) => {
     ],
   });
 
-  let accessToken;
+  let tokens;
 
   if (!existedUser) {
     /**
@@ -75,9 +75,9 @@ router.post('/oauth/vk/callback', async (req, res, next) => {
       },
     })).ops[0];
 
-    accessToken = jwtHelper.generateUserTokens(newUser);
+    tokens = jwtHelper.generateUserTokens(newUser);
   } else {
-    accessToken = jwtHelper.generateUserTokens(existedUser);
+    tokens = jwtHelper.generateUserTokens(existedUser);
 
     if (!existedUser.photo && authData.photo) {
       await collection.updateOne(
@@ -93,7 +93,7 @@ router.post('/oauth/vk/callback', async (req, res, next) => {
     }
   }
 
-  return res.json({ data: { accessToken } });
+  return res.json({ data: tokens });
 });
 
 export default router;
