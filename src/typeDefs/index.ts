@@ -14,6 +14,8 @@ import relationsMutations from './relationsMutations';
 import relationTypesMutations from './relationTypesMutations';
 import locationStyles from './locationStyles';
 import usersMutations from './usersMutations';
+import tags from './tags';
+import tagsMutations from './tagsMutations';
 
 const rootSchema = gql`
   """
@@ -148,6 +150,8 @@ const schemaString =  concatenateTypeDefs(
     questsMutations,
     graphqlScalars,
     usersMutations,
+    tags,
+    tagsMutations,
   ]
 );
 

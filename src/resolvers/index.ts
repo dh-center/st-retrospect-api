@@ -16,6 +16,7 @@ import { QueryNodeArgs } from '../generated/graphql';
 import camelCase from 'lodash.camelcase';
 import { FieldsWithDataLoader } from '../dataLoaders';
 import locationStyles from './locationStyles';
+import tags from './tags';
 
 /**
  * See all types and fields here {@link '../typeDefs/schema.graphql'}
@@ -58,5 +59,6 @@ export default merge(
   relationTypes,
   quests,
   address,
+  tags,
   scalars
 );

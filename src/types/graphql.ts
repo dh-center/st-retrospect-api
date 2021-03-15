@@ -8,6 +8,7 @@ import { QuestDBScheme } from '../resolvers/quests';
 import { RelationTypeDBScheme } from '../resolvers/relationTypes';
 import { UserDBScheme } from '../resolvers/users';
 import { AccessTokenPayload, AccessTokenError } from '../utils/jwt';
+import { TagDBScheme } from '../resolvers/tags';
 
 /**
  * Map with collection name and its type
@@ -22,6 +23,7 @@ export interface Collections {
   quests: QuestDBScheme;
   relationtypes: RelationTypeDBScheme;
   locationstyles: LocationStyleDBScheme;
+  tags: TagDBScheme;
 }
 
 export type CollectionAccessFunction = <T extends keyof Collections>(name: T) => Collection<Collections[T]>;
