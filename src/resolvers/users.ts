@@ -168,7 +168,7 @@ const UserMutations = {
       { _id: currentUser._id },
       {
         $inc: {
-          exp: completedQuest?.earnedExp ? completedQuest?.earnedExp : 0,
+          exp: completedQuest?.earnedExp || 0,
         },
         $addToSet: {
           completedQuestsIds: new ObjectId(questId),
