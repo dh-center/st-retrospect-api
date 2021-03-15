@@ -610,10 +610,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@codexteam/graphql-directive-default@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@codexteam/graphql-directive-default/-/graphql-directive-default-1.0.1.tgz#118476ec98f24b081c7b3dfe891214c52c7bd07f"
-  integrity sha512-G2y4HpequWTeBUKCdl7EO8QOphAPFgGwpWXOw+kMI9b0IMyRhExtlwU02k5Y5N87thssM0brsbV9RYB/jgq2Pw==
+"@codexteam/graphql-directive-default@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@codexteam/graphql-directive-default/-/graphql-directive-default-1.0.2.tgz#d3c7789cebbd7b4d37e6535f972e14d83cb181b8"
+  integrity sha512-6xNq3y2OEWkwDpESmOqJMzq8p4C2xfiU274nQXYOZsJuUXU97LTBID0CkWT3Ath6nMKycTab/YqizsKQgH/xaw==
   dependencies:
     "@graphql-tools/utils" "^7.2.5"
     graphql "^15.5.0"
