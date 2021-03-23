@@ -95,7 +95,7 @@ export default gql`
     user(
       "User id"
       id: GlobalId!
-    ): User @dataLoader(dataLoaderName: "userById", argName: "id")
+    ): User @adminCheck @dataLoader(dataLoaderName: "userById", argName: "id")
 
     """
     Returns connection with all users
