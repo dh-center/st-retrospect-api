@@ -90,6 +90,14 @@ export default gql`
     me: User! @authCheck
 
     """
+    Get specific User
+    """
+    user(
+      "User id"
+      id: GlobalId!
+    ): User @adminCheck @dataLoader(dataLoaderName: "userById", argName: "id")
+
+    """
     Returns connection with all users
     """
     users(
