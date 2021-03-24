@@ -211,17 +211,17 @@ export default gql`
     """
     Create location
     """
-    create(input: CreateLocationInput!): CreateLocationPayload! @adminCheck
+    create(input: CreateLocationInput!): CreateLocationPayload! @editorCheck
 
     """
     Update location
     """
-    update(input: UpdateLocationInput!): UpdateLocationPayload! @adminCheck
+    update(input: UpdateLocationInput!): UpdateLocationPayload! @editorCheck
 
     """
     Delete location
     """
-    delete(id: GlobalId!): DeleteLocationPayload! @adminCheck
+    delete(id: GlobalId!): DeleteLocationPayload! @editorCheck
   }
 
   extend type Mutation {

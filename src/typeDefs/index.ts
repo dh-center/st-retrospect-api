@@ -88,6 +88,11 @@ const rootSchema = gql`
   directive @adminCheck on FIELD_DEFINITION
 
   """
+  Directive for checking editor permissions
+  """
+  directive @editorCheck on FIELD_DEFINITION
+
+  """
   Type for representing connections cursors
   """
   scalar Cursor

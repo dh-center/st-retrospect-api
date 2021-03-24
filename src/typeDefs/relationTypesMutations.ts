@@ -65,17 +65,17 @@ export default gql`
     """
     Creates relation type
     """
-    create(input: CreateRelationTypeInput!): CreateRelationTypePayload! @adminCheck
+    create(input: CreateRelationTypeInput!): CreateRelationTypePayload! @editorCheck
 
     """
     Update relation type
     """
-    update(input: UpdateRelationTypeInput!): UpdateRelationTypePayload! @adminCheck
+    update(input: UpdateRelationTypeInput!): UpdateRelationTypePayload! @editorCheck
 
     """
     Delete relation type
     """
-    delete(id: GlobalId!): DeleteRelationTypePayload! @adminCheck
+    delete(id: GlobalId!): DeleteRelationTypePayload! @editorCheck
   }
 
   extend type Mutation {

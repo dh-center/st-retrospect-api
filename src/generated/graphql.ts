@@ -33,19 +33,12 @@ export type Scalars = {
 
 
 
+
 /** An object with a Globally Unique ID */
 export type Node = {
   /** The ID of the object. */
   id: Scalars['ID'];
 };
-
-/** Types of posibble permissions on each entity */
-export enum PermissionTypes {
-  /** User can view entity */
-  Viewer = 'VIEWER',
-  /** User can edit entity */
-  Admin = 'ADMIN'
-}
 
 
 
@@ -1534,7 +1527,6 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Node: ResolversTypes['Person'] | ResolversTypes['LocationType'] | ResolversTypes['Country'] | ResolversTypes['Region'] | ResolversTypes['LocationInstance'] | ResolversTypes['Location'] | ResolversTypes['LocationStyle'] | ResolversTypes['Relation'] | ResolversTypes['RelationType'] | ResolversTypes['User'] | ResolversTypes['Quest'] | ResolversTypes['Tag'];
   ID: ResolverTypeWrapper<Scalars['ID']>;
-  PermissionTypes: PermissionTypes;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   ObjectId: ResolverTypeWrapper<Scalars['ObjectId']>;
   MultilingualString: ResolverTypeWrapper<Scalars['MultilingualString']>;
@@ -1783,6 +1775,10 @@ export type AuthCheckDirectiveResolver<Result, Parent, ContextType = any, Args =
 export type AdminCheckDirectiveArgs = {  };
 
 export type AdminCheckDirectiveResolver<Result, Parent, ContextType = any, Args = AdminCheckDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type EditorCheckDirectiveArgs = {  };
+
+export type EditorCheckDirectiveResolver<Result, Parent, ContextType = any, Args = EditorCheckDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
   __resolveType: TypeResolveFn<'Person' | 'LocationType' | 'Country' | 'Region' | 'LocationInstance' | 'Location' | 'LocationStyle' | 'Relation' | 'RelationType' | 'User' | 'Quest' | 'Tag', ParentType, ContextType>;
@@ -2414,6 +2410,7 @@ export type DirectiveResolvers<ContextType = any> = {
   pagination?: PaginationDirectiveResolver<any, any, ContextType>;
   authCheck?: AuthCheckDirectiveResolver<any, any, ContextType>;
   adminCheck?: AdminCheckDirectiveResolver<any, any, ContextType>;
+  editorCheck?: EditorCheckDirectiveResolver<any, any, ContextType>;
 };
 
 

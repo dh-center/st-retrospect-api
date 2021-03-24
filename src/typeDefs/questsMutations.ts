@@ -125,17 +125,17 @@ export default gql`
     """
     Create quest
     """
-    create(input: CreateQuestInput!): CreateQuestPayload! @adminCheck
+    create(input: CreateQuestInput!): CreateQuestPayload! @editorCheck
 
     """
     Update quest
     """
-    update(input: UpdateQuestInput!): UpdateQuestPayload! @adminCheck
+    update(input: UpdateQuestInput!): UpdateQuestPayload! @editorCheck
 
     """
     Delete quest
     """
-    delete(id: GlobalId!): DeleteQuestPayload! @adminCheck
+    delete(id: GlobalId!): DeleteQuestPayload! @editorCheck
   }
 
   extend type Mutation {
