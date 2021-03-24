@@ -29,6 +29,21 @@ const rootSchema = gql`
   }
 
   """
+  Types of posibble permissions on each entity
+  """
+  enum PermissionTypes {
+    """
+    User can view entity
+    """
+    VIEWER
+
+    """
+    User can edit entity
+    """
+    ADMIN
+  }
+
+  """
   Directive for applying default values to nullable fields
   """
   directive @default(value: String!) on FIELD_DEFINITION
@@ -86,6 +101,11 @@ const rootSchema = gql`
   Directive for checking admin permissions
   """
   directive @adminCheck on FIELD_DEFINITION
+
+  """
+  Directive for checking editor permissions
+  """
+  directive @editorCheck on FIELD_DEFINITION
 
   """
   Type for representing connections cursors

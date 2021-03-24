@@ -3,6 +3,7 @@ import paginationDirective from './src/directives/pagination';
 import fromFieldDirective from './src/directives/fromField';
 import authCheckDirective from './src/directives/authСheck';
 import adminCheckDirective from './src/directives/adminCheck';
+import editorCheckDirective from './src/directives/editorCheck';
 import dataLoaderDirective from './src/directives/dataloaders';
 import createDirectiveDefault from '@codexteam/graphql-directive-default';
 
@@ -25,6 +26,7 @@ export default makeExecutableSchema({
     fromFieldDirective('fromField'),
     authCheckDirective('authCheck'),
     adminCheckDirective('adminCheck'),
+    editorCheckDirective('editorCheck'),
     dataLoaderDirective('dataLoader'),
     createDirectiveDefault().schemaTransformer,
   ],

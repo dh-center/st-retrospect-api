@@ -33,6 +33,7 @@ export type Scalars = {
 
 
 
+
 /** An object with a Globally Unique ID */
 export type Node = {
   /** The ID of the object. */
@@ -1784,6 +1785,10 @@ export type AdminCheckDirectiveArgs = {  };
 
 export type AdminCheckDirectiveResolver<Result, Parent, ContextType = any, Args = AdminCheckDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
+export type EditorCheckDirectiveArgs = {  };
+
+export type EditorCheckDirectiveResolver<Result, Parent, ContextType = any, Args = EditorCheckDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
   __resolveType: TypeResolveFn<'Person' | 'LocationType' | 'Country' | 'Region' | 'LocationInstance' | 'Location' | 'LocationStyle' | 'Relation' | 'RelationType' | 'User' | 'Quest' | 'Tag', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -2414,6 +2419,7 @@ export type DirectiveResolvers<ContextType = any> = {
   pagination?: PaginationDirectiveResolver<any, any, ContextType>;
   authCheck?: AuthCheckDirectiveResolver<any, any, ContextType>;
   adminCheck?: AdminCheckDirectiveResolver<any, any, ContextType>;
+  editorCheck?: EditorCheckDirectiveResolver<any, any, ContextType>;
 };
 
 

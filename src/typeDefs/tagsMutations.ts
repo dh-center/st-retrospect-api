@@ -55,17 +55,17 @@ export default gql`
     """
     Creates tag
     """
-    create(input: CreateTagInput!): CreateTagPayload! @adminCheck
+    create(input: CreateTagInput!): CreateTagPayload! @editorCheck
 
     """
     Updates existing tag
     """
-    update(input: UpdateTagInput!): UpdateTagPayload! @adminCheck
+    update(input: UpdateTagInput!): UpdateTagPayload! @editorCheck
 
     """
     Deletes existing tag
     """
-    delete(id: GlobalId!): DeleteTagPayload! @adminCheck
+    delete(id: GlobalId!): DeleteTagPayload! @editorCheck
   }
 
   extend type Mutation {

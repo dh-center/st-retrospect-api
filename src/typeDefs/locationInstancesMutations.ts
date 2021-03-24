@@ -203,27 +203,27 @@ export default gql`
     """
     Create location instance
     """
-    create(input: CreateLocationInstanceInput!): CreateLocationInstancePayload! @adminCheck
+    create(input: CreateLocationInstanceInput!): CreateLocationInstancePayload! @editorCheck
 
     """
     Add architect to location instance
     """
-    addArchitect(input: AddArchitectInput!): AddArchitectPayload! @adminCheck
+    addArchitect(input: AddArchitectInput!): AddArchitectPayload! @editorCheck
 
     """
     Remove architects from location instance
     """
-    removeArchitect(input: RemoveArchitectInput!): RemoveArchitectPayload! @adminCheck
+    removeArchitect(input: RemoveArchitectInput!): RemoveArchitectPayload! @editorCheck
 
     """
     Update location instance
     """
-    update(input: UpdateLocationInstanceInput!): UpdateLocationInstancePayload! @adminCheck
+    update(input: UpdateLocationInstanceInput!): UpdateLocationInstancePayload! @editorCheck
 
     """
     Delete location instance
     """
-    delete(id: GlobalId!): DeleteLocationInstancePayload! @adminCheck
+    delete(id: GlobalId!): DeleteLocationInstancePayload! @editorCheck
   }
 
   extend type Mutation {
