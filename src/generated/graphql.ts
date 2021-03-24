@@ -40,14 +40,6 @@ export type Node = {
   id: Scalars['ID'];
 };
 
-/** Types of posibble permissions on each entity */
-export enum PermissionTypes {
-  /** User can view entity */
-  Viewer = 'VIEWER',
-  /** User can edit entity */
-  Admin = 'ADMIN'
-}
-
 
 
 
@@ -1535,7 +1527,6 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Node: ResolversTypes['Person'] | ResolversTypes['LocationType'] | ResolversTypes['Country'] | ResolversTypes['Region'] | ResolversTypes['LocationInstance'] | ResolversTypes['Location'] | ResolversTypes['LocationStyle'] | ResolversTypes['Relation'] | ResolversTypes['RelationType'] | ResolversTypes['User'] | ResolversTypes['Quest'] | ResolversTypes['Tag'];
   ID: ResolverTypeWrapper<Scalars['ID']>;
-  PermissionTypes: PermissionTypes;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   ObjectId: ResolverTypeWrapper<Scalars['ObjectId']>;
   MultilingualString: ResolverTypeWrapper<Scalars['MultilingualString']>;
