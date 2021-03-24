@@ -39,6 +39,14 @@ export type Node = {
   id: Scalars['ID'];
 };
 
+/** Types of posibble permissions on each entity */
+export enum PermissionTypes {
+  /** User can view entity */
+  Viewer = 'VIEWER',
+  /** User can edit entity */
+  Admin = 'ADMIN'
+}
+
 
 
 
@@ -81,6 +89,8 @@ export type Query = {
   relationTypes: RelationTypeConnection;
   /** Get info about user */
   me: User;
+  /** Get specific User */
+  user?: Maybe<User>;
   /** Returns connection with all users */
   users: UserConnection;
   /** Get specific Quest */
@@ -173,6 +183,12 @@ export type QueryRelationTypesArgs = {
 
 
 /** API queries */
+export type QueryUserArgs = {
+  id: Scalars['GlobalId'];
+};
+
+
+/** API queries */
 export type QueryUsersArgs = {
   after?: Maybe<Scalars['Cursor']>;
   before?: Maybe<Scalars['Cursor']>;
@@ -222,6 +238,7 @@ export type Mutation = {
   relation: RelationMutations;
   relationType: RelationTypeMutations;
   quest: QuestMutations;
+  /** Mutations for users */
   user: UserMutations;
   tag: TagMutations;
 };
@@ -1310,15 +1327,40 @@ export type UserCompleteQuestPayload = {
   record: User;
 };
 
+export type UpdateUserInput = {
+  /** Id of the user to update */
+  id: Scalars['GlobalId'];
+  /** New persmissions */
+  permissions: Array<Scalars['String']>;
+};
+
+export type UpdateUserPayload = {
+  __typename?: 'UpdateUserPayload';
+  /** Updated user id */
+  recordId: Scalars['GlobalId'];
+  /** Updated user */
+  record: User;
+};
+
+/** Mutations for users */
 export type UserMutations = {
   __typename?: 'UserMutations';
   /** Complete quest */
   completeQuest: UserCompleteQuestPayload;
+  /** Updates user data */
+  update: UpdateUserPayload;
 };
 
 
+/** Mutations for users */
 export type UserMutationsCompleteQuestArgs = {
   questId: Scalars['GlobalId'];
+};
+
+
+/** Mutations for users */
+export type UserMutationsUpdateArgs = {
+  input: UpdateUserInput;
 };
 
 /** Tag of person or location instance */
@@ -1492,6 +1534,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Node: ResolversTypes['Person'] | ResolversTypes['LocationType'] | ResolversTypes['Country'] | ResolversTypes['Region'] | ResolversTypes['LocationInstance'] | ResolversTypes['Location'] | ResolversTypes['LocationStyle'] | ResolversTypes['Relation'] | ResolversTypes['RelationType'] | ResolversTypes['User'] | ResolversTypes['Quest'] | ResolversTypes['Tag'];
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  PermissionTypes: PermissionTypes;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   ObjectId: ResolverTypeWrapper<Scalars['ObjectId']>;
   MultilingualString: ResolverTypeWrapper<Scalars['MultilingualString']>;
@@ -1585,6 +1628,8 @@ export type ResolversTypes = {
   JSON: ResolverTypeWrapper<Scalars['JSON']>;
   Timestamp: ResolverTypeWrapper<Scalars['Timestamp']>;
   UserCompleteQuestPayload: ResolverTypeWrapper<UserCompleteQuestPayload>;
+  UpdateUserInput: UpdateUserInput;
+  UpdateUserPayload: ResolverTypeWrapper<UpdateUserPayload>;
   UserMutations: ResolverTypeWrapper<UserMutations>;
   Tag: ResolverTypeWrapper<Tag>;
   TagEdge: ResolverTypeWrapper<TagEdge>;
@@ -1691,6 +1736,8 @@ export type ResolversParentTypes = {
   JSON: Scalars['JSON'];
   Timestamp: Scalars['Timestamp'];
   UserCompleteQuestPayload: UserCompleteQuestPayload;
+  UpdateUserInput: UpdateUserInput;
+  UpdateUserPayload: UpdateUserPayload;
   UserMutations: UserMutations;
   Tag: Tag;
   TagEdge: TagEdge;
@@ -1774,6 +1821,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   relationType?: Resolver<Maybe<ResolversTypes['RelationType']>, ParentType, ContextType, RequireFields<QueryRelationTypeArgs, 'id'>>;
   relationTypes?: Resolver<ResolversTypes['RelationTypeConnection'], ParentType, ContextType, RequireFields<QueryRelationTypesArgs, never>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<QueryUsersArgs, never>>;
   quest?: Resolver<Maybe<ResolversTypes['Quest']>, ParentType, ContextType, RequireFields<QueryQuestArgs, 'id'>>;
   quests?: Resolver<ResolversTypes['QuestConnection'], ParentType, ContextType, RequireFields<QueryQuestsArgs, never>>;
@@ -2217,8 +2265,15 @@ export type UserCompleteQuestPayloadResolvers<ContextType = any, ParentType exte
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateUserPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateUserPayload'] = ResolversParentTypes['UpdateUserPayload']> = {
+  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
+  record?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UserMutationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserMutations'] = ResolversParentTypes['UserMutations']> = {
   completeQuest?: Resolver<ResolversTypes['UserCompleteQuestPayload'], ParentType, ContextType, RequireFields<UserMutationsCompleteQuestArgs, 'questId'>>;
+  update?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsUpdateArgs, 'input'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2333,6 +2388,7 @@ export type Resolvers<ContextType = any> = {
   JSON?: GraphQLScalarType;
   Timestamp?: GraphQLScalarType;
   UserCompleteQuestPayload?: UserCompleteQuestPayloadResolvers<ContextType>;
+  UpdateUserPayload?: UpdateUserPayloadResolvers<ContextType>;
   UserMutations?: UserMutationsResolvers<ContextType>;
   Tag?: TagResolvers<ContextType>;
   TagEdge?: TagEdgeResolvers<ContextType>;

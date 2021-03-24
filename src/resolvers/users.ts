@@ -4,6 +4,7 @@ import { ForbiddenAction, InvalidAccessToken } from '../errorTypes';
 import { UserInputError } from 'apollo-server-express';
 import emptyMutation from '../utils/emptyMutation';
 import getUserLevel from '../utils/getUserLevel';
+import { UserMutationsUpdateArgs } from '../generated/graphql';
 
 /**
  * Information about user in database
@@ -182,6 +183,37 @@ const UserMutations = {
 
     return {
       recordId: currentUser._id,
+      record: updatedUser.value,
+    };
+  },
+
+  /**
+   * Updates user data
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async update(
+    parent: undefined,
+    { input }: UserMutationsUpdateArgs,
+    { collection }: ResolverContextBase<true>
+  ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const updatedUser = await collection('users').findOneAndUpdate(
+      { _id: new ObjectId(input.id) },
+      {
+        $set: {
+          permissions: input.permissions,
+        },
+      },
+      { returnOriginal: false });
+
+    if (!updatedUser.value) {
+      throw new UserInputError('There is no user with such id: ' + input.id);
+    }
+
+    return {
+      recordId: updatedUser.value._id,
       record: updatedUser.value,
     };
   },
