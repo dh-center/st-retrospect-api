@@ -1192,6 +1192,8 @@ export type Quest = Node & {
   earnedExp: Scalars['Int'];
   /** Quest progress states (passed, available, blocked) */
   questProgressState: QuestUserProgressStates;
+  /** Quest tags */
+  tags: Array<Tag>;
 };
 
 /** Model for representing list of quests */
@@ -1249,6 +1251,8 @@ export type CreateQuestInput = {
   data: EditorDataInput;
   /** Information about quest authors */
   credits: EditorDataInput;
+  /** Quest tags */
+  tagIds: Array<Scalars['String']>;
 };
 
 export type CreateQuestPayload = {
@@ -1278,6 +1282,8 @@ export type UpdateQuestInput = {
   data?: Maybe<EditorDataInput>;
   /** Information about quest authors */
   credits?: Maybe<EditorDataInput>;
+  /** Quest tags */
+  tagIds: Array<Scalars['String']>;
 };
 
 export type UpdateQuestPayload = {
@@ -2215,6 +2221,7 @@ export type QuestResolvers<ContextType = any, ParentType extends ResolversParent
   minLevel?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   earnedExp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   questProgressState?: Resolver<ResolversTypes['QuestUserProgressStates'], ParentType, ContextType>;
+  tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

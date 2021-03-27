@@ -67,6 +67,11 @@ export interface QuestDBScheme {
    * Information about quest authors
    */
   credits?: EditorData;
+
+  /**
+   * Quest tags
+   */
+  tagIds: string[];
 }
 
 const Query = {

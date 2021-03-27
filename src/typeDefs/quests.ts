@@ -104,6 +104,11 @@ export default gql`
     Quest progress states (passed, available, blocked)
     """
     questProgressState: QuestUserProgressStates!
+
+    """
+    Quest tags
+    """
+    tags: [Tag!]! @dataLoader(dataLoaderName: "tagById", fieldName: "tagIds") @default(value: "[]")
   }
 
   """
