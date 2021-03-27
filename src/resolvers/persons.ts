@@ -71,6 +71,11 @@ export interface PersonDBScheme extends WithProfessions {
    * Person's info link
    */
   wikiLink?: string | null;
+
+  /**
+   * Person tag ids
+   */
+  tagIds?: string[];
 }
 
 const PersonMutations = {

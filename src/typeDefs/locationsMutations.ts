@@ -151,6 +151,11 @@ export default gql`
     End of period
     """
     endDate: String
+
+    """
+    Location instance tags
+    """
+    tagIds: [String!]
   }
 
 

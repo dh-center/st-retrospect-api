@@ -181,6 +181,11 @@ export default gql`
     Source of information about location instance
     """
     source: MultilingualString @multilingual
+
+    """
+    Location instance tags
+    """
+    tags: [Tag!]! @dataLoader(dataLoaderName: "tagById", fieldName: "tagIds") @default(value: "[]")
   }
 
   """

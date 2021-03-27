@@ -66,6 +66,11 @@ export default gql`
     Person's photos links
     """
     photoLinks: [String]
+
+    """
+    Person tags
+    """
+    tags: [Tag!]! @dataLoader(dataLoaderName: "tagById", fieldName: "tagIds") @default(value: "[]")
   }
 
   """
@@ -210,6 +215,11 @@ export default gql`
     Person's info link
     """
     wikiLink: String
+
+    """
+    Person tags
+    """
+    tagIds: [String!]!
   }
 
   type CreatePersonPayload {
@@ -284,6 +294,11 @@ export default gql`
     Person's info link
     """
     wikiLink: String
+
+    """
+    Person tags
+    """
+    tagIds: [String!]!
   }
 
   type UpdatePersonPayload {
