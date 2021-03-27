@@ -109,7 +109,7 @@ export default gql`
     """
     Quest tags
     """
-    tagIds: [String!]!
+    tagIds: [String!]
   }
 
   type UpdateQuestPayload {
