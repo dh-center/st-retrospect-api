@@ -6,6 +6,7 @@ import relations from './relations';
 import relationTypes from './relationTypes';
 import users from './users';
 import quests from './quests';
+import search from './search';
 import graphqlScalars from './graphqlScalars';
 import questsMutations from './questsMutations';
 import locationsMutations from './locationsMutations';
@@ -152,6 +153,7 @@ const schemaString =  concatenateTypeDefs(
     relationTypesMutations,
     users,
     quests,
+    search,
     questsMutations,
     graphqlScalars,
     usersMutations,
