@@ -71,7 +71,7 @@ export interface QuestDBScheme {
   /**
    * Quest tags
    */
-  tagIds: string[];
+  tagIds?: string[] | null;
 }
 
 const Query = {
