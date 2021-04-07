@@ -11,7 +11,14 @@ const Query = {
       index: 'db-interface.location_instances',
       body: {
         query: {
-          match_all: {},
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          multi_match: {
+            query: args.input.query,
+            fields: [
+              'name.*^2',
+              'description.*',
+            ],
+          },
         },
       },
     });
@@ -20,9 +27,11 @@ const Query = {
 
     console.log(result.body.hits);
 
-    return result.body.hits.hits.map((hit: any) => ({
-      ...hit._source,
-      __typename: 'LocationInstance' })
+    return result.body.hits.hits.map((hit: any) =>
+      ({
+        ...hit._source,
+        __typename: 'LocationInstance',
+      })
     );
   },
 };

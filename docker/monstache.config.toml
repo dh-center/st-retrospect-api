@@ -1,17 +1,17 @@
 # connection settings
 
 # connect to MongoDB using the following URL
-mongo-url = "mongodb://mongodb:27017/db-interface?replicaSet=rs0"
+mongo-url = "mongodb://mongodb:27017/retrospect
 # connect to the Elasticsearch REST API at the following node URLs
 elasticsearch-urls = ["http://elastic-search:9200"]
 
-namespace-exclude-regex = '^db-interface\.users'
+namespace-exclude-regex = '^retrospect\.users'
 
 direct-read-namespaces = [
-  "db-interface.persons",
-  "db-interface.location_instances",
-  "db-interface.locations",
-  "db-interface.locationtypes",
-  "db-interface.relations",
-  "db-interface.relationtypes",
+  "retrospect.persons",
+  "retrospect.location_instances",
+  "retrospect.locations",
+  "retrospect.locationtypes",
+  "retrospect.relations",
+  "retrospect.relationtypes",
 ]

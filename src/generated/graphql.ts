@@ -200,7 +200,7 @@ export type QueryQuestsArgs = {
 
 /** API queries */
 export type QuerySearchArgs = {
-  input?: Maybe<SearchInput>;
+  input: SearchInput;
 };
 
 
@@ -1225,7 +1225,7 @@ export type SearchInput = {
   query: Scalars['String'];
 };
 
-export type SearchResult = Location | Person | Quest;
+export type SearchResult = LocationInstance | Person | Quest;
 
 export type CreateQuestInput = {
   /** Quest name */
@@ -1616,7 +1616,7 @@ export type ResolversTypes = {
   TaskTypes: TaskTypes;
   QuestUserProgressStates: QuestUserProgressStates;
   SearchInput: SearchInput;
-  SearchResult: ResolversTypes['Location'] | ResolversTypes['Person'] | ResolversTypes['Quest'];
+  SearchResult: ResolversTypes['LocationInstance'] | ResolversTypes['Person'] | ResolversTypes['Quest'];
   CreateQuestInput: CreateQuestInput;
   CreateQuestPayload: ResolverTypeWrapper<CreateQuestPayload>;
   UpdateQuestInput: UpdateQuestInput;
@@ -1726,7 +1726,7 @@ export type ResolversParentTypes = {
   QuestConnection: QuestConnection;
   QuestEdge: QuestEdge;
   SearchInput: SearchInput;
-  SearchResult: ResolversParentTypes['Location'] | ResolversParentTypes['Person'] | ResolversParentTypes['Quest'];
+  SearchResult: ResolversParentTypes['LocationInstance'] | ResolversParentTypes['Person'] | ResolversParentTypes['Quest'];
   CreateQuestInput: CreateQuestInput;
   CreateQuestPayload: CreateQuestPayload;
   UpdateQuestInput: UpdateQuestInput;
@@ -1829,7 +1829,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   users?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<QueryUsersArgs, never>>;
   quest?: Resolver<Maybe<ResolversTypes['Quest']>, ParentType, ContextType, RequireFields<QueryQuestArgs, 'id'>>;
   quests?: Resolver<ResolversTypes['QuestConnection'], ParentType, ContextType, RequireFields<QueryQuestsArgs, never>>;
-  search?: Resolver<Array<ResolversTypes['SearchResult']>, ParentType, ContextType, RequireFields<QuerySearchArgs, never>>;
+  search?: Resolver<Array<ResolversTypes['SearchResult']>, ParentType, ContextType, RequireFields<QuerySearchArgs, 'input'>>;
   tag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagArgs, 'id'>>;
   tags?: Resolver<ResolversTypes['TagConnection'], ParentType, ContextType, RequireFields<QueryTagsArgs, never>>;
 };
@@ -2229,7 +2229,7 @@ export type QuestEdgeResolvers<ContextType = any, ParentType extends ResolversPa
 };
 
 export type SearchResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['SearchResult'] = ResolversParentTypes['SearchResult']> = {
-  __resolveType: TypeResolveFn<'Location' | 'Person' | 'Quest', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'LocationInstance' | 'Person' | 'Quest', ParentType, ContextType>;
 };
 
 export type CreateQuestPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateQuestPayload'] = ResolversParentTypes['CreateQuestPayload']> = {
