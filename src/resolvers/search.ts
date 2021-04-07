@@ -12,7 +12,7 @@ const Query = {
     const client = new Client({ node: process.env.ELASTICSEARCH_ENDPOINT });
 
     const result = await client.search({
-      index: 'db-interface.location_instances',
+      index: 'retrospect.location_instances',
       body: {
         query: {
           // eslint-disable-next-line @typescript-eslint/naming-convention

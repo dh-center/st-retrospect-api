@@ -1,3 +1,3 @@
 #!/bin/bash
 
-curl -XDELETE "http://elastic-search:9200/db-interface.location_instances"
+curl -XDELETE "http://elastic-search:9200/retrospect.location_instances"
