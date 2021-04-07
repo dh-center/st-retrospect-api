@@ -1,10 +1,14 @@
 import { Client } from '@elastic/elasticsearch';
 import { QuerySearchArgs } from '../generated/graphql';
-import { ResolverContextBase } from '../types/graphql';
-import { GraphQLResolveInfo } from 'graphql';
 
 const Query = {
-  async search(parent: undefined, args: QuerySearchArgs, context: ResolverContextBase, info: GraphQLResolveInfo) {
+  /**
+   * Search for entities by search query
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   */
+  async search(parent: undefined, args: QuerySearchArgs) { // todo add return value
     const client = new Client({ node: process.env.ELASTICSEARCH_ENDPOINT });
 
     const result = await client.search({
@@ -23,10 +27,7 @@ const Query = {
       },
     });
 
-    console.log(JSON.stringify(info));
-
-    console.log(result.body.hits);
-
+    // todo fix types
     return result.body.hits.hits.map((hit: any) =>
       ({
         ...hit._source,
