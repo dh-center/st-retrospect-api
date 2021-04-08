@@ -130,7 +130,7 @@ export default gql`
     """
     Array of location's types
     """
-    locationTypes: [LocationType] @dataLoader(dataLoaderName: "locationTypeById", fieldName: "locationTypesId")
+    locationTypes: [LocationType!] @dataLoader(dataLoaderName: "locationTypeById", fieldName: "locationTypesId")
 
     """
     Location style
@@ -175,7 +175,7 @@ export default gql`
     """
     Array of architects
     """
-    architects: [Person]
+    architects: [Person!]! @default(value: "[]")
 
     """
     Source of information about location instance
