@@ -3,7 +3,7 @@
  * See README.md#Database for more info
  */
 
-db = db.getSiblingDB('db-interface');
+db = db.getSiblingDB('retrospect');
 
 db.getCollectionNames().forEach(function (collName) {
   db.runCommand({

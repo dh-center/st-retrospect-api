@@ -7,7 +7,7 @@ dotenv.config();
 
 /**
  * Get DataBase name and connection URL from full MongoDB connection URL
- * For example: 'mongodb://mongodb:27017/db-interface' splitted on 'db-interface' and 'mongodb://mongodb:27017'
+ * For example: 'mongodb://mongodb:27017/retrospect' splitted on 'retrospect' and 'mongodb://mongodb:27017'
  */
 const mongodbUrlSplitted = process.env.MONGODB_URL.split('/');
 const databaseName = mongodbUrlSplitted.pop();

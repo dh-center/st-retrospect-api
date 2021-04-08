@@ -8,7 +8,6 @@ import {
 import { ObjectId } from 'mongodb';
 import { UserInputError } from 'apollo-server-express';
 import { PersonDBScheme } from './persons';
-import { RelationDBScheme } from './relations';
 import emptyMutation from '../utils/emptyMutation';
 import { CreateLocationInput, UpdateLocationInput } from '../generated/graphql';
 import { WithoutId } from '../types/utils';
@@ -227,32 +226,6 @@ const Query = {
   async locationStyles(parent: undefined, args: undefined, { db }: ResolverContextBase): Promise<LocationStyleDBScheme[]> {
     return db.collection<LocationStyleDBScheme>('locationstyles').find()
       .toArray();
-  },
-
-  /**
-   * Get relations on user request
-   *
-   * @param parent - this is the return value of the resolver for this field's parent
-   * @param args - contains all GraphQL arguments provided for this field
-   * @param context - this object is shared across all resolvers that execute for a particular operation
-   */
-  async search(parent: undefined, { searchString }: { searchString: string }, { db, dataLoaders }: ResolverContextBase): Promise<RelationDBScheme[]> {
-    searchString = searchString.trim();
-    if (searchString.length <= 2) {
-      throw new UserInputError('Search string must contain at least 3 characters');
-    }
-
-    const searchRegExp = new RegExp(searchString, 'i');
-    const persons = await db.collection<PersonDBScheme>('persons').find({
-      $or: [
-        { 'lastName.ru': searchRegExp },
-        { 'lastName.en': searchRegExp },
-      ],
-    })
-      .toArray();
-    const personsIds = persons.map(person => person._id.toString());
-
-    return (await dataLoaders.relationByPersonId.loadMany(personsIds)).flat() as RelationDBScheme[];
   },
 };
 

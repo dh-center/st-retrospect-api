@@ -7,6 +7,7 @@ import users from './users';
 import relations from './relations';
 import relationTypes from './relationTypes';
 import quests from './quests';
+import search from './search';
 import address from './address';
 import { JSONResolver, LongResolver, TimestampResolver } from 'graphql-scalars';
 import scalars from './scalars';
@@ -58,6 +59,7 @@ export default merge(
   relations,
   relationTypes,
   quests,
+  search,
   address,
   tags,
   scalars

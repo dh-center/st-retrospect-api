@@ -30,7 +30,7 @@ export default gql`
     """
     Person's professions
     """
-    professions: [String] @multilingual
+    professions: [String!] @multilingual
 
     """
     Person's description
@@ -65,7 +65,7 @@ export default gql`
     """
     Person's photos links
     """
-    photoLinks: [String]
+    photoLinks: [String!]
 
     """
     Person tags
