@@ -263,6 +263,8 @@ export type Person = Node & {
   mainPhotoLink?: Maybe<Scalars['String']>;
   /** Person's photos links */
   photoLinks?: Maybe<Array<Maybe<Scalars['String']>>>;
+  /** Person tags */
+  tags: Array<Tag>;
 };
 
 /** Model for representing list of persons */
@@ -321,6 +323,8 @@ export type CreatePersonInput = {
   photoLinks?: Maybe<Array<Scalars['String']>>;
   /** Person's info link */
   wikiLink?: Maybe<Scalars['String']>;
+  /** Person tags */
+  tagIds: Array<Scalars['String']>;
 };
 
 export type CreatePersonPayload = {
@@ -356,6 +360,8 @@ export type UpdatePersonInput = {
   photoLinks?: Maybe<Array<Scalars['String']>>;
   /** Person's info link */
   wikiLink?: Maybe<Scalars['String']>;
+  /** Person tags */
+  tagIds: Array<Scalars['String']>;
 };
 
 export type UpdatePersonPayload = {
@@ -485,6 +491,8 @@ export type LocationInstance = Node & {
   architects?: Maybe<Array<Maybe<Person>>>;
   /** Source of information about location instance */
   source?: Maybe<Scalars['MultilingualString']>;
+  /** Location instance tags */
+  tags: Array<Tag>;
 };
 
 /** Location for displaying on map and making relations with persons */
@@ -665,6 +673,8 @@ export type LocationInstanceInput = {
   startDate?: Maybe<Scalars['String']>;
   /** End of period */
   endDate?: Maybe<Scalars['String']>;
+  /** Location instance tags */
+  tagIds?: Maybe<Array<Scalars['String']>>;
 };
 
 export type CreateLocationPayload = {
@@ -1181,6 +1191,8 @@ export type Quest = Node & {
   earnedExp: Scalars['Int'];
   /** Quest progress states (passed, available, blocked) */
   questProgressState: QuestUserProgressStates;
+  /** Quest tags */
+  tags: Array<Tag>;
 };
 
 /** Model for representing list of quests */
@@ -1244,6 +1256,8 @@ export type CreateQuestInput = {
   data: EditorDataInput;
   /** Information about quest authors */
   credits: EditorDataInput;
+  /** Quest tags */
+  tagIds: Array<Scalars['String']>;
 };
 
 export type CreateQuestPayload = {
@@ -1273,6 +1287,8 @@ export type UpdateQuestInput = {
   data?: Maybe<EditorDataInput>;
   /** Information about quest authors */
   credits?: Maybe<EditorDataInput>;
+  /** Quest tags */
+  tagIds: Array<Scalars['String']>;
 };
 
 export type UpdateQuestPayload = {
@@ -1861,6 +1877,7 @@ export type PersonResolvers<ContextType = any, ParentType extends ResolversParen
   wikiLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   mainPhotoLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   photoLinks?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1957,6 +1974,7 @@ export type LocationInstanceResolvers<ContextType = any, ParentType extends Reso
   relations?: Resolver<Array<ResolversTypes['Relation']>, ParentType, ContextType>;
   architects?: Resolver<Maybe<Array<Maybe<ResolversTypes['Person']>>>, ParentType, ContextType>;
   source?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
+  tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2212,6 +2230,7 @@ export type QuestResolvers<ContextType = any, ParentType extends ResolversParent
   minLevel?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   earnedExp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   questProgressState?: Resolver<ResolversTypes['QuestUserProgressStates'], ParentType, ContextType>;
+  tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

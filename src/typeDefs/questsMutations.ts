@@ -41,6 +41,11 @@ export default gql`
     Information about quest authors
     """
     credits: EditorDataInput!
+
+    """
+    Quest tags
+    """
+    tagIds: [String!]!
   }
 
   type CreateQuestPayload {
@@ -100,6 +105,11 @@ export default gql`
     Information about quest authors
     """
     credits: EditorDataInput
+
+    """
+    Quest tags
+    """
+    tagIds: [String!]
   }
 
   type UpdateQuestPayload {

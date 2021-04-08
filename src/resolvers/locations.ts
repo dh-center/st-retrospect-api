@@ -116,6 +116,11 @@ export interface LocationInstanceDBScheme {
    * Ending of the period for this instance
    */
   endDate?: string | null;
+
+  /**
+   * Location instance tag ids
+   */
+  tagIds?: string[] | null;
 }
 
 /**
