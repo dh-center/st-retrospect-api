@@ -1,7 +1,7 @@
 # connection settings
 
 # connect to MongoDB using the following URL
-mongo-url = "mongodb://mongodb:27017/retrospect
+mongo-url = "mongodb://mongodb:27017/retrospect"
 # connect to the Elasticsearch REST API at the following node URLs
 elasticsearch-urls = ["http://elastic-search:9200"]
 
