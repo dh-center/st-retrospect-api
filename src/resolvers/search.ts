@@ -1,5 +1,6 @@
-import { Client } from '@elastic/elasticsearch';
 import { QuerySearchArgs } from '../generated/graphql';
+import getElasticClient from '../utils/getElasticClient';
+import elasticIndexes from '../utils/elasticIndexes';
 
 const Query = {
   /**
@@ -9,10 +10,10 @@ const Query = {
    * @param args - contains all GraphQL arguments provided for this field
    */
   async search(parent: undefined, args: QuerySearchArgs) { // todo add return value
-    const client = new Client({ node: process.env.ELASTICSEARCH_ENDPOINT });
+    const client = getElasticClient();
 
     const result = await client.search({
-      index: 'retrospect.location_instances',
+      index: elasticIndexes.locationInstances,
       body: {
         query: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
