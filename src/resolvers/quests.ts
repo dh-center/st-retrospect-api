@@ -10,7 +10,7 @@ import emptyMutation from '../utils/emptyMutation';
 import sendNotify from '../utils/telegramNotify';
 import { QuestUserProgressStates, TaskTypes, UpdateQuestInput } from '../generated/graphql';
 import mergeWithCustomizer from '../utils/mergeWithCustomizer';
-import { AuthenticationError, UserInputError } from 'apollo-server-express';
+import { UserInputError } from 'apollo-server-express';
 import { ExpiredAccessToken, InvalidAccessToken } from '../errorTypes';
 import getUserLevel from '../utils/getUserLevel';
 
@@ -71,7 +71,7 @@ export interface QuestDBScheme {
   /**
    * Quest tags
    */
-  tagIds?: string[] | null;
+  tagIds?: ObjectId[] | null;
 }
 
 const Query = {
