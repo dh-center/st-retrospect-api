@@ -61,6 +61,11 @@ export default gql`
     Source of information about location instance
     """
     source: MultilingualString! @multilingual
+
+    """
+    Location instance tags
+    """
+    tagIds: [GlobalId!]!
   }
 
   type CreateLocationInstancePayload {
@@ -135,6 +140,11 @@ export default gql`
     Source of information about location instance
     """
     source: MultilingualString! @multilingual
+
+    """
+    Location instance tags
+    """
+    tagIds: [GlobalId!]!
   }
 
   type UpdateLocationInstancePayload {

@@ -761,6 +761,8 @@ export type CreateLocationInstanceInput = {
   locationId: Scalars['GlobalId'];
   /** Source of information about location instance */
   source: Scalars['MultilingualString'];
+  /** Location instance tags */
+  tagIds: Array<Scalars['GlobalId']>;
 };
 
 export type CreateLocationInstancePayload = {
@@ -796,6 +798,8 @@ export type UpdateLocationInstanceInput = {
   endDate?: Maybe<Scalars['String']>;
   /** Source of information about location instance */
   source: Scalars['MultilingualString'];
+  /** Location instance tags */
+  tagIds: Array<Scalars['GlobalId']>;
 };
 
 export type UpdateLocationInstancePayload = {
