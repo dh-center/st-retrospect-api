@@ -1,7 +1,7 @@
 const esIndexPrefix = process.env.ELASTICSEARCH_INDEX_PREFIX || 'retrospect';
 
 const elasticIndexes = {
-  locationInstances: `${esIndexPrefix}.location_instances`,
+  locationsView: `${esIndexPrefix}.locations_view`,
 };
 
 export default elasticIndexes;

@@ -13,7 +13,7 @@ const Query = {
     const client = getElasticClient();
 
     const result = await client.search({
-      index: elasticIndexes.locationInstances,
+      index: elasticIndexes.locationsView,
       body: {
         query: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -22,6 +22,7 @@ const Query = {
             fields: [
               'name.*^2',
               'description.*',
+              '*',
             ],
           },
         },
