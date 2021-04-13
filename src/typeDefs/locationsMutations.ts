@@ -155,7 +155,7 @@ export default gql`
     """
     Location instance tags
     """
-    tagIds: [String!]
+    tagIds: [GlobalId!]
   }
 
 

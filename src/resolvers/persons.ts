@@ -75,7 +75,7 @@ export interface PersonDBScheme extends WithProfessions {
   /**
    * Person tag ids
    */
-  tagIds?: string[];
+  tagIds?: ObjectId[];
 }
 
 const PersonMutations = {

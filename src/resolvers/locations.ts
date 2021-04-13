@@ -120,7 +120,7 @@ export interface LocationInstanceDBScheme {
   /**
    * Location instance tag ids
    */
-  tagIds?: string[] | null;
+  tagIds?: ObjectId[] | null;
 }
 
 /**
