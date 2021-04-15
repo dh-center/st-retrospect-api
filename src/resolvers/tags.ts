@@ -106,8 +106,6 @@ const TagMutations = {
     { id }: { id: ObjectId },
     { collection }: ResolverContextBase<true>
   ): Promise<DeleteMutationPayload> {
-    await collection('tags').deleteOne({ _id: id });
-
     /**
      * Removes tag from persons
      */
@@ -137,6 +135,8 @@ const TagMutations = {
     {
       $pull: { tagIds: new ObjectId(id) },
     });
+
+    await collection('tags').deleteOne({ _id: id });
 
     return {
       recordId: id,
