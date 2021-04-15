@@ -108,6 +108,36 @@ const TagMutations = {
   ): Promise<DeleteMutationPayload> {
     await collection('tags').deleteOne({ _id: id });
 
+    /**
+     * Removes tag from persons
+     */
+    await collection('persons').updateMany({
+      tagIds: new ObjectId(id),
+    },
+    {
+      $pull: { tagIds: new ObjectId(id) },
+    });
+
+    /**
+     * Removes tag from quests
+     */
+    await collection('quests').updateMany({
+      tagIds: new ObjectId(id),
+    },
+    {
+      $pull: { tagIds: new ObjectId(id) },
+    });
+
+    /**
+     * Removes tag from location instances
+     */
+    await collection('location_instances').updateMany({
+      tagIds: new ObjectId(id),
+    },
+    {
+      $pull: { tagIds: new ObjectId(id) },
+    });
+
     return {
       recordId: id,
     };
