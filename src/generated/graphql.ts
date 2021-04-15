@@ -88,7 +88,8 @@ export type Query = {
   quest?: Maybe<Quest>;
   /** Get all quests */
   quests: QuestConnection;
-  search: Array<SearchResult>;
+  /** Search for entities by search query */
+  locationsInstancesSearch: LocationInstanceConnection;
   /** Get specific tag */
   tag?: Maybe<Tag>;
   /** List of available tags */
@@ -199,7 +200,7 @@ export type QueryQuestsArgs = {
 
 
 /** API queries */
-export type QuerySearchArgs = {
+export type QueryLocationsInstancesSearchArgs = {
   input: SearchInput;
 };
 
@@ -248,7 +249,7 @@ export type Person = Node & {
   /** Person's pseudonym */
   pseudonym?: Maybe<Scalars['MultilingualString']>;
   /** Person's professions */
-  professions?: Maybe<Array<Maybe<Scalars['String']>>>;
+  professions?: Maybe<Array<Scalars['String']>>;
   /** Person's description */
   description?: Maybe<Scalars['MultilingualString']>;
   /** Person's birth date */
@@ -262,7 +263,7 @@ export type Person = Node & {
   /** Person's main photo */
   mainPhotoLink?: Maybe<Scalars['String']>;
   /** Person's photos links */
-  photoLinks?: Maybe<Array<Maybe<Scalars['String']>>>;
+  photoLinks?: Maybe<Array<Scalars['String']>>;
   /** Person tags */
   tags: Array<Tag>;
 };
@@ -470,7 +471,7 @@ export type LocationInstance = Node & {
   /** Link for location info */
   wikiLink?: Maybe<Scalars['String']>;
   /** Array of location's types */
-  locationTypes?: Maybe<Array<Maybe<LocationType>>>;
+  locationTypes?: Maybe<Array<LocationType>>;
   /** Location style */
   locationStyle?: Maybe<LocationStyle>;
   /** Contains links with location's photos */
@@ -488,7 +489,7 @@ export type LocationInstance = Node & {
   /** Location relations */
   relations: Array<Relation>;
   /** Array of architects */
-  architects?: Maybe<Array<Maybe<Person>>>;
+  architects: Array<Person>;
   /** Source of information about location instance */
   source?: Maybe<Scalars['MultilingualString']>;
   /** Location instance tags */
@@ -528,6 +529,27 @@ export type LocationEdge = {
   cursor: Scalars['Cursor'];
   /** Location info */
   node: Location;
+};
+
+/** Model for representing list of locations instances */
+export type LocationInstanceConnection = {
+  __typename?: 'LocationInstanceConnection';
+  /** List of location instances edges */
+  edges: Array<LocationInstanceEdge>;
+  /** Information about this page */
+  pageInfo: PageInfo;
+  /** Number of available edges */
+  totalCount: Scalars['Int'];
+  suggest?: Maybe<Scalars['String']>;
+};
+
+/** Information about specific location instance in connection */
+export type LocationInstanceEdge = {
+  __typename?: 'LocationInstanceEdge';
+  /** Cursor of this location */
+  cursor: Scalars['Cursor'];
+  /** Location instance info */
+  node: LocationInstance;
 };
 
 /** Location style */
@@ -1233,11 +1255,34 @@ export enum QuestUserProgressStates {
   Locked = 'LOCKED'
 }
 
-export type SearchInput = {
-  query: Scalars['String'];
+export type WindowedPaginationArgs = {
+  skip?: Maybe<Scalars['Int']>;
+  first?: Maybe<Scalars['Int']>;
 };
 
-export type SearchResult = LocationInstance | Person | Quest;
+export type CursoredPaginationArgs = {
+  /** The cursor after which we take the data */
+  after?: Maybe<Scalars['Cursor']>;
+  /** The cursor after before we take the data */
+  before?: Maybe<Scalars['Cursor']>;
+  /** Number of requested nodes after a node with a cursor in the after argument */
+  first?: Maybe<Scalars['Int']>;
+  /** Number of requested nodes before a node with a cursor in the before argument */
+  last?: Maybe<Scalars['Int']>;
+};
+
+/** Search query input */
+export type SearchInput = {
+  /** Query string */
+  query: Scalars['String'];
+  /** Start of search range */
+  startYear: Scalars['Int'];
+  /** End of search range */
+  endYear: Scalars['Int'];
+  /** Entity category */
+  category?: Maybe<Array<Scalars['String']>>;
+  windowedPagination?: Maybe<WindowedPaginationArgs>;
+};
 
 export type CreateQuestInput = {
   /** Quest name */
@@ -1288,7 +1333,7 @@ export type UpdateQuestInput = {
   /** Information about quest authors */
   credits?: Maybe<EditorDataInput>;
   /** Quest tags */
-  tagIds: Array<Scalars['String']>;
+  tagIds?: Maybe<Array<Scalars['String']>>;
 };
 
 export type UpdateQuestPayload = {
@@ -1577,6 +1622,8 @@ export type ResolversTypes = {
   Float: ResolverTypeWrapper<Scalars['Float']>;
   LocationConnection: ResolverTypeWrapper<LocationConnection>;
   LocationEdge: ResolverTypeWrapper<LocationEdge>;
+  LocationInstanceConnection: ResolverTypeWrapper<LocationInstanceConnection>;
+  LocationInstanceEdge: ResolverTypeWrapper<LocationInstanceEdge>;
   LocationStyle: ResolverTypeWrapper<LocationStyle>;
   CreateLocationStyleInput: CreateLocationStyleInput;
   CreateLocationStylePayload: ResolverTypeWrapper<CreateLocationStylePayload>;
@@ -1631,8 +1678,9 @@ export type ResolversTypes = {
   QuestEdge: ResolverTypeWrapper<QuestEdge>;
   TaskTypes: TaskTypes;
   QuestUserProgressStates: QuestUserProgressStates;
+  WindowedPaginationArgs: WindowedPaginationArgs;
+  CursoredPaginationArgs: CursoredPaginationArgs;
   SearchInput: SearchInput;
-  SearchResult: ResolversTypes['LocationInstance'] | ResolversTypes['Person'] | ResolversTypes['Quest'];
   CreateQuestInput: CreateQuestInput;
   CreateQuestPayload: ResolverTypeWrapper<CreateQuestPayload>;
   UpdateQuestInput: UpdateQuestInput;
@@ -1689,6 +1737,8 @@ export type ResolversParentTypes = {
   Float: Scalars['Float'];
   LocationConnection: LocationConnection;
   LocationEdge: LocationEdge;
+  LocationInstanceConnection: LocationInstanceConnection;
+  LocationInstanceEdge: LocationInstanceEdge;
   LocationStyle: LocationStyle;
   CreateLocationStyleInput: CreateLocationStyleInput;
   CreateLocationStylePayload: CreateLocationStylePayload;
@@ -1741,8 +1791,9 @@ export type ResolversParentTypes = {
   Quest: Quest;
   QuestConnection: QuestConnection;
   QuestEdge: QuestEdge;
+  WindowedPaginationArgs: WindowedPaginationArgs;
+  CursoredPaginationArgs: CursoredPaginationArgs;
   SearchInput: SearchInput;
-  SearchResult: ResolversParentTypes['LocationInstance'] | ResolversParentTypes['Person'] | ResolversParentTypes['Quest'];
   CreateQuestInput: CreateQuestInput;
   CreateQuestPayload: CreateQuestPayload;
   UpdateQuestInput: UpdateQuestInput;
@@ -1845,7 +1896,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   users?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<QueryUsersArgs, never>>;
   quest?: Resolver<Maybe<ResolversTypes['Quest']>, ParentType, ContextType, RequireFields<QueryQuestArgs, 'id'>>;
   quests?: Resolver<ResolversTypes['QuestConnection'], ParentType, ContextType, RequireFields<QueryQuestsArgs, never>>;
-  search?: Resolver<Array<ResolversTypes['SearchResult']>, ParentType, ContextType, RequireFields<QuerySearchArgs, 'input'>>;
+  locationsInstancesSearch?: Resolver<ResolversTypes['LocationInstanceConnection'], ParentType, ContextType, RequireFields<QueryLocationsInstancesSearchArgs, 'input'>>;
   tag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagArgs, 'id'>>;
   tags?: Resolver<ResolversTypes['TagConnection'], ParentType, ContextType, RequireFields<QueryTagsArgs, never>>;
 };
@@ -1869,14 +1920,14 @@ export type PersonResolvers<ContextType = any, ParentType extends ResolversParen
   lastName?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   patronymic?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   pseudonym?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
-  professions?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  professions?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   birthDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   deathDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   relations?: Resolver<Array<ResolversTypes['Relation']>, ParentType, ContextType>;
   wikiLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   mainPhotoLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  photoLinks?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  photoLinks?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1963,7 +2014,7 @@ export type LocationInstanceResolvers<ContextType = any, ParentType extends Reso
   location?: Resolver<ResolversTypes['Location'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   wikiLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  locationTypes?: Resolver<Maybe<Array<Maybe<ResolversTypes['LocationType']>>>, ParentType, ContextType>;
+  locationTypes?: Resolver<Maybe<Array<ResolversTypes['LocationType']>>, ParentType, ContextType>;
   locationStyle?: Resolver<Maybe<ResolversTypes['LocationStyle']>, ParentType, ContextType>;
   photoLinks?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   mainPhotoLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1972,7 +2023,7 @@ export type LocationInstanceResolvers<ContextType = any, ParentType extends Reso
   startDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   endDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   relations?: Resolver<Array<ResolversTypes['Relation']>, ParentType, ContextType>;
-  architects?: Resolver<Maybe<Array<Maybe<ResolversTypes['Person']>>>, ParentType, ContextType>;
+  architects?: Resolver<Array<ResolversTypes['Person']>, ParentType, ContextType>;
   source?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1997,6 +2048,20 @@ export type LocationConnectionResolvers<ContextType = any, ParentType extends Re
 export type LocationEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationEdge'] = ResolversParentTypes['LocationEdge']> = {
   cursor?: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['Location'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LocationInstanceConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationInstanceConnection'] = ResolversParentTypes['LocationInstanceConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['LocationInstanceEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  suggest?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LocationInstanceEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationInstanceEdge'] = ResolversParentTypes['LocationInstanceEdge']> = {
+  cursor?: Resolver<ResolversTypes['Cursor'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['LocationInstance'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2247,10 +2312,6 @@ export type QuestEdgeResolvers<ContextType = any, ParentType extends ResolversPa
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type SearchResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['SearchResult'] = ResolversParentTypes['SearchResult']> = {
-  __resolveType: TypeResolveFn<'LocationInstance' | 'Person' | 'Quest', ParentType, ContextType>;
-};
-
 export type CreateQuestPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateQuestPayload'] = ResolversParentTypes['CreateQuestPayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['Quest'], ParentType, ContextType>;
@@ -2372,6 +2433,8 @@ export type Resolvers<ContextType = any> = {
   Location?: LocationResolvers<ContextType>;
   LocationConnection?: LocationConnectionResolvers<ContextType>;
   LocationEdge?: LocationEdgeResolvers<ContextType>;
+  LocationInstanceConnection?: LocationInstanceConnectionResolvers<ContextType>;
+  LocationInstanceEdge?: LocationInstanceEdgeResolvers<ContextType>;
   LocationStyle?: LocationStyleResolvers<ContextType>;
   CreateLocationStylePayload?: CreateLocationStylePayloadResolvers<ContextType>;
   UpdateLocationStylePayload?: UpdateLocationStylePayloadResolvers<ContextType>;
@@ -2408,7 +2471,6 @@ export type Resolvers<ContextType = any> = {
   Quest?: QuestResolvers<ContextType>;
   QuestConnection?: QuestConnectionResolvers<ContextType>;
   QuestEdge?: QuestEdgeResolvers<ContextType>;
-  SearchResult?: SearchResultResolvers<ContextType>;
   CreateQuestPayload?: CreateQuestPayloadResolvers<ContextType>;
   UpdateQuestPayload?: UpdateQuestPayloadResolvers<ContextType>;
   DeleteQuestPayload?: DeleteQuestPayloadResolvers<ContextType>;

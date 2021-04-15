@@ -253,6 +253,44 @@ export default gql`
     node: Location!
   }
 
+
+  """
+  Model for representing list of locations instances
+  """
+  type LocationInstanceConnection {
+    """
+    List of location instances edges
+    """
+    edges: [LocationInstanceEdge!]!
+
+    """
+    Information about this page
+    """
+    pageInfo: PageInfo!
+
+    """
+    Number of available edges
+    """
+    totalCount: Int!
+
+    suggest: String
+  }
+
+  """
+  Information about specific location instance in connection
+  """
+  type LocationInstanceEdge {
+    """
+    Cursor of this location
+    """
+    cursor: Cursor!
+
+    """
+    Location instance info
+    """
+    node: LocationInstance!
+  }
+
   extend type Query {
     """
     Get specific location
@@ -267,13 +305,13 @@ export default gql`
     """
     locations(
       "The cursor after which we take the data"
-      after: Cursor,
+      after: Cursor
 
       "The cursor after before we take the data"
-      before: Cursor,
+      before: Cursor
 
       "Number of requested nodes after a node with a cursor in the after argument"
-      first: Int,
+      first: Int
 
       "Number of requested nodes before a node with a cursor in the before argument"
       last: Int
