@@ -8,10 +8,7 @@ elasticsearch-urls = ["http://elastic-search:9200"]
 namespace-exclude-regex = '^retrospect\.users'
 
 direct-read-namespaces = [
-  "retrospect.persons",
-  "retrospect.location_instances",
-  "retrospect.locations",
-  "retrospect.locationtypes",
-  "retrospect.relations",
-  "retrospect.relationtypes",
+  "retrospect.locations_view",
 ]
+
+verbose = true
