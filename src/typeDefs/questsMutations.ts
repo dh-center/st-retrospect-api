@@ -45,7 +45,7 @@ export default gql`
     """
     Quest tags
     """
-    tagIds: [String!]!
+    tagIds: [GlobalId!]!
   }
 
   type CreateQuestPayload {
@@ -109,7 +109,7 @@ export default gql`
     """
     Quest tags
     """
-    tagIds: [String!]
+    tagIds: [GlobalId!]
   }
 
   type UpdateQuestPayload {

@@ -219,7 +219,7 @@ export default gql`
     """
     Person tags
     """
-    tagIds: [String!]!
+    tagIds: [GlobalId!]!
   }
 
   type CreatePersonPayload {
@@ -298,7 +298,7 @@ export default gql`
     """
     Person tags
     """
-    tagIds: [String!]!
+    tagIds: [GlobalId!]!
   }
 
   type UpdatePersonPayload {
