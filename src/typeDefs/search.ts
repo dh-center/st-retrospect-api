@@ -49,10 +49,33 @@ export default gql`
 #    cursorPagination: CursoredPaginationArgs
   }
 
+  """
+  Model for representing list of locations
+  """
+  type LocationSearchConnection {
+    """
+    List of locations edges
+    """
+    edges: [LocationEdge!]!
+
+    """
+    Information about this page
+    """
+    pageInfo: PageInfo!
+
+    """
+    Number of available edges
+    """
+    totalCount: Int!
+
+    suggest: String
+  }
+
   extend type Query {
     """
-    Search for entities by search query
+
     """
-    locationsInstancesSearch(input: SearchInput!): LocationInstanceConnection!
+    locationInstancesSearch(input: SearchInput!): LocationInstanceConnection!
+    locationsSearch(input: SearchInput!): LocationSearchConnection!
   }
 `;
