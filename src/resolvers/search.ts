@@ -70,7 +70,7 @@ const Query = {
     }
 
     const result = await client.search({
-      index: elasticIndexes.locationsView,
+      index: elasticIndexes.locations,
       body: {
         from: input.windowedPagination?.skip,
         size: input.windowedPagination?.first,
@@ -137,8 +137,8 @@ const Query = {
           query: input.query,
           fuzziness: 3,
           fields: [
-            'name.*^2',
-            'description.*',
+            'instances.name.*^4',
+            'description.*^2',
             '*',
           ],
         },
@@ -146,31 +146,31 @@ const Query = {
     }
 
     const result = await client.search({
-      index: elasticIndexes.locationsView,
+      index: elasticIndexes.locations,
       body: {
         from: input.windowedPagination?.skip,
         size: input.windowedPagination?.first,
         query,
-        suggest: {
-          text: input.query,
-          phrase_suggester: {
-            phrase: {
-              field: 'name.ru.trigram',
-              size: 1,
-              gram_size: 3,
-              direct_generator: [
-                {
-                  field: 'name.ru.trigram',
-                  suggest_mode: 'always',
-                },
-              ],
-              highlight: {
-                pre_tag: '<b>',
-                post_tag: '</b>',
-              },
-            },
-          },
-        },
+        // suggest: {
+        //   text: input.query,
+        //   phrase_suggester: {
+        //     phrase: {
+        //       field: 'instances.name.ru.trigram',
+        //       size: 1,
+        //       gram_size: 3,
+        //       direct_generator: [
+        //         {
+        //           field: 'name.ru.trigram',
+        //           suggest_mode: 'always',
+        //         },
+        //       ],
+        //       highlight: {
+        //         pre_tag: '<b>',
+        //         post_tag: '</b>',
+        //       },
+        //     },
+        //   },
+        // },
       },
     });
 
@@ -185,12 +185,13 @@ const Query = {
         result.body.hits.hits.map((hit: any) => {
           return ({
             node: {
-              ...hit._source.location,
+              _id: hit._id,
+              ...hit._source,
             },
           });
         }),
       totalCount: result.body.hits.total.value,
-      suggest: result.body.suggest.phrase_suggester?.shift()?.options?.shift()?.highlighted,
+      suggest: result.body.suggest?.phrase_suggester?.shift()?.options?.shift()?.highlighted,
     };
   },
 
