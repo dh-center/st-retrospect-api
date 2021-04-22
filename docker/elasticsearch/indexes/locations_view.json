@@ -65,6 +65,7 @@
           },
           "ru" : {
             "type" : "text",
+            "analyzer": "russian",
             "fields" : {
               "keyword" : {
                 "type" : "keyword",
@@ -372,6 +373,7 @@
           },
           "ru" : {
             "type" : "text",
+            "analyzer": "russian",
             "fields" : {
               "keyword" : {
                 "type" : "keyword",
