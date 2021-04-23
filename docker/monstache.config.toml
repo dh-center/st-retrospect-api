@@ -9,6 +9,7 @@ namespace-exclude-regex = '^retrospect\.users'
 
 direct-read-namespaces = [
   "retrospect.locations_denormalized",
+  "retrospect.location_instances_denormalized",
 ]
 
 verbose = true
@@ -16,3 +17,16 @@ verbose = true
 [[mapping]]
 namespace = "retrospect.locations_denormalized"
 index = "retrospect.locations"
+
+[[mapping]]
+namespace = "retrospect.location_instances_denormalized"
+index = "retrospect.location_instances"
+
+
+
+#[[relate]]
+#namespace = "retrospect.location_instances"  # when a thing changes look it up in the assoicated view by _id and index that
+#with-namespace = "retrospect.locations_denormalized"
+#keep-src = true # ignore the original thing that changed and instead just use the lookup of that thing via the view
+#
+#
