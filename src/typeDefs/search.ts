@@ -1,8 +1,18 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
+  """
+  Args for implementing windowed pagination
+  """
   input WindowedPaginationArgs {
+    """
+    How many documents in the selection to skip
+    """
     skip: Int
+
+    """
+    How many documents to fetch
+    """
     first: Int
   }
 
@@ -45,8 +55,15 @@ export default gql`
     """
     category: [String!]
 
+    """
+    Args for implementing windowed pagination
+    """
     windowedPagination: WindowedPaginationArgs
-#    cursorPagination: CursoredPaginationArgs
+
+    """
+    Args for implementing cursor-based pagination
+    """
+    cursorPagination: CursoredPaginationArgs
   }
 
   """
@@ -68,14 +85,21 @@ export default gql`
     """
     totalCount: Int!
 
+    """
+    Proposed query if user made a typo
+    """
     suggest: String
   }
 
   extend type Query {
     """
-
+    Query for search over the location instances
     """
     locationInstancesSearch(input: SearchInput!): LocationInstanceConnection!
+
+    """
+    Query for search over the locations
+    """
     locationsSearch(input: SearchInput!): LocationSearchConnection!
   }
 `;
