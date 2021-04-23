@@ -53,7 +53,7 @@ const Query = {
         });
       }),
       totalCount: result.body.hits.total.value,
-      suggest: result.body.suggest.phrase_suggester?.shift()?.options?.shift()?.highlighted,
+      suggest: result.body.suggest?.phrase_suggester?.shift()?.options?.shift()?.highlighted,
     };
   },
 
