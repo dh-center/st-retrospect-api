@@ -91,7 +91,7 @@ const Query = {
           query: input.query,
           fuzziness: 3,
           fields: [
-            'instances.name.*^4',
+            'instances.name.*^10',
             'description.*^2',
             '*',
           ],
@@ -104,7 +104,27 @@ const Query = {
       body: {
         from: input.windowedPagination?.skip,
         size: input.windowedPagination?.first,
-        query
+        query,
+        suggest: {
+          text: input.query,
+          phrase: {
+            phrase: {
+              field: 'suggest',
+              size: 1,
+              gram_size: 3,
+              direct_generator: [
+                {
+                  field: 'suggest',
+                  suggest_mode: 'always',
+                },
+              ],
+              highlight: {
+                pre_tag: '<b>',
+                post_tag: '</b>',
+              },
+            },
+          },
+        },
       },
     });
 
@@ -112,16 +132,16 @@ const Query = {
 
     return {
       edges:
-        result.body.hits.hits.map((hit: any) => {
-          return ({
+        result.body.hits.hits.map((hit: any) =>
+          ({
             node: {
               _id: hit._id,
               ...hit._source,
             },
-          });
-        }),
+            searchScore: hit._score,
+          })),
       totalCount: result.body.hits.total.value,
-      suggest: result.body.suggest?.phrase_suggester?.shift()?.options?.shift()?.highlighted,
+      suggest: result.body.suggest?.phrase?.shift()?.options?.shift()?.highlighted,
     };
   },
 

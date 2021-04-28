@@ -251,6 +251,11 @@ export default gql`
     Location info
     """
     node: Location!
+
+    """
+    How much the location matches the search term
+    """
+    searchScore: Float
   }
 
 

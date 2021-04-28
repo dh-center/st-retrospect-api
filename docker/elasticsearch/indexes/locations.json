@@ -6,12 +6,18 @@
           "trigram": {
             "type": "custom",
             "tokenizer": "standard",
-            "filter": ["lowercase","shingle"]
+            "filter": [
+              "lowercase",
+              "shingle"
+            ]
           },
           "reverse": {
             "type": "custom",
             "tokenizer": "standard",
-            "filter": ["lowercase","reverse"]
+            "filter": [
+              "lowercase",
+              "reverse"
+            ]
           }
         },
         "filter": {
@@ -24,254 +30,271 @@
       }
     }
   },
-  "mappings" : {
-    "properties" : {
-      "__v" : {
-        "type" : "long"
+  "mappings": {
+    "properties": {
+      "__v": {
+        "type": "long"
       },
-      "addresses" : {
-        "properties" : {
-          "address" : {
-            "properties" : {
-              "en" : {
-                "type" : "text",
+      "addresses": {
+        "properties": {
+          "address": {
+            "properties": {
+              "en": {
+                "type": "text",
                 "analyzer": "english",
-                "fields" : {
-                  "keyword" : {
-                    "type" : "keyword",
-                    "ignore_above" : 256
+                "copy_to": [
+                  "suggest"
+                ],
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
                   }
                 }
               },
-              "ru" : {
-                "type" : "text",
+              "ru": {
+                "type": "text",
                 "analyzer": "russian",
-                "fields" : {
-                  "keyword" : {
-                    "type" : "keyword",
-                    "ignore_above" : 256
+                "copy_to": [
+                  "suggest"
+                ],
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
                   }
                 }
               }
             }
           },
-          "countryCode" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
+          "countryCode": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           },
-          "place" : {
-            "properties" : {
-              "en" : {
-                "type" : "text",
-                "fields" : {
-                  "keyword" : {
-                    "type" : "keyword",
-                    "ignore_above" : 256
+          "place": {
+            "properties": {
+              "en": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
                   }
                 }
               },
-              "ru" : {
-                "type" : "text",
-                "fields" : {
-                  "keyword" : {
-                    "type" : "keyword",
-                    "ignore_above" : 256
+              "ru": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
                   }
                 }
               }
             }
           },
-          "regionCode" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
+          "regionCode": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           }
         }
       },
-      "architects" : {
-        "properties" : {
-          "en" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
+      "architects": {
+        "properties": {
+          "en": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           },
-          "ru" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
+          "ru": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           }
         }
       },
-      "instances" : {
+      "instances": {
         "type": "nested",
         "include_in_root": true,
-        "properties" : {
-          "_id" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
+        "properties": {
+          "_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           },
-          "constructionDate" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
+          "constructionDate": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           },
-          "demolitionDate" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
+          "demolitionDate": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           },
-          "description" : {
-            "properties" : {
-              "en" : {
-                "type" : "text",
+          "description": {
+            "properties": {
+              "en": {
+                "type": "text",
                 "analyzer": "english",
-                "fields" : {
-                  "keyword" : {
-                    "type" : "keyword",
-                    "ignore_above" : 256
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
                   }
                 }
               },
-              "ru" : {
-                "type" : "text",
+              "ru": {
+                "type": "text",
                 "analyzer": "russian",
-                "fields" : {
-                  "keyword" : {
-                    "type" : "keyword",
-                    "ignore_above" : 256
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
                   }
                 }
               }
             }
           },
-          "endDate" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
+          "endDate": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           },
-          "locationId" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
+          "locationId": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           },
-          "locationStyle" : {
-            "properties" : {
-              "_id" : {
-                "type" : "text",
-                "fields" : {
-                  "keyword" : {
-                    "type" : "keyword",
-                    "ignore_above" : 256
+          "locationStyle": {
+            "properties": {
+              "_id": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
                   }
                 }
               },
-              "name" : {
-                "properties" : {
-                  "en" : {
-                    "type" : "text",
+              "name": {
+                "properties": {
+                  "en": {
+                    "type": "text",
                     "analyzer": "english",
-                    "fields" : {
-                      "keyword" : {
-                        "type" : "keyword",
-                        "ignore_above" : 256
+                    "copy_to": [
+                      "suggest"
+                    ],
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
                       }
                     }
                   },
-                  "ru" : {
-                    "type" : "text",
+                  "ru": {
+                    "type": "text",
                     "analyzer": "russian",
-                    "fields" : {
-                      "keyword" : {
-                        "type" : "keyword",
-                        "ignore_above" : 256
+                    "copy_to": [
+                      "suggest"
+                    ],
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
                       }
                     }
                   }
-
                 }
               }
             }
           },
-          "locationStyleId" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
+          "locationStyleId": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           },
-          "locationTypes" : {
-            "properties" : {
-              "__v" : {
-                "type" : "long"
+          "locationTypes": {
+            "properties": {
+              "__v": {
+                "type": "long"
               },
-              "_id" : {
-                "type" : "text",
-                "fields" : {
-                  "keyword" : {
-                    "type" : "keyword",
-                    "ignore_above" : 256
+              "_id": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
                   }
                 }
               },
-              "name" : {
-                "properties" : {
-                  "en" : {
-                    "type" : "text",
+              "name": {
+                "properties": {
+                  "en": {
+                    "type": "text",
                     "analyzer": "english",
-                    "fields" : {
-                      "keyword" : {
-                        "type" : "keyword",
-                        "ignore_above" : 256
+                    "copy_to": [
+                      "suggest"
+                    ],
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
                       }
                     }
                   },
-                  "ru" : {
-                    "type" : "text",
+                  "ru": {
+                    "type": "text",
                     "analyzer": "russian",
-                    "fields" : {
-                      "keyword" : {
-                        "type" : "keyword",
-                        "ignore_above" : 256
+                    "copy_to": [
+                      "suggest"
+                    ],
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
                       }
                     }
                   }
@@ -279,113 +302,132 @@
               }
             }
           },
-          "locationTypesId" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
+          "locationTypesId": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           },
-          "mainPhotoLink" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
+          "mainPhotoLink": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           },
-          "name" : {
-            "properties" : {
-              "en" : {
-                "type" : "text",
+          "name": {
+            "properties": {
+              "en": {
+                "type": "text",
                 "analyzer": "english",
-                "fields" : {
-                  "keyword" : {
-                    "type" : "keyword",
-                    "ignore_above" : 256
+                "copy_to": [
+                  "suggest"
+                ],
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
                   }
                 }
               },
-              "ru" : {
-                "type" : "text",
+              "ru": {
+                "type": "text",
                 "analyzer": "russian",
-                "fields" : {
-                  "keyword" : {
-                    "type" : "keyword",
-                    "ignore_above" : 256
+                "copy_to": [
+                  "suggest"
+                ],
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
                   }
                 }
               }
             }
           },
-          "photoLinks" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
+          "photoLinks": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           },
-          "source" : {
-            "properties" : {
-              "en" : {
-                "type" : "text",
-                "fields" : {
-                  "keyword" : {
-                    "type" : "keyword",
-                    "ignore_above" : 256
+          "source": {
+            "properties": {
+              "en": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
                   }
                 }
               },
-              "ru" : {
-                "type" : "text",
-                "fields" : {
-                  "keyword" : {
-                    "type" : "keyword",
-                    "ignore_above" : 256
+              "ru": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
                   }
                 }
               }
             }
           },
-          "startDate" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
+          "startDate": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           },
-          "wikiLink" : {
-            "type" : "text",
-            "fields" : {
-              "keyword" : {
-                "type" : "keyword",
-                "ignore_above" : 256
+          "wikiLink": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           }
         }
       },
-      "latitude" : {
-        "type" : "float"
+      "latitude": {
+        "type": "float"
       },
-      "locationInstanceIds" : {
-        "type" : "text",
-        "fields" : {
-          "keyword" : {
-            "type" : "keyword",
-            "ignore_above" : 256
+      "locationInstanceIds": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
           }
         }
       },
-      "longitude" : {
-        "type" : "float"
+      "longitude": {
+        "type": "float"
+      },
+      "suggest": {
+        "type": "text",
+        "fields": {
+          "trigram": {
+            "type": "text",
+            "analyzer": "trigram"
+          },
+          "reverse": {
+            "type": "text",
+            "analyzer": "reverse"
+          }
+        }
       }
     }
   }
