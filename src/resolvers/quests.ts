@@ -8,11 +8,13 @@ import { ObjectId } from 'mongodb';
 import { EditorData } from '../types/editorData';
 import emptyMutation from '../utils/emptyMutation';
 import sendNotify from '../utils/telegramNotify';
-import { QuestUserProgressStates, TaskTypes, UpdateQuestInput } from '../generated/graphql';
+import { LocationInstance, QuestUserProgressStates, TaskTypes, UpdateQuestInput } from '../generated/graphql';
 import mergeWithCustomizer from '../utils/mergeWithCustomizer';
 import { UserInputError } from 'apollo-server-express';
 import { ExpiredAccessToken, InvalidAccessToken } from '../errorTypes';
 import getUserLevel from '../utils/getUserLevel';
+import { LocationInstanceDBScheme } from './locations';
+import { fromGlobalId } from '../utils/globalId';
 
 /**
  * Scheme of quest in database
@@ -221,6 +223,30 @@ const Quest = {
     } else {
       return getUserLevel(currentUser.exp) < quest.minLevel ? QuestUserProgressStates.Locked : QuestUserProgressStates.Available;
     }
+  },
+
+  /**
+   * Returns location instances that are present in the quest
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async locationInstances(
+    parent: QuestDBScheme,
+    args: undefined,
+    { dataLoaders }: ResolverContextBase
+  ): Promise<LocationInstanceDBScheme[]> {
+    const locationInstancesIds = parent.data?.blocks
+      .filter(block => block.type === 'locationInstance' && typeof block.data.locationInstanceId === 'string')
+      .map(block => fromGlobalId(block.data.locationInstanceId as string).id);
+
+    if (!locationInstancesIds || !locationInstancesIds.length) {
+      return [];
+    }
+
+    return (await dataLoaders.locationInstanceById.loadMany(locationInstancesIds))
+      .filter((loc): loc is LocationInstanceDBScheme => !!loc);
   },
 };
 
