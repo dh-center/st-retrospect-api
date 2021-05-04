@@ -4,7 +4,12 @@ import { ObjectId } from 'mongodb';
 import type { RelationDBScheme } from './resolvers/relations';
 import type { PersonDBScheme } from './resolvers/persons';
 import type { ObjectMap } from './types/utils';
-import type { LocationDBScheme, LocationStyleDBScheme, LocationTypeDBScheme } from './resolvers/locations';
+import type {
+  LocationDBScheme,
+  LocationInstanceDBScheme,
+  LocationStyleDBScheme,
+  LocationTypeDBScheme
+} from './resolvers/locations';
 import type { QuestDBScheme } from './resolvers/quests';
 import { countries, regions } from './resolvers/address';
 import type { RelationTypeDBScheme } from './resolvers/relationTypes';
@@ -91,7 +96,7 @@ export default class DataLoaders {
    * Loader for fetching locationInstance by their ids
    */
   public locationInstanceById = new DataLoader(
-    async (locationInstanceIds: readonly string[]) => this.batchByIds<LocationDBScheme>('location_instances', locationInstanceIds),
+    async (locationInstanceIds: readonly string[]) => this.batchByIds<LocationInstanceDBScheme>('location_instances', locationInstanceIds),
     { cache: false }
   );
 
