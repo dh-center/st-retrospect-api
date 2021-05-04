@@ -52,6 +52,11 @@ db.createView('location_instances_denormalized', 'location_instances', [
 
 db.createView('locations_denormalized', 'location_instances', [
   {
+    '$project': {
+      'source': 0
+    }
+  },
+  {
     '$lookup': {
       'from': 'locationtypes',
       'localField': 'locationTypesId',
