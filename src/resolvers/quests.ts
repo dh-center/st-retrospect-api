@@ -8,7 +8,7 @@ import { ObjectId } from 'mongodb';
 import { EditorData } from '../types/editorData';
 import emptyMutation from '../utils/emptyMutation';
 import sendNotify from '../utils/telegramNotify';
-import { LocationInstance, QuestUserProgressStates, TaskTypes, UpdateQuestInput } from '../generated/graphql';
+import { QuestUserProgressStates, TaskTypes, UpdateQuestInput } from '../generated/graphql';
 import mergeWithCustomizer from '../utils/mergeWithCustomizer';
 import { UserInputError } from 'apollo-server-express';
 import { ExpiredAccessToken, InvalidAccessToken } from '../errorTypes';

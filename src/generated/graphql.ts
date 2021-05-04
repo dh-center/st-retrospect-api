@@ -1198,6 +1198,8 @@ export type Quest = Node & {
   questProgressState: QuestUserProgressStates;
   /** Quest tags */
   tags: Array<Tag>;
+  /** Location instances that are present in the quest */
+  locationInstances: Array<LocationInstance>;
 };
 
 /** Model for representing list of quests */
@@ -2245,6 +2247,7 @@ export type QuestResolvers<ContextType = any, ParentType extends ResolversParent
   earnedExp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   questProgressState?: Resolver<ResolversTypes['QuestUserProgressStates'], ParentType, ContextType>;
   tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
+  locationInstances?: Resolver<Array<ResolversTypes['LocationInstance']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
