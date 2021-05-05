@@ -910,11 +910,11 @@ export type Relation = Node & {
   /** Relation's id */
   id: Scalars['ID'];
   /** Person in relation */
-  person?: Maybe<Person>;
+  person: Person;
   /** Location in relation */
-  locationInstance?: Maybe<LocationInstance>;
+  locationInstance: LocationInstance;
   /** Relation type */
-  relationType?: Maybe<RelationType>;
+  relationType: RelationType;
   /** Relation's quote */
   quote?: Maybe<Scalars['MultilingualString']>;
   /** Link to quote source */
@@ -1219,6 +1219,8 @@ export type Quest = Node & {
   questProgressState: QuestUserProgressStates;
   /** Quest tags */
   tags: Array<Tag>;
+  /** Location instances that are present in the quest */
+  locationInstances: Array<LocationInstance>;
 };
 
 /** Model for representing list of quests */
@@ -2162,9 +2164,9 @@ export type LocationInstanceMutationsResolvers<ContextType = any, ParentType ext
 
 export type RelationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Relation'] = ResolversParentTypes['Relation']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  person?: Resolver<Maybe<ResolversTypes['Person']>, ParentType, ContextType>;
-  locationInstance?: Resolver<Maybe<ResolversTypes['LocationInstance']>, ParentType, ContextType>;
-  relationType?: Resolver<Maybe<ResolversTypes['RelationType']>, ParentType, ContextType>;
+  person?: Resolver<ResolversTypes['Person'], ParentType, ContextType>;
+  locationInstance?: Resolver<ResolversTypes['LocationInstance'], ParentType, ContextType>;
+  relationType?: Resolver<ResolversTypes['RelationType'], ParentType, ContextType>;
   quote?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   link?: Resolver<Maybe<ResolversTypes['MultilingualString']>, ParentType, ContextType>;
   startDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -2300,6 +2302,7 @@ export type QuestResolvers<ContextType = any, ParentType extends ResolversParent
   earnedExp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   questProgressState?: Resolver<ResolversTypes['QuestUserProgressStates'], ParentType, ContextType>;
   tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
+  locationInstances?: Resolver<Array<ResolversTypes['LocationInstance']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

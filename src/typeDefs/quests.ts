@@ -109,6 +109,11 @@ export default gql`
     Quest tags
     """
     tags: [Tag!]! @dataLoader(dataLoaderName: "tagById", fieldName: "tagIds") @default(value: "[]")
+
+    """
+    Location instances that are present in the quest
+    """
+    locationInstances: [LocationInstance!]!
   }
 
   """

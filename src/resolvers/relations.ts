@@ -23,17 +23,17 @@ export interface RelationDBScheme {
   /**
    * Location id
    */
-  locationInstanceId?: ObjectId | null;
+  locationInstanceId: ObjectId;
 
   /**
    * Person id
    */
-  personId?: ObjectId | null;
+  personId: ObjectId;
 
   /**
    * Relation type id
    */
-  relationId?: ObjectId | null;
+  relationId: ObjectId;
 
   /**
    * Relation quote
@@ -92,7 +92,7 @@ const RelationMutations = {
     { db, tokenData, collection }: ResolverContextBase<true>
   ): Promise<UpdateMutationPayload<RelationDBScheme>> {
     const { id, ...rest } = input;
-    const newInput: RelationDBScheme = {
+    const newInput = {
       _id: new ObjectId(id),
       ...rest,
     };

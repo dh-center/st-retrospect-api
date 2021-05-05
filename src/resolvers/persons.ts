@@ -8,8 +8,9 @@ import {
 } from '../types/graphql';
 import { ObjectId } from 'mongodb';
 import sendNotify from '../utils/telegramNotify';
-import { CreatePersonInput, UpdatePersonInput } from '../generated/graphql';
+import { CreatePersonInput, PersonMutationsDeleteArgs, UpdatePersonInput } from '../generated/graphql';
 import mergeWithCustomizer from '../utils/mergeWithCustomizer';
+import { UserInputError } from 'apollo-server-express';
 
 /**
  * Part of the person with professions
@@ -151,16 +152,24 @@ const PersonMutations = {
    */
   async delete(
     parent: undefined,
-    { id }: { id: string },
-    { db, tokenData }: ResolverContextBase<true>
+    { id }: PersonMutationsDeleteArgs,
+    { db, collection, tokenData }: ResolverContextBase<true>
   ): Promise<DeleteMutationPayload> {
-    const originalPerson = await db.collection('persons').findOne({
+    const person = await collection('persons').findOne({
       _id: id,
     });
 
-    await sendNotify('Person', 'persons', db, tokenData, 'delete', originalPerson);
+    if (!person) {
+      throw new UserInputError('There is no person with such id: ' + id);
+    }
 
-    await db.collection<PersonDBScheme>('persons').deleteOne({ _id: new ObjectId(id) });
+    await sendNotify('Person', 'persons', db, tokenData, 'delete', person);
+
+    await collection('persons').deleteOne({ _id: new ObjectId(id) });
+
+    await collection('relations').deleteMany({
+      personId: id,
+    });
 
     return {
       recordId: new ObjectId(id),
