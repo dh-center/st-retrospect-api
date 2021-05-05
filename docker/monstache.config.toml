@@ -23,17 +23,17 @@ namespace = "retrospect.location_instances_denormalized"
 index = "retrospect.location_instances"
 
 
-
+# Update index with locations on location instances changes
 [[relate]]
-namespace = "retrospect.location_instances"  # when a thing changes look it up in the assoicated view by _id and index that
+namespace = "retrospect.location_instances"
 with-namespace = "retrospect.locations_denormalized"
-src-field = "_id" # use the _id field of the state that changed to lookup associated things
-match-field = "instances._id" # only trigger change events for the things where thing.s (match-field) = state._id (src-field).
+src-field = "_id"
+match-field = "instances._id"
 dot-notation = true
-keep-src = true # ignore the original thing that changed and instead just use the lookup of that thing via the view
+keep-src = true
 
-
+# Update index with locations on location changes
 [[relate]]
-namespace = "retrospect.locations" # when a state changes trigger a thing change event since thing is associated to a state
+namespace = "retrospect.locations"
 with-namespace = "retrospect.locations_denormalized"
 keep-src = true
