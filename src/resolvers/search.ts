@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { QueryLocationsInstancesSearchArgs } from '../generated/graphql';
+import {
+  QueryLocationInstanceByPersonSearchArgs,
+  QueryLocationInstancesSearchArgs,
+  QueryLocationsSearchArgs
+} from '../generated/graphql';
 import getElasticClient from '../utils/getElasticClient';
 import elasticIndexes from '../utils/elasticIndexes';
 import { ResolverContextBase } from '../types/graphql';
@@ -11,7 +15,7 @@ const Query = {
    * @param parent - this is the return value of the resolver for this field's parent
    * @param args - contains all GraphQL arguments provided for this field
    */
-  async locationInstancesSearch(parent: undefined, { input }: QueryLocationsInstancesSearchArgs) { // todo add return value
+  async locationInstancesSearch(parent: undefined, { input }: QueryLocationInstancesSearchArgs) { // todo add return value
     const client = getElasticClient();
     let query;
 
@@ -62,7 +66,7 @@ const Query = {
    * @param args - contains all GraphQL arguments provided for this field
    * @param context - this object is shared across all resolvers that execute for a particular operation
    */
-  async locationsSearch(parent: undefined, { input }: QueryLocationsInstancesSearchArgs, { collection }: ResolverContextBase) { // todo add return value
+  async locationsSearch(parent: undefined, { input }: QueryLocationsSearchArgs, { collection }: ResolverContextBase) { // todo add return value
     const client = getElasticClient();
     let query;
 
@@ -145,6 +149,65 @@ const Query = {
     };
   },
 
+
+  async locationInstanceByPersonSearch(parent: undefined, { input }: QueryLocationInstanceByPersonSearchArgs, { collection }: ResolverContextBase) {
+    const client = getElasticClient();
+    let query;
+
+    if (!input.query) {
+      const relations = await collection('relations')
+        .find()
+        .skip(input.windowedPagination?.skip || 0)
+        .limit(input.windowedPagination?.first || 10)
+        .toArray();
+
+
+      return {
+        edges:
+          relations.map((location) => {
+            return ({
+              node: location,
+            });
+          }),
+        totalCount: await collection('relations')
+          .find()
+          .count(),
+      };
+    } else {
+      query = {
+        multi_match: {
+          query: input.query,
+          fuzziness: 3,
+          fields: [
+            'person.name.*',
+          ],
+        },
+      };
+    }
+
+    const result = await client.search({
+      index: elasticIndexes.relations,
+      body: {
+        from: input.windowedPagination?.skip,
+        size: input.windowedPagination?.first,
+        query,
+      },
+    });
+
+    // todo fix types
+
+    return {
+      edges:
+        result.body.hits.hits.map((hit: any) => {
+          return ({
+            node: hit._source.locationInstance,
+            searchScore: hit._score,
+          });
+        }),
+      totalCount: result.body.hits.total.value,
+      suggest: result.body.suggest?.phrase?.shift()?.options?.shift()?.highlighted,
+    };
+  },
 };
 
 export default {

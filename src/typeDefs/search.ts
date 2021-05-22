@@ -101,5 +101,10 @@ export default gql`
     Query for search over the locations
     """
     locationsSearch(input: SearchInput!): LocationSearchConnection!
+
+    """
+    Query for searching location instances related with some person
+    """
+    locationInstanceByPersonSearch(input: SearchInput!): LocationInstanceConnection!
   }
 `;

@@ -9,3 +9,5 @@ curl -H "Authorization: ApiKey ${ELASTICSEARCH_API_KEY}" -XDELETE "${endpoint}/$
 curl -H "Authorization: ApiKey ${ELASTICSEARCH_API_KEY}" -XPUT -H 'Content-Type: application/json' "${endpoint}/${index_prefix}.locations" -d @./indexes/locations.json
 
 curl -H "Authorization: ApiKey ${ELASTICSEARCH_API_KEY}" -XPUT -H 'Content-Type: application/json' "${endpoint}/${index_prefix}.location_instances" -d @./indexes/location_instances.json
+
+curl -H "Authorization: ApiKey ${ELASTICSEARCH_API_KEY}" -XPUT -H 'Content-Type: application/json' "${endpoint}/${index_prefix}.relations" -d @./indexes/relations.json

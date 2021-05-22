@@ -10,6 +10,7 @@ namespace-exclude-regex = '^retrospect\.users'
 direct-read-namespaces = [
   "retrospect.locations_denormalized",
   "retrospect.location_instances_denormalized",
+  "retrospect.relations_denormalized"
 ]
 
 verbose = true
@@ -22,7 +23,11 @@ index = "retrospect.locations"
 namespace = "retrospect.location_instances_denormalized"
 index = "retrospect.location_instances"
 
+[[mapping]]
+namespace = "retrospect.relations_denormalized"
+index = "retrospect.relations"
 
+### retrospect.locations configuration
 # Update index with locations on location instances changes
 [[relate]]
 namespace = "retrospect.location_instances"
@@ -37,3 +42,5 @@ keep-src = true
 namespace = "retrospect.locations"
 with-namespace = "retrospect.locations_denormalized"
 keep-src = true
+
+### retrospect.relations index config
