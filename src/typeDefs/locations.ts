@@ -277,8 +277,6 @@ export default gql`
     Number of available edges
     """
     totalCount: Int!
-
-    suggest: String
   }
 
   """
