@@ -5,28 +5,73 @@ import elasticIndexes from './elasticIndexes';
 import { LocationDBScheme, LocationInstanceDBScheme } from '../resolvers/locations';
 
 
+/**
+ * Input for searching data
+ */
 interface SearchInput {
+  /**
+   * Query string
+   */
   query: string;
+
+  /**
+   * How many items to skip in results array
+   */
   skip?: number;
+
+  /**
+   * How many items to find
+   */
   first?: number;
 }
 
-interface SearchResults<T> {
-  nodes: T
+/**
+ * Search results representation
+ */
+export interface SearchResults<T> {
+  /**
+   * Finded nodes
+   */
+  nodes: T[]
+
+  /**
+   * Proposed query if user made a typo
+   */
   suggest?: string;
+
+  /**
+   * Number of available result items
+   */
   totalCount: number;
+
+  /**
+   * Proposed query if user made a typo with indication of the place of it
+   */
   highlightedSuggest?: string;
 }
 
+/**
+ * Query suggestion form
+ */
 interface Suggestion {
+  /**
+   * Proposed query if user made a typo
+   */
   raw: string;
+
+  /**
+   * Proposed query if user made a typo with indication of the place of it
+   */
   highlighted: string;
 }
 
 /**
- *
+ * Wrapper for search methods
  */
 export default class SearchService {
+  /**
+   * Elasticsearch client for making queries
+   */
   private readonly client: Client = getElasticClient();
 
   /**

@@ -1,6 +1,11 @@
-import { QueryResolvers, SearchInput } from '../generated/graphql';
+import {
+  QueryLocationInstanceByPersonSearchArgs,
+  QueryLocationsSearchArgs,
+  SearchInput
+} from '../generated/graphql';
 import { Collections, ResolverContextBase } from '../types/graphql';
-import SearchService from '../utils/searchService';
+import SearchService, { SearchResults } from '../utils/searchService';
+import { LocationDBScheme, LocationInstanceDBScheme } from './locations';
 
 const searchService = new SearchService();
 
@@ -11,7 +16,7 @@ const searchService = new SearchService();
  * @param input - search input
  * @param context - request context
  */
-async function findInDatabase<T extends keyof Collections>(entityName: T, input: SearchInput, { collection }: ResolverContextBase): Promise<any> {
+async function findInDatabase<T extends keyof Collections>(entityName: T, input: SearchInput, { collection }: ResolverContextBase): Promise<SearchResults<Collections[T]>> {
   const entities = await collection(entityName)
     .find()
     .skip(input.skip || 0)
@@ -19,12 +24,12 @@ async function findInDatabase<T extends keyof Collections>(entityName: T, input:
     .toArray();
 
   return {
-    node: entities,
+    nodes: entities,
     totalCount: await collection(entityName).count(),
   };
 }
 
-const Query: QueryResolvers = {
+const Query = {
   /**
    * Full-text search by locations
    *
@@ -32,7 +37,11 @@ const Query: QueryResolvers = {
    * @param args - contains all GraphQL arguments provided for this field
    * @param context - this object is shared across all resolvers that execute for a particular operation
    */
-  async locationsSearch(parent, { input }, context): Promise<any> {
+  async locationsSearch(
+    parent: undefined,
+    { input }: QueryLocationsSearchArgs,
+    context: ResolverContextBase
+  ): Promise<SearchResults<LocationDBScheme>> {
     if (!input.query) {
       return findInDatabase('locations', input, context);
     }
@@ -48,7 +57,11 @@ const Query: QueryResolvers = {
    * @param args - contains all GraphQL arguments provided for this field
    * @param context - this object is shared across all resolvers that execute for a particular operation
    */
-  async locationInstanceByPersonSearch(parent, { input }, context) {
+  async locationInstanceByPersonSearch(
+    parent: undefined,
+    { input }: QueryLocationInstanceByPersonSearchArgs,
+    context: ResolverContextBase
+  ): Promise<SearchResults<LocationInstanceDBScheme>> {
     if (!input.query) {
       return findInDatabase('location_instances', input, context);
     }
