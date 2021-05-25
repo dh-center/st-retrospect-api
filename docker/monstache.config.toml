@@ -8,10 +8,39 @@ elasticsearch-urls = ["http://elastic-search:9200"]
 namespace-exclude-regex = '^retrospect\.users'
 
 direct-read-namespaces = [
-  "retrospect.persons",
-  "retrospect.location_instances",
-  "retrospect.locations",
-  "retrospect.locationtypes",
-  "retrospect.relations",
-  "retrospect.relationtypes",
+  "retrospect.locations_denormalized",
+  "retrospect.location_instances_denormalized",
+  "retrospect.relations_denormalized"
 ]
+
+verbose = true
+
+[[mapping]]
+namespace = "retrospect.locations_denormalized"
+index = "retrospect.locations"
+
+[[mapping]]
+namespace = "retrospect.location_instances_denormalized"
+index = "retrospect.location_instances"
+
+[[mapping]]
+namespace = "retrospect.relations_denormalized"
+index = "retrospect.relations"
+
+### retrospect.locations configuration
+# Update index with locations on location instances changes
+[[relate]]
+namespace = "retrospect.location_instances"
+with-namespace = "retrospect.locations_denormalized"
+src-field = "_id"
+match-field = "instances._id"
+dot-notation = true
+keep-src = true
+
+# Update index with locations on location changes
+[[relate]]
+namespace = "retrospect.locations"
+with-namespace = "retrospect.locations_denormalized"
+keep-src = true
+
+### retrospect.relations index config

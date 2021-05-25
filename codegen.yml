@@ -9,6 +9,8 @@ generates:
       - typescript-resolvers
       - add:
           content: "/* eslint-disable */"
+    config:
+      contextType: ../types/graphql#ResolverContextBase
 
 config:
   scalars:

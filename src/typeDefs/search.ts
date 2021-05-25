@@ -13,28 +13,88 @@ export default gql`
     """
     Start of search range
     """
-    startYear: Int!
+    startYear: Int
 
     """
     End of search range
     """
-    endYear: Int!
+    endYear: Int
 
     """
     Entity category
     """
     category: [String!]
+
+    """
+    How many documents in the selection to skip
+    """
+    skip: Int! = 0
+
+    """
+    How many documents to fetch
+    """
+    first: Int! = 20
   }
 
   """
-  Possible data types that the search might return
+  Model for representing result of locations search query
   """
-  union SearchResult = LocationInstance | Person | Quest
+  type LocationsSearchResult {
+    """
+    List of finded locations
+    """
+    nodes: [Location!]! @default(value: "[]")
+
+    """
+    Number of available result items
+    """
+    totalCount: Int!
+
+    """
+    Proposed query if user made a typo
+    """
+    suggest: String
+
+    """
+    Proposed query if user made a typo with indication of the place of it
+    """
+    highlightedSuggest: String
+  }
+
+  """
+  Model for representing result of location instances search query
+  """
+  type LocationInstancesSearchResult {
+    """
+    List of finded locations
+    """
+    nodes: [LocationInstance!]! @default(value: "[]")
+
+    """
+    Number of available result items
+    """
+    totalCount: Int!
+
+    """
+    Proposed query if user made a typo
+    """
+    suggest: String
+
+    """
+    Proposed query if user made a typo with indication of the place of it
+    """
+    highlightedSuggest: String
+  }
 
   extend type Query {
     """
-    Search for entities by search query
+    Query for search over the locations
     """
-    search(input: SearchInput!): [SearchResult!]!
+    locationsSearch(input: SearchInput!): LocationsSearchResult!
+
+    """
+    Query for searching location instances related with some person
+    """
+    locationInstanceByPersonSearch(input: SearchInput!): LocationInstancesSearchResult!
   }
 `;

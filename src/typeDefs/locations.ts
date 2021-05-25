@@ -170,7 +170,7 @@ export default gql`
     """
     Location relations
     """
-    relations: [Relation!]! @dataLoader(dataLoaderName: "relationByLocationInstanceId", fieldName: "_id")
+    relations: [Relation!]! @dataLoader(dataLoaderName: "relationByLocationInstanceId", fieldName: "_id") @default(value: "[]")
 
     """
     Array of architects
@@ -215,7 +215,7 @@ export default gql`
     """
     Possible location representations
     """
-    instances: [LocationInstance!]! @dataLoader(dataLoaderName: "locationInstanceById", fieldName: "locationInstanceIds")
+    instances: [LocationInstance!]! @dataLoader(dataLoaderName: "locationInstanceById", fieldName: "locationInstanceIds") @default(value: "[]")
   }
 
   """
@@ -251,6 +251,47 @@ export default gql`
     Location info
     """
     node: Location!
+
+    """
+    How much the location matches the search term
+    """
+    searchScore: Float
+  }
+
+
+  """
+  Model for representing list of locations instances
+  """
+  type LocationInstanceConnection {
+    """
+    List of location instances edges
+    """
+    edges: [LocationInstanceEdge!]!
+
+    """
+    Information about this page
+    """
+    pageInfo: PageInfo!
+
+    """
+    Number of available edges
+    """
+    totalCount: Int!
+  }
+
+  """
+  Information about specific location instance in connection
+  """
+  type LocationInstanceEdge {
+    """
+    Cursor of this location
+    """
+    cursor: Cursor!
+
+    """
+    Location instance info
+    """
+    node: LocationInstance!
   }
 
   extend type Query {
@@ -267,13 +308,13 @@ export default gql`
     """
     locations(
       "The cursor after which we take the data"
-      after: Cursor,
+      after: Cursor
 
       "The cursor after before we take the data"
-      before: Cursor,
+      before: Cursor
 
       "Number of requested nodes after a node with a cursor in the after argument"
-      first: Int,
+      first: Int
 
       "Number of requested nodes before a node with a cursor in the before argument"
       last: Int

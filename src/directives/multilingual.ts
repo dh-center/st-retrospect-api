@@ -45,7 +45,10 @@ export default function multilingualDirective(directiveName: string): DirectiveT
               return mapMultilingualFields(fields[fieldNameToMap] as {[key: string]: unknown}, newFieldsToMap, language);
             }
           }
-          if (fields[fieldNameToMap]) {
+
+          const fieldValue = fields[fieldNameToMap];
+
+          if (fieldValue !== null && fieldValue !== undefined) {
             fields[fieldNameToMap] = {
               [language.toLowerCase()]: fields[fieldNameToMap],
             };

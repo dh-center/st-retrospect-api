@@ -1,40 +1,72 @@
-import { QuerySearchArgs } from '../generated/graphql';
-import getElasticClient from '../utils/getElasticClient';
-import elasticIndexes from '../utils/elasticIndexes';
+import {
+  QueryLocationInstanceByPersonSearchArgs,
+  QueryLocationsSearchArgs,
+  SearchInput
+} from '../generated/graphql';
+import { Collections, ResolverContextBase } from '../types/graphql';
+import SearchService, { SearchResults } from '../utils/searchService';
+import { LocationDBScheme, LocationInstanceDBScheme } from './locations';
+
+const searchService = new SearchService();
+
+/**
+ * Find entities in database if no query string provided
+ *
+ * @param entityName - what entity to find
+ * @param input - search input
+ * @param context - request context
+ */
+async function findInDatabase<T extends keyof Collections>(entityName: T, input: SearchInput, { collection }: ResolverContextBase): Promise<SearchResults<Collections[T]>> {
+  const entities = await collection(entityName)
+    .find()
+    .skip(input.skip || 0)
+    .limit(input.first || 10)
+    .toArray();
+
+  return {
+    nodes: entities,
+    totalCount: await collection(entityName).count(),
+  };
+}
 
 const Query = {
   /**
-   * Search for entities by search query
+   * Full-text search by locations
    *
    * @param parent - this is the return value of the resolver for this field's parent
    * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
-  async search(parent: undefined, args: QuerySearchArgs) { // todo add return value
-    const client = getElasticClient();
+  async locationsSearch(
+    parent: undefined,
+    { input }: QueryLocationsSearchArgs,
+    context: ResolverContextBase
+  ): Promise<SearchResults<LocationDBScheme>> {
+    if (!input.query) {
+      return findInDatabase('locations', input, context);
+    }
 
-    const result = await client.search({
-      index: elasticIndexes.locationInstances,
-      body: {
-        query: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          multi_match: {
-            query: args.input.query,
-            fields: [
-              'name.*^2',
-              'description.*',
-            ],
-          },
-        },
-      },
-    });
+    return searchService.searchLocations(input);
+  },
 
-    // todo fix types
-    return result.body.hits.hits.map((hit: any) =>
-      ({
-        ...hit._source,
-        __typename: 'LocationInstance',
-      })
-    );
+
+  /**
+   * Full-text search of location instances by person name
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async locationInstanceByPersonSearch(
+    parent: undefined,
+    { input }: QueryLocationInstanceByPersonSearchArgs,
+    context: ResolverContextBase
+  ): Promise<SearchResults<LocationInstanceDBScheme>> {
+    if (!input.query) {
+      return findInDatabase('location_instances', input, context);
+    }
+
+    return searchService.searchLocationInstancesByPerson(input);
   },
 };
 
