@@ -158,7 +158,7 @@ export default class DataLoaders {
       const relationInMap = relationsMap[relation.personId.toString()];
 
       if (!relationInMap) {
-        relationsMap[relation.personId.toString()] = [];
+        relationsMap[relation.personId.toString()] = [ relation ];
       } else {
         relationInMap.push(relation);
       }
@@ -187,7 +187,7 @@ export default class DataLoaders {
       const relationInMap = relationsMap[relation.locationInstanceId.toString()];
 
       if (!relationInMap) {
-        relationsMap[relation.locationInstanceId.toString()] = [];
+        relationsMap[relation.locationInstanceId.toString()] = [ relation ];
       } else {
         relationInMap.push(relation);
       }

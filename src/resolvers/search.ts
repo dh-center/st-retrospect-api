@@ -1,212 +1,59 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-import {
-  QueryLocationInstanceByPersonSearchArgs,
-  QueryLocationInstancesSearchArgs,
-  QueryLocationsSearchArgs
-} from '../generated/graphql';
-import getElasticClient from '../utils/getElasticClient';
-import elasticIndexes from '../utils/elasticIndexes';
-import { ResolverContextBase } from '../types/graphql';
+import { QueryResolvers, SearchInput } from '../generated/graphql';
+import { Collections, ResolverContextBase } from '../types/graphql';
+import SearchService from '../utils/searchService';
 
-const Query = {
+const searchService = new SearchService();
+
+/**
+ * Find entities in database if no query string provided
+ *
+ * @param entityName - what entity to find
+ * @param input - search input
+ * @param context - request context
+ */
+async function findInDatabase<T extends keyof Collections>(entityName: T, input: SearchInput, { collection }: ResolverContextBase): Promise<any> {
+  const entities = await collection(entityName)
+    .find()
+    .skip(input.skip || 0)
+    .limit(input.first || 10)
+    .toArray();
+
+  return {
+    node: entities,
+    totalCount: await collection(entityName).count(),
+  };
+}
+
+const Query: QueryResolvers = {
   /**
-   * Search for entities by search query
+   * Full-text search by locations
    *
-   * @param parent - this is the return value of the resolver for this field's parent
-   * @param args - contains all GraphQL arguments provided for this field
-   */
-  async locationInstancesSearch(parent: undefined, { input }: QueryLocationInstancesSearchArgs) { // todo add return value
-    const client = getElasticClient();
-    let query;
-
-    if (!input.query) {
-      query = {
-        match_all: {},
-      };
-    } else {
-      query = {
-        multi_match: {
-          query: input.query,
-          fuzziness: 3,
-          fields: [
-            'name.*^2',
-            'description.*',
-            '*',
-          ],
-        },
-      };
-    }
-
-    const result = await client.search({
-      index: elasticIndexes.locationInstances,
-      body: {
-        from: input.windowedPagination?.skip,
-        size: input.windowedPagination?.first,
-        query,
-      },
-    });
-
-    // todo fix types
-    return {
-      edges: result.body.hits.hits.map((hit: any) => {
-        return ({
-          node: {
-            _id: hit._id,
-            ...hit._source,
-          },
-        });
-      }),
-      totalCount: result.body.hits.total.value,
-      suggest: result.body.suggest?.phrase_suggester?.shift()?.options?.shift()?.highlighted,
-    };
-  },
-
-  /**
    * @param parent - this is the return value of the resolver for this field's parent
    * @param args - contains all GraphQL arguments provided for this field
    * @param context - this object is shared across all resolvers that execute for a particular operation
    */
-  async locationsSearch(parent: undefined, { input }: QueryLocationsSearchArgs, { collection }: ResolverContextBase) { // todo add return value
-    const client = getElasticClient();
-    let query;
-
+  async locationsSearch(parent, { input }, context): Promise<any> {
     if (!input.query) {
-      const locations = await collection('locations')
-        .find()
-        .skip(input.windowedPagination?.skip || 0)
-        .limit(input.windowedPagination?.first || 10)
-        .toArray();
-
-
-      return {
-        edges:
-          locations.map((location) => {
-            return ({
-              node: location,
-            });
-          }),
-        totalCount: await collection('locations')
-          .find()
-          .count(),
-      };
-    } else {
-      query = {
-        multi_match: {
-          query: input.query,
-          fuzziness: 3,
-          fields: [
-            'instances.name.*^10',
-            'description.*^2',
-            '*',
-          ],
-        },
-      };
+      return findInDatabase('locations', input, context);
     }
 
-    const result = await client.search({
-      index: elasticIndexes.locations,
-      body: {
-        from: input.windowedPagination?.skip,
-        size: input.windowedPagination?.first,
-        query,
-        suggest: {
-          text: input.query,
-          phrase: {
-            phrase: {
-              field: 'suggest',
-              size: 1,
-              gram_size: 3,
-              direct_generator: [
-                {
-                  field: 'suggest',
-                  suggest_mode: 'always',
-                },
-              ],
-              highlight: {
-                pre_tag: '<b>',
-                post_tag: '</b>',
-              },
-            },
-          },
-        },
-      },
-    });
-
-    // todo fix types
-
-    return {
-      edges:
-        result.body.hits.hits.map((hit: any) =>
-          ({
-            node: {
-              _id: hit._id,
-              ...hit._source,
-            },
-            searchScore: hit._score,
-          })),
-      totalCount: result.body.hits.total.value,
-      suggest: result.body.suggest?.phrase?.shift()?.options?.shift()?.highlighted,
-    };
+    return searchService.searchLocations(input);
   },
 
 
-  async locationInstanceByPersonSearch(parent: undefined, { input }: QueryLocationInstanceByPersonSearchArgs, { collection }: ResolverContextBase) {
-    const client = getElasticClient();
-    let query;
-
+  /**
+   * Full-text search of location instances by person name
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async locationInstanceByPersonSearch(parent, { input }, context) {
     if (!input.query) {
-      const relations = await collection('relations')
-        .find()
-        .skip(input.windowedPagination?.skip || 0)
-        .limit(input.windowedPagination?.first || 10)
-        .toArray();
-
-
-      return {
-        edges:
-          relations.map((location) => {
-            return ({
-              node: location,
-            });
-          }),
-        totalCount: await collection('relations')
-          .find()
-          .count(),
-      };
-    } else {
-      query = {
-        multi_match: {
-          query: input.query,
-          fuzziness: 3,
-          fields: [
-            'person.name.*',
-          ],
-        },
-      };
+      return findInDatabase('location_instances', input, context);
     }
 
-    const result = await client.search({
-      index: elasticIndexes.relations,
-      body: {
-        from: input.windowedPagination?.skip,
-        size: input.windowedPagination?.first,
-        query,
-      },
-    });
-
-    // todo fix types
-
-    return {
-      edges:
-        result.body.hits.hits.map((hit: any) => {
-          return ({
-            node: hit._source.locationInstance,
-            searchScore: hit._score,
-          });
-        }),
-      totalCount: result.body.hits.total.value,
-      suggest: result.body.suggest?.phrase?.shift()?.options?.shift()?.highlighted,
-    };
+    return searchService.searchLocationInstancesByPerson(input);
   },
 };
 

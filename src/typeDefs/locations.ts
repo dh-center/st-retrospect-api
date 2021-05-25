@@ -170,7 +170,7 @@ export default gql`
     """
     Location relations
     """
-    relations: [Relation!]! @dataLoader(dataLoaderName: "relationByLocationInstanceId", fieldName: "_id")
+    relations: [Relation!]! @dataLoader(dataLoaderName: "relationByLocationInstanceId", fieldName: "_id") @default(value: "[]")
 
     """
     Array of architects

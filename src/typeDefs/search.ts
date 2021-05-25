@@ -2,36 +2,6 @@ import { gql } from 'apollo-server-express';
 
 export default gql`
   """
-  Args for implementing windowed pagination
-  """
-  input WindowedPaginationArgs {
-    """
-    How many documents in the selection to skip
-    """
-    skip: Int
-
-    """
-    How many documents to fetch
-    """
-    first: Int
-  }
-
-  input CursoredPaginationArgs {
-    "The cursor after which we take the data"
-    after: Cursor
-
-    "The cursor after before we take the data"
-    before: Cursor
-
-    "Number of requested nodes after a node with a cursor in the after argument"
-    first: Int
-
-    "Number of requested nodes before a node with a cursor in the before argument"
-    last: Int
-  }
-
-
-  """
   Search query input
   """
   input SearchInput {
@@ -56,32 +26,27 @@ export default gql`
     category: [String!]
 
     """
-    Args for implementing windowed pagination
+    How many documents in the selection to skip
     """
-    windowedPagination: WindowedPaginationArgs
+    skip: Int! = 0
 
     """
-    Args for implementing cursor-based pagination
+    How many documents to fetch
     """
-    cursorPagination: CursoredPaginationArgs
+    first: Int! = 20
   }
 
   """
-  Model for representing list of locations
+  Model for representing result of locations search query
   """
-  type LocationSearchConnection {
+  type LocationsSearchResult {
     """
-    List of locations edges
+    List of finded locations
     """
-    edges: [LocationEdge!]!
+    nodes: [Location!]! @default(value: "[]")
 
     """
-    Information about this page
-    """
-    pageInfo: PageInfo!
-
-    """
-    Number of available edges
+    Number of available result items
     """
     totalCount: Int!
 
@@ -89,22 +54,47 @@ export default gql`
     Proposed query if user made a typo
     """
     suggest: String
+
+    """
+    Proposed query if user made a typo with indication of the place of it
+    """
+    highlightedSuggest: String
+  }
+
+  """
+  Model for representing result of location instances search query
+  """
+  type LocationInstancesSearchResult {
+    """
+    List of finded locations
+    """
+    nodes: [LocationInstance!]! @default(value: "[]")
+
+    """
+    Number of available result items
+    """
+    totalCount: Int!
+
+    """
+    Proposed query if user made a typo
+    """
+    suggest: String
+
+    """
+    Proposed query if user made a typo with indication of the place of it
+    """
+    highlightedSuggest: String
   }
 
   extend type Query {
     """
-    Query for search over the location instances
-    """
-    locationInstancesSearch(input: SearchInput!): LocationInstanceConnection!
-
-    """
     Query for search over the locations
     """
-    locationsSearch(input: SearchInput!): LocationSearchConnection!
+    locationsSearch(input: SearchInput!): LocationsSearchResult!
 
     """
     Query for searching location instances related with some person
     """
-    locationInstanceByPersonSearch(input: SearchInput!): LocationInstanceConnection!
+    locationInstanceByPersonSearch(input: SearchInput!): LocationInstancesSearchResult!
   }
 `;

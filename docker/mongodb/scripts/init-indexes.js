@@ -94,6 +94,47 @@ db.createView('locations_denormalized', 'location_instances', [
   {'$project': {'parent': 0}}
 ])
 
+db.createView('relations_denormalized', 'relations', [
+  {
+    '$lookup': {
+      'from': 'persons',
+      'localField': 'personId',
+      'foreignField': '_id',
+      'as': 'person'
+    }
+  }, {
+    '$unwind': {
+      'path': '$person',
+      'preserveNullAndEmptyArrays': true
+    }
+  }, {
+    '$lookup': {
+      'from': 'location_instances',
+      'localField': 'locationInstanceId',
+      'foreignField': '_id',
+      'as': 'locationInstance'
+    }
+  }, {
+    '$unwind': {
+      'path': '$locationInstance',
+      'preserveNullAndEmptyArrays': true
+    }
+  }, {
+    '$lookup': {
+      'from': 'relationtypes',
+      'localField': 'relationId',
+      'foreignField': '_id',
+      'as': 'relationType'
+    }
+  }, {
+    '$unwind': {
+      'path': '$relationType',
+      'preserveNullAndEmptyArrays': true
+    }
+  }
+])
+
+
 printjson(db.users.createIndex(
   {email: 1},
   {
