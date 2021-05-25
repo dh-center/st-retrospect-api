@@ -215,7 +215,7 @@ export default gql`
     """
     Possible location representations
     """
-    instances: [LocationInstance!]! @dataLoader(dataLoaderName: "locationInstanceById", fieldName: "locationInstanceIds")
+    instances: [LocationInstance!]! @dataLoader(dataLoaderName: "locationInstanceById", fieldName: "locationInstanceIds") @default(value: "[]")
   }
 
   """
