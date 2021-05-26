@@ -64,11 +64,11 @@ export default gql`
   """
   Model for representing result of location instances search query
   """
-  type LocationInstancesSearchResult {
+  type RelationsSearchResult {
     """
     List of finded locations
     """
-    nodes: [LocationInstance!]! @default(value: "[]")
+    nodes: [Relation!]! @default(value: "[]")
 
     """
     Number of available result items
@@ -95,6 +95,6 @@ export default gql`
     """
     Query for searching location instances related with some person
     """
-    locationInstanceByPersonSearch(input: SearchInput!): LocationInstancesSearchResult!
+    relationsByPersonSearch(input: SearchInput!): RelationsSearchResult!
   }
 `;

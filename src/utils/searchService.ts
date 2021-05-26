@@ -2,7 +2,8 @@
 import { Client } from '@elastic/elasticsearch';
 import getElasticClient from './getElasticClient';
 import elasticIndexes from './elasticIndexes';
-import { LocationDBScheme, LocationInstanceDBScheme } from '../resolvers/locations';
+import { LocationDBScheme } from '../resolvers/locations';
+import { RelationDBScheme } from '../resolvers/relations';
 
 
 /**
@@ -140,11 +141,10 @@ export default class SearchService {
    *
    * @param input - search params
    */
-  public async searchLocationInstancesByPerson(input: SearchInput): Promise<SearchResults<LocationInstanceDBScheme>> {
+  public async searchRelationsByPerson(input: SearchInput): Promise<SearchResults<RelationDBScheme>> {
     const query = {
       multi_match: {
         query: input.query,
-        fuzziness: 3,
         fields: [
           'person.name.*',
         ],
@@ -163,7 +163,10 @@ export default class SearchService {
     const suggestion = this.parseSuggestions(body.suggest);
 
     return {
-      nodes: body.hits.hits.map((hit: any) => (hit._source.locationInstance)),
+      nodes: body.hits.hits.map((hit: any) => ({
+        _id: hit._id,
+        ...hit._source,
+      })),
       totalCount: body.hits.total.value,
       suggest: suggestion?.raw,
       highlightedSuggest: suggestion?.highlighted,
