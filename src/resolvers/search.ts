@@ -5,7 +5,8 @@ import {
 } from '../generated/graphql';
 import { Collections, ResolverContextBase } from '../types/graphql';
 import SearchService, { SearchResults } from '../utils/searchService';
-import { LocationDBScheme, LocationInstanceDBScheme } from './locations';
+import { LocationDBScheme } from './locations';
+import { RelationDBScheme } from './relations';
 
 const searchService = new SearchService();
 
@@ -51,22 +52,22 @@ const Query = {
 
 
   /**
-   * Full-text search of location instances by person name
+   * Full-text search of relations by person name
    *
    * @param parent - this is the return value of the resolver for this field's parent
    * @param args - contains all GraphQL arguments provided for this field
    * @param context - this object is shared across all resolvers that execute for a particular operation
    */
-  async locationInstanceByPersonSearch(
+  async relationsByPersonSearch(
     parent: undefined,
     { input }: QueryLocationInstanceByPersonSearchArgs,
     context: ResolverContextBase
-  ): Promise<SearchResults<LocationInstanceDBScheme>> {
+  ): Promise<SearchResults<RelationDBScheme>> {
     if (!input.query) {
-      return findInDatabase('location_instances', input, context);
+      return findInDatabase('relations', input, context);
     }
 
-    return searchService.searchLocationInstancesByPerson(input);
+    return searchService.searchRelationsByPerson(input);
   },
 };
 
