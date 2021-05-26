@@ -13,7 +13,7 @@ direct-read-namespaces = [
   "retrospect.relations_denormalized"
 ]
 
-verbose = true
+#verbose = true
 
 [[mapping]]
 namespace = "retrospect.locations_denormalized"
@@ -44,3 +44,29 @@ with-namespace = "retrospect.locations_denormalized"
 keep-src = true
 
 ### retrospect.relations index config
+[[relate]]
+namespace = "retrospect.relations"
+with-namespace = "retrospect.relations_denormalized"
+keep-src = true
+
+[[relate]]
+namespace = "retrospect.location_instances"
+with-namespace = "retrospect.relations"
+match-field = "locationInstanceId"
+dot-notation = true
+keep-src = true
+
+[[relate]]
+namespace = "retrospect.persons"
+with-namespace = "retrospect.relations"
+match-field = "personId"
+dot-notation = true
+keep-src = true
+
+[[relate]]
+namespace = "retrospect.persons"
+with-namespace = "retrospect.relationtypes"
+match-field = "relationId"
+dot-notation = true
+keep-src = true
+
