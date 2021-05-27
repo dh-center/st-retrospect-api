@@ -324,17 +324,17 @@ export default gql`
     """
     Create person
     """
-    create(input: CreatePersonInput!): CreatePersonPayload! @adminCheck
+    create(input: CreatePersonInput!): CreatePersonPayload! @editorCheck
 
     """
     Update person
     """
-    update(input: UpdatePersonInput!): UpdatePersonPayload! @adminCheck
+    update(input: UpdatePersonInput!): UpdatePersonPayload! @editorCheck
 
     """
     Delete person
     """
-    delete(id: GlobalId!): DeletePersonPayload! @adminCheck
+    delete(id: GlobalId!): DeletePersonPayload! @editorCheck
   }
 
   extend type Mutation {
