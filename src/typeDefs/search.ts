@@ -21,9 +21,9 @@ export default gql`
     endYear: Int
 
     """
-    Entity category
+    Tag ids for filtering
     """
-    category: [String!]
+    tagIds: [String!]
 
     """
     How many documents in the selection to skip

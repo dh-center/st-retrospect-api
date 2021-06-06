@@ -1,5 +1,5 @@
 import {
-  QueryLocationInstanceByPersonSearchArgs,
+  QueryRelationsByPersonSearchArgs,
   QueryLocationsSearchArgs,
   SearchInput
 } from '../generated/graphql';
@@ -89,7 +89,7 @@ const Query = {
    */
   async relationsByPersonSearch(
     parent: undefined,
-    { input }: QueryLocationInstanceByPersonSearchArgs,
+    { input }: QueryRelationsByPersonSearchArgs,
     context: ResolverContextBase
   ): Promise<SearchResults<RelationDBScheme>> {
     if (!input.query) {
