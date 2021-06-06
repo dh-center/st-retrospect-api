@@ -1,5 +1,5 @@
 import {
-  QueryLocationInstanceByPersonSearchArgs,
+  QueryRelationsByPersonSearchArgs,
   QueryLocationsSearchArgs,
   SearchInput
 } from '../generated/graphql';
@@ -7,6 +7,7 @@ import { Collections, ResolverContextBase } from '../types/graphql';
 import SearchService, { SearchResults } from '../utils/searchService';
 import { LocationDBScheme } from './locations';
 import { RelationDBScheme } from './relations';
+import { ObjectId } from 'mongodb';
 
 const searchService = new SearchService();
 
@@ -18,82 +19,41 @@ const searchService = new SearchService();
  * @param context - request context
  */
 async function findInDatabase<T extends keyof Collections>(entityName: T, input: SearchInput, { collection }: ResolverContextBase): Promise<SearchResults<Collections[T]>> {
-  let cursor;
+  let query: any = {};
 
   if (input.startYear || input.endYear) {
-    console.log('kek');
-    cursor = collection(entityName).aggregate([
-      {
-        '$addFields': {
-          'startYearMatch': {
-            '$regexFind': {
-              'input': '$startDate',
-              'regex': new RegExp('\\d{4}'),
-            },
-          },
-          'endYearMatch': {
-            '$regexFind': {
-              'input': '$endDate',
-              'regex': new RegExp('\\d{4}'),
-            },
+    query = {
+      $or: [
+        {
+          'yearsRange.lte': {
+            '$gte': input.startYear,
+            '$lte': input.endYear,
           },
         },
-      },
-      {
-        '$addFields': {
-          yearsRange: {
-            $cond: {
-              if: {
-                $and: [
-                  { $eq: ['$startYearMatch', null] },
-                  { $eq: ['$endYearMatch', null] },
-                ],
-              },
-              then: null,
-              else: {
-                gte: {
-                  '$toInt': '$startYearMatch.match',
-                },
-                lte: {
-                  '$toInt': '$endYearMatch.match',
-                },
-              },
-            },
+        {
+          'yearsRange.gte': {
+            '$gte': input.startYear,
+            '$lte': input.endYear,
           },
         },
-      },
-      {
-        $match: {
-          $or: [
-            {
-              'yearsRange.lte': {
-                '$gte': input.startYear,
-                '$lte': input.endYear,
-              },
-            },
-            {
-              'yearsRange.gte': {
-                '$gte': input.startYear,
-                '$lte': input.endYear,
-              },
-            },
-            {
-              'yearsRange.gte': {
-                '$lt': input.startYear,
-              },
-              'yearsRange.lte': {
-                '$gt': input.endYear,
-              },
-            },
-          ],
+        {
+          'yearsRange.gte': {
+            '$lt': input.startYear,
+          },
+          'yearsRange.lte': {
+            '$gt': input.endYear,
+          },
         },
-      },
-    ]);
-  } else {
-    cursor = collection(entityName).find();
+      ],
+    };
   }
 
-  const entities = await cursor
+  if (input.tagIds) {
+    query['person.tagIds'] = input.tagIds.map(id => new ObjectId(id));
+  }
+
+  const entities = await collection(entityName)
+    .find(query)
     .skip(input.skip || 0)
     .limit(input.first || 10)
     .toArray();
@@ -134,11 +94,11 @@ const Query = {
    */
   async relationsByPersonSearch(
     parent: undefined,
-    { input }: QueryLocationInstanceByPersonSearchArgs,
+    { input }: QueryRelationsByPersonSearchArgs,
     context: ResolverContextBase
   ): Promise<SearchResults<RelationDBScheme>> {
     if (!input.query) {
-      return findInDatabase('relations', input, context);
+      return findInDatabase('relations_denormalized', input, context);
     }
 
     return searchService.searchRelationsByPerson(input);

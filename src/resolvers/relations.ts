@@ -10,6 +10,8 @@ import { CreateRelationInput, UpdateRelationInput } from '../generated/graphql';
 import { UserInputError } from 'apollo-server-express';
 import sendNotify from '../utils/telegramNotify';
 import mergeWithCustomizer from '../utils/mergeWithCustomizer';
+import { LocationInstanceDBScheme } from './locations';
+import { PersonDBScheme } from './persons';
 
 /**
  * Relation's database scheme
@@ -54,6 +56,41 @@ export interface RelationDBScheme {
    * Date of relation end
    */
   endDate?: string | null;
+}
+
+/**
+ * Represents a time range
+ */
+interface YearsRange {
+  /**
+   * Start point
+   */
+  gte: number;
+
+  /**
+   * End point
+   */
+  lte: number;
+}
+
+/**
+ * Relation with additional data after its denormalization
+ */
+export interface DenormalizedRelation extends RelationDBScheme {
+  /**
+   * Years range of the relation
+   */
+  yearsRange: YearsRange;
+
+  /**
+   * Linked location instance data
+   */
+  locationInstance: LocationInstanceDBScheme;
+
+  /**
+   * Linked person data
+   */
+  person: PersonDBScheme;
 }
 
 const RelationMutations = {

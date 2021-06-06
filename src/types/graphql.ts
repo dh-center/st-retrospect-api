@@ -3,7 +3,7 @@ import { GraphQLSchema } from 'graphql';
 import DataLoaders from '../dataLoaders';
 import { PersonDBScheme } from '../resolvers/persons';
 import { LocationDBScheme, LocationInstanceDBScheme, LocationStyleDBScheme } from '../resolvers/locations';
-import { RelationDBScheme } from '../resolvers/relations';
+import { DenormalizedRelation, RelationDBScheme } from '../resolvers/relations';
 import { QuestDBScheme } from '../resolvers/quests';
 import { RelationTypeDBScheme } from '../resolvers/relationTypes';
 import { UserDBScheme } from '../resolvers/users';
@@ -19,6 +19,7 @@ export interface Collections {
   locations: LocationDBScheme;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   location_instances: LocationInstanceDBScheme;
+  relations_denormalized: DenormalizedRelation;
   relations: RelationDBScheme;
   quests: QuestDBScheme;
   relationtypes: RelationTypeDBScheme;

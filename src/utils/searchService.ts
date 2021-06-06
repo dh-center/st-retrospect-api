@@ -4,6 +4,7 @@ import getElasticClient from './getElasticClient';
 import elasticIndexes from './elasticIndexes';
 import { LocationDBScheme } from '../resolvers/locations';
 import { RelationDBScheme } from '../resolvers/relations';
+import { ObjectId } from 'mongodb';
 
 
 /**
@@ -34,6 +35,11 @@ interface SearchInput {
    * End of search range
    */
   endYear?: number | null;
+
+  /**
+   * Tag ids for filtering
+   */
+  tagIds?: ObjectId[] | null
 }
 
 /**
@@ -170,6 +176,14 @@ export default class SearchService {
             gte: input.startYear,
             lte: input.endYear,
           },
+        },
+      });
+    }
+
+    if (input.tagIds) {
+      filters.push({
+        'terms': {
+          'person.tagIds': input.tagIds,
         },
       });
     }
