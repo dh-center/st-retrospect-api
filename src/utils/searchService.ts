@@ -161,29 +161,34 @@ export default class SearchService {
       },
     };
 
-    let filters;
+    const filters: unknown[] = [];
 
-    if (input.endYear || input.startYear) {
-      filters = [
-        {
-          'range': {
-            'year': {
-              'gte': input.startYear,
-              'lte': input.endYear,
-            },
+    if (input.endYear) {
+      filters.push({
+        'range': {
+          'endYear': {
+            lte: input.endYear,
           },
         },
-      ];
+      });
     }
 
-    const fullQuery = filters
-      ? {
-        bool: {
-          must: [ multiMatchQuery ],
-          filter: filters,
+    if (input.endYear) {
+      filters.push({
+        'range': {
+          'startYear': {
+            gte: input.startYear,
+          },
         },
-      }
-      : multiMatchQuery;
+      });
+    }
+
+    const fullQuery = {
+      bool: {
+        must: [ multiMatchQuery ],
+        filter: filters,
+      },
+    };
 
     const { body } = await this.client.search({
       index: elasticIndexes.relations,
