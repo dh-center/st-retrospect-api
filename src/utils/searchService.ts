@@ -163,21 +163,12 @@ export default class SearchService {
 
     const filters: unknown[] = [];
 
-    if (input.endYear) {
+    if (input.endYear || input.startYear) {
       filters.push({
         'range': {
-          'endYear': {
-            lte: input.endYear,
-          },
-        },
-      });
-    }
-
-    if (input.endYear) {
-      filters.push({
-        'range': {
-          'startYear': {
+          'yearsRange': {
             gte: input.startYear,
+            lte: input.endYear,
           },
         },
       });

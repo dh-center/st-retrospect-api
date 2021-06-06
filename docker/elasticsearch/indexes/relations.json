@@ -469,6 +469,9 @@
             "ignore_above" : 256
           }
         }
+      },
+      "yearsRange": {
+        "type": "integer_range"
       }
     }
   }

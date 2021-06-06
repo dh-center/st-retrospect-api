@@ -204,11 +204,24 @@ db.createView('relations_denormalized', 'relations', [
     }
   }, {
     '$addFields': {
-      'startYear': {
-        '$toInt': '$startYearMatch.match'
-      },
-      'endYear': {
-        '$toInt': '$endYearMatch.match'
+      yearsRange: {
+        $cond: {
+          if: {
+            $and: [
+              {$eq: ['$startYearMatch', null]},
+              {$eq: ['$endYearMatch', null]}
+            ]
+          },
+          then: null,
+          else: {
+            gte: {
+              '$toInt': '$startYearMatch.match'
+            },
+            lte: {
+              '$toInt': '$endYearMatch.match'
+            }
+          }
+        }
       }
     }
   }, {
