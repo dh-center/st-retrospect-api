@@ -62,6 +62,11 @@ export default gql`
     ): Tag @dataLoader(dataLoaderName: "tagById", argName: "id")
 
     """
+    Returns array of tags which belong to quests
+    """
+    questTags: [Tag!]!
+
+    """
     List of available tags
     """
     tags(

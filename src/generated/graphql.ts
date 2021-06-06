@@ -95,6 +95,8 @@ export type Query = {
   relationsByPersonSearch: RelationsSearchResult;
   /** Get specific tag */
   tag?: Maybe<Tag>;
+  /** Returns array of tags which belong to quests */
+  questTags: Array<Tag>;
   /** List of available tags */
   tags: TagConnection;
 };
@@ -1928,6 +1930,7 @@ export type QueryResolvers<ContextType = ResolverContextBase, ParentType extends
   locationsSearch?: Resolver<ResolversTypes['LocationsSearchResult'], ParentType, ContextType, RequireFields<QueryLocationsSearchArgs, 'input'>>;
   relationsByPersonSearch?: Resolver<ResolversTypes['RelationsSearchResult'], ParentType, ContextType, RequireFields<QueryRelationsByPersonSearchArgs, 'input'>>;
   tag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagArgs, 'id'>>;
+  questTags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
   tags?: Resolver<ResolversTypes['TagConnection'], ParentType, ContextType, RequireFields<QueryTagsArgs, never>>;
 };
 
