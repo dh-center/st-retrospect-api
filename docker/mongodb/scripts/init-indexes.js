@@ -14,6 +14,26 @@ db.getCollectionNames().forEach(function (collName) {
 
 db.createView('location_instances_denormalized', 'location_instances', [
   {
+    '$addFields': {
+      'yearMatch': {
+        '$regexFind': {
+          'input': '$startDate',
+          'regex': new RegExp('\\d{4}')
+        }
+      }
+    }
+  }, {
+    '$addFields': {
+      'year': {
+        '$toInt': '$yearMatch.match'
+      }
+    }
+  }, {
+    '$project': {
+      'yearMatch': 0
+    }
+  },
+  {
     '$lookup': {
       'from': 'locationtypes',
       'localField': 'locationTypesId',
@@ -52,46 +72,82 @@ db.createView('location_instances_denormalized', 'location_instances', [
 
 db.createView('locations_denormalized', 'location_instances', [
   {
-    '$project': {
-      'source': 0
+    '$addFields': {
+      'yearMatch': {
+        '$regexFind': {
+          'input': '$startDate',
+          'regex': new RegExp('\\d{4}')
+        }
+      }
     }
-  },
-  {
+  }, {
+    '$addFields': {
+      'year': {
+        '$toInt': '$yearMatch.match'
+      }
+    }
+  }, {
+    '$project': {
+      'source': 0,
+      'yearMatch': 0
+    }
+  }, {
     '$lookup': {
       'from': 'locationtypes',
       'localField': 'locationTypesId',
       'foreignField': '_id',
       'as': 'locationTypes'
     }
-  },
-  {
+  }, {
     '$lookup': {
       'from': 'locationstyles',
       'localField': 'locationStyleId',
       'foreignField': '_id',
       'as': 'locationStyle'
     }
-  },
-  {'$unwind': {'path': '$locationStyle', 'preserveNullAndEmptyArrays': true}}, {
+  }, {
+    '$unwind': {
+      'path': '$locationStyle',
+      'preserveNullAndEmptyArrays': true
+    }
+  }, {
     '$lookup': {
+      'as': 'tags',
       'from': 'tags',
       'localField': 'tagIds',
-      'foreignField': '_id',
-      'as': 'tags'
+      'foreignField': '_id'
     }
-  },
-  {'$group': {'_id': '$locationId', 'instances': {'$push': '$$ROOT'}}},
-  {
+  }, {
+    '$group': {
+      '_id': '$locationId',
+      'instances': {
+        '$push': '$$ROOT'
+      }
+    }
+  }, {
     '$lookup': {
       'from': 'locations',
       'localField': '_id',
       'foreignField': '_id',
       'as': 'parent'
     }
-  },
-  {'$unwind': {'path': '$parent'}},
-  {'$replaceRoot': {'newRoot': {'$mergeObjects': ['$$ROOT', '$parent']}}},
-  {'$project': {'parent': 0}}
+  }, {
+    '$unwind': {
+      'path': '$parent'
+    }
+  }, {
+    '$replaceRoot': {
+      'newRoot': {
+        '$mergeObjects': [
+          '$$ROOT', '$parent'
+        ]
+      }
+    }
+  }, {
+    '$project': {
+      'parent': 0
+    }
+  }
 ])
 
 db.createView('relations_denormalized', 'relations', [
@@ -130,6 +186,48 @@ db.createView('relations_denormalized', 'relations', [
     '$unwind': {
       'path': '$relationType',
       'preserveNullAndEmptyArrays': true
+    }
+  }, {
+    '$addFields': {
+      'startYearMatch': {
+        '$regexFind': {
+          'input': '$startDate',
+          'regex': new RegExp('\\d{4}')
+        }
+      },
+      'endYearMatch': {
+        '$regexFind': {
+          'input': '$endDate',
+          'regex': new RegExp('\\d{4}')
+        }
+      }
+    }
+  }, {
+    '$addFields': {
+      yearsRange: {
+        $cond: {
+          if: {
+            $and: [
+              {$eq: ['$startYearMatch', null]},
+              {$eq: ['$endYearMatch', null]}
+            ]
+          },
+          then: null,
+          else: {
+            gte: {
+              '$toInt': '$startYearMatch.match'
+            },
+            lte: {
+              '$toInt': '$endYearMatch.match'
+            }
+          }
+        }
+      }
+    }
+  }, {
+    '$project': {
+      'endYearMatch': 0,
+      'startYearMatch': 0
     }
   }
 ])
