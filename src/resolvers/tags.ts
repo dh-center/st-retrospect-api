@@ -26,6 +26,46 @@ export interface TagDBScheme {
   value: MultilingualString;
 }
 
+
+const Query = {
+  /**
+   * Returns array of tags which belong to quests
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async questTags(parent: undefined, args: undefined, { collection, dataLoaders }: ResolverContextBase): Promise<TagDBScheme[]> {
+    const [ { tagIds } ] = await collection('quests')
+      .aggregate([
+        {
+          '$unwind': {
+            'path': '$tagIds',
+          },
+        }, {
+          '$group': {
+            '_id': null,
+            'tagIds': {
+              '$push': '$tagIds',
+            },
+          },
+        },
+      ])
+      .toArray();
+
+    if (!tagIds) {
+      return [];
+    }
+
+
+    const result = await dataLoaders
+      .tagById
+      .loadMany(tagIds.map(id => id.toString()));
+
+    return result.filter((tag): tag is TagDBScheme => !!tag);
+  },
+};
+
 const TagMutations = {
   /**
    * Creates new tag
@@ -149,6 +189,7 @@ const Mutation = {
 };
 
 export default {
+  Query,
   Mutation,
   TagMutations,
 };
