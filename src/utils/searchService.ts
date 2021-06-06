@@ -24,6 +24,16 @@ interface SearchInput {
    * How many items to find
    */
   first?: number;
+
+  /**
+   * Start of search range
+   */
+  startYear?: number | null;
+
+  /**
+   * End of search range
+   */
+  endYear?: number | null;
 }
 
 /**
@@ -31,7 +41,7 @@ interface SearchInput {
  */
 export interface SearchResults<T> {
   /**
-   * Finded nodes
+   * Found nodes
    */
   nodes: T[]
 
@@ -142,7 +152,7 @@ export default class SearchService {
    * @param input - search params
    */
   public async searchRelationsByPerson(input: SearchInput): Promise<SearchResults<RelationDBScheme>> {
-    const query = {
+    const multiMatchQuery = {
       multi_match: {
         query: input.query,
         fields: [
@@ -151,12 +161,36 @@ export default class SearchService {
       },
     };
 
+    let filters;
+
+    if (input.endYear || input.startYear) {
+      filters = [
+        {
+          'range': {
+            'year': {
+              'gte': input.startYear,
+              'lte': input.endYear,
+            },
+          },
+        },
+      ];
+    }
+
+    const fullQuery = filters
+      ? {
+        bool: {
+          must: [ multiMatchQuery ],
+          filter: filters,
+        },
+      }
+      : multiMatchQuery;
+
     const { body } = await this.client.search({
       index: elasticIndexes.relations,
       body: {
         from: input.skip,
         size: input.first,
-        query,
+        query: fullQuery,
       },
     });
 
