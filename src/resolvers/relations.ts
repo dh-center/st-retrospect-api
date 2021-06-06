@@ -10,8 +10,8 @@ import { CreateRelationInput, UpdateRelationInput } from '../generated/graphql';
 import { UserInputError } from 'apollo-server-express';
 import sendNotify from '../utils/telegramNotify';
 import mergeWithCustomizer from '../utils/mergeWithCustomizer';
-import {LocationInstanceDBScheme} from "./locations";
-import {PersonDBScheme} from "./persons";
+import { LocationInstanceDBScheme } from './locations';
+import { PersonDBScheme } from './persons';
 
 /**
  * Relation's database scheme

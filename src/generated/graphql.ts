@@ -1280,7 +1280,7 @@ export type SearchInput = {
   /** End of search range */
   endYear?: Maybe<Scalars['Int']>;
   /** Tag ids for filtering */
-  tagIds?: Maybe<Array<Scalars['String']>>;
+  tagIds?: Maybe<Array<Scalars['GlobalId']>>;
   /** How many documents in the selection to skip */
   skip?: Scalars['Int'];
   /** How many documents to fetch */

@@ -7,6 +7,7 @@ import { Collections, ResolverContextBase } from '../types/graphql';
 import SearchService, { SearchResults } from '../utils/searchService';
 import { LocationDBScheme } from './locations';
 import { RelationDBScheme } from './relations';
+import { ObjectId } from 'mongodb';
 
 const searchService = new SearchService();
 
@@ -18,7 +19,7 @@ const searchService = new SearchService();
  * @param context - request context
  */
 async function findInDatabase<T extends keyof Collections>(entityName: T, input: SearchInput, { collection }: ResolverContextBase): Promise<SearchResults<Collections[T]>> {
-  let query = {};
+  let query: any = {};
 
   if (input.startYear || input.endYear) {
     query = {
@@ -45,6 +46,10 @@ async function findInDatabase<T extends keyof Collections>(entityName: T, input:
         },
       ],
     };
+  }
+
+  if (input.tagIds) {
+    query['person.tagIds'] = input.tagIds.map(id => new ObjectId(id));
   }
 
   const entities = await collection(entityName)

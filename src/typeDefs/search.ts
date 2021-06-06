@@ -23,7 +23,7 @@ export default gql`
     """
     Tag ids for filtering
     """
-    tagIds: [String!]
+    tagIds: [GlobalId!]
 
     """
     How many documents in the selection to skip

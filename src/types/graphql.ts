@@ -3,7 +3,7 @@ import { GraphQLSchema } from 'graphql';
 import DataLoaders from '../dataLoaders';
 import { PersonDBScheme } from '../resolvers/persons';
 import { LocationDBScheme, LocationInstanceDBScheme, LocationStyleDBScheme } from '../resolvers/locations';
-import {DenormalizedRelation, RelationDBScheme} from '../resolvers/relations';
+import { DenormalizedRelation, RelationDBScheme } from '../resolvers/relations';
 import { QuestDBScheme } from '../resolvers/quests';
 import { RelationTypeDBScheme } from '../resolvers/relationTypes';
 import { UserDBScheme } from '../resolvers/users';
