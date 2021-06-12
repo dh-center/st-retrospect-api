@@ -46,6 +46,22 @@ export default gql`
     Array of user permission
     """
     permissions: [String!]! @default(value: "[]")
+
+    """
+    Accepted user friends
+    """
+    friends: [GlobalId!]! @default(value: "[]")
+
+    """
+    Unaccepted friend requests to other users
+    """
+    friendPendingRequests: [GlobalId!]! @default(value: "[]")
+
+    """
+    Friend requests to user
+    User can accept or reject them
+    """
+    friendRequests: [GlobalId!]! @default(value: "[]")
   }
 
   """
