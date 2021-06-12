@@ -50,6 +50,26 @@ export default gql`
     Updates user data
     """
     update(input: UpdateUserInput!): UpdateUserPayload! @adminCheck
+
+    """
+    Send friend request to user by user id
+    """
+    sendFriendRequest(id: GlobalId!): UpdateUserPayload! @authCheck
+
+    """
+    Cancel dispatched friend request
+    """
+    cancelFriendRequest(id: GlobalId!): UpdateUserPayload! @authCheck
+
+    """
+    Accept received friend request
+    """
+    acceptFriendRequest(id: GlobalId!): UpdateUserPayload! @authCheck
+
+    """
+    Reject received friend request
+    """
+    rejectFriendRequest(id: GlobalId!): UpdateUserPayload! @authCheck
   }
 
   extend type Mutation {
