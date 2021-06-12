@@ -105,10 +105,19 @@ export interface UserDBScheme {
     }
   }
 
+  /**
+   * User friends ids
+   */
   friendsIds?: ObjectId[];
 
+  /**
+   * Dispatched friend requests
+   */
   friendPendingRequestsIds?: ObjectId[];
 
+  /**
+   * Received friend requests
+   */
   friendRequestsIds?: ObjectId[];
 }
 
