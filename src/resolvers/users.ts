@@ -317,6 +317,67 @@ const UserMutations = {
       record: updatedUser.value,
     };
   },
+
+  /**
+   * Accepts friend request to user by id
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param id - new friend id
+   * @param collection - this object is shared across all resolvers that execute for a particular operation
+   * @param tokenData - information about user whose does this mutation
+   */
+  async acceptFriendRequest(
+    parent: undefined,
+    { id }: { id: ObjectId },
+    { collection, tokenData }: ResolverContextBase<true>
+  ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const newFriend = await collection('users').findOne(
+      {
+        _id: new ObjectId(id),
+        friendRequestsIds: [
+          new ObjectId(tokenData.userId),
+        ],
+      }
+    );
+
+    if (!newFriend) {
+      throw new UserInputError('Can\'t add friend with this id: ' + id);
+    }
+
+    await collection('users').updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $pull: {
+          friendRequestsIds: new ObjectId(tokenData.userId),
+        },
+        $push: {
+          friendsIds: new ObjectId(tokenData.userId),
+        },
+      }
+    );
+
+    const updatedUser = await collection('users').findOneAndUpdate(
+      { _id: new ObjectId(tokenData.userId) },
+      {
+        $pull: {
+          friendPendingRequestsIds: new ObjectId(id),
+        },
+        $push: {
+          friendsIds: new ObjectId(id),
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!updatedUser.value) {
+      throw new UserInputError('There is no user with such id: ' + tokenData.userId);
+    }
+
+    return {
+      recordId: updatedUser.value._id,
+      record: updatedUser.value,
+    };
+  },
 };
 
 const User = {
