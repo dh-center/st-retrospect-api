@@ -70,6 +70,11 @@ export default gql`
     Reject received friend request
     """
     rejectFriendRequest(id: GlobalId!): UpdateUserPayload! @authCheck
+
+    """
+    Remove user from friends
+    """
+    removeFromFriends(id: GlobalId!): UpdateUserPayload! @authCheck
   }
 
   extend type Mutation {

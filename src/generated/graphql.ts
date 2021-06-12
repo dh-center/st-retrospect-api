@@ -1456,6 +1456,8 @@ export type UserMutations = {
   acceptFriendRequest: UpdateUserPayload;
   /** Reject received friend request */
   rejectFriendRequest: UpdateUserPayload;
+  /** Remove user from friends */
+  removeFromFriends: UpdateUserPayload;
 };
 
 
@@ -1491,6 +1493,12 @@ export type UserMutationsAcceptFriendRequestArgs = {
 
 /** Mutations for users */
 export type UserMutationsRejectFriendRequestArgs = {
+  id: Scalars['GlobalId'];
+};
+
+
+/** Mutations for users */
+export type UserMutationsRemoveFromFriendsArgs = {
   id: Scalars['GlobalId'];
 };
 
@@ -2461,6 +2469,7 @@ export type UserMutationsResolvers<ContextType = ResolverContextBase, ParentType
   cancelFriendRequest?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsCancelFriendRequestArgs, 'id'>>;
   acceptFriendRequest?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsAcceptFriendRequestArgs, 'id'>>;
   rejectFriendRequest?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsRejectFriendRequestArgs, 'id'>>;
+  removeFromFriends?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsRemoveFromFriendsArgs, 'id'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

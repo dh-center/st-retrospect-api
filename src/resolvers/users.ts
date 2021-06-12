@@ -238,7 +238,15 @@ const UserMutations = {
     { collection, tokenData }: ResolverContextBase<true>
   ): Promise<UpdateMutationPayload<UserDBScheme>> {
     const newFriend = await collection('users').findOneAndUpdate(
-      { _id: new ObjectId(id) },
+      {
+        _id: new ObjectId(id),
+        friendsIds: {
+          $ne: new ObjectId(tokenData.userId),
+        },
+        friendRequestsIds: {
+          $ne: new ObjectId(tokenData.userId),
+        },
+      },
       {
         $push: {
           friendRequestsIds: new ObjectId(tokenData.userId),
@@ -248,11 +256,19 @@ const UserMutations = {
     );
 
     if (!newFriend.value) {
-      throw new UserInputError('There is no user with such id: ' + id);
+      throw new UserInputError('Can\'t add friend with such id: ' + id);
     }
 
     const updatedUser = await collection('users').findOneAndUpdate(
-      { _id: new ObjectId(tokenData.userId) },
+      {
+        _id: new ObjectId(tokenData.userId),
+        friendsIds: {
+          $ne: new ObjectId(id),
+        },
+        friendPendingRequestsIds: {
+          $ne: new ObjectId(id),
+        },
+      },
       {
         $push: {
           friendPendingRequestsIds: new ObjectId(id),
@@ -262,7 +278,7 @@ const UserMutations = {
     );
 
     if (!updatedUser.value) {
-      throw new UserInputError('There is no user with such id: ' + tokenData.userId);
+      throw new UserInputError('Can\'t add friend with such id: ' + tokenData.userId);
     }
 
     return {
@@ -295,7 +311,7 @@ const UserMutations = {
     );
 
     if (!secondUser.value) {
-      throw new UserInputError('There is no user with such id: ' + id);
+      throw new UserInputError('Can\'t add friend with such id: ' + id);
     }
 
     const updatedUser = await collection('users').findOneAndUpdate(
@@ -309,7 +325,7 @@ const UserMutations = {
     );
 
     if (!updatedUser.value) {
-      throw new UserInputError('There is no user with such id: ' + tokenData.userId);
+      throw new UserInputError('Can\'t add friend with such id: ' + tokenData.userId);
     }
 
     return {
@@ -334,7 +350,7 @@ const UserMutations = {
     const newFriend = await collection('users').findOne(
       {
         _id: new ObjectId(id),
-        friendRequestsIds: [
+        friendPendingRequestsIds: [
           new ObjectId(tokenData.userId),
         ],
       }
@@ -348,7 +364,7 @@ const UserMutations = {
       { _id: new ObjectId(id) },
       {
         $pull: {
-          friendRequestsIds: new ObjectId(tokenData.userId),
+          friendPendingRequestsIds: new ObjectId(tokenData.userId),
         },
         $push: {
           friendsIds: new ObjectId(tokenData.userId),
@@ -360,7 +376,7 @@ const UserMutations = {
       { _id: new ObjectId(tokenData.userId) },
       {
         $pull: {
-          friendPendingRequestsIds: new ObjectId(id),
+          friendRequestsIds: new ObjectId(id),
         },
         $push: {
           friendsIds: new ObjectId(id),
@@ -370,7 +386,101 @@ const UserMutations = {
     );
 
     if (!updatedUser.value) {
-      throw new UserInputError('There is no user with such id: ' + tokenData.userId);
+      throw new UserInputError('Can\'t add friend with such id: ' + tokenData.userId);
+    }
+
+    return {
+      recordId: updatedUser.value._id,
+      record: updatedUser.value,
+    };
+  },
+
+  /**
+   * Rejects friend request to user by id
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param id - rejected user id
+   * @param collection - this object is shared across all resolvers that execute for a particular operation
+   * @param tokenData - information about user whose does this mutation
+   */
+  async rejectFriendRequest(
+    parent: undefined,
+    { id }: { id: ObjectId },
+    { collection, tokenData }: ResolverContextBase<true>
+  ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const rejectedUser = await collection('users').findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      {
+        $pull: {
+          friendPendingRequestsIds: new ObjectId(tokenData.userId),
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!rejectedUser.value) {
+      throw new UserInputError('Can\'t reject friend request with such user id: ' + id);
+    }
+
+    const updatedUser = await collection('users').findOneAndUpdate(
+      { _id: new ObjectId(tokenData.userId) },
+      {
+        $pull: {
+          friendRequestsIds: new ObjectId(id),
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!updatedUser.value) {
+      throw new UserInputError('Can\'t reject friend request with such user id: ' + tokenData.userId);
+    }
+
+    return {
+      recordId: updatedUser.value._id,
+      record: updatedUser.value,
+    };
+  },
+
+  /**
+   * Removes friend by id
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param id - removed friend id
+   * @param collection - this object is shared across all resolvers that execute for a particular operation
+   * @param tokenData - information about user whose does this mutation
+   */
+  async removeFromFriends(
+    parent: undefined,
+    { id }: { id: ObjectId },
+    { collection, tokenData }: ResolverContextBase<true>
+  ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const secondUser = await collection('users').findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      {
+        $pull: {
+          friendsIds: new ObjectId(tokenData.userId),
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!secondUser.value) {
+      throw new UserInputError('Can\'t remove friend with such id: ' + id);
+    }
+
+    const updatedUser = await collection('users').findOneAndUpdate(
+      { _id: new ObjectId(tokenData.userId) },
+      {
+        $pull: {
+          friendsIds: new ObjectId(id),
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!updatedUser.value) {
+      throw new UserInputError('Can\'t remove friend with such id: ' + tokenData.userId);
     }
 
     return {
