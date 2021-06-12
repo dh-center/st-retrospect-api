@@ -238,8 +238,7 @@ const UserMutations = {
    *
    * @param parent - this is the return value of the resolver for this field's parent
    * @param id - new friend id
-   * @param collection - this object is shared across all resolvers that execute for a particular operation
-   * @param tokenData - information about user whose does this mutation
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async sendFriendRequest(
     parent: undefined,
@@ -301,8 +300,7 @@ const UserMutations = {
    *
    * @param parent - this is the return value of the resolver for this field's parent
    * @param id - a user to whom we are canceling the request
-   * @param collection - this object is shared across all resolvers that execute for a particular operation
-   * @param tokenData - information about user whose does this mutation
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async cancelFriendRequest(
     parent: undefined,
@@ -348,8 +346,7 @@ const UserMutations = {
    *
    * @param parent - this is the return value of the resolver for this field's parent
    * @param id - new friend id
-   * @param collection - this object is shared across all resolvers that execute for a particular operation
-   * @param tokenData - information about user whose does this mutation
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async acceptFriendRequest(
     parent: undefined,
@@ -409,8 +406,7 @@ const UserMutations = {
    *
    * @param parent - this is the return value of the resolver for this field's parent
    * @param id - rejected user id
-   * @param collection - this object is shared across all resolvers that execute for a particular operation
-   * @param tokenData - information about user whose does this mutation
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async rejectFriendRequest(
     parent: undefined,
@@ -456,8 +452,7 @@ const UserMutations = {
    *
    * @param parent - this is the return value of the resolver for this field's parent
    * @param id - removed friend id
-   * @param collection - this object is shared across all resolvers that execute for a particular operation
-   * @param tokenData - information about user whose does this mutation
+   * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async removeFromFriends(
     parent: undefined,
