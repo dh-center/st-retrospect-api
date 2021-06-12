@@ -184,6 +184,16 @@ export default gql`
     Task type route
     """
     ROUTE
+
+    """
+    Story about something without quiz parts
+    """
+    STORY
+
+    """
+    Test without traveling
+    """
+    TEST
   }
 
   """

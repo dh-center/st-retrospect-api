@@ -1279,7 +1279,11 @@ export enum TaskTypes {
   /** Task type quiz */
   Quiz = 'QUIZ',
   /** Task type route */
-  Route = 'ROUTE'
+  Route = 'ROUTE',
+  /** Story about something without quiz parts */
+  Story = 'STORY',
+  /** Test without traveling */
+  Test = 'TEST'
 }
 
 /** Possible quest states */
