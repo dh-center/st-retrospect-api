@@ -104,6 +104,12 @@ export interface UserDBScheme {
       id: number
     }
   }
+
+  friendsIds?: ObjectId[];
+
+  friendPendingRequestsIds?: ObjectId[];
+
+  friendRequestsIds?: ObjectId[];
 }
 
 const Query = {
@@ -210,6 +216,53 @@ const UserMutations = {
 
     if (!updatedUser.value) {
       throw new UserInputError('There is no user with such id: ' + input.id);
+    }
+
+    return {
+      recordId: updatedUser.value._id,
+      record: updatedUser.value,
+    };
+  },
+
+  /**
+   * Sends friend request to user by id
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param id - new friend id
+   * @param collection - this object is shared across all resolvers that execute for a particular operation
+   * @param tokenData - information about user whose does this mutation
+   */
+  async sendFriendRequest(
+    parent: undefined,
+    { id }: { id: ObjectId },
+    { collection, tokenData }: ResolverContextBase<true>
+  ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const newFriend = await collection('users').findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      {
+        $push: {
+          friendRequestsIds: new ObjectId(tokenData.userId),
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!newFriend.value) {
+      throw new UserInputError('There is no user with such id: ' + id);
+    }
+
+    const updatedUser = await collection('users').findOneAndUpdate(
+      { _id: new ObjectId(tokenData.userId) },
+      {
+        $push: {
+          friendPendingRequestsIds: new ObjectId(id),
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!updatedUser.value) {
+      throw new UserInputError('There is no user with such id: ' + tokenData.userId);
     }
 
     return {
