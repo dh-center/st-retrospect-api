@@ -1236,8 +1236,8 @@ export type Quest = Node & {
   wayToTravel: WayToTravel;
   /** Quest duration in minutes */
   durationInMinutes: Scalars['Int'];
-  /** Quest duration in kilometers */
-  durationInKilometers: Scalars['Int'];
+  /** Quest distance in kilometers */
+  distanceInKilometers: Scalars['Int'];
   /** Quest task */
   task: Scalars['JSON'];
   /** Quest data */
@@ -1351,8 +1351,8 @@ export type CreateQuestInput = {
   wayToTravel?: WayToTravel;
   /** Quest duration in minutes */
   durationInMinutes: Scalars['Int'];
-  /** Quest duration in kilometers */
-  durationInKilometers: Scalars['Int'];
+  /** Quest distance in kilometers */
+  distanceInKilometers: Scalars['Int'];
   /** Quest photo */
   photo?: Maybe<Scalars['String']>;
   /** Quest type (quiz, route, etc.) */
@@ -1388,8 +1388,8 @@ export type UpdateQuestInput = {
   wayToTravel?: Maybe<WayToTravel>;
   /** Quest duration in minutes */
   durationInMinutes?: Maybe<Scalars['Int']>;
-  /** Quest duration in kilometers */
-  durationInKilometers?: Maybe<Scalars['Int']>;
+  /** Quest distance in kilometers */
+  distanceInKilometers?: Maybe<Scalars['Int']>;
   /** Quest photo */
   photo?: Maybe<Scalars['String']>;
   /** Quest type (quiz, route, etc.) */
@@ -2406,7 +2406,7 @@ export type QuestResolvers<ContextType = ResolverContextBase, ParentType extends
   type?: Resolver<ResolversTypes['TaskTypes'], ParentType, ContextType>;
   wayToTravel?: Resolver<ResolversTypes['WayToTravel'], ParentType, ContextType>;
   durationInMinutes?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  durationInKilometers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  distanceInKilometers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   task?: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
   data?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;
   credits?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;

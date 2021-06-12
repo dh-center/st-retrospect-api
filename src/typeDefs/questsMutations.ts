@@ -23,9 +23,9 @@ export default gql`
     durationInMinutes: Int!
 
     """
-    Quest duration in kilometers
+    Quest distance in kilometers
     """
-    durationInKilometers: Int!
+    distanceInKilometers: Int!
 
     """
     Quest photo
@@ -102,9 +102,9 @@ export default gql`
     durationInMinutes: Int
 
     """
-    Quest duration in kilometers
+    Quest distance in kilometers
     """
-    durationInKilometers: Int
+    distanceInKilometers: Int
 
     """
     Quest photo

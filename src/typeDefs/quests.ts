@@ -96,9 +96,9 @@ export default gql`
     durationInMinutes: Int! @default(value: "1")
 
     """
-    Quest duration in kilometers
+    Quest distance in kilometers
     """
-    durationInKilometers: Int! @default(value: "1")
+    distanceInKilometers: Int! @default(value: "1")
 
     """
     Quest task

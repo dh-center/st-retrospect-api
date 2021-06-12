@@ -46,9 +46,9 @@ export interface QuestDBScheme {
   durationInMinutes: number;
 
   /**
-   * Quest duration in kilometers
+   * Quest distance in kilometers
    */
-  durationInKilometers: number;
+  distanceInKilometers: number;
 
   /**
    * Quest photo
