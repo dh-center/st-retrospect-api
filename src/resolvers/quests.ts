@@ -41,6 +41,16 @@ export interface QuestDBScheme {
   wayToTravel: WayToTravel;
 
   /**
+   * Quest duration in minutes
+   */
+  durationInMinutes: number;
+
+  /**
+   * Quest duration in kilometers
+   */
+  durationInKilometers: number;
+
+  /**
    * Quest photo
    */
   photo: string;

@@ -18,6 +18,16 @@ export default gql`
     wayToTravel: WayToTravel! = ON_FOOT
 
     """
+    Quest duration in minutes
+    """
+    durationInMinutes: Int!
+
+    """
+    Quest duration in kilometers
+    """
+    dutarionInKilometers: Int!
+
+    """
     Quest photo
     """
     photo: String
@@ -85,6 +95,16 @@ export default gql`
     What user needs to use for route passing
     """
     wayToTravel: WayToTravel
+
+    """
+    Quest duration in minutes
+    """
+    durationInMinutes: Int
+
+    """
+    Quest duration in kilometers
+    """
+    dutarionInKilometers: Int
 
     """
     Quest photo
