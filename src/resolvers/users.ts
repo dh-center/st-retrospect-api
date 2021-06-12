@@ -270,6 +270,53 @@ const UserMutations = {
       record: updatedUser.value,
     };
   },
+
+  /**
+   * Cancels friend request to user by id
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param id - a user to whom we are canceling the request
+   * @param collection - this object is shared across all resolvers that execute for a particular operation
+   * @param tokenData - information about user whose does this mutation
+   */
+  async cancelFriendRequest(
+    parent: undefined,
+    { id }: { id: ObjectId },
+    { collection, tokenData }: ResolverContextBase<true>
+  ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const secondUser = await collection('users').findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      {
+        $pull: {
+          friendRequestsIds: new ObjectId(tokenData.userId),
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!secondUser.value) {
+      throw new UserInputError('There is no user with such id: ' + id);
+    }
+
+    const updatedUser = await collection('users').findOneAndUpdate(
+      { _id: new ObjectId(tokenData.userId) },
+      {
+        $pull: {
+          friendPendingRequestsIds: new ObjectId(id),
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!updatedUser.value) {
+      throw new UserInputError('There is no user with such id: ' + tokenData.userId);
+    }
+
+    return {
+      recordId: updatedUser.value._id,
+      record: updatedUser.value,
+    };
+  },
 };
 
 const User = {
