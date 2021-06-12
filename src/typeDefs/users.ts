@@ -46,6 +46,22 @@ export default gql`
     Array of user permission
     """
     permissions: [String!]! @default(value: "[]")
+
+    """
+    Accepted user friends
+    """
+    friends: [User!]! @dataLoader(dataLoaderName: "userById", fieldName: "friendsIds") @default(value: "[]")
+
+    """
+    Unaccepted friend requests to other users
+    """
+    friendPendingRequests: [User!]! @dataLoader(dataLoaderName: "userById", fieldName: "friendPendingRequestsIds") @default(value: "[]")
+
+    """
+    Friend requests to user
+    User can accept or reject them
+    """
+    friendRequests: [User!]! @dataLoader(dataLoaderName: "userById", fieldName: "friendRequestsIds") @default(value: "[]")
   }
 
   """

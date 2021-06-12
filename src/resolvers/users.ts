@@ -104,6 +104,21 @@ export interface UserDBScheme {
       id: number
     }
   }
+
+  /**
+   * User friends ids
+   */
+  friendsIds?: ObjectId[];
+
+  /**
+   * Dispatched friend requests
+   */
+  friendPendingRequestsIds?: ObjectId[];
+
+  /**
+   * Received friend requests
+   */
+  friendRequestsIds?: ObjectId[];
 }
 
 const Query = {
@@ -210,6 +225,281 @@ const UserMutations = {
 
     if (!updatedUser.value) {
       throw new UserInputError('There is no user with such id: ' + input.id);
+    }
+
+    return {
+      recordId: updatedUser.value._id,
+      record: updatedUser.value,
+    };
+  },
+
+  /**
+   * Sends friend request to user by id
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param id - new friend id
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async sendFriendRequest(
+    parent: undefined,
+    { id }: { id: ObjectId },
+    { collection, tokenData }: ResolverContextBase<true>
+  ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const currentUserId = new ObjectId(tokenData.userId);
+    const secondUserId = new ObjectId(id);
+
+    const secondUser = await collection('users').findOneAndUpdate(
+      {
+        _id: secondUserId,
+        friendsIds: {
+          $ne: currentUserId,
+        },
+        friendRequestsIds: {
+          $ne: currentUserId,
+        },
+      },
+      {
+        $push: {
+          friendRequestsIds: currentUserId,
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!secondUser.value) {
+      throw new UserInputError('Can\'t add friend with such id: ' + id);
+    }
+
+    const updatedUser = await collection('users').findOneAndUpdate(
+      {
+        _id: currentUserId,
+        friendsIds: {
+          $ne: secondUserId,
+        },
+        friendPendingRequestsIds: {
+          $ne: secondUserId,
+        },
+      },
+      {
+        $push: {
+          friendPendingRequestsIds: secondUserId,
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!updatedUser.value) {
+      throw new UserInputError('Can\'t add friend with such id: ' + tokenData.userId);
+    }
+
+    return {
+      recordId: updatedUser.value._id,
+      record: updatedUser.value,
+    };
+  },
+
+  /**
+   * Cancels friend request to user by id
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param id - a user to whom we are canceling the request
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async cancelFriendRequest(
+    parent: undefined,
+    { id }: { id: ObjectId },
+    { collection, tokenData }: ResolverContextBase<true>
+  ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const currentUserId = new ObjectId(tokenData.userId);
+    const secondUserId = new ObjectId(id);
+
+    const secondUser = await collection('users').findOneAndUpdate(
+      { _id: secondUserId },
+      {
+        $pull: {
+          friendRequestsIds: currentUserId,
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!secondUser.value) {
+      throw new UserInputError('Can\'t add friend with such id: ' + id);
+    }
+
+    const updatedUser = await collection('users').findOneAndUpdate(
+      { _id: currentUserId },
+      {
+        $pull: {
+          friendPendingRequestsIds: secondUserId,
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!updatedUser.value) {
+      throw new UserInputError('Can\'t add friend with such id: ' + tokenData.userId);
+    }
+
+    return {
+      recordId: updatedUser.value._id,
+      record: updatedUser.value,
+    };
+  },
+
+  /**
+   * Accepts friend request to user by id
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param id - new friend id
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async acceptFriendRequest(
+    parent: undefined,
+    { id }: { id: ObjectId },
+    { collection, tokenData }: ResolverContextBase<true>
+  ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const currentUserId = new ObjectId(tokenData.userId);
+    const secondUserId = new ObjectId(id);
+
+    const newFriend = await collection('users').findOne(
+      {
+        _id: secondUserId,
+        friendPendingRequestsIds: [
+          currentUserId,
+        ],
+      }
+    );
+
+    if (!newFriend) {
+      throw new UserInputError('Can\'t add friend with this id: ' + id);
+    }
+
+    await collection('users').updateOne(
+      { _id: secondUserId },
+      {
+        $pull: {
+          friendPendingRequestsIds: currentUserId,
+        },
+        $push: {
+          friendsIds: currentUserId,
+        },
+      }
+    );
+
+    const updatedUser = await collection('users').findOneAndUpdate(
+      { _id: currentUserId },
+      {
+        $pull: {
+          friendRequestsIds: secondUserId,
+        },
+        $push: {
+          friendsIds: secondUserId,
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!updatedUser.value) {
+      throw new UserInputError('Can\'t add friend with such id: ' + tokenData.userId);
+    }
+
+    return {
+      recordId: updatedUser.value._id,
+      record: updatedUser.value,
+    };
+  },
+
+  /**
+   * Rejects friend request to user by id
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param id - rejected user id
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async rejectFriendRequest(
+    parent: undefined,
+    { id }: { id: ObjectId },
+    { collection, tokenData }: ResolverContextBase<true>
+  ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const currentUserId = new ObjectId(tokenData.userId);
+    const secondUserId = new ObjectId(id);
+
+    const rejectedUser = await collection('users').findOneAndUpdate(
+      { _id: secondUserId },
+      {
+        $pull: {
+          friendPendingRequestsIds: currentUserId,
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!rejectedUser.value) {
+      throw new UserInputError('Can\'t reject friend request with such user id: ' + id);
+    }
+
+    const updatedUser = await collection('users').findOneAndUpdate(
+      { _id: currentUserId },
+      {
+        $pull: {
+          friendRequestsIds: secondUserId,
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!updatedUser.value) {
+      throw new UserInputError('Can\'t reject friend request with such user id: ' + tokenData.userId);
+    }
+
+    return {
+      recordId: updatedUser.value._id,
+      record: updatedUser.value,
+    };
+  },
+
+  /**
+   * Removes friend by id
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param id - removed friend id
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async removeFromFriends(
+    parent: undefined,
+    { id }: { id: ObjectId },
+    { collection, tokenData }: ResolverContextBase<true>
+  ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const currentUserId = new ObjectId(tokenData.userId);
+    const secondUserId = new ObjectId(id);
+
+    const secondUser = await collection('users').findOneAndUpdate(
+      { _id: secondUserId },
+      {
+        $pull: {
+          friendsIds: currentUserId,
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!secondUser.value) {
+      throw new UserInputError('Can\'t remove friend with such id: ' + id);
+    }
+
+    const updatedUser = await collection('users').findOneAndUpdate(
+      { _id: currentUserId },
+      {
+        $pull: {
+          friendsIds: secondUserId,
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!updatedUser.value) {
+      throw new UserInputError('Can\'t remove friend with such id: ' + tokenData.userId);
     }
 
     return {
