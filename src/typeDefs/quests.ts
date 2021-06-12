@@ -2,6 +2,21 @@ import { gql } from 'apollo-server-express';
 
 export default gql`
   """
+  What user needs to use for route passing
+  """
+  enum WayToTravel {
+    """
+    Uses his feets
+    """
+    ON_FOOT
+
+    """
+    Uses scooter or bycicle
+    """
+    WITH_TRANSPORT
+  }
+
+  """
   Data saved from Editor.js
   See https://editorjs.io/saving-data
   """
@@ -69,6 +84,11 @@ export default gql`
     Quest type (quiz, route, etc.)
     """
     type: TaskTypes!
+
+    """
+    What user needs to use for route passing
+    """
+    wayToTravel: WayToTravel! @default(value: "ON_FOOT")
 
     """
     Quest task
