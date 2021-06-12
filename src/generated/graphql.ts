@@ -1185,6 +1185,14 @@ export type UserEdge = {
   node: User;
 };
 
+/** What user needs to use for route passing */
+export enum WayToTravel {
+  /** Uses his feets */
+  OnFoot = 'ON_FOOT',
+  /** Uses scooter or bycicle */
+  WithTransport = 'WITH_TRANSPORT'
+}
+
 /**
  * Data saved from Editor.js
  * See https://editorjs.io/saving-data
@@ -1224,6 +1232,8 @@ export type Quest = Node & {
   photo?: Maybe<Scalars['String']>;
   /** Quest type (quiz, route, etc.) */
   type: TaskTypes;
+  /** What user needs to use for route passing */
+  wayToTravel: WayToTravel;
   /** Quest task */
   task: Scalars['JSON'];
   /** Quest data */
@@ -1269,7 +1279,11 @@ export enum TaskTypes {
   /** Task type quiz */
   Quiz = 'QUIZ',
   /** Task type route */
-  Route = 'ROUTE'
+  Route = 'ROUTE',
+  /** Story about something without quiz parts */
+  Story = 'STORY',
+  /** Test without traveling */
+  Test = 'TEST'
 }
 
 /** Possible quest states */
@@ -1329,6 +1343,8 @@ export type CreateQuestInput = {
   name: Scalars['String'];
   /** Quest description */
   description?: Maybe<Scalars['String']>;
+  /** What user needs to use for route passing */
+  wayToTravel?: WayToTravel;
   /** Quest photo */
   photo?: Maybe<Scalars['String']>;
   /** Quest type (quiz, route, etc.) */
@@ -1360,6 +1376,8 @@ export type UpdateQuestInput = {
   name?: Maybe<Scalars['String']>;
   /** Quest description */
   description?: Maybe<Scalars['String']>;
+  /** What user needs to use for route passing */
+  wayToTravel?: Maybe<WayToTravel>;
   /** Quest photo */
   photo?: Maybe<Scalars['String']>;
   /** Quest type (quiz, route, etc.) */
@@ -1751,6 +1769,7 @@ export type ResolversTypes = {
   User: ResolverTypeWrapper<User>;
   UserConnection: ResolverTypeWrapper<UserConnection>;
   UserEdge: ResolverTypeWrapper<UserEdge>;
+  WayToTravel: WayToTravel;
   EditorData: ResolverTypeWrapper<EditorData>;
   EditorDataInput: EditorDataInput;
   Quest: ResolverTypeWrapper<Quest>;
@@ -2373,6 +2392,7 @@ export type QuestResolvers<ContextType = ResolverContextBase, ParentType extends
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   photo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['TaskTypes'], ParentType, ContextType>;
+  wayToTravel?: Resolver<ResolversTypes['WayToTravel'], ParentType, ContextType>;
   task?: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
   data?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;
   credits?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;

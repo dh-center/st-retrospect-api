@@ -13,6 +13,11 @@ export default gql`
     description: String
 
     """
+    What user needs to use for route passing
+    """
+    wayToTravel: WayToTravel! = ON_FOOT
+
+    """
     Quest photo
     """
     photo: String
@@ -75,6 +80,11 @@ export default gql`
     Quest description
     """
     description: String
+
+    """
+    What user needs to use for route passing
+    """
+    wayToTravel: WayToTravel
 
     """
     Quest photo
