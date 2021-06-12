@@ -245,41 +245,44 @@ const UserMutations = {
     { id }: { id: ObjectId },
     { collection, tokenData }: ResolverContextBase<true>
   ): Promise<UpdateMutationPayload<UserDBScheme>> {
-    const newFriend = await collection('users').findOneAndUpdate(
+    const currentUserId = new ObjectId(tokenData.userId);
+    const secondUserId = new ObjectId(id);
+
+    const secondUser = await collection('users').findOneAndUpdate(
       {
-        _id: new ObjectId(id),
+        _id: secondUserId,
         friendsIds: {
-          $ne: new ObjectId(tokenData.userId),
+          $ne: currentUserId,
         },
         friendRequestsIds: {
-          $ne: new ObjectId(tokenData.userId),
+          $ne: currentUserId,
         },
       },
       {
         $push: {
-          friendRequestsIds: new ObjectId(tokenData.userId),
+          friendRequestsIds: currentUserId,
         },
       },
       { returnOriginal: false }
     );
 
-    if (!newFriend.value) {
+    if (!secondUser.value) {
       throw new UserInputError('Can\'t add friend with such id: ' + id);
     }
 
     const updatedUser = await collection('users').findOneAndUpdate(
       {
-        _id: new ObjectId(tokenData.userId),
+        _id: currentUserId,
         friendsIds: {
-          $ne: new ObjectId(id),
+          $ne: secondUserId,
         },
         friendPendingRequestsIds: {
-          $ne: new ObjectId(id),
+          $ne: secondUserId,
         },
       },
       {
         $push: {
-          friendPendingRequestsIds: new ObjectId(id),
+          friendPendingRequestsIds: secondUserId,
         },
       },
       { returnOriginal: false }
@@ -307,11 +310,14 @@ const UserMutations = {
     { id }: { id: ObjectId },
     { collection, tokenData }: ResolverContextBase<true>
   ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const currentUserId = new ObjectId(tokenData.userId);
+    const secondUserId = new ObjectId(id);
+
     const secondUser = await collection('users').findOneAndUpdate(
-      { _id: new ObjectId(id) },
+      { _id: secondUserId },
       {
         $pull: {
-          friendRequestsIds: new ObjectId(tokenData.userId),
+          friendRequestsIds: currentUserId,
         },
       },
       { returnOriginal: false }
@@ -322,10 +328,10 @@ const UserMutations = {
     }
 
     const updatedUser = await collection('users').findOneAndUpdate(
-      { _id: new ObjectId(tokenData.userId) },
+      { _id: currentUserId },
       {
         $pull: {
-          friendPendingRequestsIds: new ObjectId(id),
+          friendPendingRequestsIds: secondUserId,
         },
       },
       { returnOriginal: false }
@@ -353,11 +359,14 @@ const UserMutations = {
     { id }: { id: ObjectId },
     { collection, tokenData }: ResolverContextBase<true>
   ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const currentUserId = new ObjectId(tokenData.userId);
+    const secondUserId = new ObjectId(id);
+
     const newFriend = await collection('users').findOne(
       {
-        _id: new ObjectId(id),
+        _id: secondUserId,
         friendPendingRequestsIds: [
-          new ObjectId(tokenData.userId),
+          currentUserId,
         ],
       }
     );
@@ -367,25 +376,25 @@ const UserMutations = {
     }
 
     await collection('users').updateOne(
-      { _id: new ObjectId(id) },
+      { _id: secondUserId },
       {
         $pull: {
-          friendPendingRequestsIds: new ObjectId(tokenData.userId),
+          friendPendingRequestsIds: currentUserId,
         },
         $push: {
-          friendsIds: new ObjectId(tokenData.userId),
+          friendsIds: currentUserId,
         },
       }
     );
 
     const updatedUser = await collection('users').findOneAndUpdate(
-      { _id: new ObjectId(tokenData.userId) },
+      { _id: currentUserId },
       {
         $pull: {
-          friendRequestsIds: new ObjectId(id),
+          friendRequestsIds: secondUserId,
         },
         $push: {
-          friendsIds: new ObjectId(id),
+          friendsIds: secondUserId,
         },
       },
       { returnOriginal: false }
@@ -413,11 +422,14 @@ const UserMutations = {
     { id }: { id: ObjectId },
     { collection, tokenData }: ResolverContextBase<true>
   ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const currentUserId = new ObjectId(tokenData.userId);
+    const secondUserId = new ObjectId(id);
+
     const rejectedUser = await collection('users').findOneAndUpdate(
-      { _id: new ObjectId(id) },
+      { _id: secondUserId },
       {
         $pull: {
-          friendPendingRequestsIds: new ObjectId(tokenData.userId),
+          friendPendingRequestsIds: currentUserId,
         },
       },
       { returnOriginal: false }
@@ -428,10 +440,10 @@ const UserMutations = {
     }
 
     const updatedUser = await collection('users').findOneAndUpdate(
-      { _id: new ObjectId(tokenData.userId) },
+      { _id: currentUserId },
       {
         $pull: {
-          friendRequestsIds: new ObjectId(id),
+          friendRequestsIds: secondUserId,
         },
       },
       { returnOriginal: false }
@@ -459,11 +471,14 @@ const UserMutations = {
     { id }: { id: ObjectId },
     { collection, tokenData }: ResolverContextBase<true>
   ): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const currentUserId = new ObjectId(tokenData.userId);
+    const secondUserId = new ObjectId(id);
+
     const secondUser = await collection('users').findOneAndUpdate(
-      { _id: new ObjectId(id) },
+      { _id: secondUserId },
       {
         $pull: {
-          friendsIds: new ObjectId(tokenData.userId),
+          friendsIds: currentUserId,
         },
       },
       { returnOriginal: false }
@@ -474,10 +489,10 @@ const UserMutations = {
     }
 
     const updatedUser = await collection('users').findOneAndUpdate(
-      { _id: new ObjectId(tokenData.userId) },
+      { _id: currentUserId },
       {
         $pull: {
-          friendsIds: new ObjectId(id),
+          friendsIds: secondUserId,
         },
       },
       { returnOriginal: false }
