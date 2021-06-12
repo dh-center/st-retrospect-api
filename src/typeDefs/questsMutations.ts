@@ -25,7 +25,7 @@ export default gql`
     """
     Quest duration in kilometers
     """
-    dutarionInKilometers: Int!
+    durationInKilometers: Int!
 
     """
     Quest photo
@@ -104,7 +104,7 @@ export default gql`
     """
     Quest duration in kilometers
     """
-    dutarionInKilometers: Int
+    durationInKilometers: Int
 
     """
     Quest photo

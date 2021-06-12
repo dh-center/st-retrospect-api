@@ -1352,7 +1352,7 @@ export type CreateQuestInput = {
   /** Quest duration in minutes */
   durationInMinutes: Scalars['Int'];
   /** Quest duration in kilometers */
-  dutarionInKilometers: Scalars['Int'];
+  durationInKilometers: Scalars['Int'];
   /** Quest photo */
   photo?: Maybe<Scalars['String']>;
   /** Quest type (quiz, route, etc.) */
@@ -1389,7 +1389,7 @@ export type UpdateQuestInput = {
   /** Quest duration in minutes */
   durationInMinutes?: Maybe<Scalars['Int']>;
   /** Quest duration in kilometers */
-  dutarionInKilometers?: Maybe<Scalars['Int']>;
+  durationInKilometers?: Maybe<Scalars['Int']>;
   /** Quest photo */
   photo?: Maybe<Scalars['String']>;
   /** Quest type (quiz, route, etc.) */
