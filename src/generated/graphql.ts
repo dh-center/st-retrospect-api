@@ -1155,14 +1155,14 @@ export type User = Node & {
   /** Array of user permission */
   permissions: Array<Scalars['String']>;
   /** Accepted user friends */
-  friends: Array<Scalars['GlobalId']>;
+  friends: Array<User>;
   /** Unaccepted friend requests to other users */
-  friendPendingRequests: Array<Scalars['GlobalId']>;
+  friendPendingRequests: Array<User>;
   /**
    * Friend requests to user
    * User can accept or reject them
    */
-  friendRequests: Array<Scalars['GlobalId']>;
+  friendRequests: Array<User>;
 };
 
 /** Model for representing list of persons */
@@ -2333,9 +2333,9 @@ export type UserResolvers<ContextType = ResolverContextBase, ParentType extends 
   exp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   level?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   permissions?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  friends?: Resolver<Array<ResolversTypes['GlobalId']>, ParentType, ContextType>;
-  friendPendingRequests?: Resolver<Array<ResolversTypes['GlobalId']>, ParentType, ContextType>;
-  friendRequests?: Resolver<Array<ResolversTypes['GlobalId']>, ParentType, ContextType>;
+  friends?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
+  friendPendingRequests?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
+  friendRequests?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

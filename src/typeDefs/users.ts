@@ -50,18 +50,18 @@ export default gql`
     """
     Accepted user friends
     """
-    friends: [GlobalId!]! @default(value: "[]")
+    friends: [User!]! @dataLoader(dataLoaderName: "userById", fieldName: "friendsIds") @default(value: "[]")
 
     """
     Unaccepted friend requests to other users
     """
-    friendPendingRequests: [GlobalId!]! @default(value: "[]")
+    friendPendingRequests: [User!]! @dataLoader(dataLoaderName: "userById", fieldName: "friendPendingRequestsIds") @default(value: "[]")
 
     """
     Friend requests to user
     User can accept or reject them
     """
-    friendRequests: [GlobalId!]! @default(value: "[]")
+    friendRequests: [User!]! @dataLoader(dataLoaderName: "userById", fieldName: "friendRequestsIds") @default(value: "[]")
   }
 
   """
