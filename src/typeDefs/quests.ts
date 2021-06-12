@@ -91,6 +91,16 @@ export default gql`
     wayToTravel: WayToTravel! @default(value: "ON_FOOT")
 
     """
+    Quest duration in minutes
+    """
+    durationInMinutes: Int! @default(value: "1")
+
+    """
+    Quest distance in kilometers
+    """
+    distanceInKilometers: Int! @default(value: "1")
+
+    """
     Quest task
     """
     task: JSON!
