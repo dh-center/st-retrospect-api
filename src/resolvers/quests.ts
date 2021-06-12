@@ -8,7 +8,7 @@ import { ObjectId } from 'mongodb';
 import { EditorData } from '../types/editorData';
 import emptyMutation from '../utils/emptyMutation';
 import sendNotify from '../utils/telegramNotify';
-import { QuestUserProgressStates, TaskTypes, UpdateQuestInput } from '../generated/graphql';
+import { QuestUserProgressStates, TaskTypes, UpdateQuestInput, WayToTravel } from '../generated/graphql';
 import mergeWithCustomizer from '../utils/mergeWithCustomizer';
 import { UserInputError } from 'apollo-server-express';
 import { ExpiredAccessToken, InvalidAccessToken } from '../errorTypes';
@@ -34,6 +34,11 @@ export interface QuestDBScheme {
    * Quest description
    */
   description: string;
+
+  /**
+   * What user needs to use for route passing
+   */
+  wayToTravel: WayToTravel;
 
   /**
    * Quest photo

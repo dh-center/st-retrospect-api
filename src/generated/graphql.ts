@@ -1339,6 +1339,8 @@ export type CreateQuestInput = {
   name: Scalars['String'];
   /** Quest description */
   description?: Maybe<Scalars['String']>;
+  /** What user needs to use for route passing */
+  wayToTravel?: WayToTravel;
   /** Quest photo */
   photo?: Maybe<Scalars['String']>;
   /** Quest type (quiz, route, etc.) */
@@ -1370,6 +1372,8 @@ export type UpdateQuestInput = {
   name?: Maybe<Scalars['String']>;
   /** Quest description */
   description?: Maybe<Scalars['String']>;
+  /** What user needs to use for route passing */
+  wayToTravel?: Maybe<WayToTravel>;
   /** Quest photo */
   photo?: Maybe<Scalars['String']>;
   /** Quest type (quiz, route, etc.) */
