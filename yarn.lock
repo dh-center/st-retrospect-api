@@ -2326,6 +2326,15 @@ append-field@^1.0.0:
   resolved "https://registry.yarnpkg.com/append-field/-/append-field-1.0.0.tgz#1e3440e915f0b1203d23748e78edd7b9b5b43e56"
   integrity sha1-HjRA6RXwsSA9I3SOeO3XubW0PlY=
 
+apple-auth@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/apple-auth/-/apple-auth-1.0.7.tgz#6730c9ac8e585e181f0335ef8c7ebf9095bf86d3"
+  integrity sha512-vfJqy4KtT5KHflxBSemc0mkWuy2GU2wHWaZ6xVWUjPmiXkJcLj5jB3IeCbDLF4wN+ZStjOQXZWfGwccBjclVlA==
+  dependencies:
+    axios "^0.21.1"
+    express "^4.17.1"
+    jsonwebtoken "^8.5.1"
+
 aproba@^1.0.3:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/aproba/-/aproba-1.2.0.tgz#6802e6264efd18c790a1b0d517f0f2627bf2c94a"
@@ -9196,7 +9205,7 @@ zen-observable@^0.8.0:
   resolved "https://registry.yarnpkg.com/zen-observable/-/zen-observable-0.8.15.tgz#96415c512d8e3ffd920afd3889604e30b9eaac15"
   integrity sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ==
 
-zod@^2.0.0-beta.29:
-  version "2.0.0-beta.30"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-2.0.0-beta.30.tgz#67ec3305c4a106a7bf9ef72078de72892d485dbe"
-  integrity sha512-nwCSRXRy1jt0872mMXT2E6VVHXr2hO7jGEtwc/TDqOBb7gGodwAjsQ6UCS4XJLUmjVvmqLsuPvAIN8oL26weCQ==
+zod@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.2.0.tgz#4f06fac3c74e56902eae43a47a1687bf49c9b70b"
+  integrity sha512-yvcO3FZ8URR+LliMGqaW7tlVOOTzmup3vzKEe9Ds7twyJtdhvYa7dIYr0FbD1wVfWC1OuS83vZfHtCKslPuRhA==
