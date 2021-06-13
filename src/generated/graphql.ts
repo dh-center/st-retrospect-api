@@ -85,6 +85,8 @@ export type Query = {
   user?: Maybe<User>;
   /** Returns connection with all users */
   users: UserConnection;
+  /** Search users by username */
+  usersSearch: Array<User>;
   /** Get specific Quest */
   quest?: Maybe<Quest>;
   /** Get all quests */
@@ -186,6 +188,12 @@ export type QueryUsersArgs = {
   before?: Maybe<Scalars['Cursor']>;
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
+};
+
+
+/** API queries */
+export type QueryUsersSearchArgs = {
+  username: Scalars['String'];
 };
 
 
@@ -1710,10 +1718,10 @@ export type ResolversTypes = {
   Languages: Languages;
   Query: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  String: ResolverTypeWrapper<Scalars['String']>;
   Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Person: ResolverTypeWrapper<Person>;
-  String: ResolverTypeWrapper<Scalars['String']>;
   PersonConnection: ResolverTypeWrapper<PersonConnection>;
   PersonEdge: ResolverTypeWrapper<PersonEdge>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
@@ -1826,10 +1834,10 @@ export type ResolversParentTypes = {
   GlobalId: Scalars['GlobalId'];
   Query: {};
   Int: Scalars['Int'];
+  String: Scalars['String'];
   Mutation: {};
   Boolean: Scalars['Boolean'];
   Person: Person;
-  String: Scalars['String'];
   PersonConnection: PersonConnection;
   PersonEdge: PersonEdge;
   PageInfo: PageInfo;
@@ -2005,6 +2013,7 @@ export type QueryResolvers<ContextType = ResolverContextBase, ParentType extends
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<QueryUsersArgs, never>>;
+  usersSearch?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUsersSearchArgs, 'username'>>;
   quest?: Resolver<Maybe<ResolversTypes['Quest']>, ParentType, ContextType, RequireFields<QueryQuestArgs, 'id'>>;
   quests?: Resolver<ResolversTypes['QuestConnection'], ParentType, ContextType, RequireFields<QueryQuestsArgs, never>>;
   locationsSearch?: Resolver<ResolversTypes['LocationsSearchResult'], ParentType, ContextType, RequireFields<QueryLocationsSearchArgs, 'input'>>;
