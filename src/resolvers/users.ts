@@ -396,9 +396,7 @@ const UserMutations = {
     const newFriend = await collection('users').findOne(
       {
         _id: secondUserId,
-        friendPendingRequestsIds: [
-          currentUserId,
-        ],
+        friendPendingRequestsIds: currentUserId,
       }
     );
 
