@@ -129,5 +129,10 @@ export default gql`
       "Number of requested nodes before a node with a cursor in the before argument"
       last: Int
     ): UserConnection! @adminCheck @pagination(collectionName: "users")
+
+    """
+    Search users by username
+    """
+    usersSearch(username: String!): [User!]! @authCheck
   }
 `;

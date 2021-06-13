@@ -142,6 +142,27 @@ const Query = {
 
     return currentUser;
   },
+
+  /**
+   * Searches users by username and returns array of users
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async usersSearch(
+    parent: undefined,
+    { username }: { username: string },
+    { collection }: ResolverContextBase<true>): Promise<UserDBScheme[]> {
+    return await collection('users')
+      .find({
+        username: {
+          $regex: username,
+          $options: 'i',
+        },
+      })
+      .toArray();
+  },
 };
 
 const UserMutations = {
