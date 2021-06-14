@@ -89,6 +89,11 @@ export interface QuestDBScheme {
    * Quest tags
    */
   tagIds?: ObjectId[] | null;
+
+  /**
+   * Cards ids that user will get after quest passing
+   */
+  personsCardsIds?: ObjectId[];
 }
 
 const Query = {

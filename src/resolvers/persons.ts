@@ -165,10 +165,19 @@ const PersonMutations = {
 
     await sendNotify('Person', 'persons', db, tokenData, 'delete', person);
 
-    await collection('persons').deleteOne({ _id: new ObjectId(id) });
+    await collection('persons').deleteOne({ _id: id });
 
     await collection('relations').deleteMany({
       personId: id,
+    });
+
+    await collection('quests').updateMany({
+      personsCardsIds: id,
+    },
+    {
+      $pull: {
+        personsCardsIds: id,
+      },
     });
 
     return {
