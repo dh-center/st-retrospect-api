@@ -1481,6 +1481,8 @@ export type UpdateUserPayload = {
 
 /** Input to resetting user password */
 export type ResetPasswordInput = {
+  /** Email of the user who wants reset password */
+  email: Scalars['String'];
   /** One-time code from email */
   code: Scalars['String'];
   /** New password to set */

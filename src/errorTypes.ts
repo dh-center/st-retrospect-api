@@ -171,3 +171,18 @@ export class InvalidRefreshToken extends ApiError {
     super(httpCode);
   }
 }
+
+/**
+ * Throws when client sends wrong code for resetting password
+ */
+export class WrongPasswordResetCode extends ApiError {
+  /**
+   * Creates error instance
+   *
+   * @param httpCode - http code to send to user
+   */
+  constructor(httpCode = 400) {
+    super(httpCode);
+    this.code = 'WRONG_RESET_CODE';
+  }
+}

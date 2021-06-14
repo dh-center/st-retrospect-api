@@ -42,6 +42,11 @@ export default gql`
   """
   input ResetPasswordInput {
     """
+    Email of the user who wants reset password
+    """
+    email: String!
+
+    """
     One-time code from email
     """
     code: String!
