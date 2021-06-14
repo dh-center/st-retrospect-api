@@ -77,6 +77,21 @@ export interface PersonDBScheme extends WithProfessions {
    * Person tag ids
    */
   tagIds?: ObjectId[];
+
+  /**
+   * Person's main photo
+   */
+  mainPhotoLink?: string | null;
+
+  /**
+   * Person's photos links
+   */
+  photoLinks?: string[] | null;
+
+  /**
+   * Link with photo for card
+   */
+  cardPhotoLink?: string | null;
 }
 
 const PersonMutations = {

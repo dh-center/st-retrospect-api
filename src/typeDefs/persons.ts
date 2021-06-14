@@ -63,6 +63,11 @@ export default gql`
     mainPhotoLink: String
 
     """
+    Link with photo for card
+    """
+    cardPhotoLink: String
+
+    """
     Person's photos links
     """
     photoLinks: [String!]
@@ -187,6 +192,11 @@ export default gql`
     mainPhotoLink: String
 
     """
+    Link with photo for card
+    """
+    cardPhotoLink: String
+
+    """
     Person's professions
     """
     professions: [String!] @multilingual
@@ -264,6 +274,11 @@ export default gql`
     Link with main photo
     """
     mainPhotoLink: String
+
+    """
+    Link with photo for card
+    """
+    cardPhotoLink: String
 
     """
     Person's professions

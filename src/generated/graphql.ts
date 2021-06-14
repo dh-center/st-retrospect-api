@@ -281,6 +281,8 @@ export type Person = Node & {
   wikiLink?: Maybe<Scalars['String']>;
   /** Person's main photo */
   mainPhotoLink?: Maybe<Scalars['String']>;
+  /** Link with photo for card */
+  cardPhotoLink?: Maybe<Scalars['String']>;
   /** Person's photos links */
   photoLinks?: Maybe<Array<Scalars['String']>>;
   /** Person tags */
@@ -331,6 +333,8 @@ export type CreatePersonInput = {
   pseudonym?: Maybe<Scalars['MultilingualString']>;
   /** Link with main photo */
   mainPhotoLink?: Maybe<Scalars['String']>;
+  /** Link with photo for card */
+  cardPhotoLink?: Maybe<Scalars['String']>;
   /** Person's professions */
   professions?: Maybe<Array<Scalars['String']>>;
   /** Person's description */
@@ -368,6 +372,8 @@ export type UpdatePersonInput = {
   pseudonym?: Maybe<Scalars['String']>;
   /** Link with main photo */
   mainPhotoLink?: Maybe<Scalars['String']>;
+  /** Link with photo for card */
+  cardPhotoLink?: Maybe<Scalars['String']>;
   /** Person's professions */
   professions?: Maybe<Array<Scalars['String']>>;
   /** Person's description */
@@ -2063,6 +2069,7 @@ export type PersonResolvers<ContextType = ResolverContextBase, ParentType extend
   relations?: Resolver<Array<ResolversTypes['Relation']>, ParentType, ContextType>;
   wikiLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   mainPhotoLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  cardPhotoLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   photoLinks?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
