@@ -94,6 +94,45 @@ export interface PersonDBScheme extends WithProfessions {
   cardPhotoLink?: string | null;
 }
 
+const Query = {
+  /**
+   * Returns all persons cards
+   *
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param args - query args object
+   * @param context - query context
+   */
+  async personsCards(parent: undefined, args: undefined, { collection, dataLoaders }: ResolverContextBase): Promise<PersonDBScheme[]> {
+    const [ { personsCardsIds } ] = await collection('quests')
+      .aggregate([
+        {
+          '$unwind': {
+            'path': '$personsCardsIds',
+          },
+        },
+        {
+          '$group': {
+            '_id': null,
+            'personsCardsIds': {
+              '$push': '$personsCardsIds',
+            },
+          },
+        },
+      ])
+      .toArray();
+
+    if (!personsCardsIds) {
+      return [];
+    }
+
+    const result = await dataLoaders
+      .personById
+      .loadMany(personsCardsIds.map(id => id.toString()));
+
+    return result.filter((person): person is PersonDBScheme => !!person);
+  },
+};
+
 const PersonMutations = {
   /**
    * Create new person
@@ -206,6 +245,7 @@ const Mutation = {
 };
 
 export default {
+  Query,
   Mutation,
   PersonMutations,
 };

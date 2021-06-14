@@ -163,6 +163,8 @@ export default gql`
       "Number of requested nodes before a node with a cursor in the before argument"
       last: Int
     ): PersonConnection! @pagination(collectionName: "persons")
+
+    personsCards: [Person!]! @default(value: "[]")
   }
 
   input CreatePersonInput {

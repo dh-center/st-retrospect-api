@@ -59,6 +59,7 @@ export type Query = {
   person?: Maybe<Person>;
   /** Get all persons */
   persons: PersonConnection;
+  personsCards: Array<Person>;
   /** Get specific location */
   location?: Maybe<Location>;
   /** Get all locations */
@@ -2020,6 +2021,7 @@ export type QueryResolvers<ContextType = ResolverContextBase, ParentType extends
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   person?: Resolver<Maybe<ResolversTypes['Person']>, ParentType, ContextType, RequireFields<QueryPersonArgs, 'id'>>;
   persons?: Resolver<ResolversTypes['PersonConnection'], ParentType, ContextType, RequireFields<QueryPersonsArgs, never>>;
+  personsCards?: Resolver<Array<ResolversTypes['Person']>, ParentType, ContextType>;
   location?: Resolver<Maybe<ResolversTypes['Location']>, ParentType, ContextType, RequireFields<QueryLocationArgs, 'id'>>;
   locations?: Resolver<ResolversTypes['LocationConnection'], ParentType, ContextType, RequireFields<QueryLocationsArgs, never>>;
   locationInstance?: Resolver<Maybe<ResolversTypes['LocationInstance']>, ParentType, ContextType, RequireFields<QueryLocationInstanceArgs, 'id'>>;
