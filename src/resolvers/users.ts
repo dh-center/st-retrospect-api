@@ -1,10 +1,10 @@
 import { ObjectId } from 'mongodb';
 import { ResolverContextBase, UpdateMutationPayload } from '../types/graphql';
-import { ForbiddenAction, InvalidAccessToken } from '../errorTypes';
+import { ForbiddenAction, InvalidAccessToken, UsernameDuplicationError } from '../errorTypes';
 import { UserInputError } from 'apollo-server-express';
 import emptyMutation from '../utils/emptyMutation';
 import getUserLevel from '../utils/getUserLevel';
-import { UserMutationsUpdateArgs } from '../generated/graphql';
+import { UserMutationsChangeUsernameArgs, UserMutationsUpdateArgs } from '../generated/graphql';
 
 /**
  * Information about user in database
@@ -268,7 +268,7 @@ const UserMutations = {
    * Sends friend request to user by id
    *
    * @param parent - this is the return value of the resolver for this field's parent
-   * @param id - new friend id
+   * @param args - contains all GraphQL arguments provided for this field
    * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async sendFriendRequest(
@@ -333,7 +333,7 @@ const UserMutations = {
    * Cancels friend request to user by id
    *
    * @param parent - this is the return value of the resolver for this field's parent
-   * @param id - a user to whom we are canceling the request
+   * @param args - contains all GraphQL arguments provided for this field
    * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async cancelFriendRequest(
@@ -382,7 +382,7 @@ const UserMutations = {
    * Accepts friend request to user by id
    *
    * @param parent - this is the return value of the resolver for this field's parent
-   * @param id - new friend id
+   * @param args - contains all GraphQL arguments provided for this field
    * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async acceptFriendRequest(
@@ -443,7 +443,7 @@ const UserMutations = {
    * Rejects friend request to user by id
    *
    * @param parent - this is the return value of the resolver for this field's parent
-   * @param id - rejected user id
+   * @param args - contains all GraphQL arguments provided for this field
    * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async rejectFriendRequest(
@@ -492,7 +492,7 @@ const UserMutations = {
    * Removes friend by id
    *
    * @param parent - this is the return value of the resolver for this field's parent
-   * @param id - removed friend id
+   * @param args - contains all GraphQL arguments provided for this field
    * @param context - this object is shared across all resolvers that execute for a particular operation
    */
   async removeFromFriends(
@@ -535,6 +535,42 @@ const UserMutations = {
       recordId: updatedUser.value._id,
       record: updatedUser.value,
     };
+  },
+
+
+  /**
+   * Changes username of the user
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async changeUsername(parent: undefined, args: UserMutationsChangeUsernameArgs, { collection, tokenData }: ResolverContextBase<true>): Promise<UpdateMutationPayload<UserDBScheme>> {
+    try {
+      const userId = new ObjectId(tokenData.userId);
+      const updatedUser = await collection('users').findOneAndUpdate(
+        { _id: userId },
+        {
+          $set: {
+            username: args.username,
+          },
+        },
+        { returnOriginal: false });
+
+      if (!updatedUser.value) {
+        throw new InvalidAccessToken();
+      }
+
+      return {
+        recordId: userId,
+        record: updatedUser.value,
+      };
+    } catch (error) {
+      if (error.name === 'MongoError' && error.code === 11000) {
+        throw new UsernameDuplicationError();
+      }
+      throw error;
+    }
   },
 };
 

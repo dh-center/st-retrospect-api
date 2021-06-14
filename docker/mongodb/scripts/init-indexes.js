@@ -257,4 +257,28 @@ printjson(db.users.createIndex(
   })
 );
 
+printjson(db.users.createIndex(
+  {'auth.facebook.id': 1},
+  {
+    unique: true,
+    partialFilterExpression: {'auth.facebook.id': {$type: 'number'}},
+  })
+);
+
+printjson(db.users.createIndex(
+  {'auth.apple.id': 1},
+  {
+    unique: true,
+    partialFilterExpression: {'auth.apple.id': {$type: 'string'}},
+  })
+);
+
+printjson(db.users.createIndex(
+  {'auth.vk.id': 1},
+  {
+    unique: true,
+    partialFilterExpression: {'auth.vk.id': {$type: 'number'}},
+  })
+);
+
 printjson(db.users.getIndexes());

@@ -1492,6 +1492,8 @@ export type UserMutations = {
   completeQuest: UserCompleteQuestPayload;
   /** Updates user data */
   update: UpdateUserPayload;
+  /** Changes username of the user */
+  changeUsername: UpdateUserPayload;
   /** Send friend request to user by user id */
   sendFriendRequest: UpdateUserPayload;
   /** Cancel dispatched friend request */
@@ -1514,6 +1516,12 @@ export type UserMutationsCompleteQuestArgs = {
 /** Mutations for users */
 export type UserMutationsUpdateArgs = {
   input: UpdateUserInput;
+};
+
+
+/** Mutations for users */
+export type UserMutationsChangeUsernameArgs = {
+  username: Scalars['String'];
 };
 
 
@@ -2515,6 +2523,7 @@ export type UpdateUserPayloadResolvers<ContextType = ResolverContextBase, Parent
 export type UserMutationsResolvers<ContextType = ResolverContextBase, ParentType extends ResolversParentTypes['UserMutations'] = ResolversParentTypes['UserMutations']> = {
   completeQuest?: Resolver<ResolversTypes['UserCompleteQuestPayload'], ParentType, ContextType, RequireFields<UserMutationsCompleteQuestArgs, 'questId'>>;
   update?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsUpdateArgs, 'input'>>;
+  changeUsername?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsChangeUsernameArgs, 'username'>>;
   sendFriendRequest?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsSendFriendRequestArgs, 'id'>>;
   cancelFriendRequest?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsCancelFriendRequestArgs, 'id'>>;
   acceptFriendRequest?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsAcceptFriendRequestArgs, 'id'>>;

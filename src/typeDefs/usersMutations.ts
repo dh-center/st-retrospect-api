@@ -52,6 +52,11 @@ export default gql`
     update(input: UpdateUserInput!): UpdateUserPayload! @adminCheck
 
     """
+    Changes username of the user
+    """
+    changeUsername(username: String!): UpdateUserPayload! @authCheck
+
+    """
     Send friend request to user by user id
     """
     sendFriendRequest(id: GlobalId!): UpdateUserPayload! @authCheck
