@@ -4,7 +4,23 @@ import { ForbiddenAction, InvalidAccessToken, UsernameDuplicationError } from '.
 import { UserInputError } from 'apollo-server-express';
 import emptyMutation from '../utils/emptyMutation';
 import getUserLevel from '../utils/getUserLevel';
-import { UserMutationsChangeUsernameArgs, UserMutationsUpdateArgs } from '../generated/graphql';
+import {
+  UserMutationsChangeUsernameArgs,
+  UserMutationsSendCodeForPasswordResetArgs,
+  UserMutationsUpdateArgs
+} from '../generated/graphql';
+import EmailService from '../utils/email/emailService';
+import { nanoid } from 'nanoid';
+
+const emailService = new EmailService();
+
+/**
+ * Data of the codes for password resetting
+ */
+interface ResetPasswordCode {
+  value: string;
+  expiresAt: Date;
+}
 
 /**
  * Information about user in database
@@ -69,6 +85,11 @@ export interface UserDBScheme {
    * User level
    */
   level: number;
+
+  /**
+   * Array of codes for password resetting
+   */
+  passwordResetCodes?: ResetPasswordCode[] | null
 
   /**
    * Information about auth providers
@@ -571,6 +592,43 @@ const UserMutations = {
       }
       throw error;
     }
+  },
+
+  /**
+   * Changes username of the user
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async sendCodeForPasswordReset(parent: undefined, args: UserMutationsSendCodeForPasswordResetArgs, { collection, tokenData }: ResolverContextBase): Promise<boolean> {
+    if (!args.email) {
+      throw new UserInputError('Wrong email format');
+    }
+
+    const msInMin = 60 * 1000;
+    const expireTimeInMinutes = 30;
+    const newCode: ResetPasswordCode = {
+      value: nanoid(6).toUpperCase(),
+      expiresAt: new Date(new Date().getTime() + expireTimeInMinutes * msInMin),
+    };
+
+    const user = await collection('users').findOneAndUpdate(
+      { email: args.email },
+      {
+        $push: {
+          passwordResetCodes: newCode,
+        },
+      }
+    );
+
+    if (user.value && user.value.email) {
+      await emailService.send(user.value.email, 'resetPassword', {
+        code: newCode.value,
+      });
+    }
+
+    return true;
   },
 };
 
