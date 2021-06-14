@@ -102,6 +102,16 @@ export interface UserDBScheme {
        * Facebook account id
        */
       id: number
+    },
+
+    /**
+     * Info about user's apple account
+     */
+    apple?: {
+      /**
+       * Apple account id
+       */
+      id: string
     }
   }
 
