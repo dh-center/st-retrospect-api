@@ -1254,6 +1254,8 @@ export type Quest = Node & {
   credits?: Maybe<EditorData>;
   /** Quest rewards */
   rewards: Array<Scalars['JSON']>;
+  /** Cards that user will get after quest passing */
+  personsCards: Array<Person>;
   /** The minimum level required by the user to complete this quest */
   minLevel: Scalars['Int'];
   /** The experience that the user will receive by completing this quest */
@@ -1375,6 +1377,8 @@ export type CreateQuestInput = {
   credits: EditorDataInput;
   /** Quest tags */
   tagIds: Array<Scalars['GlobalId']>;
+  /** Cards ids that user will get after quest passing */
+  personsCardsIds: Array<Scalars['GlobalId']>;
 };
 
 export type CreateQuestPayload = {
@@ -1412,6 +1416,8 @@ export type UpdateQuestInput = {
   credits?: Maybe<EditorDataInput>;
   /** Quest tags */
   tagIds?: Maybe<Array<Scalars['GlobalId']>>;
+  /** Cards ids that user will get after quest passing */
+  personsCardsIds?: Maybe<Array<Scalars['GlobalId']>>;
 };
 
 export type UpdateQuestPayload = {
@@ -2420,6 +2426,7 @@ export type QuestResolvers<ContextType = ResolverContextBase, ParentType extends
   data?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;
   credits?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;
   rewards?: Resolver<Array<ResolversTypes['JSON']>, ParentType, ContextType>;
+  personsCards?: Resolver<Array<ResolversTypes['Person']>, ParentType, ContextType>;
   minLevel?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   earnedExp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   questProgressState?: Resolver<ResolversTypes['QuestUserProgressStates'], ParentType, ContextType>;
