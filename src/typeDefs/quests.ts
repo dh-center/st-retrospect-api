@@ -98,7 +98,7 @@ export default gql`
     """
     Quest distance in kilometers
     """
-    distanceInKilometers: Int! @default(value: "1")
+    distanceInKilometers: Float! @default(value: "1")
 
     """
     Quest task

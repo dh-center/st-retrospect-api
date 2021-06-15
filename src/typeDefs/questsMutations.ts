@@ -25,7 +25,7 @@ export default gql`
     """
     Quest distance in kilometers
     """
-    distanceInKilometers: Int!
+    distanceInKilometers: Float!
 
     """
     Quest photo
@@ -109,7 +109,7 @@ export default gql`
     """
     Quest distance in kilometers
     """
-    distanceInKilometers: Int
+    distanceInKilometers: Float
 
     """
     Quest photo
