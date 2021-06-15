@@ -77,7 +77,61 @@ export interface PersonDBScheme extends WithProfessions {
    * Person tag ids
    */
   tagIds?: ObjectId[];
+
+  /**
+   * Person's main photo
+   */
+  mainPhotoLink?: string | null;
+
+  /**
+   * Person's photos links
+   */
+  photoLinks?: string[] | null;
+
+  /**
+   * Link with photo for card
+   */
+  cardPhotoLink?: string | null;
 }
+
+const Query = {
+  /**
+   * Returns all persons cards
+   *
+   * @param parent - the object that contains the result returned from the resolver on the parent field
+   * @param args - query args object
+   * @param context - query context
+   */
+  async personsCards(parent: undefined, args: undefined, { collection, dataLoaders }: ResolverContextBase): Promise<PersonDBScheme[]> {
+    const [ { personsCardsIds } ] = await collection('quests')
+      .aggregate([
+        {
+          '$unwind': {
+            'path': '$personsCardsIds',
+          },
+        },
+        {
+          '$group': {
+            '_id': null,
+            'personsCardsIds': {
+              '$push': '$personsCardsIds',
+            },
+          },
+        },
+      ])
+      .toArray();
+
+    if (!personsCardsIds) {
+      return [];
+    }
+
+    const result = await dataLoaders
+      .personById
+      .loadMany(personsCardsIds.map(id => id.toString()));
+
+    return result.filter((person): person is PersonDBScheme => !!person);
+  },
+};
 
 const PersonMutations = {
   /**
@@ -165,10 +219,19 @@ const PersonMutations = {
 
     await sendNotify('Person', 'persons', db, tokenData, 'delete', person);
 
-    await collection('persons').deleteOne({ _id: new ObjectId(id) });
+    await collection('persons').deleteOne({ _id: id });
 
     await collection('relations').deleteMany({
       personId: id,
+    });
+
+    await collection('quests').updateMany({
+      personsCardsIds: id,
+    },
+    {
+      $pull: {
+        personsCardsIds: id,
+      },
     });
 
     return {
@@ -182,6 +245,7 @@ const Mutation = {
 };
 
 export default {
+  Query,
   Mutation,
   PersonMutations,
 };

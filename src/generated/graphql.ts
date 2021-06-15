@@ -59,6 +59,7 @@ export type Query = {
   person?: Maybe<Person>;
   /** Get all persons */
   persons: PersonConnection;
+  personsCards: Array<Person>;
   /** Get specific location */
   location?: Maybe<Location>;
   /** Get all locations */
@@ -281,6 +282,8 @@ export type Person = Node & {
   wikiLink?: Maybe<Scalars['String']>;
   /** Person's main photo */
   mainPhotoLink?: Maybe<Scalars['String']>;
+  /** Link with photo for card */
+  cardPhotoLink?: Maybe<Scalars['String']>;
   /** Person's photos links */
   photoLinks?: Maybe<Array<Scalars['String']>>;
   /** Person tags */
@@ -331,6 +334,8 @@ export type CreatePersonInput = {
   pseudonym?: Maybe<Scalars['MultilingualString']>;
   /** Link with main photo */
   mainPhotoLink?: Maybe<Scalars['String']>;
+  /** Link with photo for card */
+  cardPhotoLink?: Maybe<Scalars['String']>;
   /** Person's professions */
   professions?: Maybe<Array<Scalars['String']>>;
   /** Person's description */
@@ -368,6 +373,8 @@ export type UpdatePersonInput = {
   pseudonym?: Maybe<Scalars['String']>;
   /** Link with main photo */
   mainPhotoLink?: Maybe<Scalars['String']>;
+  /** Link with photo for card */
+  cardPhotoLink?: Maybe<Scalars['String']>;
   /** Person's professions */
   professions?: Maybe<Array<Scalars['String']>>;
   /** Person's description */
@@ -1254,6 +1261,8 @@ export type Quest = Node & {
   credits?: Maybe<EditorData>;
   /** Quest rewards */
   rewards: Array<Scalars['JSON']>;
+  /** Cards that user will get after quest passing */
+  personsCards: Array<Person>;
   /** The minimum level required by the user to complete this quest */
   minLevel: Scalars['Int'];
   /** The experience that the user will receive by completing this quest */
@@ -1375,6 +1384,8 @@ export type CreateQuestInput = {
   credits: EditorDataInput;
   /** Quest tags */
   tagIds: Array<Scalars['GlobalId']>;
+  /** Cards ids that user will get after quest passing */
+  personsCardsIds: Array<Scalars['GlobalId']>;
 };
 
 export type CreateQuestPayload = {
@@ -1412,6 +1423,8 @@ export type UpdateQuestInput = {
   credits?: Maybe<EditorDataInput>;
   /** Quest tags */
   tagIds?: Maybe<Array<Scalars['GlobalId']>>;
+  /** Cards ids that user will get after quest passing */
+  personsCardsIds?: Maybe<Array<Scalars['GlobalId']>>;
 };
 
 export type UpdateQuestPayload = {
@@ -2008,6 +2021,7 @@ export type QueryResolvers<ContextType = ResolverContextBase, ParentType extends
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   person?: Resolver<Maybe<ResolversTypes['Person']>, ParentType, ContextType, RequireFields<QueryPersonArgs, 'id'>>;
   persons?: Resolver<ResolversTypes['PersonConnection'], ParentType, ContextType, RequireFields<QueryPersonsArgs, never>>;
+  personsCards?: Resolver<Array<ResolversTypes['Person']>, ParentType, ContextType>;
   location?: Resolver<Maybe<ResolversTypes['Location']>, ParentType, ContextType, RequireFields<QueryLocationArgs, 'id'>>;
   locations?: Resolver<ResolversTypes['LocationConnection'], ParentType, ContextType, RequireFields<QueryLocationsArgs, never>>;
   locationInstance?: Resolver<Maybe<ResolversTypes['LocationInstance']>, ParentType, ContextType, RequireFields<QueryLocationInstanceArgs, 'id'>>;
@@ -2057,6 +2071,7 @@ export type PersonResolvers<ContextType = ResolverContextBase, ParentType extend
   relations?: Resolver<Array<ResolversTypes['Relation']>, ParentType, ContextType>;
   wikiLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   mainPhotoLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  cardPhotoLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   photoLinks?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -2428,6 +2443,7 @@ export type QuestResolvers<ContextType = ResolverContextBase, ParentType extends
   data?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;
   credits?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;
   rewards?: Resolver<Array<ResolversTypes['JSON']>, ParentType, ContextType>;
+  personsCards?: Resolver<Array<ResolversTypes['Person']>, ParentType, ContextType>;
   minLevel?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   earnedExp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   questProgressState?: Resolver<ResolversTypes['QuestUserProgressStates'], ParentType, ContextType>;

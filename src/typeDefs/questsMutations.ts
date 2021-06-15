@@ -61,6 +61,11 @@ export default gql`
     Quest tags
     """
     tagIds: [GlobalId!]!
+
+    """
+    Cards ids that user will get after quest passing
+    """
+    personsCardsIds: [GlobalId!]!
   }
 
   type CreateQuestPayload {
@@ -140,6 +145,11 @@ export default gql`
     Quest tags
     """
     tagIds: [GlobalId!]
+
+    """
+    Cards ids that user will get after quest passing
+    """
+    personsCardsIds: [GlobalId!]
   }
 
   type UpdateQuestPayload {

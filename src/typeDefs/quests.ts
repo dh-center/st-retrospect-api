@@ -121,6 +121,11 @@ export default gql`
     rewards: [JSON!]!
 
     """
+    Cards that user will get after quest passing
+    """
+    personsCards: [Person!]! @dataLoader(dataLoaderName: "personById", fieldName: "personsCardsIds") @default(value: "[]")
+
+    """
     The minimum level required by the user to complete this quest
     """
     minLevel: Int! @default(value: "0")

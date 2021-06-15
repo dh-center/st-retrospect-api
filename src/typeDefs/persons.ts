@@ -63,6 +63,11 @@ export default gql`
     mainPhotoLink: String
 
     """
+    Link with photo for card
+    """
+    cardPhotoLink: String
+
+    """
     Person's photos links
     """
     photoLinks: [String!]
@@ -158,6 +163,8 @@ export default gql`
       "Number of requested nodes before a node with a cursor in the before argument"
       last: Int
     ): PersonConnection! @pagination(collectionName: "persons")
+
+    personsCards: [Person!]! @default(value: "[]")
   }
 
   input CreatePersonInput {
@@ -185,6 +192,11 @@ export default gql`
     Link with main photo
     """
     mainPhotoLink: String
+
+    """
+    Link with photo for card
+    """
+    cardPhotoLink: String
 
     """
     Person's professions
@@ -264,6 +276,11 @@ export default gql`
     Link with main photo
     """
     mainPhotoLink: String
+
+    """
+    Link with photo for card
+    """
+    cardPhotoLink: String
 
     """
     Person's professions
