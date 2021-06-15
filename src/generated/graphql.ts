@@ -1492,6 +1492,16 @@ export type UpdateUserPayload = {
   record: User;
 };
 
+/** Input to resetting user password */
+export type ResetPasswordInput = {
+  /** Email of the user who wants reset password */
+  email: Scalars['String'];
+  /** One-time code from email */
+  code: Scalars['String'];
+  /** New password to set */
+  newPassword: Scalars['String'];
+};
+
 /** Mutations for users */
 export type UserMutations = {
   __typename?: 'UserMutations';
@@ -1511,6 +1521,10 @@ export type UserMutations = {
   rejectFriendRequest: UpdateUserPayload;
   /** Remove user from friends */
   removeFromFriends: UpdateUserPayload;
+  /** Sends one-time code to user email for password resetting */
+  sendCodeForPasswordReset: Scalars['Boolean'];
+  /** Resets user password */
+  resetPassword: UpdateUserPayload;
 };
 
 
@@ -1559,6 +1573,18 @@ export type UserMutationsRejectFriendRequestArgs = {
 /** Mutations for users */
 export type UserMutationsRemoveFromFriendsArgs = {
   id: Scalars['GlobalId'];
+};
+
+
+/** Mutations for users */
+export type UserMutationsSendCodeForPasswordResetArgs = {
+  email: Scalars['String'];
+};
+
+
+/** Mutations for users */
+export type UserMutationsResetPasswordArgs = {
+  input: ResetPasswordInput;
 };
 
 /** Tag of person or location instance */
@@ -1833,6 +1859,7 @@ export type ResolversTypes = {
   UserCompleteQuestPayload: ResolverTypeWrapper<UserCompleteQuestPayload>;
   UpdateUserInput: UpdateUserInput;
   UpdateUserPayload: ResolverTypeWrapper<UpdateUserPayload>;
+  ResetPasswordInput: ResetPasswordInput;
   UserMutations: ResolverTypeWrapper<UserMutations>;
   Tag: ResolverTypeWrapper<Tag>;
   TagEdge: ResolverTypeWrapper<TagEdge>;
@@ -1946,6 +1973,7 @@ export type ResolversParentTypes = {
   UserCompleteQuestPayload: UserCompleteQuestPayload;
   UpdateUserInput: UpdateUserInput;
   UpdateUserPayload: UpdateUserPayload;
+  ResetPasswordInput: ResetPasswordInput;
   UserMutations: UserMutations;
   Tag: Tag;
   TagEdge: TagEdge;
@@ -2538,6 +2566,8 @@ export type UserMutationsResolvers<ContextType = ResolverContextBase, ParentType
   acceptFriendRequest?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsAcceptFriendRequestArgs, 'id'>>;
   rejectFriendRequest?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsRejectFriendRequestArgs, 'id'>>;
   removeFromFriends?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsRemoveFromFriendsArgs, 'id'>>;
+  sendCodeForPasswordReset?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<UserMutationsSendCodeForPasswordResetArgs, 'email'>>;
+  resetPassword?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsResetPasswordArgs, 'input'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

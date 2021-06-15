@@ -38,6 +38,26 @@ export default gql`
   }
 
   """
+  Input to resetting user password
+  """
+  input ResetPasswordInput {
+    """
+    Email of the user who wants reset password
+    """
+    email: String!
+
+    """
+    One-time code from email
+    """
+    code: String!
+
+    """
+    New password to set
+    """
+    newPassword: String!
+  }
+
+  """
   Mutations for users
   """
   type UserMutations {
@@ -80,6 +100,16 @@ export default gql`
     Remove user from friends
     """
     removeFromFriends(id: GlobalId!): UpdateUserPayload! @authCheck
+
+    """
+    Sends one-time code to user email for password resetting
+    """
+    sendCodeForPasswordReset(email: String!): Boolean!
+
+    """
+    Resets user password
+    """
+    resetPassword(input: ResetPasswordInput!): UpdateUserPayload!
   }
 
   extend type Mutation {

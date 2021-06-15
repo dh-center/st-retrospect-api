@@ -1,10 +1,27 @@
 import { ObjectId } from 'mongodb';
 import { ResolverContextBase, UpdateMutationPayload } from '../types/graphql';
-import { ForbiddenAction, InvalidAccessToken, UsernameDuplicationError } from '../errorTypes';
+import { ForbiddenAction, InvalidAccessToken, UsernameDuplicationError, WrongPasswordResetCode } from '../errorTypes';
 import { UserInputError } from 'apollo-server-express';
 import emptyMutation from '../utils/emptyMutation';
 import getUserLevel from '../utils/getUserLevel';
-import { UserMutationsChangeUsernameArgs, UserMutationsUpdateArgs } from '../generated/graphql';
+import {
+  UserMutationsChangeUsernameArgs, UserMutationsResetPasswordArgs,
+  UserMutationsSendCodeForPasswordResetArgs,
+  UserMutationsUpdateArgs
+} from '../generated/graphql';
+import EmailService from '../utils/email/emailService';
+import { nanoid } from 'nanoid';
+import argon2 from 'argon2';
+
+const emailService = new EmailService();
+
+/**
+ * Data of the codes for password resetting
+ */
+interface ResetPasswordCode {
+  value: string;
+  expiresAt: Date;
+}
 
 /**
  * Information about user in database
@@ -69,6 +86,11 @@ export interface UserDBScheme {
    * User level
    */
   level: number;
+
+  /**
+   * Array of codes for password resetting
+   */
+  passwordResetCodes?: ResetPasswordCode[] | null
 
   /**
    * Information about auth providers
@@ -571,6 +593,90 @@ const UserMutations = {
       }
       throw error;
     }
+  },
+
+  /**
+   * Sends one-time code to user email for password resetting
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async sendCodeForPasswordReset(parent: undefined, args: UserMutationsSendCodeForPasswordResetArgs, { collection }: ResolverContextBase): Promise<boolean> {
+    if (!args.email) {
+      throw new UserInputError('Wrong email format');
+    }
+
+    const msInMin = 60 * 1000;
+    const expireTimeInMinutes = 30;
+    const newCode: ResetPasswordCode = {
+      value: nanoid(6).toUpperCase(),
+      expiresAt: new Date(new Date().getTime() + expireTimeInMinutes * msInMin),
+    };
+
+    const user = await collection('users').findOneAndUpdate(
+      { email: args.email },
+      {
+        $push: {
+          passwordResetCodes: newCode,
+        },
+      }
+    );
+
+    if (user.value && user.value.email) {
+      await emailService.send(user.value.email, 'resetPassword', {
+        code: newCode.value,
+      });
+    }
+
+    return true;
+  },
+
+  /**
+   * Resets user password
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async resetPassword(parent: undefined, { input }: UserMutationsResetPasswordArgs, { collection }: ResolverContextBase): Promise<UpdateMutationPayload<UserDBScheme>> {
+    const user = await collection('users').findOne(
+      {
+        email: input.email,
+      }
+    );
+
+    if (!user) {
+      throw new WrongPasswordResetCode();
+    }
+
+    const codeData = user.passwordResetCodes?.find(code => {
+      return code.value === input.code && code.expiresAt.getTime() >= new Date().getTime();
+    });
+
+    if(!codeData) {
+      throw new WrongPasswordResetCode();
+    }
+
+    const updatedUser = await collection('users').findOneAndUpdate(
+      { _id: user._id },
+      {
+        $set: {
+          passwordResetCodes: [],
+          password: await argon2.hash(input.newPassword),
+        },
+      },
+      { returnOriginal: false }
+    );
+
+    if (!updatedUser.value) {
+      throw new WrongPasswordResetCode();
+    }
+
+    return {
+      recordId: updatedUser.value._id,
+      record: updatedUser.value,
+    };
   },
 };
 
