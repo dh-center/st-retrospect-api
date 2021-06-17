@@ -126,6 +126,11 @@ export default gql`
     personsCards: [Person!]! @dataLoader(dataLoaderName: "personById", fieldName: "personsCardsIds") @default(value: "[]")
 
     """
+    Achievements that the user can get after completing the quest
+    """
+    linkedAchivements: [Achievement!]! @dataLoader(dataLoaderName: "achievementById", fieldName: "linkedAchivementsIds") @default(value: "[]")
+
+    """
     The minimum level required by the user to complete this quest
     """
     minLevel: Int! @default(value: "0")

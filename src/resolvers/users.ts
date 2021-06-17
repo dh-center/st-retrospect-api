@@ -93,6 +93,11 @@ export interface UserDBScheme {
   passwordResetCodes?: ResetPasswordCode[] | null
 
   /**
+   * User's achievement ids
+   */
+  receivedAchievementsIds?: ObjectId[] | null
+
+  /**
    * Information about auth providers
    */
   auth?: {

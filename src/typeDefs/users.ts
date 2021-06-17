@@ -33,6 +33,11 @@ export default gql`
     completedQuests: [Quest!]! @dataLoader(dataLoaderName: "questById", fieldName: "completedQuestsIds") @default(value: "[]")
 
     """
+    User's achivements
+    """
+    receivedAchievements: [Achievement!]! @dataLoader(dataLoaderName: "achievementById", fieldName: "receivedAchievementsIds") @default(value: "[]")
+
+    """
     User experience
     """
     exp: Int! @default(value: "0")
