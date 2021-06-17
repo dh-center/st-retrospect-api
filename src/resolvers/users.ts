@@ -668,7 +668,7 @@ const UserMutations = {
       {
         $set: {
           passwordResetCodes: [],
-          password: await argon2.hash(input.newPassword),
+          hashedPassword: await argon2.hash(input.newPassword),
         },
       },
       { returnOriginal: false }
