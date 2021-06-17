@@ -1163,7 +1163,7 @@ export type User = Node & {
   lastName?: Maybe<Scalars['String']>;
   /** Quests that user complete */
   completedQuests: Array<Quest>;
-  /** User's achivements */
+  /** User's achievements */
   receivedAchievements: Array<Achievement>;
   /** User experience */
   exp: Scalars['Int'];
@@ -1307,8 +1307,8 @@ export enum TaskTypes {
   Route = 'ROUTE',
   /** Story about something without quiz parts */
   Story = 'STORY',
-  /** Test without traveling */
-  Test = 'TEST'
+  /** Quest is a route with tests */
+  Quest = 'QUEST'
 }
 
 /** Possible quest states */
