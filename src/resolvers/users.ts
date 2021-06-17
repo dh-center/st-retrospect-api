@@ -88,6 +88,11 @@ export interface UserDBScheme {
   level: number;
 
   /**
+   * Hashed version of user password
+   */
+  hashedPassword?: string | null;
+
+  /**
    * Array of codes for password resetting
    */
   passwordResetCodes?: ResetPasswordCode[] | null
