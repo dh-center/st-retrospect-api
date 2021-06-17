@@ -66,6 +66,11 @@ export default gql`
     Cards ids that user will get after quest passing
     """
     personsCardsIds: [GlobalId!]!
+
+    """
+    Achievements that the user can get after completing the quest
+    """
+    linkedAchievementsIds: [GlobalId!]!
   }
 
   type CreateQuestPayload {
@@ -150,6 +155,11 @@ export default gql`
     Cards ids that user will get after quest passing
     """
     personsCardsIds: [GlobalId!]
+
+    """
+    Achievements that the user can get after completing the quest
+    """
+    linkedAchievementsIds: [GlobalId!]
   }
 
   type UpdateQuestPayload {

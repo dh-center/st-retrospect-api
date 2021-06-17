@@ -1163,6 +1163,8 @@ export type User = Node & {
   lastName?: Maybe<Scalars['String']>;
   /** Quests that user complete */
   completedQuests: Array<Quest>;
+  /** User's achivements */
+  receivedAchievements: Array<Achievement>;
   /** User experience */
   exp: Scalars['Int'];
   /** User level */
@@ -1263,6 +1265,8 @@ export type Quest = Node & {
   rewards: Array<Scalars['JSON']>;
   /** Cards that user will get after quest passing */
   personsCards: Array<Person>;
+  /** Achievements that the user can get after completing the quest */
+  linkedAchievements: Array<Achievement>;
   /** The minimum level required by the user to complete this quest */
   minLevel: Scalars['Int'];
   /** The experience that the user will receive by completing this quest */
@@ -1386,6 +1390,8 @@ export type CreateQuestInput = {
   tagIds: Array<Scalars['GlobalId']>;
   /** Cards ids that user will get after quest passing */
   personsCardsIds: Array<Scalars['GlobalId']>;
+  /** Achievements that the user can get after completing the quest */
+  linkedAchievementsIds: Array<Scalars['GlobalId']>;
 };
 
 export type CreateQuestPayload = {
@@ -1425,6 +1431,8 @@ export type UpdateQuestInput = {
   tagIds?: Maybe<Array<Scalars['GlobalId']>>;
   /** Cards ids that user will get after quest passing */
   personsCardsIds?: Maybe<Array<Scalars['GlobalId']>>;
+  /** Achievements that the user can get after completing the quest */
+  linkedAchievementsIds?: Maybe<Array<Scalars['GlobalId']>>;
 };
 
 export type UpdateQuestPayload = {
@@ -1585,6 +1593,29 @@ export type UserMutationsSendCodeForPasswordResetArgs = {
 /** Mutations for users */
 export type UserMutationsResetPasswordArgs = {
   input: ResetPasswordInput;
+};
+
+/** Unit of measure in which the value is calculated */
+export enum AchievementUnits {
+  /** Distance unit, for example, kilimetrs */
+  Distance = 'DISTANCE',
+  /** Quantity unit, for example, number of passed quests */
+  Quantity = 'QUANTITY'
+}
+
+/** An achievement that a user can get for completing a quest */
+export type Achievement = Node & {
+  __typename?: 'Achievement';
+  /** Achievement identifier */
+  id: Scalars['ID'];
+  /** Achievement name */
+  name: Scalars['String'];
+  /** Unit of measure in which the value is calculated */
+  unit: AchievementUnits;
+  /** Current value reached by the user */
+  currentValue: Scalars['Float'];
+  /** The value you need to get the achievement */
+  requiredValue: Scalars['Float'];
 };
 
 /** Tag of person or location instance */
@@ -1756,7 +1787,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  Node: ResolversTypes['Person'] | ResolversTypes['LocationType'] | ResolversTypes['Country'] | ResolversTypes['Region'] | ResolversTypes['LocationInstance'] | ResolversTypes['Location'] | ResolversTypes['LocationStyle'] | ResolversTypes['Relation'] | ResolversTypes['RelationType'] | ResolversTypes['User'] | ResolversTypes['Quest'] | ResolversTypes['Tag'];
+  Node: ResolversTypes['Person'] | ResolversTypes['LocationType'] | ResolversTypes['Country'] | ResolversTypes['Region'] | ResolversTypes['LocationInstance'] | ResolversTypes['Location'] | ResolversTypes['LocationStyle'] | ResolversTypes['Relation'] | ResolversTypes['RelationType'] | ResolversTypes['User'] | ResolversTypes['Quest'] | ResolversTypes['Achievement'] | ResolversTypes['Tag'];
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   ObjectId: ResolverTypeWrapper<Scalars['ObjectId']>;
@@ -1861,6 +1892,8 @@ export type ResolversTypes = {
   UpdateUserPayload: ResolverTypeWrapper<UpdateUserPayload>;
   ResetPasswordInput: ResetPasswordInput;
   UserMutations: ResolverTypeWrapper<UserMutations>;
+  AchievementUnits: AchievementUnits;
+  Achievement: ResolverTypeWrapper<Achievement>;
   Tag: ResolverTypeWrapper<Tag>;
   TagEdge: ResolverTypeWrapper<TagEdge>;
   TagConnection: ResolverTypeWrapper<TagConnection>;
@@ -1874,7 +1907,7 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Node: ResolversParentTypes['Person'] | ResolversParentTypes['LocationType'] | ResolversParentTypes['Country'] | ResolversParentTypes['Region'] | ResolversParentTypes['LocationInstance'] | ResolversParentTypes['Location'] | ResolversParentTypes['LocationStyle'] | ResolversParentTypes['Relation'] | ResolversParentTypes['RelationType'] | ResolversParentTypes['User'] | ResolversParentTypes['Quest'] | ResolversParentTypes['Tag'];
+  Node: ResolversParentTypes['Person'] | ResolversParentTypes['LocationType'] | ResolversParentTypes['Country'] | ResolversParentTypes['Region'] | ResolversParentTypes['LocationInstance'] | ResolversParentTypes['Location'] | ResolversParentTypes['LocationStyle'] | ResolversParentTypes['Relation'] | ResolversParentTypes['RelationType'] | ResolversParentTypes['User'] | ResolversParentTypes['Quest'] | ResolversParentTypes['Achievement'] | ResolversParentTypes['Tag'];
   ID: Scalars['ID'];
   Cursor: Scalars['Cursor'];
   ObjectId: Scalars['ObjectId'];
@@ -1975,6 +2008,7 @@ export type ResolversParentTypes = {
   UpdateUserPayload: UpdateUserPayload;
   ResetPasswordInput: ResetPasswordInput;
   UserMutations: UserMutations;
+  Achievement: Achievement;
   Tag: Tag;
   TagEdge: TagEdge;
   TagConnection: TagConnection;
@@ -2025,7 +2059,7 @@ export type EditorCheckDirectiveArgs = {  };
 export type EditorCheckDirectiveResolver<Result, Parent, ContextType = ResolverContextBase, Args = EditorCheckDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type NodeResolvers<ContextType = ResolverContextBase, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'Person' | 'LocationType' | 'Country' | 'Region' | 'LocationInstance' | 'Location' | 'LocationStyle' | 'Relation' | 'RelationType' | 'User' | 'Quest' | 'Tag', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Person' | 'LocationType' | 'Country' | 'Region' | 'LocationInstance' | 'Location' | 'LocationStyle' | 'Relation' | 'RelationType' | 'User' | 'Quest' | 'Achievement' | 'Tag', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -2429,6 +2463,7 @@ export type UserResolvers<ContextType = ResolverContextBase, ParentType extends 
   firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   completedQuests?: Resolver<Array<ResolversTypes['Quest']>, ParentType, ContextType>;
+  receivedAchievements?: Resolver<Array<ResolversTypes['Achievement']>, ParentType, ContextType>;
   exp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   level?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   permissions?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
@@ -2472,6 +2507,7 @@ export type QuestResolvers<ContextType = ResolverContextBase, ParentType extends
   credits?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;
   rewards?: Resolver<Array<ResolversTypes['JSON']>, ParentType, ContextType>;
   personsCards?: Resolver<Array<ResolversTypes['Person']>, ParentType, ContextType>;
+  linkedAchievements?: Resolver<Array<ResolversTypes['Achievement']>, ParentType, ContextType>;
   minLevel?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   earnedExp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   questProgressState?: Resolver<ResolversTypes['QuestUserProgressStates'], ParentType, ContextType>;
@@ -2568,6 +2604,15 @@ export type UserMutationsResolvers<ContextType = ResolverContextBase, ParentType
   removeFromFriends?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsRemoveFromFriendsArgs, 'id'>>;
   sendCodeForPasswordReset?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<UserMutationsSendCodeForPasswordResetArgs, 'email'>>;
   resetPassword?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsResetPasswordArgs, 'input'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AchievementResolvers<ContextType = ResolverContextBase, ParentType extends ResolversParentTypes['Achievement'] = ResolversParentTypes['Achievement']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  unit?: Resolver<ResolversTypes['AchievementUnits'], ParentType, ContextType>;
+  currentValue?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  requiredValue?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2688,6 +2733,7 @@ export type Resolvers<ContextType = ResolverContextBase> = {
   UserCompleteQuestPayload?: UserCompleteQuestPayloadResolvers<ContextType>;
   UpdateUserPayload?: UpdateUserPayloadResolvers<ContextType>;
   UserMutations?: UserMutationsResolvers<ContextType>;
+  Achievement?: AchievementResolvers<ContextType>;
   Tag?: TagResolvers<ContextType>;
   TagEdge?: TagEdgeResolvers<ContextType>;
   TagConnection?: TagConnectionResolvers<ContextType>;
