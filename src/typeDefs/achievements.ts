@@ -24,7 +24,7 @@ export default gql`
     """
     Achievement identifier
     """
-    id: ID!
+    id: ID! @fromField(name: "_id")
 
     """
     Achievement name
@@ -39,11 +39,11 @@ export default gql`
     """
     Current value reached by the user
     """
-    currentValue: String!
+    currentValue: Float!
 
     """
     The value you need to get the achievement
     """
-    requiredValue: String!
+    requiredValue: Float!
   }
 `;

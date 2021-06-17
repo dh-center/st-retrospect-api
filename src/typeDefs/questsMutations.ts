@@ -70,7 +70,7 @@ export default gql`
     """
     Achievements that the user can get after completing the quest
     """
-    linkedAchivementsIds: [GlobalId!]!
+    linkedAchievementsIds: [GlobalId!]!
   }
 
   type CreateQuestPayload {
@@ -159,7 +159,7 @@ export default gql`
     """
     Achievements that the user can get after completing the quest
     """
-    linkedAchivementsIds: [GlobalId!]
+    linkedAchievementsIds: [GlobalId!]
   }
 
   type UpdateQuestPayload {

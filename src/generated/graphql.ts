@@ -1266,7 +1266,7 @@ export type Quest = Node & {
   /** Cards that user will get after quest passing */
   personsCards: Array<Person>;
   /** Achievements that the user can get after completing the quest */
-  linkedAchivements: Array<Achievement>;
+  linkedAchievements: Array<Achievement>;
   /** The minimum level required by the user to complete this quest */
   minLevel: Scalars['Int'];
   /** The experience that the user will receive by completing this quest */
@@ -1391,7 +1391,7 @@ export type CreateQuestInput = {
   /** Cards ids that user will get after quest passing */
   personsCardsIds: Array<Scalars['GlobalId']>;
   /** Achievements that the user can get after completing the quest */
-  linkedAchivementsIds: Array<Scalars['GlobalId']>;
+  linkedAchievementsIds: Array<Scalars['GlobalId']>;
 };
 
 export type CreateQuestPayload = {
@@ -1432,7 +1432,7 @@ export type UpdateQuestInput = {
   /** Cards ids that user will get after quest passing */
   personsCardsIds?: Maybe<Array<Scalars['GlobalId']>>;
   /** Achievements that the user can get after completing the quest */
-  linkedAchivementsIds?: Maybe<Array<Scalars['GlobalId']>>;
+  linkedAchievementsIds?: Maybe<Array<Scalars['GlobalId']>>;
 };
 
 export type UpdateQuestPayload = {
@@ -1613,9 +1613,9 @@ export type Achievement = Node & {
   /** Unit of measure in which the value is calculated */
   unit: AchievementUnits;
   /** Current value reached by the user */
-  currentValue: Scalars['String'];
+  currentValue: Scalars['Float'];
   /** The value you need to get the achievement */
-  requiredValue: Scalars['String'];
+  requiredValue: Scalars['Float'];
 };
 
 /** Tag of person or location instance */
@@ -2507,7 +2507,7 @@ export type QuestResolvers<ContextType = ResolverContextBase, ParentType extends
   credits?: Resolver<Maybe<ResolversTypes['EditorData']>, ParentType, ContextType>;
   rewards?: Resolver<Array<ResolversTypes['JSON']>, ParentType, ContextType>;
   personsCards?: Resolver<Array<ResolversTypes['Person']>, ParentType, ContextType>;
-  linkedAchivements?: Resolver<Array<ResolversTypes['Achievement']>, ParentType, ContextType>;
+  linkedAchievements?: Resolver<Array<ResolversTypes['Achievement']>, ParentType, ContextType>;
   minLevel?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   earnedExp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   questProgressState?: Resolver<ResolversTypes['QuestUserProgressStates'], ParentType, ContextType>;
@@ -2611,8 +2611,8 @@ export type AchievementResolvers<ContextType = ResolverContextBase, ParentType e
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   unit?: Resolver<ResolversTypes['AchievementUnits'], ParentType, ContextType>;
-  currentValue?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  requiredValue?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  currentValue?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  requiredValue?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

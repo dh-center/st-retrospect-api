@@ -128,7 +128,7 @@ export default gql`
     """
     Achievements that the user can get after completing the quest
     """
-    linkedAchivements: [Achievement!]! @dataLoader(dataLoaderName: "achievementById", fieldName: "linkedAchivementsIds") @default(value: "[]")
+    linkedAchievements: [Achievement!]! @dataLoader(dataLoaderName: "achievementById", fieldName: "linkedAchievementsIds") @default(value: "[]")
 
     """
     The minimum level required by the user to complete this quest
