@@ -90,7 +90,7 @@ router.post('/oauth/apple/callback', async (req, res, next) => {
 
   const existedUser = await collection.findOne(query);
 
-  let tokens;
+  let data;
 
   if (!existedUser) {
     /**
@@ -109,13 +109,22 @@ router.post('/oauth/apple/callback', async (req, res, next) => {
         },
       },
     })).ops[0];
+    const tokens = jwtHelper.generateUserTokens(newUser);
 
-    tokens = jwtHelper.generateUserTokens(newUser);
+    data = {
+      ...tokens,
+      isFirstRegistration: true,
+    };
   } else {
-    tokens = jwtHelper.generateUserTokens(existedUser);
+    const tokens = jwtHelper.generateUserTokens(existedUser);
+
+    data = {
+      ...tokens,
+      isFirstRegistration: false,
+    };
   }
 
-  return res.json({ data: tokens });
+  return res.json({ data });
 });
 
 export default router;
