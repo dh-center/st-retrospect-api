@@ -48,7 +48,7 @@ export default class DataLoaders {
   /**
    * Loader for fetching achievements by their ids
    */
-  public achievementsById = new DataLoader(
+  public achievementById = new DataLoader(
     async (achievementIds: readonly string[]) => this.batchByIds<AchievementDBScheme>('achievements', achievementIds),
     { cache: false }
   );
