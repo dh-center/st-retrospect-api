@@ -4,6 +4,7 @@ import { google, people_v1 } from 'googleapis';
 import { OAuth2Client } from 'google-auth-library';
 import { getCollection } from '../../db';
 import jwtHelper from '../../utils/jwt';
+import { nanoid } from 'nanoid';
 
 const router = Router();
 
@@ -105,7 +106,7 @@ router.post('/oauth/google/callback', async (req, res) => {
       lastName: name.familyName,
       email,
       photo: photo,
-      username: email,
+      username: nanoid(10),
       exp: 0,
       level: 0,
       auth: {
