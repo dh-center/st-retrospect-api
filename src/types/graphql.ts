@@ -9,7 +9,6 @@ import { RelationTypeDBScheme } from '../resolvers/relationTypes';
 import { UserDBScheme } from '../resolvers/users';
 import { AccessTokenPayload, AccessTokenError } from '../utils/jwt';
 import { TagDBScheme } from '../resolvers/tags';
-import { Achievement } from '../generated/graphql';
 
 /**
  * Map with collection name and its type
@@ -21,7 +20,6 @@ export interface Collections {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   location_instances: LocationInstanceDBScheme;
   relations_denormalized: DenormalizedRelation;
-  achievements: Achievement;
   relations: RelationDBScheme;
   quests: QuestDBScheme;
   relationtypes: RelationTypeDBScheme;

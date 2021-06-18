@@ -6,7 +6,7 @@ export default gql`
   """
   enum AchievementUnits {
     """
-    Distance unit, for example, kilimetrs
+    Distance unit, for example, kilometrs
     """
     DISTANCE
 
@@ -45,5 +45,12 @@ export default gql`
     The value you need to get the achievement
     """
     requiredValue: Float!
+  }
+
+  extend type Query {
+    """
+    List of all achievements
+    """
+    achievements: [Achievement!]! @default(value: "[]")
   }
 `;
