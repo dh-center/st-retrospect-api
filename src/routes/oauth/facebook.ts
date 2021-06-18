@@ -4,6 +4,7 @@ import jwtHelper from '../../utils/jwt';
 import { getCollection } from '../../db';
 import * as z from 'zod';
 import { WrongAuthData } from '../../errorTypes';
+import { nanoid } from 'nanoid';
 
 const router = Router();
 
@@ -73,7 +74,7 @@ router.post('/oauth/facebook/callback', async (req, res, next) => {
       firstName: userData.first_name,
       lastName: userData.last_name,
       email: userData.email,
-      username: userData.email,
+      username: nanoid(10),
       photo,
       exp: 0,
       level: 0,
