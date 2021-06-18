@@ -39,7 +39,7 @@ router.post('/sign-up', async (req, res, next) => {
      * Sign up user with email
      */
     if ('email' in signUpInput) {
-      const [firstName, lastName] = signUpInput.name.split('');
+      const [firstName, lastName] = signUpInput.name.split(' ');
 
       await usersCollection.insertOne({
         exp: 0,
