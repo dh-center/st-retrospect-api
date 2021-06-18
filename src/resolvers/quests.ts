@@ -268,6 +268,60 @@ const Quest = {
     return (await dataLoaders.locationInstanceById.loadMany(locationInstancesIds))
       .filter((loc): loc is LocationInstanceDBScheme => !!loc);
   },
+
+  /**
+   * Returns the likelihood that the user will like this quest (rating based on a recommendation system)
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async recommendationScore(
+    parent: QuestDBScheme,
+    args: undefined,
+    { dataLoaders, tokenData }: ResolverContextBase<true>
+  ): Promise<number> {
+    const user = await dataLoaders.userById.load(tokenData.userId);
+
+    if (!user) {
+      throw new InvalidAccessToken();
+    }
+
+    const passedQuestsIds = user.completedQuestsIds?.map(id => id.toString()) || [];
+
+    if (!passedQuestsIds.length) {
+      return 0;
+    }
+
+    const passesQuests = await dataLoaders.questById.loadMany(passedQuestsIds);
+
+    const tagsWithScore = passesQuests
+      .filter((quest): quest is QuestDBScheme => !!quest)
+      .reduce(
+        (acc, val) => {
+          const tagIds = (val.tagIds || []).map(id => id.toString());
+
+          tagIds.forEach(tag => {
+            const accValue = acc[tag];
+
+            if (!accValue) {
+              acc[tag] = 1;
+            } else {
+              acc[tag] = accValue + 1;
+            }
+          });
+
+          return acc;
+        },
+        {} as Record<string, number | undefined>
+      );
+
+    return parent.tagIds?.reduce((acc, tag) => {
+      const tagScore = tagsWithScore[tag.toString()] || 0;
+
+      return acc + tagScore;
+    }, 0) || 0;
+  },
 };
 
 const Mutation = {
