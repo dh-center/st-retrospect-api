@@ -1,31 +1,60 @@
 import express from 'express';
-import { UsernameDuplicationError, WrongAuthData } from '../../errorTypes';
-import getConnection from '../../db';
+import { UsernameDuplicationError } from '../../errorTypes';
+import { getCollection } from '../../db';
 import argon2 from 'argon2';
 import { nanoid } from 'nanoid';
+import { z } from 'zod';
 const router = express.Router();
+
+const passwordScheme = z.string().min(5);
+
+/**
+ * Input to sign up via email
+ */
+const SignUpWithEmailInputScheme = z.object({
+  name: z.string().nonempty(),
+  email: z.string().email(),
+  password: passwordScheme,
+});
+
+/**
+ * Input for sign up via username
+ */
+const SignUpWithUsernameInputScheme = z.object({
+  username: z.string().min(4),
+  password: passwordScheme,
+});
+
+const SignUpInputScheme = z.union([SignUpWithEmailInputScheme, SignUpWithUsernameInputScheme]);
 
 router.post('/sign-up', async (req, res, next) => {
   try {
-    const db = await getConnection();
-    const hashedPassword = await argon2.hash(req.body.password);
+    const usersCollection = await getCollection('users');
+
+    const signUpInput = SignUpInputScheme.parse(req.body);
+
+    const hashedPassword = await argon2.hash(signUpInput.password);
 
     /**
      * Sign up user with email
      */
-    if (req.body.email) {
-      if (!/\S+@\S+\.\S+/.test(req.body.email)) {
-        throw new WrongAuthData();
-      }
+    if ('email' in signUpInput) {
+      const [firstName, lastName] = signUpInput.name.split('');
 
-      await db.collection('users').insertOne({
-        email: req.body.email,
+      await usersCollection.insertOne({
+        exp: 0,
+        level: 0,
+        email: signUpInput.email,
+        lastName,
+        firstName,
         username: nanoid(10),
         hashedPassword,
       });
     } else {
-      await db.collection('users').insertOne({
-        username: req.body.username,
+      await usersCollection.insertOne({
+        exp: 0,
+        level: 0,
+        username: signUpInput.username,
         hashedPassword,
       });
     }

@@ -88,6 +88,11 @@ export interface UserDBScheme {
   level: number;
 
   /**
+   * Hashed version of user password
+   */
+  hashedPassword?: string | null;
+
+  /**
    * Array of codes for password resetting
    */
   passwordResetCodes?: ResetPasswordCode[] | null
@@ -668,7 +673,7 @@ const UserMutations = {
       {
         $set: {
           passwordResetCodes: [],
-          password: await argon2.hash(input.newPassword),
+          hashedPassword: await argon2.hash(input.newPassword),
         },
       },
       { returnOriginal: false }

@@ -1,5 +1,6 @@
 import { ApiError } from '../errorTypes';
 import { Request, Response, NextFunction } from 'express';
+import { ZodError } from 'zod';
 
 /**
  * Check error type and send it to the user with right http code and other information
@@ -27,8 +28,12 @@ export default function (
           },
         ],
       });
+  } else if (error instanceof ZodError) {
+    return res.status(400).json(
+      {
+        errors: error.errors,
+      });
   } else {
-    // console.log('Unexpected server error: ', error);
     return res.status(500).json(
       {
         errors: [
