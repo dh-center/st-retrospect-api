@@ -15,7 +15,7 @@ import { countries, regions } from './resolvers/address';
 import type { RelationTypeDBScheme } from './resolvers/relationTypes';
 import { UserDBScheme } from './resolvers/users';
 import { TagDBScheme } from './resolvers/tags';
-import { AchievementDBScheme } from './resolvers/achievements';
+import { achievementsArray } from './resolvers/achievements';
 
 /**
  * Class for setting up data loaders
@@ -49,7 +49,11 @@ export default class DataLoaders {
    * Loader for fetching achievements by their ids
    */
   public achievementById = new DataLoader(
-    async (achievementIds: readonly string[]) => this.batchByIds<AchievementDBScheme>('achievements', achievementIds),
+    async (achievementIds: readonly string[]) => {
+      return achievementIds.map(id => {
+        return achievementsArray.find(ach => ach._id.toString() === id);
+      });
+    },
     { cache: false }
   );
 
