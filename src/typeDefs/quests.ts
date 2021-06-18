@@ -154,6 +154,11 @@ export default gql`
     Location instances that are present in the quest
     """
     locationInstances: [LocationInstance!]!
+
+    """
+    The likelihood that the user will like this quest (rating based on a recommendation system)
+    """
+    recommendationScore: Float! @authCheck @default(value: "0")
   }
 
   """
