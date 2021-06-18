@@ -69,7 +69,7 @@ export const achievementsArray: Achievement[] = [
     _id: new ObjectId('60cc36d4b5a18a0f0815d77a'),
     name: {
       ru: 'Начало положено',
-      en: 'A start',
+      en: 'Smooth start',
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 1,
@@ -78,8 +78,8 @@ export const achievementsArray: Achievement[] = [
   {
     _id: new ObjectId('60cc41a84eef47b6defd0a95'),
     name: {
-      ru: 'Парень, который умрет первым',
-      en: 'A start',
+      ru: 'Хорошо идём',
+      en: 'Way to go',
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 5,
@@ -89,7 +89,7 @@ export const achievementsArray: Achievement[] = [
     _id: new ObjectId('60cc41adae7a19dc6549fb2b'),
     name: {
       ru: 'Второстепенный персонаж',
-      en: 'A start',
+      en: 'Minor character',
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 10,
@@ -99,7 +99,7 @@ export const achievementsArray: Achievement[] = [
     _id: new ObjectId('60cc41b4f0715014851c9fc4'),
     name: {
       ru: 'Главный герой',
-      en: 'A start',
+      en: 'Main character',
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 20,
@@ -109,7 +109,7 @@ export const achievementsArray: Achievement[] = [
     _id: new ObjectId('60cc41ba322c17fd76d86851'),
     name: {
       ru: 'Легенда',
-      en: 'A start',
+      en: 'Legend',
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 30,
