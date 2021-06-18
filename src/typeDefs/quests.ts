@@ -211,9 +211,9 @@ export default gql`
     STORY
 
     """
-    Test without traveling
+    Quest is a route with tests
     """
-    TEST
+    QUEST
   }
 
   """
