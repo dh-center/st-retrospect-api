@@ -1,4 +1,4 @@
-import { AchievementUnits } from '../generated/graphql';
+import { AchievementUnits, TaskTypes } from '../generated/graphql';
 import { ObjectId } from 'mongodb';
 import { MultilingualString, ResolverContextBase } from '../types/graphql';
 
@@ -42,7 +42,7 @@ const AchievementResolver = {
    * @param args - query args object
    * @param context - query context
    */
-  currentValue(parent: Achievement, args: undefined, context: ResolverContextBase) {
+  currentValue(parent: Achievement, args: undefined, context: ResolverContextBase): Promise<number> {
     return parent.currentValueResolver(parent, args, context);
   },
 };
@@ -62,6 +62,81 @@ const completedQuestCountResolver: AchievementValueResolver = async (parent, arg
   const user = await dataLoaders.userById.load(tokenData.userId);
 
   return user?.completedQuestsIds?.length || 0;
+};
+
+/**
+ * Returns number of passed quests with type QUEST for user
+ *
+ * @param parent - the object that contains the result returned from the resolver on the parent field
+ * @param args - query args object
+ * @param context - query context
+ */
+const completedQuestTypeQuestCountResolver: AchievementValueResolver = async (parent, args, { tokenData, dataLoaders }) => {
+  if (!tokenData || !('userId' in tokenData)) {
+    return 0;
+  }
+
+  const user = await dataLoaders.userById.load(tokenData.userId);
+
+  if (!user || !user.completedQuestsIds || user.completedQuestsIds.length === 0) {
+    return 0;
+  }
+
+  const quests = await dataLoaders.questById.loadMany(user.completedQuestsIds.map(questId => questId.toHexString()));
+
+  const passedQuests = quests.filter(quest => quest && 'type' in quest && quest.type === TaskTypes.Quest );
+
+  return passedQuests.length;
+};
+
+/**
+ * Returns number of passed quests with type ROUTE for user
+ *
+ * @param parent - the object that contains the result returned from the resolver on the parent field
+ * @param args - query args object
+ * @param context - query context
+ */
+const completedQuestTypeRouteCountResolver: AchievementValueResolver = async (parent, args, { tokenData, dataLoaders }) => {
+  if (!tokenData || !('userId' in tokenData)) {
+    return 0;
+  }
+
+  const user = await dataLoaders.userById.load(tokenData.userId);
+
+  if (!user || !user.completedQuestsIds || user.completedQuestsIds.length === 0) {
+    return 0;
+  }
+
+  const quests = await dataLoaders.questById.loadMany(user.completedQuestsIds.map(questId => questId.toHexString()));
+
+  const passedQuests = quests.filter(quest => quest && 'type' in quest && quest.type === TaskTypes.Route );
+
+  return passedQuests.length;
+};
+
+/**
+ * Returns number of passed quests with type QUIZ for user
+ *
+ * @param parent - the object that contains the result returned from the resolver on the parent field
+ * @param args - query args object
+ * @param context - query context
+ */
+const completedQuestTypeQuizCountResolver: AchievementValueResolver = async (parent, args, { tokenData, dataLoaders }) => {
+  if (!tokenData || !('userId' in tokenData)) {
+    return 0;
+  }
+
+  const user = await dataLoaders.userById.load(tokenData.userId);
+
+  if (!user || !user.completedQuestsIds || user.completedQuestsIds.length === 0) {
+    return 0;
+  }
+
+  const quests = await dataLoaders.questById.loadMany(user.completedQuestsIds.map(questId => questId.toHexString()));
+
+  const passedQuests = quests.filter(quest => quest && 'type' in quest && quest.type === TaskTypes.Quiz );
+
+  return passedQuests.length;
 };
 
 export const achievementsArray: Achievement[] = [
@@ -114,6 +189,86 @@ export const achievementsArray: Achievement[] = [
     unit: AchievementUnits.Quantity,
     requiredValue: 30,
     currentValueResolver: completedQuestCountResolver,
+  },
+  {
+    _id: new ObjectId('60cc56ba322c17fd76d86851'),
+    name: {
+      ru: 'Успешный квинтет',
+      en: 'Successful quintet',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 5,
+    currentValueResolver: completedQuestTypeQuestCountResolver,
+  },
+  {
+    _id: new ObjectId('60cc41ba315c17fd76d86851'),
+    name: {
+      ru: 'Любитель приключений',
+      en: 'Digital Adventurer',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 10,
+    currentValueResolver: completedQuestTypeQuestCountResolver,
+  },
+  {
+    _id: new ObjectId('60cc41ba322c18ad76d86851'),
+    name: {
+      ru: 'Цифровой авантюрист',
+      en: 'Knight of fortune',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 15,
+    currentValueResolver: completedQuestTypeQuestCountResolver,
+  },
+  {
+    _id: new ObjectId('60cd41bd322c18ad76d86851'),
+    name: {
+      ru: 'Начинающий исследователь',
+      en: 'Promising explorer',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 5,
+    currentValueResolver: completedQuestTypeRouteCountResolver,
+  },
+  {
+    _id: new ObjectId('60cd41bd321c18ad76d86851'),
+    name: {
+      ru: 'Дека-данс',
+      en: 'Decade-dance',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 10,
+    currentValueResolver: completedQuestTypeRouteCountResolver,
+  },
+  {
+    _id: new ObjectId('60cd41bd324118ad76d86851'),
+    name: {
+      ru: 'Прожженный пешеход',
+      en: 'Experienced pedestrian',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 20,
+    currentValueResolver: completedQuestTypeRouteCountResolver,
+  },
+  {
+    _id: new ObjectId('61ed41bd322c18ad76d86851'),
+    name: {
+      ru: 'Решала',
+      en: 'The solver',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 5,
+    currentValueResolver: completedQuestTypeQuizCountResolver,
+  },
+  {
+    _id: new ObjectId('60cd41bd322c18ad67d86851'),
+    name: {
+      ru: 'Загадочный энтузиаст',
+      en: 'Riddle enthusiast',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 10,
+    currentValueResolver: completedQuestTypeQuizCountResolver,
   },
 ];
 
