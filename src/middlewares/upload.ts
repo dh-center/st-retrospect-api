@@ -74,6 +74,11 @@ function filesProcessMiddleware(req: Request, res: Response): void {
 }
 
 /**
+ * Upload user images
+ */
+router.post('/upload/user', getUploadMiddleware('users').single('image'), filesProcessMiddleware);
+
+/**
  * Upload persons images
  */
 router.post('/upload/person', getUploadMiddleware('persons').single('image'), filesProcessMiddleware);
