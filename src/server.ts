@@ -9,6 +9,7 @@ import jwtHelper from './utils/jwt';
 import { Db } from 'mongodb';
 import DataLoaders from './dataLoaders';
 import { Express } from 'express';
+import { ZodError } from 'zod';
 
 
 /**
@@ -65,9 +66,12 @@ export default class Server {
   private formatError(error: GraphQLError): GraphQLError {
     if (error.originalError instanceof ApiError && error.extensions) {
       error.extensions.code = error.originalError.code;
+    } else if (error.originalError instanceof ZodError && error.extensions) {
+      error.extensions.code = 'VALIDATION_ERROR';
     }
 
-    const errorsWhitelist = [ValidationError, AuthenticationError, ApiError];
+
+    const errorsWhitelist = [ValidationError, AuthenticationError, ApiError, ZodError];
 
     const isCaptureNeeded = !errorsWhitelist.some(ErrorType => error.originalError instanceof ErrorType);
 
