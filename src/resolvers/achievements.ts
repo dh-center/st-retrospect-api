@@ -1,4 +1,4 @@
-import { AchievementUnits } from '../generated/graphql';
+import { AchievementUnits, TaskTypes } from '../generated/graphql';
 import { ObjectId } from 'mongodb';
 import { MultilingualString, ResolverContextBase } from '../types/graphql';
 
@@ -42,26 +42,70 @@ const AchievementResolver = {
    * @param args - query args object
    * @param context - query context
    */
-  currentValue(parent: Achievement, args: undefined, context: ResolverContextBase) {
+  currentValue(parent: Achievement, args: undefined, context: ResolverContextBase): Promise<number> {
     return parent.currentValueResolver(parent, args, context);
   },
 };
 
 /**
- * Returns number of passed quest for user
+ * Completed quest counter by quest type
+ * If type is undefined, returns count of completed quests
+ *
+ * @param type - quest type
+ */
+const completedQuestCounter = (type?: TaskTypes): AchievementValueResolver => {
+  return async (parent, args, { tokenData, dataLoaders }): Promise<number> => {
+    if (!tokenData || !('userId' in tokenData)) {
+      return 0;
+    }
+
+    const user = await dataLoaders.userById.load(tokenData.userId);
+
+    if (type === undefined) {
+      return user?.completedQuestsIds?.length || 0;
+    }
+
+    if (!user || !user.completedQuestsIds || user.completedQuestsIds.length === 0) {
+      return 0;
+    }
+
+    const quests = await dataLoaders.questById.loadMany(user.completedQuestsIds.map(questId => questId.toHexString()));
+
+    const passedQuests = quests.filter(quest => quest && 'type' in quest && quest.type === type );
+
+    return passedQuests.length;
+  };
+};
+
+/**
+ * Count passed distance for user
  *
  * @param parent - the object that contains the result returned from the resolver on the parent field
  * @param args - query args object
  * @param context - query context
  */
-const completedQuestCountResolver: AchievementValueResolver = async (parent, args, { tokenData, dataLoaders }) => {
+const distanceTraveledCounter: AchievementValueResolver = async (parent, args, { tokenData, dataLoaders }): Promise<number> => {
   if (!tokenData || !('userId' in tokenData)) {
     return 0;
   }
 
   const user = await dataLoaders.userById.load(tokenData.userId);
 
-  return user?.completedQuestsIds?.length || 0;
+  if (!user || !user.completedQuestsIds || user.completedQuestsIds.length === 0) {
+    return 0;
+  }
+
+  const quests = await dataLoaders.questById.loadMany(user.completedQuestsIds.map(questId => questId.toHexString()));
+
+  let distance = 0;
+
+  quests.forEach(quest => {
+    if (quest && 'distanceInKilometers' in quest) {
+      distance += quest.distanceInKilometers;
+    }
+  });
+
+  return distance;
 };
 
 export const achievementsArray: Achievement[] = [
@@ -69,51 +113,181 @@ export const achievementsArray: Achievement[] = [
     _id: new ObjectId('60cc36d4b5a18a0f0815d77a'),
     name: {
       ru: 'Начало положено',
-      en: 'A start',
+      en: 'Smooth start',
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 1,
-    currentValueResolver: completedQuestCountResolver,
+    currentValueResolver: completedQuestCounter(),
   },
   {
     _id: new ObjectId('60cc41a84eef47b6defd0a95'),
     name: {
-      ru: 'Парень, который умрет первым',
-      en: 'A start',
+      ru: 'Хорошо идём',
+      en: 'Way to go',
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 5,
-    currentValueResolver: completedQuestCountResolver,
+    currentValueResolver: completedQuestCounter(),
   },
   {
     _id: new ObjectId('60cc41adae7a19dc6549fb2b'),
     name: {
       ru: 'Второстепенный персонаж',
-      en: 'A start',
+      en: 'Minor character',
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 10,
-    currentValueResolver: completedQuestCountResolver,
+    currentValueResolver: completedQuestCounter(),
   },
   {
     _id: new ObjectId('60cc41b4f0715014851c9fc4'),
     name: {
       ru: 'Главный герой',
-      en: 'A start',
+      en: 'Main character',
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 20,
-    currentValueResolver: completedQuestCountResolver,
+    currentValueResolver: completedQuestCounter(),
   },
   {
     _id: new ObjectId('60cc41ba322c17fd76d86851'),
     name: {
       ru: 'Легенда',
-      en: 'A start',
+      en: 'Legend',
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 30,
-    currentValueResolver: completedQuestCountResolver,
+    currentValueResolver: completedQuestCounter(),
+  },
+  {
+    _id: new ObjectId('60cc56ba322c17fd76d86851'),
+    name: {
+      ru: 'Успешный квинтет',
+      en: 'Successful quintet',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 5,
+    currentValueResolver: completedQuestCounter(TaskTypes.Quest),
+  },
+  {
+    _id: new ObjectId('60cc41ba315c17fd76d86851'),
+    name: {
+      ru: 'Любитель приключений',
+      en: 'Digital Adventurer',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 10,
+    currentValueResolver: completedQuestCounter(TaskTypes.Quest),
+  },
+  {
+    _id: new ObjectId('60cc41ba322c18ad76d86851'),
+    name: {
+      ru: 'Цифровой авантюрист',
+      en: 'Knight of fortune',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 15,
+    currentValueResolver: completedQuestCounter(TaskTypes.Quest),
+  },
+  {
+    _id: new ObjectId('60cd41bd322c18ad76d86851'),
+    name: {
+      ru: 'Начинающий исследователь',
+      en: 'Promising explorer',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 5,
+    currentValueResolver: completedQuestCounter(TaskTypes.Route),
+  },
+  {
+    _id: new ObjectId('60cd41bd321c18ad76d86851'),
+    name: {
+      ru: 'Дека-данс',
+      en: 'Decade-dance',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 10,
+    currentValueResolver: completedQuestCounter(TaskTypes.Route),
+  },
+  {
+    _id: new ObjectId('60cd41bd324118ad76d86851'),
+    name: {
+      ru: 'Прожженный пешеход',
+      en: 'Experienced pedestrian',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 20,
+    currentValueResolver: completedQuestCounter(TaskTypes.Route),
+  },
+  {
+    _id: new ObjectId('61ed41bd322c18ad76d86851'),
+    name: {
+      ru: 'Решала',
+      en: 'The solver',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 5,
+    currentValueResolver: completedQuestCounter(TaskTypes.Quiz),
+  },
+  {
+    _id: new ObjectId('60cd41bd322c18ad67d86851'),
+    name: {
+      ru: 'Загадочный энтузиаст',
+      en: 'Riddle enthusiast',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 10,
+    currentValueResolver: completedQuestCounter(TaskTypes.Quiz),
+  },
+  {
+    _id: new ObjectId('61ab41bd322c18ad67d86851'),
+    name: {
+      ru: 'Первые шаги',
+      en: 'First Steps',
+    },
+    unit: AchievementUnits.Distance,
+    requiredValue: 1,
+    currentValueResolver: distanceTraveledCounter,
+  },
+  {
+    _id: new ObjectId('61ab41bd322c18ad69d86851'),
+    name: {
+      ru: 'Любитель пеших прогулок',
+      en: 'The walker',
+    },
+    unit: AchievementUnits.Distance,
+    requiredValue: 5,
+    currentValueResolver: distanceTraveledCounter,
+  },
+  {
+    _id: new ObjectId('61ab41bd311c18ad67d86851'),
+    name: {
+      ru: 'Мечта урбаниста',
+      en: 'Urbanist Dream',
+    },
+    unit: AchievementUnits.Distance,
+    requiredValue: 10,
+    currentValueResolver: distanceTraveledCounter,
+  },
+  {
+    _id: new ObjectId('61ab41bd322c23ad67d86851'),
+    name: {
+      ru: 'Путешественник',
+      en: 'The wanderer',
+    },
+    unit: AchievementUnits.Distance,
+    requiredValue: 21,
+    currentValueResolver: distanceTraveledCounter,
+  },
+  {
+    _id: new ObjectId('61ab41ab322c18ad67d86851'),
+    name: {
+      ru: 'Фидиппид нашего времени',
+      en: 'Pheidippides',
+    },
+    unit: AchievementUnits.Distance,
+    requiredValue: 42,
+    currentValueResolver: distanceTraveledCounter,
   },
 ];
 
