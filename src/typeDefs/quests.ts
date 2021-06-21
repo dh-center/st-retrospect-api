@@ -86,6 +86,11 @@ export default gql`
     type: TaskTypes!
 
     """
+    Quest content languange
+    """
+    language: Languages! @default(value: "RU")
+
+    """
     What user needs to use for route passing
     """
     wayToTravel: WayToTravel! @default(value: "ON_FOOT")

@@ -1251,6 +1251,8 @@ export type Quest = Node & {
   photo?: Maybe<Scalars['String']>;
   /** Quest type (quiz, route, etc.) */
   type: TaskTypes;
+  /** Quest content languange */
+  language: Languages;
   /** What user needs to use for route passing */
   wayToTravel: WayToTravel;
   /** Quest duration in minutes */
@@ -1372,6 +1374,8 @@ export type CreateQuestInput = {
   name: Scalars['String'];
   /** Quest description */
   description?: Maybe<Scalars['String']>;
+  /** Quest content languange */
+  language?: Maybe<Languages>;
   /** What user needs to use for route passing */
   wayToTravel?: WayToTravel;
   /** Quest duration in minutes */
@@ -1413,6 +1417,8 @@ export type UpdateQuestInput = {
   name?: Maybe<Scalars['String']>;
   /** Quest description */
   description?: Maybe<Scalars['String']>;
+  /** Quest content languange */
+  language?: Maybe<Languages>;
   /** What user needs to use for route passing */
   wayToTravel?: Maybe<WayToTravel>;
   /** Quest duration in minutes */
@@ -2506,6 +2512,7 @@ export type QuestResolvers<ContextType = ResolverContextBase, ParentType extends
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   photo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['TaskTypes'], ParentType, ContextType>;
+  language?: Resolver<ResolversTypes['Languages'], ParentType, ContextType>;
   wayToTravel?: Resolver<ResolversTypes['WayToTravel'], ParentType, ContextType>;
   durationInMinutes?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   distanceInKilometers?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;

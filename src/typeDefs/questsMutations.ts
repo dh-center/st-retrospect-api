@@ -13,6 +13,11 @@ export default gql`
     description: String
 
     """
+    Quest content languange
+    """
+    language: Languages
+
+    """
     What user needs to use for route passing
     """
     wayToTravel: WayToTravel! = ON_FOOT
@@ -100,6 +105,11 @@ export default gql`
     Quest description
     """
     description: String
+
+    """
+    Quest content languange
+    """
+    language: Languages
 
     """
     What user needs to use for route passing
