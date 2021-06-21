@@ -5,13 +5,25 @@ import { UserInputError } from 'apollo-server-express';
 import emptyMutation from '../utils/emptyMutation';
 import getUserLevel from '../utils/getUserLevel';
 import {
-  UserMutationsChangeUsernameArgs, UserMutationsResetPasswordArgs,
+  UserMutationsResetPasswordArgs,
   UserMutationsSendCodeForPasswordResetArgs,
+  UserMutationsSetPermissionsArgs,
   UserMutationsUpdateArgs
 } from '../generated/graphql';
 import EmailService from '../utils/email/emailService';
 import { nanoid } from 'nanoid';
 import argon2 from 'argon2';
+import { usernameScheme } from '../routes/auth/signUp';
+import { z } from 'zod';
+
+const userUpdateInputScheme = z.object({
+  username: usernameScheme
+    .optional(),
+  photo: z
+    .string()
+    .url()
+    .optional(),
+});
 
 const emailService = new EmailService();
 
@@ -266,15 +278,15 @@ const UserMutations = {
   },
 
   /**
-   * Updates user data
+   * Updates user permissions
    *
    * @param parent - this is the return value of the resolver for this field's parent
    * @param args - contains all GraphQL arguments provided for this field
    * @param context - this object is shared across all resolvers that execute for a particular operation
    */
-  async update(
+  async setPermissions(
     parent: undefined,
-    { input }: UserMutationsUpdateArgs,
+    { input }: UserMutationsSetPermissionsArgs,
     { collection }: ResolverContextBase<true>
   ): Promise<UpdateMutationPayload<UserDBScheme>> {
     const updatedUser = await collection('users').findOneAndUpdate(
@@ -571,21 +583,21 @@ const UserMutations = {
 
 
   /**
-   * Changes username of the user
+   * Changes User attributes
    *
    * @param parent - this is the return value of the resolver for this field's parent
    * @param args - contains all GraphQL arguments provided for this field
    * @param context - this object is shared across all resolvers that execute for a particular operation
    */
-  async changeUsername(parent: undefined, args: UserMutationsChangeUsernameArgs, { collection, tokenData }: ResolverContextBase<true>): Promise<UpdateMutationPayload<UserDBScheme>> {
+  async update(parent: undefined, { input }: UserMutationsUpdateArgs, { collection, tokenData }: ResolverContextBase<true>): Promise<UpdateMutationPayload<UserDBScheme>> {
     try {
+      const updateInput = userUpdateInputScheme.parse(input);
+
       const userId = new ObjectId(tokenData.userId);
       const updatedUser = await collection('users').findOneAndUpdate(
         { _id: userId },
         {
-          $set: {
-            username: args.username,
-          },
+          $set: updateInput,
         },
         { returnOriginal: false });
 

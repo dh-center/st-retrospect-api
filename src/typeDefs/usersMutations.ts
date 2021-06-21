@@ -1,19 +1,10 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
-  type UserCompleteQuestPayload {
-    """
-    User id
-    """
-    recordId: GlobalId! @toGlobalId(type: "User")
-
-    """
-    User completed quest
-    """
-    record: User!
-  }
-
-  input UpdateUserInput {
+  """
+  Input for updating users permissions
+  """
+  input UpdateUserPermissionsInput {
     """
     Id of the user to update
     """
@@ -25,6 +16,9 @@ export default gql`
     permissions: [String!]!
   }
 
+  """
+  Payload that returns after updating user data
+  """
   type UpdateUserPayload {
     """
     Updated user id
@@ -35,6 +29,21 @@ export default gql`
     Updated user
     """
     record: User!
+  }
+
+  """
+  Input for updating user attributes
+  """
+  input UpdateUserInput {
+    """
+    New username
+    """
+    username: String
+
+    """
+    New user profile photo
+    """
+    photo: String
   }
 
   """
@@ -64,17 +73,17 @@ export default gql`
     """
     Complete quest
     """
-    completeQuest(questId: GlobalId!): UserCompleteQuestPayload! @authCheck
+    completeQuest(questId: GlobalId!): UpdateUserPayload! @authCheck
 
     """
-    Updates user data
+    Updates user permissions
     """
-    update(input: UpdateUserInput!): UpdateUserPayload! @adminCheck
+    setPermissions(input: UpdateUserPermissionsInput!): UpdateUserPayload! @adminCheck
 
     """
-    Changes username of the user
+    Changes User attributes
     """
-    changeUsername(username: String!): UpdateUserPayload! @authCheck
+    update(input: UpdateUserInput!): UpdateUserPayload! @authCheck
 
     """
     Send friend request to user by user id
