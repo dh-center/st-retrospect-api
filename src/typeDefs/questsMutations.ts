@@ -15,7 +15,7 @@ export default gql`
     """
     Quest content languange
     """
-    language: Languages
+    language: Languages! = RU
 
     """
     What user needs to use for route passing
