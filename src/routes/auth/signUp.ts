@@ -8,6 +8,8 @@ const router = express.Router();
 
 const passwordScheme = z.string().min(5);
 
+export const usernameScheme = z.string().min(4);
+
 /**
  * Input to sign up via email
  */
@@ -21,7 +23,7 @@ const SignUpWithEmailInputScheme = z.object({
  * Input for sign up via username
  */
 const SignUpWithUsernameInputScheme = z.object({
-  username: z.string().min(4),
+  username: usernameScheme,
   password: passwordScheme,
 });
 

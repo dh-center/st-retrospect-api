@@ -96,6 +96,8 @@ export type Query = {
   locationsSearch: LocationsSearchResult;
   /** Query for searching location instances related with some person */
   relationsByPersonSearch: RelationsSearchResult;
+  /** List of all achievements */
+  achievements: Array<Achievement>;
   /** Get specific tag */
   tag?: Maybe<Tag>;
   /** Returns array of tags which belong to quests */
@@ -1277,6 +1279,8 @@ export type Quest = Node & {
   tags: Array<Tag>;
   /** Location instances that are present in the quest */
   locationInstances: Array<LocationInstance>;
+  /** The likelihood that the user will like this quest (rating based on a recommendation system) */
+  recommendationScore: Scalars['Float'];
 };
 
 /** Model for representing list of quests */
@@ -1477,27 +1481,29 @@ export type QuestMutationsDeleteArgs = {
 
 
 
-export type UserCompleteQuestPayload = {
-  __typename?: 'UserCompleteQuestPayload';
-  /** User id */
-  recordId: Scalars['GlobalId'];
-  /** User completed quest */
-  record: User;
-};
-
-export type UpdateUserInput = {
+/** Input for updating users permissions */
+export type UpdateUserPermissionsInput = {
   /** Id of the user to update */
   id: Scalars['GlobalId'];
   /** New persmissions */
   permissions: Array<Scalars['String']>;
 };
 
+/** Payload that returns after updating user data */
 export type UpdateUserPayload = {
   __typename?: 'UpdateUserPayload';
   /** Updated user id */
   recordId: Scalars['GlobalId'];
   /** Updated user */
   record: User;
+};
+
+/** Input for updating user attributes */
+export type UpdateUserInput = {
+  /** New username */
+  username?: Maybe<Scalars['String']>;
+  /** New user profile photo */
+  photo?: Maybe<Scalars['String']>;
 };
 
 /** Input to resetting user password */
@@ -1514,11 +1520,11 @@ export type ResetPasswordInput = {
 export type UserMutations = {
   __typename?: 'UserMutations';
   /** Complete quest */
-  completeQuest: UserCompleteQuestPayload;
-  /** Updates user data */
+  completeQuest: UpdateUserPayload;
+  /** Updates user permissions */
+  setPermissions: UpdateUserPayload;
+  /** Changes User attributes */
   update: UpdateUserPayload;
-  /** Changes username of the user */
-  changeUsername: UpdateUserPayload;
   /** Send friend request to user by user id */
   sendFriendRequest: UpdateUserPayload;
   /** Cancel dispatched friend request */
@@ -1543,14 +1549,14 @@ export type UserMutationsCompleteQuestArgs = {
 
 
 /** Mutations for users */
-export type UserMutationsUpdateArgs = {
-  input: UpdateUserInput;
+export type UserMutationsSetPermissionsArgs = {
+  input: UpdateUserPermissionsInput;
 };
 
 
 /** Mutations for users */
-export type UserMutationsChangeUsernameArgs = {
-  username: Scalars['String'];
+export type UserMutationsUpdateArgs = {
+  input: UpdateUserInput;
 };
 
 
@@ -1597,7 +1603,7 @@ export type UserMutationsResetPasswordArgs = {
 
 /** Unit of measure in which the value is calculated */
 export enum AchievementUnits {
-  /** Distance unit, for example, kilimetrs */
+  /** Distance unit, for example, kilometrs */
   Distance = 'DISTANCE',
   /** Quantity unit, for example, number of passed quests */
   Quantity = 'QUANTITY'
@@ -1887,9 +1893,9 @@ export type ResolversTypes = {
   Long: ResolverTypeWrapper<Scalars['Long']>;
   JSON: ResolverTypeWrapper<Scalars['JSON']>;
   Timestamp: ResolverTypeWrapper<Scalars['Timestamp']>;
-  UserCompleteQuestPayload: ResolverTypeWrapper<UserCompleteQuestPayload>;
-  UpdateUserInput: UpdateUserInput;
+  UpdateUserPermissionsInput: UpdateUserPermissionsInput;
   UpdateUserPayload: ResolverTypeWrapper<UpdateUserPayload>;
+  UpdateUserInput: UpdateUserInput;
   ResetPasswordInput: ResetPasswordInput;
   UserMutations: ResolverTypeWrapper<UserMutations>;
   AchievementUnits: AchievementUnits;
@@ -2003,9 +2009,9 @@ export type ResolversParentTypes = {
   Long: Scalars['Long'];
   JSON: Scalars['JSON'];
   Timestamp: Scalars['Timestamp'];
-  UserCompleteQuestPayload: UserCompleteQuestPayload;
-  UpdateUserInput: UpdateUserInput;
+  UpdateUserPermissionsInput: UpdateUserPermissionsInput;
   UpdateUserPayload: UpdateUserPayload;
+  UpdateUserInput: UpdateUserInput;
   ResetPasswordInput: ResetPasswordInput;
   UserMutations: UserMutations;
   Achievement: Achievement;
@@ -2102,6 +2108,7 @@ export type QueryResolvers<ContextType = ResolverContextBase, ParentType extends
   quests?: Resolver<ResolversTypes['QuestConnection'], ParentType, ContextType, RequireFields<QueryQuestsArgs, never>>;
   locationsSearch?: Resolver<ResolversTypes['LocationsSearchResult'], ParentType, ContextType, RequireFields<QueryLocationsSearchArgs, 'input'>>;
   relationsByPersonSearch?: Resolver<ResolversTypes['RelationsSearchResult'], ParentType, ContextType, RequireFields<QueryRelationsByPersonSearchArgs, 'input'>>;
+  achievements?: Resolver<Array<ResolversTypes['Achievement']>, ParentType, ContextType>;
   tag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagArgs, 'id'>>;
   questTags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
   tags?: Resolver<ResolversTypes['TagConnection'], ParentType, ContextType, RequireFields<QueryTagsArgs, never>>;
@@ -2513,6 +2520,7 @@ export type QuestResolvers<ContextType = ResolverContextBase, ParentType extends
   questProgressState?: Resolver<ResolversTypes['QuestUserProgressStates'], ParentType, ContextType>;
   tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
   locationInstances?: Resolver<Array<ResolversTypes['LocationInstance']>, ParentType, ContextType>;
+  recommendationScore?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2581,12 +2589,6 @@ export interface TimestampScalarConfig extends GraphQLScalarTypeConfig<Resolvers
   name: 'Timestamp';
 }
 
-export type UserCompleteQuestPayloadResolvers<ContextType = ResolverContextBase, ParentType extends ResolversParentTypes['UserCompleteQuestPayload'] = ResolversParentTypes['UserCompleteQuestPayload']> = {
-  recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
-  record?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type UpdateUserPayloadResolvers<ContextType = ResolverContextBase, ParentType extends ResolversParentTypes['UpdateUserPayload'] = ResolversParentTypes['UpdateUserPayload']> = {
   recordId?: Resolver<ResolversTypes['GlobalId'], ParentType, ContextType>;
   record?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
@@ -2594,9 +2596,9 @@ export type UpdateUserPayloadResolvers<ContextType = ResolverContextBase, Parent
 };
 
 export type UserMutationsResolvers<ContextType = ResolverContextBase, ParentType extends ResolversParentTypes['UserMutations'] = ResolversParentTypes['UserMutations']> = {
-  completeQuest?: Resolver<ResolversTypes['UserCompleteQuestPayload'], ParentType, ContextType, RequireFields<UserMutationsCompleteQuestArgs, 'questId'>>;
+  completeQuest?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsCompleteQuestArgs, 'questId'>>;
+  setPermissions?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsSetPermissionsArgs, 'input'>>;
   update?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsUpdateArgs, 'input'>>;
-  changeUsername?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsChangeUsernameArgs, 'username'>>;
   sendFriendRequest?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsSendFriendRequestArgs, 'id'>>;
   cancelFriendRequest?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsCancelFriendRequestArgs, 'id'>>;
   acceptFriendRequest?: Resolver<ResolversTypes['UpdateUserPayload'], ParentType, ContextType, RequireFields<UserMutationsAcceptFriendRequestArgs, 'id'>>;
@@ -2730,7 +2732,6 @@ export type Resolvers<ContextType = ResolverContextBase> = {
   Long?: GraphQLScalarType;
   JSON?: GraphQLScalarType;
   Timestamp?: GraphQLScalarType;
-  UserCompleteQuestPayload?: UserCompleteQuestPayloadResolvers<ContextType>;
   UpdateUserPayload?: UpdateUserPayloadResolvers<ContextType>;
   UserMutations?: UserMutationsResolvers<ContextType>;
   Achievement?: AchievementResolvers<ContextType>;
