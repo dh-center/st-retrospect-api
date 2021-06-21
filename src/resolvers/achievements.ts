@@ -48,95 +48,33 @@ const AchievementResolver = {
 };
 
 /**
- * Returns number of passed quest for user
+ * Completed quest counter by quest type
+ * If type is undefined, returns count of completed quests
  *
- * @param parent - the object that contains the result returned from the resolver on the parent field
- * @param args - query args object
- * @param context - query context
+ * @param type - quest type
  */
-const completedQuestCountResolver: AchievementValueResolver = async (parent, args, { tokenData, dataLoaders }) => {
-  if (!tokenData || !('userId' in tokenData)) {
-    return 0;
-  }
+const completedQuestCounter = (type?: TaskTypes): AchievementValueResolver => {
+  return async (parent, args, { tokenData, dataLoaders }): Promise<number> => {
+    if (!tokenData || !('userId' in tokenData)) {
+      return 0;
+    }
 
-  const user = await dataLoaders.userById.load(tokenData.userId);
+    const user = await dataLoaders.userById.load(tokenData.userId);
 
-  return user?.completedQuestsIds?.length || 0;
-};
+    if (type === undefined) {
+      return user?.completedQuestsIds?.length || 0;
+    }
 
-/**
- * Returns number of passed quests with type QUEST for user
- *
- * @param parent - the object that contains the result returned from the resolver on the parent field
- * @param args - query args object
- * @param context - query context
- */
-const completedQuestTypeQuestCountResolver: AchievementValueResolver = async (parent, args, { tokenData, dataLoaders }) => {
-  if (!tokenData || !('userId' in tokenData)) {
-    return 0;
-  }
+    if (!user || !user.completedQuestsIds || user.completedQuestsIds.length === 0) {
+      return 0;
+    }
 
-  const user = await dataLoaders.userById.load(tokenData.userId);
+    const quests = await dataLoaders.questById.loadMany(user.completedQuestsIds.map(questId => questId.toHexString()));
 
-  if (!user || !user.completedQuestsIds || user.completedQuestsIds.length === 0) {
-    return 0;
-  }
+    const passedQuests = quests.filter(quest => quest && 'type' in quest && quest.type === type );
 
-  const quests = await dataLoaders.questById.loadMany(user.completedQuestsIds.map(questId => questId.toHexString()));
-
-  const passedQuests = quests.filter(quest => quest && 'type' in quest && quest.type === TaskTypes.Quest );
-
-  return passedQuests.length;
-};
-
-/**
- * Returns number of passed quests with type ROUTE for user
- *
- * @param parent - the object that contains the result returned from the resolver on the parent field
- * @param args - query args object
- * @param context - query context
- */
-const completedQuestTypeRouteCountResolver: AchievementValueResolver = async (parent, args, { tokenData, dataLoaders }) => {
-  if (!tokenData || !('userId' in tokenData)) {
-    return 0;
-  }
-
-  const user = await dataLoaders.userById.load(tokenData.userId);
-
-  if (!user || !user.completedQuestsIds || user.completedQuestsIds.length === 0) {
-    return 0;
-  }
-
-  const quests = await dataLoaders.questById.loadMany(user.completedQuestsIds.map(questId => questId.toHexString()));
-
-  const passedQuests = quests.filter(quest => quest && 'type' in quest && quest.type === TaskTypes.Route );
-
-  return passedQuests.length;
-};
-
-/**
- * Returns number of passed quests with type QUIZ for user
- *
- * @param parent - the object that contains the result returned from the resolver on the parent field
- * @param args - query args object
- * @param context - query context
- */
-const completedQuestTypeQuizCountResolver: AchievementValueResolver = async (parent, args, { tokenData, dataLoaders }) => {
-  if (!tokenData || !('userId' in tokenData)) {
-    return 0;
-  }
-
-  const user = await dataLoaders.userById.load(tokenData.userId);
-
-  if (!user || !user.completedQuestsIds || user.completedQuestsIds.length === 0) {
-    return 0;
-  }
-
-  const quests = await dataLoaders.questById.loadMany(user.completedQuestsIds.map(questId => questId.toHexString()));
-
-  const passedQuests = quests.filter(quest => quest && 'type' in quest && quest.type === TaskTypes.Quiz );
-
-  return passedQuests.length;
+    return passedQuests.length;
+  };
 };
 
 export const achievementsArray: Achievement[] = [
@@ -148,7 +86,7 @@ export const achievementsArray: Achievement[] = [
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 1,
-    currentValueResolver: completedQuestCountResolver,
+    currentValueResolver: completedQuestCounter(),
   },
   {
     _id: new ObjectId('60cc41a84eef47b6defd0a95'),
@@ -158,7 +96,7 @@ export const achievementsArray: Achievement[] = [
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 5,
-    currentValueResolver: completedQuestCountResolver,
+    currentValueResolver: completedQuestCounter(),
   },
   {
     _id: new ObjectId('60cc41adae7a19dc6549fb2b'),
@@ -168,7 +106,7 @@ export const achievementsArray: Achievement[] = [
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 10,
-    currentValueResolver: completedQuestCountResolver,
+    currentValueResolver: completedQuestCounter(),
   },
   {
     _id: new ObjectId('60cc41b4f0715014851c9fc4'),
@@ -178,7 +116,7 @@ export const achievementsArray: Achievement[] = [
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 20,
-    currentValueResolver: completedQuestCountResolver,
+    currentValueResolver: completedQuestCounter(),
   },
   {
     _id: new ObjectId('60cc41ba322c17fd76d86851'),
@@ -188,7 +126,7 @@ export const achievementsArray: Achievement[] = [
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 30,
-    currentValueResolver: completedQuestCountResolver,
+    currentValueResolver: completedQuestCounter(),
   },
   {
     _id: new ObjectId('60cc56ba322c17fd76d86851'),
@@ -198,7 +136,7 @@ export const achievementsArray: Achievement[] = [
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 5,
-    currentValueResolver: completedQuestTypeQuestCountResolver,
+    currentValueResolver: completedQuestCounter(TaskTypes.Quest),
   },
   {
     _id: new ObjectId('60cc41ba315c17fd76d86851'),
@@ -208,7 +146,7 @@ export const achievementsArray: Achievement[] = [
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 10,
-    currentValueResolver: completedQuestTypeQuestCountResolver,
+    currentValueResolver: completedQuestCounter(TaskTypes.Quest),
   },
   {
     _id: new ObjectId('60cc41ba322c18ad76d86851'),
@@ -218,7 +156,7 @@ export const achievementsArray: Achievement[] = [
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 15,
-    currentValueResolver: completedQuestTypeQuestCountResolver,
+    currentValueResolver: completedQuestCounter(TaskTypes.Quest),
   },
   {
     _id: new ObjectId('60cd41bd322c18ad76d86851'),
@@ -228,7 +166,7 @@ export const achievementsArray: Achievement[] = [
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 5,
-    currentValueResolver: completedQuestTypeRouteCountResolver,
+    currentValueResolver: completedQuestCounter(TaskTypes.Route),
   },
   {
     _id: new ObjectId('60cd41bd321c18ad76d86851'),
@@ -238,7 +176,7 @@ export const achievementsArray: Achievement[] = [
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 10,
-    currentValueResolver: completedQuestTypeRouteCountResolver,
+    currentValueResolver: completedQuestCounter(TaskTypes.Route),
   },
   {
     _id: new ObjectId('60cd41bd324118ad76d86851'),
@@ -248,7 +186,7 @@ export const achievementsArray: Achievement[] = [
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 20,
-    currentValueResolver: completedQuestTypeRouteCountResolver,
+    currentValueResolver: completedQuestCounter(TaskTypes.Route),
   },
   {
     _id: new ObjectId('61ed41bd322c18ad76d86851'),
@@ -258,7 +196,7 @@ export const achievementsArray: Achievement[] = [
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 5,
-    currentValueResolver: completedQuestTypeQuizCountResolver,
+    currentValueResolver: completedQuestCounter(TaskTypes.Quiz),
   },
   {
     _id: new ObjectId('60cd41bd322c18ad67d86851'),
@@ -268,7 +206,7 @@ export const achievementsArray: Achievement[] = [
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 10,
-    currentValueResolver: completedQuestTypeQuizCountResolver,
+    currentValueResolver: completedQuestCounter(TaskTypes.Quiz),
   },
 ];
 
