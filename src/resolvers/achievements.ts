@@ -1,6 +1,8 @@
 import { AchievementUnits, TaskTypes } from '../generated/graphql';
 import { ObjectId } from 'mongodb';
 import { MultilingualString, ResolverContextBase } from '../types/graphql';
+import { QuestDBScheme } from './quests';
+import { PersonDBScheme } from './persons';
 
 type AchievementValueResolver = (parent: Achievement, args: undefined, context: ResolverContextBase) => Promise<number>;
 
@@ -106,6 +108,46 @@ const distanceTraveledCounter: AchievementValueResolver = async (parent, args, {
   });
 
   return distance;
+};
+
+/**
+ * Counter of received cards by tag id
+ *
+ * @param tagId - tag id for search
+ */
+const receivedCardsCounter = (tagId: string | undefined): AchievementValueResolver => {
+  return async (parent, args, { tokenData, dataLoaders }): Promise<number> => {
+    if (!tokenData || !('userId' in tokenData)) {
+      return 0;
+    }
+
+    const user = await dataLoaders.userById.load(tokenData.userId);
+
+    if (!user || !user.completedQuestsIds || user.completedQuestsIds.length === 0) {
+      return 0;
+    }
+
+    const quests = (await dataLoaders.questById
+      .loadMany(user.completedQuestsIds.map(questId => questId.toHexString())))
+      .filter((quest): quest is QuestDBScheme => !!quest && 'personsCardsIds' in quest);
+
+    const personIds = quests
+      .map(quest => quest.personsCardsIds)
+      .flat()
+      .filter((personId): personId is ObjectId => !!personId);
+
+    if (tagId === undefined) {
+      return personIds.length;
+    }
+
+    const persons = (await dataLoaders.personById
+      .loadMany(personIds.map(personId => personId.toHexString())))
+      .filter((person): person is PersonDBScheme => !!person && 'tagIds' in person);
+
+    const tag = new ObjectId(tagId);
+
+    return persons.filter(person => person.tagIds?.includes(tag)).length;
+  };
 };
 
 export const achievementsArray: Achievement[] = [
@@ -288,6 +330,76 @@ export const achievementsArray: Achievement[] = [
     unit: AchievementUnits.Distance,
     requiredValue: 42,
     currentValueResolver: distanceTraveledCounter,
+  },
+  {
+    _id: new ObjectId('61ab41cf322c18ad67d86851'),
+    name: {
+      ru: 'Зачин',
+      en: 'Inception',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 10,
+    currentValueResolver: receivedCardsCounter('60927089cc8d22a1c2f89060'), // Literature
+  },
+  {
+    _id: new ObjectId('61ab43cf322c18ad67d86851'),
+    name: {
+      ru: 'Лучший ученик',
+      en: 'Best Student',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 20,
+    currentValueResolver: receivedCardsCounter('60927089cc8d22a1c2f89060'), // Literature
+  },
+  {
+    _id: new ObjectId('61acd1cf322c18ad67d86851'),
+    name: {
+      ru: 'Книжный червь',
+      en: 'Bookworm',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 30,
+    currentValueResolver: receivedCardsCounter('60927089cc8d22a1c2f89060'), // Literature
+  },
+  {
+    _id: new ObjectId('61ab41cf322c18a2ac186851'),
+    name: {
+      ru: 'Друг писателей',
+      en: 'Writer’s friend',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 40,
+    currentValueResolver: receivedCardsCounter('60927089cc8d22a1c2f89060'), // Literature
+  },
+  {
+    _id: new ObjectId('61ab22cf322c18a2ac186851'),
+    name: {
+      ru: 'Подмастерье',
+      en: 'Apprentice',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 10,
+    currentValueResolver: receivedCardsCounter('6092704ccc8d22bfb6f8905e'), // Art
+  },
+  {
+    _id: new ObjectId('601041cf322c18a2ac186851'),
+    name: {
+      ru: 'Вторая скрипка',
+      en: 'Second violin',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 10,
+    currentValueResolver: receivedCardsCounter('6092703fcc8d221862f8905d'), // Music
+  },
+  {
+    _id: new ObjectId('61ab41cf322c48a2ac186851'),
+    name: {
+      ru: 'Градоначальник',
+      en: 'City counselor',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 10,
+    currentValueResolver: receivedCardsCounter('609270a0cc8d22f922f89061'), // Politics
   },
 ];
 
