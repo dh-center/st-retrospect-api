@@ -1377,7 +1377,7 @@ export type CreateQuestInput = {
   /** Quest description */
   description?: Maybe<Scalars['String']>;
   /** Quest content languange */
-  language?: Maybe<Languages>;
+  language?: Languages;
   /** What user needs to use for route passing */
   wayToTravel?: WayToTravel;
   /** Quest duration in minutes */
