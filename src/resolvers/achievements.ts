@@ -77,6 +77,37 @@ const completedQuestCounter = (type?: TaskTypes): AchievementValueResolver => {
   };
 };
 
+/**
+ * Count passed distance for user
+ *
+ * @param parent - the object that contains the result returned from the resolver on the parent field
+ * @param args - query args object
+ * @param context - query context
+ */
+const distanceTraveledCounter: AchievementValueResolver = async (parent, args, { tokenData, dataLoaders }): Promise<number> => {
+  if (!tokenData || !('userId' in tokenData)) {
+    return 0;
+  }
+
+  const user = await dataLoaders.userById.load(tokenData.userId);
+
+  if (!user || !user.completedQuestsIds || user.completedQuestsIds.length === 0) {
+    return 0;
+  }
+
+  const quests = await dataLoaders.questById.loadMany(user.completedQuestsIds.map(questId => questId.toHexString()));
+
+  let distance = 0;
+
+  quests.forEach(quest => {
+    if (quest && 'distanceInKilometers' in quest) {
+      distance += quest.distanceInKilometers;
+    }
+  });
+
+  return distance;
+};
+
 export const achievementsArray: Achievement[] = [
   {
     _id: new ObjectId('60cc36d4b5a18a0f0815d77a'),
@@ -207,6 +238,56 @@ export const achievementsArray: Achievement[] = [
     unit: AchievementUnits.Quantity,
     requiredValue: 10,
     currentValueResolver: completedQuestCounter(TaskTypes.Quiz),
+  },
+  {
+    _id: new ObjectId('61ab41bd322c18ad67d86851'),
+    name: {
+      ru: 'Первые шаги',
+      en: 'First Steps',
+    },
+    unit: AchievementUnits.Distance,
+    requiredValue: 1,
+    currentValueResolver: distanceTraveledCounter,
+  },
+  {
+    _id: new ObjectId('61ab41bd322c18ad69d86851'),
+    name: {
+      ru: 'Любитель пеших прогулок',
+      en: 'The walker',
+    },
+    unit: AchievementUnits.Distance,
+    requiredValue: 5,
+    currentValueResolver: distanceTraveledCounter,
+  },
+  {
+    _id: new ObjectId('61ab41bd311c18ad67d86851'),
+    name: {
+      ru: 'Мечта урбаниста',
+      en: 'Urbanist Dream',
+    },
+    unit: AchievementUnits.Distance,
+    requiredValue: 10,
+    currentValueResolver: distanceTraveledCounter,
+  },
+  {
+    _id: new ObjectId('61ab41bd322c23ad67d86851'),
+    name: {
+      ru: 'Путешественник',
+      en: 'The wanderer',
+    },
+    unit: AchievementUnits.Distance,
+    requiredValue: 21,
+    currentValueResolver: distanceTraveledCounter,
+  },
+  {
+    _id: new ObjectId('61ab41ab322c18ad67d86851'),
+    name: {
+      ru: 'Фидиппид нашего времени',
+      en: 'Pheidippides',
+    },
+    unit: AchievementUnits.Distance,
+    requiredValue: 42,
+    currentValueResolver: distanceTraveledCounter,
   },
 ];
 
