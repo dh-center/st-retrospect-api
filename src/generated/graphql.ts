@@ -1163,6 +1163,8 @@ export type User = Node & {
   firstName?: Maybe<Scalars['String']>;
   /** User last name */
   lastName?: Maybe<Scalars['String']>;
+  /** User email address */
+  email?: Maybe<Scalars['String']>;
   /** Quests that user complete */
   completedQuests: Array<Quest>;
   /** User's achievements */
@@ -1251,6 +1253,8 @@ export type Quest = Node & {
   photo?: Maybe<Scalars['String']>;
   /** Quest type (quiz, route, etc.) */
   type: TaskTypes;
+  /** Quest content languange */
+  language: Languages;
   /** What user needs to use for route passing */
   wayToTravel: WayToTravel;
   /** Quest duration in minutes */
@@ -1372,6 +1376,8 @@ export type CreateQuestInput = {
   name: Scalars['String'];
   /** Quest description */
   description?: Maybe<Scalars['String']>;
+  /** Quest content languange */
+  language?: Maybe<Languages>;
   /** What user needs to use for route passing */
   wayToTravel?: WayToTravel;
   /** Quest duration in minutes */
@@ -1413,6 +1419,8 @@ export type UpdateQuestInput = {
   name?: Maybe<Scalars['String']>;
   /** Quest description */
   description?: Maybe<Scalars['String']>;
+  /** Quest content languange */
+  language?: Maybe<Languages>;
   /** What user needs to use for route passing */
   wayToTravel?: Maybe<WayToTravel>;
   /** Quest duration in minutes */
@@ -2469,6 +2477,7 @@ export type UserResolvers<ContextType = ResolverContextBase, ParentType extends 
   photo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   completedQuests?: Resolver<Array<ResolversTypes['Quest']>, ParentType, ContextType>;
   receivedAchievements?: Resolver<Array<ResolversTypes['Achievement']>, ParentType, ContextType>;
   exp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -2506,6 +2515,7 @@ export type QuestResolvers<ContextType = ResolverContextBase, ParentType extends
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   photo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['TaskTypes'], ParentType, ContextType>;
+  language?: Resolver<ResolversTypes['Languages'], ParentType, ContextType>;
   wayToTravel?: Resolver<ResolversTypes['WayToTravel'], ParentType, ContextType>;
   durationInMinutes?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   distanceInKilometers?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
