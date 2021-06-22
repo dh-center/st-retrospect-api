@@ -43,6 +43,11 @@ export default gql`
     receivedAchievements: [Achievement!]! @dataLoader(dataLoaderName: "achievementById", fieldName: "receivedAchievementsIds") @default(value: "[]")
 
     """
+    Received persons cards
+    """
+    receivedPersonsCards: [Person!]! @default(value: "[]")
+
+    """
     User experience
     """
     exp: Int! @default(value: "0")

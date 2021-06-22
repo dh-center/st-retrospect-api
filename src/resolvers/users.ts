@@ -15,6 +15,8 @@ import { nanoid } from 'nanoid';
 import argon2 from 'argon2';
 import { usernameScheme } from '../routes/auth/signUp';
 import { z } from 'zod';
+import { PersonDBScheme } from './persons';
+import { QuestDBScheme } from './quests';
 
 const userUpdateInputScheme = z.object({
   username: usernameScheme
@@ -712,6 +714,31 @@ const User = {
     const userExp = parent.exp;
 
     return getUserLevel(userExp);
+  },
+
+  /**
+   * Returns received persons cards
+   *
+   * @param parent - this is the return value of the resolver for this field's parent
+   * @param args - contains all GraphQL arguments provided for this field
+   * @param context - this object is shared across all resolvers that execute for a particular operation
+   */
+  async receivedPersonsCards(parent: UserDBScheme, args: undefined, { dataLoaders }: ResolverContextBase<true>): Promise<PersonDBScheme[]> {
+    const passedQuestsIds = parent.completedQuestsIds;
+
+    if (!passedQuestsIds) {
+      return [];
+    }
+
+    const passedQuests = (await dataLoaders.questById.loadMany(passedQuestsIds.map(id => id.toHexString())))
+      .filter((quest): quest is QuestDBScheme => !!quest && '_id' in quest);
+
+    const personsCardsIds = passedQuests.map(quest => quest.personsCardsIds)
+      .flat()
+      .filter((id): id is ObjectId => id !== undefined);
+
+    return (await dataLoaders.personById.loadMany(personsCardsIds.map(id => id.toHexString())))
+      .filter((person): person is PersonDBScheme => !!person && '_id' in person);
   },
 };
 
