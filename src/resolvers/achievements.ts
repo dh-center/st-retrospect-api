@@ -435,7 +435,7 @@ export const achievementsArray: Achievement[] = [
       en: 'First non-classical',
     },
     unit: AchievementUnits.Quantity,
-    requiredValue: 6,
+    requiredValue: 7,
     currentValueResolver: passedQuestsByTagCounter('60cb645229ada6282e1d4bf8'), // ITMO
   },
   {
