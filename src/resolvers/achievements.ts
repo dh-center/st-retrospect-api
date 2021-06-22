@@ -150,6 +150,33 @@ const receivedCardsCounter = (tagId: string | undefined): AchievementValueResolv
   };
 };
 
+/**
+ * Counter of passed quests by tag id
+ *
+ * @param tagId - tag id for search
+ */
+const passedQuestsByTagCounter = (tagId: string): AchievementValueResolver => {
+  return async (parent, args, { tokenData, dataLoaders }): Promise<number> => {
+    if (!tokenData || !('userId' in tokenData)) {
+      return 0;
+    }
+
+    const user = await dataLoaders.userById.load(tokenData.userId);
+
+    if (!user || !user.completedQuestsIds || user.completedQuestsIds.length === 0) {
+      return 0;
+    }
+
+    const quests = (await dataLoaders.questById
+      .loadMany(user.completedQuestsIds.map(questId => questId.toHexString())))
+      .filter((quest): quest is QuestDBScheme => !!quest && '_id' in quest);
+
+    const tag = new ObjectId(tagId);
+
+    return quests.filter(quest => quest.tagIds?.includes(tag)).length;
+  };
+};
+
 export const achievementsArray: Achievement[] = [
   {
     _id: new ObjectId('60cc36d4b5a18a0f0815d77a'),
@@ -400,6 +427,46 @@ export const achievementsArray: Achievement[] = [
     unit: AchievementUnits.Quantity,
     requiredValue: 10,
     currentValueResolver: receivedCardsCounter('609270a0cc8d22f922f89061'), // Politics
+  },
+  {
+    _id: new ObjectId('61ab41cf331c48a2ac186851'),
+    name: {
+      ru: 'Первый неклассический',
+      en: 'First non-classical',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 5,
+    currentValueResolver: passedQuestsByTagCounter('60cb645229ada6282e1d4bf8'), // ITMO
+  },
+  {
+    _id: new ObjectId('61ab41cf332c48a2ac186851'),
+    name: {
+      ru: 'Библиотекарь',
+      en: 'The librarian',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 9,
+    currentValueResolver: passedQuestsByTagCounter('60927089cc8d22a1c2f89060'), // Literature
+  },
+  {
+    _id: new ObjectId('61ab41cf332c47a2ac186851'),
+    name: {
+      ru: 'Дневной гуляка',
+      en: 'The Good-liver',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 1,
+    currentValueResolver: passedQuestsByTagCounter('60ccf8106854908f93b6d852'), // Carouse
+  },
+  {
+    _id: new ObjectId('61ab41cf332c47a2aa186851'),
+    name: {
+      ru: 'Дневной гуляка',
+      en: 'The Good-liver',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 3,
+    currentValueResolver: passedQuestsByTagCounter('60d2511f82e272c6edfa2d33'), // Revolution
   },
 ];
 
