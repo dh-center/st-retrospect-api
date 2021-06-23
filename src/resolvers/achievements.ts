@@ -177,6 +177,50 @@ const passedQuestsByTagCounter = (tagId: string): AchievementValueResolver => {
   };
 };
 
+/**
+ * Resolver for quests about antique gods
+ *
+ * @param parent - the object that contains the result returned from the resolver on the parent field
+ * @param args - query args object
+ * @param context - query context
+ */
+const antiqueGodsResolver: AchievementValueResolver = async (parent, args, { tokenData, dataLoaders }): Promise<number> => {
+  if (!tokenData || !('userId' in tokenData)) {
+    return 0;
+  }
+
+  const user = await dataLoaders.userById.load(tokenData.userId);
+
+  if (!user || !user.completedQuestsIds || user.completedQuestsIds.length === 0) {
+    return 0;
+  }
+
+  let result = 0;
+  let isRouteDone = false;
+  let isQuizDone = false;
+
+  user.completedQuestsIds.forEach(id => {
+    const idAsString = id.toHexString();
+
+    if (idAsString === '60145394d078f0263261b8cc' || idAsString === '60145d69d078f0b1c761b8d2') {
+      isRouteDone = true;
+    }
+    if (idAsString === '6013f078d078f0a2ef61b8b1' || idAsString === '6013fb9ed078f0289261b8b2') {
+      isQuizDone = true;
+    }
+  });
+
+  if (isRouteDone) {
+    result++;
+  }
+
+  if (isQuizDone) {
+    result++;
+  }
+
+  return result;
+};
+
 export const achievementsArray: Achievement[] = [
   {
     _id: new ObjectId('60cc36d4b5a18a0f0815d77a'),
@@ -467,6 +511,16 @@ export const achievementsArray: Achievement[] = [
     unit: AchievementUnits.Quantity,
     requiredValue: 3,
     currentValueResolver: passedQuestsByTagCounter('60d2511f82e272c6edfa2d33'), // Revolution
+  },
+  {
+    _id: new ObjectId('61ab41cf332c47a2aa186851'),
+    name: {
+      ru: 'Мудрость Афины',
+      en: 'Wisdom of Athena',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 2,
+    currentValueResolver: antiqueGodsResolver,
   },
 ];
 
