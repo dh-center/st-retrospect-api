@@ -1169,6 +1169,8 @@ export type User = Node & {
   completedQuests: Array<Quest>;
   /** User's achievements */
   receivedAchievements: Array<Achievement>;
+  /** Received persons cards */
+  receivedPersonsCards: Array<Person>;
   /** User experience */
   exp: Scalars['Int'];
   /** User level */
@@ -1377,7 +1379,7 @@ export type CreateQuestInput = {
   /** Quest description */
   description?: Maybe<Scalars['String']>;
   /** Quest content languange */
-  language?: Maybe<Languages>;
+  language?: Languages;
   /** What user needs to use for route passing */
   wayToTravel?: WayToTravel;
   /** Quest duration in minutes */
@@ -2480,6 +2482,7 @@ export type UserResolvers<ContextType = ResolverContextBase, ParentType extends 
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   completedQuests?: Resolver<Array<ResolversTypes['Quest']>, ParentType, ContextType>;
   receivedAchievements?: Resolver<Array<ResolversTypes['Achievement']>, ParentType, ContextType>;
+  receivedPersonsCards?: Resolver<Array<ResolversTypes['Person']>, ParentType, ContextType>;
   exp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   level?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   permissions?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
