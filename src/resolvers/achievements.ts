@@ -221,6 +221,35 @@ const antiqueGodsResolver: AchievementValueResolver = async (parent, args, { tok
   return result;
 };
 
+/**
+ * Returns 1 if quest is passed
+ *
+ * @param questId - quest id for check
+ */
+const questByIdPassResolver = (questId: string): AchievementValueResolver => {
+  return async (parent, args, { tokenData, dataLoaders }): Promise<number> => {
+    if (!tokenData || !('userId' in tokenData)) {
+      return 0;
+    }
+
+    const user = await dataLoaders.userById.load(tokenData.userId);
+
+    if (!user || !user.completedQuestsIds || user.completedQuestsIds.length === 0) {
+      return 0;
+    }
+
+    let isQuestPass = false;
+
+    user.completedQuestsIds.forEach(id => {
+      if (id.toHexString() === questId) {
+        isQuestPass = true;
+      }
+    });
+
+    return +isQuestPass;
+  };
+};
+
 export const achievementsArray: Achievement[] = [
   {
     _id: new ObjectId('60cc36d4b5a18a0f0815d77a'),
@@ -513,7 +542,7 @@ export const achievementsArray: Achievement[] = [
     currentValueResolver: passedQuestsByTagCounter('60d2511f82e272c6edfa2d33'), // Revolution
   },
   {
-    _id: new ObjectId('61ab41cf332c47a2aa186851'),
+    _id: new ObjectId('61ab41cf332c47a2aa186852'),
     name: {
       ru: 'Мудрость Афины',
       en: 'Wisdom of Athena',
@@ -521,6 +550,56 @@ export const achievementsArray: Achievement[] = [
     unit: AchievementUnits.Quantity,
     requiredValue: 2,
     currentValueResolver: antiqueGodsResolver,
+  },
+  {
+    _id: new ObjectId('61ab41cf332c47a2aa186853'),
+    name: {
+      ru: 'Друг Достоевского',
+      en: 'Dostoyevsky’s friend',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 1,
+    currentValueResolver: questByIdPassResolver('60cf63a36854908e67b6d853'),
+  },
+  {
+    _id: new ObjectId('61ab41cf332c47a2aa186854'),
+    name: {
+      ru: 'Bien joué!',
+      en: 'Bien joué!',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 1,
+    currentValueResolver: questByIdPassResolver('602f2e627f534d8e1025c9c7'),
+  },
+  {
+    _id: new ObjectId('61ab41cf332c47a2aa186855'),
+    name: {
+      ru: '¡Bien hecho!',
+      en: '¡Bien hecho!',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 1,
+    currentValueResolver: questByIdPassResolver('6011887dd078f0c24461b6e6'),
+  },
+  {
+    _id: new ObjectId('61ab41cf332c47a2aa186856'),
+    name: {
+      ru: 'Петербургский денди',
+      en: 'Petersburg Dendy',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 1,
+    currentValueResolver: questByIdPassResolver('60ae8fceef5ba13c531affa9'),
+  },
+  {
+    _id: new ObjectId('61ab41cf332c47a2aa186857'),
+    name: {
+      ru: 'Дальняя дорога',
+      en: 'Long way from home',
+    },
+    unit: AchievementUnits.Quantity,
+    requiredValue: 1,
+    currentValueResolver: questByIdPassResolver('60b0f10e44cb8b4a5729d542'),
   },
 ];
 
