@@ -534,8 +534,8 @@ export const achievementsArray: Achievement[] = [
   {
     _id: new ObjectId('61ab41cf332c47a2aa186851'),
     name: {
-      ru: 'Дневной гуляка',
-      en: 'The Good-liver',
+      ru: 'Дурная репутация',
+      en: 'Bad reputation',
     },
     unit: AchievementUnits.Quantity,
     requiredValue: 3,
