@@ -1208,6 +1208,14 @@ export type UserEdge = {
   node: User;
 };
 
+/** Types of applications where quest will be displayed */
+export enum Application {
+  /** Que.St application */
+  Mobile = 'MOBILE',
+  /** St.Retrospect application */
+  Web = 'WEB'
+}
+
 /** What user needs to use for route passing */
 export enum WayToTravel {
   /** Uses his feets */
@@ -1259,6 +1267,8 @@ export type Quest = Node & {
   language: Languages;
   /** What user needs to use for route passing */
   wayToTravel: WayToTravel;
+  /** Where quest will be displayed */
+  whereDisplays: Array<Application>;
   /** Quest duration in minutes */
   durationInMinutes: Scalars['Int'];
   /** Quest distance in kilometers */
@@ -1382,6 +1392,8 @@ export type CreateQuestInput = {
   language?: Languages;
   /** What user needs to use for route passing */
   wayToTravel?: WayToTravel;
+  /** Where quest will be displayed */
+  whereDisplays?: Array<Application>;
   /** Quest duration in minutes */
   durationInMinutes: Scalars['Int'];
   /** Quest distance in kilometers */
@@ -1425,6 +1437,8 @@ export type UpdateQuestInput = {
   language?: Maybe<Languages>;
   /** What user needs to use for route passing */
   wayToTravel?: Maybe<WayToTravel>;
+  /** Where quest will be displayed */
+  whereDisplays?: Maybe<Array<Application>>;
   /** Quest duration in minutes */
   durationInMinutes?: Maybe<Scalars['Int']>;
   /** Quest distance in kilometers */
@@ -1883,6 +1897,7 @@ export type ResolversTypes = {
   User: ResolverTypeWrapper<User>;
   UserConnection: ResolverTypeWrapper<UserConnection>;
   UserEdge: ResolverTypeWrapper<UserEdge>;
+  Application: Application;
   WayToTravel: WayToTravel;
   EditorData: ResolverTypeWrapper<EditorData>;
   EditorDataInput: EditorDataInput;
@@ -2520,6 +2535,7 @@ export type QuestResolvers<ContextType = ResolverContextBase, ParentType extends
   type?: Resolver<ResolversTypes['TaskTypes'], ParentType, ContextType>;
   language?: Resolver<ResolversTypes['Languages'], ParentType, ContextType>;
   wayToTravel?: Resolver<ResolversTypes['WayToTravel'], ParentType, ContextType>;
+  whereDisplays?: Resolver<Array<ResolversTypes['Application']>, ParentType, ContextType>;
   durationInMinutes?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   distanceInKilometers?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   task?: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
