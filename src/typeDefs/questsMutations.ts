@@ -23,6 +23,11 @@ export default gql`
     wayToTravel: WayToTravel! = ON_FOOT
 
     """
+    Where quest will be displayed
+    """
+    whereDisplays: [Application!]! = []
+
+    """
     Quest duration in minutes
     """
     durationInMinutes: Int!
@@ -115,6 +120,11 @@ export default gql`
     What user needs to use for route passing
     """
     wayToTravel: WayToTravel
+
+    """
+    Where quest will be displayed
+    """
+    whereDisplays: [Application!]
 
     """
     Quest duration in minutes
