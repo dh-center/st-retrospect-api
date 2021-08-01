@@ -2,6 +2,21 @@ import { gql } from 'apollo-server-express';
 
 export default gql`
   """
+  Types of applications where quest will be displayed
+  """
+  enum Application {
+    """
+    Que.St application
+    """
+    MOBILE
+
+    """
+    St.Retrospect application
+    """
+    WEB
+  }
+
+  """
   What user needs to use for route passing
   """
   enum WayToTravel {
@@ -58,7 +73,6 @@ export default gql`
     version : String
   }
 
-
   type Quest implements Node {
     """
     Quest ID
@@ -94,6 +108,11 @@ export default gql`
     What user needs to use for route passing
     """
     wayToTravel: WayToTravel! @default(value: "ON_FOOT")
+
+    """
+    Where quest will be displayed
+    """
+    whereDisplays: [Application!]! @default(value: "[]")
 
     """
     Quest duration in minutes
