@@ -113,9 +113,7 @@ export function limitQueryWithId(query: Cursor, before?: string, after?: string,
       },
     };
   } else {
-    filter = {
-      ...queryFilter,
-    };
+    filter = queryFilter;
   }
 
   return query.filter(filter);
