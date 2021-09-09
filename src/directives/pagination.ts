@@ -35,7 +35,8 @@ export default function paginationDirective(directiveName: string): DirectiveTra
           limitQueryWithId(
             query,
             args.before,
-            args.after
+            args.after,
+            args.filter
           );
           const pageInfo = await applyPagination(
             query, args.first, args.last

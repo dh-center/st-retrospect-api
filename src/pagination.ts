@@ -24,6 +24,11 @@ export interface PaginationArguments {
    * Number of requested nodes before a node with a cursor in the `before` argument
    */
   last?: number;
+
+  /**
+   * Filter query results
+   */
+  filter?: FilterQuery<unknown>;
 }
 
 /**
@@ -86,24 +91,29 @@ export interface Connection<T> {
  * @param query - mongodb cursor to handle
  * @param before - the cursor after before we take the data
  * @param after - the cursor after which we take the data
+ * @param queryFilter - filter for query provided by user
  */
-export function limitQueryWithId(query: Cursor, before?: string, after?: string): Cursor {
+export function limitQueryWithId(query: Cursor, before?: string, after?: string, queryFilter?: FilterQuery<any>): Cursor {
   let filter: FilterQuery<PersonDBScheme>;
 
   if (before) {
     filter = {
+      ...queryFilter,
       _id: {
+        ...queryFilter?._id,
         $lt: new ObjectId(before),
       },
     };
   } else if (after) {
     filter = {
+      ...queryFilter,
       _id: {
+        ...queryFilter?._id,
         $gt: new ObjectId(after),
       },
     };
   } else {
-    filter = {};
+    filter = queryFilter;
   }
 
   return query.filter(filter);
