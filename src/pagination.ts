@@ -26,7 +26,7 @@ export interface PaginationArguments {
   last?: number;
 
   /**
-   *
+   * Filter query results
    */
   filter?: FilterQuery<unknown>;
 }
